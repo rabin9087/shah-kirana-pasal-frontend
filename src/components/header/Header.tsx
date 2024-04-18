@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 
 const Header = () => {
   return (
-    <div className="p-3 border shadow-sm sticky top-0 rounded-md z-50 bg-inherit flex justify-between">
+    <div className="p-4 border shadow-sm sticky top-0 rounded-md z-50 bg-inherit flex justify-between">
       <div>logo</div>
       <div className="flex gap-5">
         <Link to="/">
