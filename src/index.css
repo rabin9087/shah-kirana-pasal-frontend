@@ -81,3 +81,9 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+@layer utilities {
+  .sign-input {
+    @apply rounded-full bg-white text-[16px] text-black h-14 border-0;
+  }
+}
