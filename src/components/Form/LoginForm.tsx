@@ -11,39 +11,59 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import TogglePasswordVisibility from "./TogglePassword";
+
 const formSchema = z.object({
   fName: z
-    .string()
+    .string({
+      required_error: "First Name is required",
+      invalid_type_error: "Name must be a string",
+    })
     .min(3, { message: "At least 3 characters required" })
     .max(15, { message: "Name must not be more than 15 characters" }),
   lName: z
-    .string()
+    .string({
+      required_error: "Last Name is required",
+      invalid_type_error: "Name must be a string",
+    })
     .min(3, { message: "At least 3 characters required" })
     .max(15, { message: "Last Name must not be more than 15 characters" }),
-  email: z.string(),
-  phone: z.string(),
+  email: z
+    .string({
+      required_error: "Name is required",
+    })
+    .email({ message: "Invalid email address" })
+    .endsWith(".com", {
+      message: "Invalid email",
+    }),
+  phone: z.string({}),
   password: z.string(),
   confirmPassword: z.string(),
 });
+
+type TForm = z.infer<typeof formSchema>;
 function LoginForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const { ToggleVisibility, type } = TogglePasswordVisibility();
+  const form = useForm<TForm>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fName: "",
+      confirmPassword: "",
+      email: "",
+      lName: "",
+      password: "",
+      phone: "",
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
   }
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 flex flex-col gap-5"
+        className="space-y-4 flex flex-col gap-2"
       >
         <div className="flex gap-5 justify-between flex-col sm:flex-row">
           <FormField
@@ -62,13 +82,13 @@ function LoginForm() {
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-100" />
+                <FormMessage className="text-red-50" />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="fName"
+            name="lName"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel className=" text-lg text-white">Last Name</FormLabel>
@@ -80,7 +100,7 @@ function LoginForm() {
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-100" />
+                <FormMessage className="text-red-50" />
               </FormItem>
             )}
           />
@@ -97,10 +117,11 @@ function LoginForm() {
                     placeholder="john@xyz.com"
                     {...field}
                     className="sign-input"
+                    type="email"
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-100" />
+                <FormMessage className="text-red-50" />
               </FormItem>
             )}
           />
@@ -112,13 +133,14 @@ function LoginForm() {
                 <FormLabel className=" text-lg text-white">Mobile</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter your first name"
+                    placeholder="Enter your mobile number"
                     {...field}
                     className="sign-input"
+                    type="number"
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-100" />
+                <FormMessage className="text-red-50" />
               </FormItem>
             )}
           />
@@ -128,18 +150,19 @@ function LoginForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full relative">
                 <FormLabel className=" text-lg text-white">Password</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="***********"
                     {...field}
                     className="sign-input"
-                    type="password"
+                    type={type}
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-100" />
+                <FormMessage className="text-red-50" />
+                {ToggleVisibility}
               </FormItem>
             )}
           />
@@ -147,7 +170,7 @@ function LoginForm() {
             control={form.control}
             name="confirmPassword"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full relative">
                 <FormLabel className=" text-lg text-white">
                   Confrim Password
                 </FormLabel>
@@ -156,17 +179,21 @@ function LoginForm() {
                     placeholder="************"
                     {...field}
                     className="sign-input"
-                    type="password"
+                    type={type}
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-100" />
+                <FormMessage className="text-red-50" />
+                {ToggleVisibility}
               </FormItem>
             )}
           />
         </div>
 
-        <Button type="submit" className="bg-green-600 rounded-full text-white">
+        <Button
+          type="submit"
+          className="bg-red-600 rounded-full text-white hover:bg-red-800"
+        >
           Submit
         </Button>
       </form>

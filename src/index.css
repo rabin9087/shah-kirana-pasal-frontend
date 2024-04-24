@@ -84,6 +84,6 @@
 
 @layer utilities {
   .sign-input {
-    @apply rounded-full bg-white text-[16px] text-black h-14 border-0;
+    @apply rounded-full bg-white text-[16px] text-black h-10 border-0;
   }
 }
