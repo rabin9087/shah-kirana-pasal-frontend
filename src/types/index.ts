@@ -34,6 +34,6 @@ export type serverReturnDataType = {
   message: string;
   result?: [];
   user?: IUser;
-  token?: { accessJWT: string; refreshJWT: string };
+  tokens?: { accessJWT: string; refreshJWT: string };
 };
 export type TAxiosProcessor = Promise<serverReturnDataType>;

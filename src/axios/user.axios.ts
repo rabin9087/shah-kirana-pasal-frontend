@@ -31,3 +31,20 @@ export const getNewAccessJWT = () => {
   };
   return axiosProcessor(obj);
 };
+
+export const loginUser = (data: { email: string; password: string }) => {
+  return axiosProcessor({
+    method: "post",
+    url: userApi + "/login",
+    isPrivate: false,
+    obj: data,
+  });
+};
+
+export const getUser = () => {
+  return axiosProcessor({
+    method: "get",
+    url: userApi,
+    isPrivate: true,
+  });
+};

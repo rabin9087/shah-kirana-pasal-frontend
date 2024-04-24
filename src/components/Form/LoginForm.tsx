@@ -13,7 +13,8 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import TogglePasswordVisibility from "./TogglePassword";
 import { useAppDispatch } from "@/hooks";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUserAction } from "@/action/user.action";
 
 const formSchema = z.object({
   email: z
@@ -33,6 +34,7 @@ const formSchema = z.object({
 type TForm = z.infer<typeof formSchema>;
 function LoginForm() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { ToggleVisibility, type } = TogglePasswordVisibility();
   const form = useForm<TForm>({
     resolver: zodResolver(formSchema),
@@ -42,8 +44,8 @@ function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await dispatch(loginUserAction(values, navigate));
   }
   return (
     <Form {...form}>
@@ -82,12 +84,12 @@ function LoginForm() {
                   placeholder="***********"
                   {...field}
                   className="bg-white rounded-lg border-red-400 focus:outline-red-400"
-                  // type={type}
+                  type={type}
                 />
               </FormControl>
 
               <FormMessage className="text-red-500" />
-              {/* {ToggleVisibility} */}
+              {ToggleVisibility}
             </FormItem>
           )}
         />
