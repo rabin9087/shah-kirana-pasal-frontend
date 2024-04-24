@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-// ...
+import loadingreducer from "../src/redux/Loading.slice";
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    loader: loadingreducer,
+  },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

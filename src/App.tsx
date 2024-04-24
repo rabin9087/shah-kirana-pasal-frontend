@@ -4,6 +4,7 @@ import Layout from "./components/layout/Layout";
 import ErrorPage from "./Error-page";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Loader from "./components/Loader";
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
           element={<SignUp />}
           errorElement={<ErrorPage />}
         />
-      </Routes>
+      </Routes>{" "}
+      <Loader />
     </>
   );
 }

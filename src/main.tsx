@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeProvider.tsx";
 import { Provider } from "react-redux";
 import { store } from "./store.ts";
+import { Toaster } from "./components/ui/sonner.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -13,6 +14,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <Provider store={store}>
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
           <App />
+          <Toaster richColors expand position="top-center" />
         </ThemeProvider>
       </Provider>
     </BrowserRouter>

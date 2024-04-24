@@ -12,6 +12,8 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import TogglePasswordVisibility from "./TogglePassword";
+import { useAppDispatch } from "@/hooks";
+import { createNewUser } from "@/action/user.action";
 
 const formSchema = z.object({
   fName: z
@@ -43,6 +45,7 @@ const formSchema = z.object({
 
 type TForm = z.infer<typeof formSchema>;
 function LoginForm() {
+  const dispatch = useAppDispatch();
   const { ToggleVisibility, type } = TogglePasswordVisibility();
   const form = useForm<TForm>({
     resolver: zodResolver(formSchema),
@@ -57,7 +60,12 @@ function LoginForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const { confirmPassword, password, ...rest } = values;
+    if (confirmPassword !== password) {
+      window.alert("Password do not match //todo create a new window");
+      return;
+    }
+    dispatch(createNewUser({ ...rest, password }));
   }
   return (
     <Form {...form}>
