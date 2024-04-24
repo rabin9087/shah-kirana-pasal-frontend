@@ -1,6 +1,6 @@
-import LoginForm from "@/components/Form/LoginForm";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import SignUpForm from "@/components/Form/SignUpForm";
 const SignUp = () => {
   return (
     <div className="bg-sign-up  min-h-screen w-full bg-cover flex justify-center items-center">
@@ -8,7 +8,7 @@ const SignUp = () => {
         <div className="flex  p-5 flex-col sm:flex-1">
           <p className="text-4xl font-bold text-white">Sign Up</p>
           <div className=" mt-5">
-            <LoginForm />
+            <SignUpForm />
           </div>
         </div>
         <div className="flex  items-center justify-center sm:flex-1 flex-col gap-5">
