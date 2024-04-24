@@ -1,12 +1,10 @@
 "use client"
-
 import { z } from "zod"
 import { useForm  } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,8 +13,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
-  fName:z.string().min(3,{
+  email_phone: z.string().min(2).max(50),
+  password:z.string().min(3,{
     message:'First name should be at least 3 characters'
   }).max(10,{message:'First name should not be more thAN 10 CHARACTERS'})
 })
@@ -25,11 +23,9 @@ const SignIn = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      fName:''
-    },
-    
-    
+      email_phone: "",
+      password:''
+    },  
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -38,39 +34,39 @@ const SignIn = () => {
     console.log(values)
   }
   return (
-    <Form {...form} >
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-1/2 mx-auto">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 p-2 space-y-8 w-1/2 mx-auto border-lg shadow-lg border-black">
         <FormField 
           control={form.control}
-          name="username"
+          name="email_phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Email/Phone</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Enter email or phone number" {...field} />
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="fName"
+          name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>LAstName</FormLabel>
+              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Enter Password" {...field} />
               </FormControl>
-             
               <FormMessage />
             </FormItem>
           )}
         />
         <Button type="submit">Submit</Button>
+
+        <div className="text-end">
+          Don't have an account? <a className="underline" href="sign-up">sign up here</a>
+        </div>
       </form>
     </Form>
   )
