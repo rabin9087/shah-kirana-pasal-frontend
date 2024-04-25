@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import loadingreducer from "../src/redux/Loading.slice";
 import userReducer from "../src/redux/user.slice";
+import sidebarReducer from "../src/redux/sidebar.slice";
 export const store = configureStore({
   reducer: {
     loader: loadingreducer,
-
+    sidebar: sidebarReducer,
     userInfor: userReducer,
   },
 });

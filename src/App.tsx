@@ -5,17 +5,17 @@ import ErrorPage from "./Error-page";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Loader from "./components/Loader";
+import Home from "./pages/Home";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/sign-in" element={<SignIn />} />
         <Route
           path="/"
           element={
             <Layout>
-              <p>home</p>
+              <Home />
             </Layout>
           }
           errorElement={<ErrorPage />}

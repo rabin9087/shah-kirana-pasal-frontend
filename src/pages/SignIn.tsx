@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 const SignIn = () => {
   return (
     <div className="bg-sign-up h-screen bg-cover flex ">
-      <div className="flex-1 bg-white/75 backdrop-blur-sm rounded-[80px] flex justify-center items-center text-black flex-col">
+      <div className="flex-1 bg-white/75 backdrop-blur-sm p-4 sm:rounded-lg flex justify-center items-center text-black flex-col">
         <p className="text-2xl font-bold ">Log in</p>
         <div className=" w-full sm:w-[400px]">
           <LoginForm />
@@ -38,7 +38,7 @@ const SignIn = () => {
           </Button>
         </div>
       </div>
-      <div className="flex-1 flex justify-center"></div>
+      <div className="sm:flex-1 flex justify-center"></div>
     </div>
   );
 };
