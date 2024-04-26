@@ -1,4 +1,9 @@
-import { createUser, getUser, loginUser } from "@/axios/user.axios";
+import {
+  createAdmin,
+  createUser,
+  getUser,
+  loginUser,
+} from "@/axios/user.axios";
 import { setLoading } from "@/redux/Loading.slice";
 import { setUser } from "@/redux/user.slice";
 import { AppDispatch } from "@/store";
@@ -11,9 +16,22 @@ export const createNewUser =
     dispatch(setLoading(true));
     const pending = createUser(user);
     const { status, message } = await pending;
-    console.log(status);
     dispatch(setLoading(false));
-    toast(message);
+    toast[status](message);
+    if (status === "success") {
+      return true;
+    }
+  };
+export const createNewAdmin =
+  (user: createUserParams) => async (dispatch: AppDispatch) => {
+    dispatch(setLoading(true));
+    const pending = createAdmin(user);
+    const { status, message } = await pending;
+    dispatch(setLoading(false));
+    toast[status](message);
+    if (status === "success") {
+      return true;
+    }
   };
 export const loginUserAction =
   (

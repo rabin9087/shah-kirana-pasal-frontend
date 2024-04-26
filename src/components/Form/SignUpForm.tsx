@@ -13,7 +13,8 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import TogglePasswordVisibility from "./TogglePassword";
 import { useAppDispatch } from "@/hooks";
-import { createNewUser } from "@/action/user.action";
+import { createNewAdmin, createNewUser } from "@/action/user.action";
+import { useNavigate } from "react-router";
 
 const formSchema = z.object({
   fName: z
@@ -44,7 +45,8 @@ const formSchema = z.object({
 });
 
 type TForm = z.infer<typeof formSchema>;
-function SignUpForm() {
+function SignUpForm({ token }: { token: string }) {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { ToggleVisibility, type } = TogglePasswordVisibility();
   const form = useForm<TForm>({
@@ -59,13 +61,22 @@ function SignUpForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    let result: boolean;
     const { confirmPassword, password, ...rest } = values;
     if (confirmPassword !== password) {
       window.alert("Password do not match //todo create a new window");
       return;
     }
-    dispatch(createNewUser({ ...rest, password }));
+
+    if (!token) {
+      result = Boolean(await dispatch(createNewUser({ ...rest, password })));
+    } else {
+      result = Boolean(await dispatch(createNewAdmin({ ...rest, password })));
+    }
+    if (result) {
+      navigate("/sign-in");
+    }
   }
   return (
     <Form {...form}>

@@ -16,7 +16,7 @@ const SideBar = () => {
             .fill("")
             .map((item, index) => (
               <li
-                className=" p-2 font-bold text-secondary-foreground rounded-md overflow-hidden bg-red-400"
+                className=" p-2 font-bold text-secondary-foreground rounded-md overflow-hidden bg-destructive"
                 key={index}
               >
                 menu

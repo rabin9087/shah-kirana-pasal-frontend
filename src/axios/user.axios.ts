@@ -10,6 +10,14 @@ export const createUser = (data: createUserParams) => {
     obj: data,
   });
 };
+export const createAdmin = (data: createUserParams) => {
+  return axiosProcessor({
+    method: "post",
+    url: `${userApi}/sign-up/admin`,
+    isPrivate: true,
+    obj: data,
+  });
+};
 export const logoutUser = () => {
   const obj = {
     method: "post",
