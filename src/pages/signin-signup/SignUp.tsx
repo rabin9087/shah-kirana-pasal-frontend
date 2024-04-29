@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { createAUser } from "@/helper/axiosHelper/userAxios/userAxios"
 const formSchema = z.object({
     fName: z.string().min(2, {
         message:'First name should be at least 3 characters'
@@ -21,8 +22,8 @@ const formSchema = z.object({
       }).max(30, {message:'First name should not be more than 25 characters'}),
     email: z.string().min(2, {message: "Email must contain @ characters"}).max(50),
     phone: z.string().min(10).max(15),
-    password:z.string().min(3,).max(10,),
-
+    password:z.string().min(3,).max(15,),
+    // confirmPassword:z.string().min(3,).max(15),
 })
 const SignUp = () => {
 
@@ -33,14 +34,18 @@ const SignUp = () => {
           lName: "",
           email: "",
           phone: "",
-          password:''
+          password:'',
+          // confirmPassword: '',
         },  
       })
     
-      function onSubmit(values: z.infer<typeof formSchema>) {
+      async function onSubmit(values: z.infer<typeof formSchema>) {
+
+        const resp = await createAUser(values)
+
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log(values)
+        console.log(resp)
       }
   return (
     <Form {...form}>
@@ -111,6 +116,19 @@ const SignUp = () => {
           </FormItem>
         )}
       />
+      {/* <FormField
+        control={form.control}
+        name="password"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Confirm Password</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter confirm Password" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      /> */}
       <Button type="submit">Submit</Button>
 
       <div className="text-end">

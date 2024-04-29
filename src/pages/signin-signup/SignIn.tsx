@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { signInUser } from "@/helper/axiosHelper/userAxios/userAxios"
 const formSchema = z.object({
   email_phone: z.string().min(2).max(50),
   password:z.string().min(3,{
@@ -28,7 +29,10 @@ const SignIn = () => {
     },  
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    const resp = await signInUser(value)
+    console.log(resp)
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
