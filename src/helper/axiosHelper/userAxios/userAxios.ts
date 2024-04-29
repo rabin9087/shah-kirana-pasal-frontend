@@ -8,7 +8,7 @@ interface ApiResponse {
     message?: string;
 }
 
-export const createAUser = (data: createUserParams): Promise<AxiosResponse<ApiResponse>> => {
+export const createAUserAxios = (data: createUserParams): Promise<AxiosResponse<ApiResponse>> => {
     return axiosProcessorAPI({
         method: 'POST',
         url: userAPI + '/sign-up',
@@ -16,7 +16,7 @@ export const createAUser = (data: createUserParams): Promise<AxiosResponse<ApiRe
     })
 }
 
-export const signInUser = (data: signInUserParams): Promise<AxiosResponse<ApiResponse>> => {
+export const signInUserAxios = (data: signInUserParams): Promise<AxiosResponse<ApiResponse>> => {
     return axiosProcessorAPI({
         method: 'POST',
         url: userAPI+ "/login",

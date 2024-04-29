@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { signInUser } from "@/helper/axiosHelper/userAxios/userAxios"
+import { signInUserAxios } from "@/helper/axiosHelper/userAxios/userAxios"
 const formSchema = z.object({
   email_phone: z.string().min(2).max(50),
   password:z.string().min(3,{
     message:'First name should be at least 3 characters'
-  }).max(10,{message:'First name should not be more thAN 10 CHARACTERS'})
+  }).max(15 ,{message:'First name should not be more than 10 characters'})
 })
 
 const SignIn = () => {
@@ -25,18 +25,19 @@ const SignIn = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email_phone: "",
-      password:''
+      password:"",
     },  
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    const resp = await signInUser(value)
+    const resp = await signInUserAxios(values)
     console.log(resp)
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 p-2 space-y-8 w-1/2 mx-auto border-lg shadow-lg border-black">

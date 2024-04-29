@@ -7,6 +7,6 @@ export type createUserParams = {
 }
 
 export type signInUserParams = {
-    email: string;
+    email_phone: string;
     password: string;
 }
