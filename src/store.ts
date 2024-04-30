@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./pages/signin-signup/userSlics";
-// ...
-
+import loadingreducer from "../src/redux/Loading.slice";
+import userReducer from "../src/redux/user.slice";
+import sidebarReducer from "../src/redux/sidebar.slice";
 export const store = configureStore({
-  reducer: {userInfo: userReducer },
+  reducer: {
+    loader: loadingreducer,
+    sidebar: sidebarReducer,
+    userInfor: userReducer,
+  },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

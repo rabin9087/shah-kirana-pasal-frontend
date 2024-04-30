@@ -1,18 +1,41 @@
 import { Route, Routes } from "react-router-dom";
-import SignIn from "./pages/signin-signup/SignIn";
-import SignUp from "./pages/signin-signup/SignUp";
+import Layout from "./components/layout/Layout";
+import ErrorPage from "./Error-page";
+import SignUp from "./pages/SignUp";
+import Loader from "./components/Loader";
+import Home from "./pages/Home";
+import SignIn from "./pages/SignIn";
 
 
 function App(){
   return (
-    <>
-    <h1>Hello World!</h1> 
-    
+    <>    
       <Routes>
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-      </Routes>
-      </>
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Home />
+            </Layout>
+          }
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/sign-up"
+          element={<SignUp />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/sign-in"
+          element={<SignIn />}
+          errorElement={<ErrorPage />}
+        />
+    
+      </Routes>{" "}
+      <Loader />
+    </>
   );
 }
 
