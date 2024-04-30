@@ -13,7 +13,7 @@ const SignUp = () => {
   }, [token]);
   return (
     <div className="bg-sign-up  min-h-screen w-full bg-cover flex justify-center items-center">
-      <div className=" rounded-md  py-10 sm:w-[70%] w-full backdrop-blur-lg flex  flex-col sm:flex-row bg-black/35">
+      <div className=" rounded-md  py-10 sm:w-[70%] w-full backdrop-blur-lg flex  flex-col sm:flex-row bg-black/70">
         <div className="flex  p-5 flex-col sm:flex-1">
           <p className="text-4xl font-bold text-white">Sign Up</p>
           <div className=" mt-5">

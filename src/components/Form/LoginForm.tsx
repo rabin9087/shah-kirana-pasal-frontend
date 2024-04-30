@@ -17,17 +17,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginUserAction } from "@/action/user.action";
 
 const formSchema = z.object({
-  email: z
+  email_phone: z
     .string({
-      required_error: "Name is required",
-    })
-    .email({ message: "Invalid email address" })
-    .endsWith(".com", {
-      message: "Invalid email",
+      required_error: "Email or phone is required",
     }),
 
   password: z.string({
-    required_error: "Name is required",
+    required_error: "Password is required",
   }),
 });
 
@@ -39,7 +35,7 @@ function LoginForm() {
   const form = useForm<TForm>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email_phone: "",
       password: "",
     },
   });
@@ -55,16 +51,16 @@ function LoginForm() {
       >
         <FormField
           control={form.control}
-          name="email"
+          name="email_phone"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className=" text-lg text-black">Email</FormLabel>
+              <FormLabel className=" text-lg text-black">Email or Phone</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="john@xyz.com"
+                  placeholder="john@xyz.com | 0456328956"
                   {...field}
                   className="bg-white w-full rounded-lg border-red-400"
-                  type="email"
+                  type="text"
                 />
               </FormControl>
 

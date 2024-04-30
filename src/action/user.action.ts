@@ -35,7 +35,7 @@ export const createNewAdmin =
   };
 export const loginUserAction =
   (
-    credentials: { email: string; password: string },
+    credentials: { email_phone: string; password: string },
     navigate: NavigateFunction
   ) =>
   async (dispatch: AppDispatch) => {

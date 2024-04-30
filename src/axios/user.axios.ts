@@ -40,7 +40,7 @@ export const getNewAccessJWT = () => {
   return axiosProcessor(obj);
 };
 
-export const loginUser = (data: { email: string; password: string }) => {
+export const loginUser = (data: { email_phone: string; password: string }) => {
   return axiosProcessor({
     method: "post",
     url: userApi + "/login",

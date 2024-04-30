@@ -32,16 +32,24 @@ const formSchema = z.object({
     .min(3, { message: "At least 3 characters required" })
     .max(15, { message: "Last Name must not be more than 15 characters" }),
   email: z
-    .string({
-      required_error: "Email is required",
-    })
-    .email({ message: "Invalid email address" })
-    .endsWith(".com", {
-      message: "Invalid email",
-    }).includes("@"),
-  phone: z.string({}),
-  password: z.string(),
-  confirmPassword: z.string(),
+    .string()
+    .optional(),
+  phone: z.string({
+    required_error: "Phone number is required",
+    invalid_type_error: "Name must be a string",
+  }).length(10),
+  password: z.string({
+    required_error: "First Name is required",
+    invalid_type_error: "Name must be a string",
+  })
+  .min(3, { message: "At least 3 characters required" })
+  .max(15, { message: "Name must not be more than 15 characters" }),
+  confirmPassword: z.string({
+    required_error: "First Name is required",
+    invalid_type_error: "Name must be a string",
+  })
+  .min(3, { message: "At least 3 characters required" })
+  .max(15, { message: "Name must not be more than 15 characters" }),
 });
 
 type TForm = z.infer<typeof formSchema>;
@@ -101,7 +109,7 @@ function SignUpForm({ token }: { token: string }) {
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-50" />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -119,7 +127,7 @@ function SignUpForm({ token }: { token: string }) {
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-50" />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -140,7 +148,7 @@ function SignUpForm({ token }: { token: string }) {
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-50" />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -159,7 +167,7 @@ function SignUpForm({ token }: { token: string }) {
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-50" />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -180,7 +188,7 @@ function SignUpForm({ token }: { token: string }) {
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-50" />
+                <FormMessage className="text-red-500" />
                 {ToggleVisibility}
               </FormItem>
             )}
@@ -202,7 +210,7 @@ function SignUpForm({ token }: { token: string }) {
                   />
                 </FormControl>
 
-                <FormMessage className="text-red-50" />
+                <FormMessage className="text-red-500" />
                 {ToggleVisibility}
               </FormItem>
             )}
