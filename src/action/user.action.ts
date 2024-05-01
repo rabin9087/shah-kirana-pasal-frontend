@@ -1,13 +1,15 @@
 import {
   createAdmin,
   createUser,
+  forgetPassword,
   getUser,
   loginUser,
+  otp_PasswordVerify,
 } from "@/axios/user.axios";
 import { setLoading } from "@/redux/Loading.slice";
-import { setUser } from "@/redux/user.slice";
+import { setEmail_Phone, setUser } from "@/redux/user.slice";
 import { AppDispatch } from "@/store";
-import { IUser, createUserParams } from "@/types";
+import { IUser, createUserParams, forgetPasswordParams, otp_PasswordParams } from "@/types";
 import { NavigateFunction } from "react-router";
 import { toast } from "sonner";
 
@@ -33,6 +35,30 @@ export const createNewAdmin =
       return true;
     }
   };
+
+  export const forgetPasswordOTPRequest = (data: forgetPasswordParams) => async(dispatch: AppDispatch)=> {
+    dispatch(setLoading(true));
+    const pending = forgetPassword(data)
+    const {status, message, userEmail_Phone} = await pending;
+    dispatch(setLoading(false))
+    toast[status](message);
+    if(status === "success"){
+      dispatch(setEmail_Phone(userEmail_Phone as string))
+      return true
+    }
+  }
+
+  export const OTPVerificationRequest = (data: otp_PasswordParams) => async(dispatch: AppDispatch)=> {
+    dispatch(setLoading(true));
+    const pending = otp_PasswordVerify(data)
+    const {status, message} = await pending;
+    dispatch(setLoading(false))
+    toast[status](message);
+    if(status === "success"){
+      return true
+    }
+  }
+
 export const loginUserAction =
   (
     credentials: { email_phone: string; password: string },
@@ -60,3 +86,5 @@ export const getUserAction =
     dispatch(setUser(user as IUser));
     if (user?._id) navigate("/");
   };
+
+  

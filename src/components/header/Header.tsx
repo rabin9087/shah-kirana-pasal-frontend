@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { ThemeToggle } from "../ThemeToggle";
 import { Button } from "../ui/button";
 import { PiHamburger } from "react-icons/pi";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { toggleSideBar } from "@/redux/sidebar.slice";
 const Header = () => {
   const dispatch = useAppDispatch();
+  const {user} = useAppSelector(state => state.userInfor)
+  
   return (
     <div className="p-4 border shadow-sm sticky top-0 rounded-md z-50 bg-inherit flex justify-between">
       <div className="flex gap-2 justify-center items-center text-xl font-bold leading-none">
@@ -36,8 +38,15 @@ const Header = () => {
           </Button>
         </Link>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4">{
+        user?._id ? (<>
         <Link to="/sign-in">
+          <Button className="rounded-full" variant={"destructive"}>
+            Log out
+          </Button>
+        </Link>
+        </>) : (<>
+          <Link to="/sign-in">
           <Button className="rounded-full" variant={"destructive"}>
             Login
           </Button>
@@ -47,7 +56,8 @@ const Header = () => {
             Signup
           </Button>{" "}
         </Link>
-
+        </>)
+      }
         <ThemeToggle />
       </div>
     </div>

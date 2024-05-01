@@ -47,7 +47,7 @@ function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 flex flex-col   w-full"
+        className="space-y-4 flex flex-col w-full"
       >
         <FormField
           control={form.control}
@@ -57,7 +57,7 @@ function LoginForm() {
               <FormLabel className=" text-lg text-black">Email or Phone</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="john@xyz.com | 0456328956"
+                  placeholder="john@xyz.com | 04563289561"
                   {...field}
                   className="bg-white w-full rounded-lg border-red-400"
                   type="text"

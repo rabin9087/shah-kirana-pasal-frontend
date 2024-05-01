@@ -13,6 +13,16 @@ export type createUserParams = {
   password: string;
 };
 
+export type forgetPasswordParams = {
+ email_phone: string;
+};
+
+export type otp_PasswordParams = {
+  email_phone: string;
+  otp: string;
+  password: string;
+ }
+
 export interface IUser {
   _id: string;
   status: string;
@@ -34,6 +44,7 @@ export type serverReturnDataType = {
   message: string;
   result?: [];
   user?: IUser;
+  userEmail_Phone?: string;
   tokens?: { accessJWT: string; refreshJWT: string };
 };
 export type TAxiosProcessor = Promise<serverReturnDataType>;

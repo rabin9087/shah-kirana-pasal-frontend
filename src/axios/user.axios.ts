@@ -1,4 +1,4 @@
-import { createUserParams } from "@/types";
+import { createUserParams, forgetPasswordParams, otp_PasswordParams } from "@/types";
 import { axiosProcessor, getAccessJWt, getRefreshJWT, rootApi } from ".";
 const userApi = rootApi + "/api/v1/user";
 
@@ -18,6 +18,25 @@ export const createAdmin = (data: createUserParams) => {
     obj: data,
   });
 };
+
+export const forgetPassword = (data: forgetPasswordParams) => {
+  return axiosProcessor({
+    method: "post",
+    url: `${userApi}/forget-password`,
+    isPrivate: false,
+    obj: data,
+  });
+};
+
+export const otp_PasswordVerify = (data: otp_PasswordParams) => {
+  return axiosProcessor({
+    method: "post",
+    url: `${userApi}/otp-verify`,
+    isPrivate: false,
+    obj: data,
+  });
+};
+
 export const logoutUser = () => {
   const obj = {
     method: "post",

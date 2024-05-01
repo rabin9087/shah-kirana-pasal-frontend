@@ -12,10 +12,10 @@ const SignIn = () => {
           <LoginForm />
         </div>
         <span className="mt-5">
-          Don’t have an account?
+          New to Shah Kirana Pasal Online? 
           <a
             href="/sign-up"
-            className="font-semibold text-blue-500 hover:underline cursor-pointer"
+            className="font-semibold text-blue-500 underline cursor-pointer"
           >
             Sign up
           </a>

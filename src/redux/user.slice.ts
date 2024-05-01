@@ -2,6 +2,7 @@ import { IUser } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 type TinititalState = {
   user: IUser;
+  email_Phone: string;
 };
 const initialState: TinititalState = {
   user: {
@@ -20,6 +21,7 @@ const initialState: TinititalState = {
     updatedAt: "",
     verificationCode: "",
   },
+  email_Phone: ""
 };
 
 const userSlice = createSlice({
@@ -32,10 +34,13 @@ const userSlice = createSlice({
     logOut: (state) => {
       state.user = initialState.user;
     },
+    setEmail_Phone: (state, {payload}: PayloadAction<string>) => {
+      state.email_Phone = payload
+    }
   },
 });
 
 const { reducer, actions } = userSlice;
-export const { setUser, logOut } = actions;
+export const { setUser, logOut, setEmail_Phone } = actions;
 export default reducer;
 // export the action creator for other components to use it in dispatch() function of redux store
