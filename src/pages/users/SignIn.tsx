@@ -12,13 +12,14 @@ const SignIn = () => {
           <LoginForm />
         </div>
         <span className="mt-5">
-          New to Shah Kirana Pasal Online? 
+          New to Shah Kirana Pasal Online? {" "}
           <a
             href="/sign-up"
             className="font-semibold text-blue-500 underline cursor-pointer"
           >
-            Sign up
+            Sign up now
           </a>
+          
         </span>
         <div className="flex justify-center w-full items-center gap-10 mt-10">
           <div className=" w-full border border-gray-400 " />

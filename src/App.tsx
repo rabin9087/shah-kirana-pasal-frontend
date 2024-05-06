@@ -7,6 +7,8 @@ import Home from "./pages/home/Home";
 import SignIn from "./pages/users/SignIn";
 import ForgetPassword from "./pages/users/ForgetPassword";
 import OPTVerification from "./pages/users/OPTVerification";
+import NewPassword from "./pages/users/NewPassword";
+import PrivatePage from "./pages/users/PrivatePage";
 
 
 function App(){
@@ -29,11 +31,6 @@ function App(){
           errorElement={<ErrorPage />}
         />
 
-        <Route
-          path="/forgot-password"
-          element={<ForgetPassword />}
-          errorElement={<ErrorPage />}
-        />
 
         <Route
           path="/sign-up"
@@ -42,8 +39,20 @@ function App(){
         />
 
         <Route
+          path="/forgot-password"
+          element={<ForgetPassword />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
           path="/otp-verify"
-          element={<OPTVerification />}
+          element={<PrivatePage><OPTVerification /></PrivatePage> }
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/new-password"
+          element={<PrivatePage><NewPassword /> </PrivatePage>}
           errorElement={<ErrorPage />}
         />
     

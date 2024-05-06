@@ -1,24 +1,17 @@
-import OPTVerificationForm from "@/components/Form/OPTVerificationForm"
+import NewPasswordForm from "@/components/Form/NewPasswordForm"
 import { Button } from "@/components/ui/button"
 import { FaApple, FaFacebook } from "react-icons/fa"
 import { FcGoogle } from "react-icons/fc"
 
-const OPTVerification = () => {
+const NewPassword = () => {
   return (
     <div className="bg-sign-up h-screen bg-cover flex ">
     <div className="flex-1 bg-white/75 backdrop-blur-sm p-4 sm:rounded-lg flex justify-center items-center text-black flex-col">
-      <p className="text-2xl font-bold ">OTP Verification</p>
+      <p className="text-2xl font-bold ">New Password </p>
       <div className=" w-full sm:w-[400px]">
-        <OPTVerificationForm />
+        <NewPasswordForm />
       </div>
       <span className="mt-5 text-end">
-      
-        <Button
-          className="font-semibold  text-blue-500 hover:underline cursor-pointer"
-          
-        >
-          Resend code
-        </Button>
       </span>
       <div className="flex justify-center w-full items-center gap-10 mt-10">
         <div className=" w-full border border-gray-400 " />
@@ -43,4 +36,4 @@ const OPTVerification = () => {
   )
 }
 
-export default OPTVerification
+export default NewPassword

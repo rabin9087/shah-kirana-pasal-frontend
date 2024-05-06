@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 export interface IAxiosProcessParams {
   method: string;
   url: string;
@@ -17,9 +19,13 @@ export type forgetPasswordParams = {
  email_phone: string;
 };
 
-export type otp_PasswordParams = {
+export type otpParams = {
   email_phone: string;
   otp: string;
+ }
+
+ export type newPasswordParams = {
+  email_phone: string;
   password: string;
  }
 
@@ -47,4 +53,11 @@ export type serverReturnDataType = {
   userEmail_Phone?: string;
   tokens?: { accessJWT: string; refreshJWT: string };
 };
+
+export type LocationState = {
+  from: {
+    pathname: string;
+  };
+}
+
 export type TAxiosProcessor = Promise<serverReturnDataType>;

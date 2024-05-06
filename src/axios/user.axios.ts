@@ -1,4 +1,4 @@
-import { createUserParams, forgetPasswordParams, otp_PasswordParams } from "@/types";
+import { createUserParams, forgetPasswordParams, newPasswordParams, otp_PasswordParams } from "@/types";
 import { axiosProcessor, getAccessJWt, getRefreshJWT, rootApi } from ".";
 const userApi = rootApi + "/api/v1/user";
 
@@ -32,6 +32,15 @@ export const otp_PasswordVerify = (data: otp_PasswordParams) => {
   return axiosProcessor({
     method: "post",
     url: `${userApi}/otp-verify`,
+    isPrivate: false,
+    obj: data,
+  });
+};
+
+export const update_Forget_Password = (data: newPasswordParams) => {
+  return axiosProcessor({
+    method: "post",
+    url: `${userApi}/new-password`,
     isPrivate: false,
     obj: data,
   });

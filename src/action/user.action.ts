@@ -5,11 +5,12 @@ import {
   getUser,
   loginUser,
   otp_PasswordVerify,
+  update_Forget_Password,
 } from "@/axios/user.axios";
 import { setLoading } from "@/redux/Loading.slice";
 import { setEmail_Phone, setUser } from "@/redux/user.slice";
 import { AppDispatch } from "@/store";
-import { IUser, createUserParams, forgetPasswordParams, otp_PasswordParams } from "@/types";
+import { IUser, createUserParams, forgetPasswordParams, newPasswordParams, otpParams } from "@/types";
 import { NavigateFunction } from "react-router";
 import { toast } from "sonner";
 
@@ -48,9 +49,20 @@ export const createNewAdmin =
     }
   }
 
-  export const OTPVerificationRequest = (data: otp_PasswordParams) => async(dispatch: AppDispatch)=> {
+  export const OTPVerificationRequest = (data: otpParams) => async(dispatch: AppDispatch)=> {
     dispatch(setLoading(true));
     const pending = otp_PasswordVerify(data)
+    const {status, message} = await pending;
+    dispatch(setLoading(false))
+    toast[status](message);
+    if(status === "success"){
+      return true
+    }
+  }
+
+  export const updateForgetPassword = (data: newPasswordParams) => async(dispatch: AppDispatch)=> {
+    dispatch(setLoading(true));
+    const pending = update_Forget_Password(data)
     const {status, message} = await pending;
     dispatch(setLoading(false))
     toast[status](message);
