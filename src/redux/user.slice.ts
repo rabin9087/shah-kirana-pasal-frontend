@@ -2,7 +2,7 @@ import { IUser } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 type TinititalState = {
   user: IUser;
-  email_Phone: string;
+  email_Phone: string | "";
 };
 const initialState: TinititalState = {
   user: {

@@ -1,5 +1,3 @@
-import { ReactElement } from "react";
-
 export interface IAxiosProcessParams {
   method: string;
   url: string;

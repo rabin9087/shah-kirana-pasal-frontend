@@ -67,6 +67,7 @@ export const createNewAdmin =
     dispatch(setLoading(false))
     toast[status](message);
     if(status === "success"){
+      dispatch(setEmail_Phone(""))
       return true
     }
   }

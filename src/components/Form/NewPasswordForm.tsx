@@ -21,14 +21,14 @@ const NewPasswordForm = () => {
           invalid_type_error: "Password must be a string",
         })
         .min(3, { message: "At least 3 characters required" })
-        .max(15, { message: "Name must not be more than 15 characters" }),
+        .max(15, { message: "Password must not be more than 15 characters" }),
       
         password:  z.string({
             required_error: "Password is required",
             invalid_type_error: "Password must be a string",
           })
           .min(3, { message: "At least 3 characters required" })
-          .max(15, { message: "Name must not be more than 15 characters" }),
+          .max(15, { message: "Password must not be more than 15 characters" }),
       });
       
       type TForm = z.infer<typeof formSchema>;
@@ -51,7 +51,7 @@ const NewPasswordForm = () => {
       return;
     }
     await dispatch(updateForgetPassword({email_phone, password})) && navigate('/sign-in')
-        console.log(values)      
+           
     }
 
   return (
