@@ -14,9 +14,9 @@ const SideBar = () => {
         <ul className="flex flex-col gap-4">
           {Array(5)
             .fill("")
-            .map((item, index) => (
+            .map((index) => (
               <li
-                className=" p-2 font-bold text-secondary-foreground rounded-md overflow-hidden bg-destructive"
+                className="p-2 font-bold text-secondary-foreground rounded-md overflow-hidden bg-destructive"
                 key={index}
               >
                 menu
