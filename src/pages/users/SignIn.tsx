@@ -2,10 +2,16 @@ import LoginForm from "@/components/Form/LoginForm";
 import { Button } from "@/components/ui/button";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-
+import { Link } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 const SignIn = () => {
   return (
     <div className="bg-sign-up h-screen bg-cover flex ">
+
+      <Link to={"/"}>
+      <button className="flex items-center shadow-md rounded-md ms-4 font-medium text-2xl w-fit px-2"><IoIosArrowBack className="mt-1"/> <span>Back</span></button></Link>
+   
+      
       <div className="flex-1 bg-white/75 backdrop-blur-sm p-4 sm:rounded-lg flex justify-center items-center text-black flex-col">
         <p className="text-2xl font-bold ">Log in</p>
         <div className=" w-full sm:w-[400px]">

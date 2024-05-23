@@ -21,7 +21,7 @@ const ProductCard = ({
       </Link>
       <p className="text-[20px] font-semibold">{currencyFormatter(price)}</p>
       <button className="bg-primary p-1 px-3 rounded-lg hover:bg-primary text-white hover:bg-blue-900 flex items-center justify-around">
-        <span className="flex-1 ">Buy</span>
+        <span className="flex-1 ">Add to Cart</span>
         <BsCartCheckFill />
       </button>
     </div>

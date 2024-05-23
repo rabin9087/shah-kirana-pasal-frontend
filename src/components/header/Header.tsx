@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { PiHamburger } from "react-icons/pi";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { toggleSideBar } from "@/redux/sidebar.slice";
+import SearchBar from "./Search";
 
 const links = [
   {
@@ -50,6 +51,7 @@ const Header = () => {
           </Link>
         ))}
       </div>
+      <SearchBar/>
       <div className="flex gap-4">
         {user?._id ? (
           <>
