@@ -5,7 +5,6 @@ import { PiHamburger } from "react-icons/pi";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { toggleSideBar } from "@/redux/sidebar.slice";
 
-
 const links = [
   {
     name: "Home",
@@ -20,8 +19,6 @@ const links = [
     path: "/contact",
   },
 ];
-import SearchBar from "./Search";
-
 const Header = () => {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
@@ -53,26 +50,29 @@ const Header = () => {
           </Link>
         ))}
       </div>
-      <div className="flex gap-4">{
-        user?._id ? (<>
-        <Link to="/sign-in">
-          <Button className="rounded-full" variant={"destructive"}>
-            Log out
-          </Button>
-        </Link>
-        </>) : (<>
-          <Link to="/sign-in">
-          <Button className="rounded-full" variant={"destructive"}>
-            Login
-          </Button>
-        </Link>
-        <Link to="/sign-up">
-          <Button className="rounded-full" variant={"outline"}>
-            Signup
-          </Button>{" "}
-        </Link>
-        </>)
-      }
+      <div className="flex gap-4">
+        {user?._id ? (
+          <>
+            <Link to="/sign-in">
+              <Button className="rounded-full" variant={"default"}>
+                Log out
+              </Button>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link to="/sign-in">
+              <Button className="rounded-lg" variant={"default"}>
+                Login
+              </Button>
+            </Link>
+            <Link to="/sign-up">
+              <Button className="rounded-lg" variant={"secondary"}>
+                Signup
+              </Button>{" "}
+            </Link>
+          </>
+        )}
         <ThemeToggle />
       </div>
     </div>
