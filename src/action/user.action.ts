@@ -10,7 +10,13 @@ import {
 import { setLoading } from "@/redux/Loading.slice";
 import { setEmail_Phone, setUser } from "@/redux/user.slice";
 import { AppDispatch } from "@/store";
-import { IUser, createUserParams, forgetPasswordParams, newPasswordParams, otpParams } from "@/types";
+import {
+  IUser,
+  createUserParams,
+  forgetPasswordParams,
+  newPasswordParams,
+  otpParams,
+} from "@/types";
 import { NavigateFunction } from "react-router";
 import { toast } from "sonner";
 
@@ -37,40 +43,43 @@ export const createNewAdmin =
     }
   };
 
-  export const forgetPasswordOTPRequest = (data: forgetPasswordParams) => async(dispatch: AppDispatch)=> {
+export const forgetPasswordOTPRequest =
+  (data: forgetPasswordParams) => async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
-    const pending = forgetPassword(data)
-    const {status, message, userEmail_Phone} = await pending;
-    dispatch(setLoading(false))
+    const pending = forgetPassword(data);
+    const { status, message, userEmail_Phone } = await pending;
+    dispatch(setLoading(false));
     toast[status](message);
-    if(status === "success"){
-      dispatch(setEmail_Phone(userEmail_Phone as string))
-      return true
+    if (status === "success") {
+      dispatch(setEmail_Phone(userEmail_Phone as string));
+      return true;
     }
-  }
+  };
 
-  export const OTPVerificationRequest = (data: otpParams) => async(dispatch: AppDispatch)=> {
+export const OTPVerificationRequest =
+  (data: otpParams) => async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
-    const pending = otp_PasswordVerify(data)
-    const {status, message} = await pending;
-    dispatch(setLoading(false))
+    const pending = otp_PasswordVerify(data);
+    const { status, message } = await pending;
+    dispatch(setLoading(false));
     toast[status](message);
-    if(status === "success"){
-      return true
+    if (status === "success") {
+      return true;
     }
-  }
+  };
 
-  export const updateForgetPassword = (data: newPasswordParams) => async(dispatch: AppDispatch)=> {
+export const updateForgetPassword =
+  (data: newPasswordParams) => async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
-    const pending = update_Forget_Password(data)
-    const {status, message} = await pending;
-    dispatch(setLoading(false))
+    const pending = update_Forget_Password(data);
+    const { status, message } = await pending;
+    dispatch(setLoading(false));
     toast[status](message);
-    if(status === "success"){
+    if (status === "success") {
       dispatch(setEmail_Phone(""))
-      return true
+      return true;
     }
-  }
+  };
 
 export const loginUserAction =
   (
@@ -86,6 +95,8 @@ export const loginUserAction =
     if (status === "success") {
       localStorage.setItem("refreshJWT", tokens?.refreshJWT as string);
       sessionStorage.setItem("accessJWT", tokens?.accessJWT as string);
+      toast[status](message);
+
       await dispatch(getUserAction(navigate));
       return;
     }
@@ -93,11 +104,9 @@ export const loginUserAction =
   };
 
 export const getUserAction =
-  (navigate: NavigateFunction) => async (dispatch: AppDispatch) => {
-    const { status, message, user } = await getUser();
-    toast[status](message);
+  (navigate: NavigateFunction, pathname?: string) =>
+  async (dispatch: AppDispatch) => {
+    const { user } = await getUser();
     dispatch(setUser(user as IUser));
-    if (user?._id) navigate("/");
+    if (user?._id) navigate(pathname ? pathname : "/");
   };
-
-  

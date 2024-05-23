@@ -1,26 +1,31 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-
-const ProductCart = ({ title = "Title", price = 3.55, productName = "product" }) => {
+import { currencyFormatter } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import { BsCartCheckFill } from "react-icons/bs";
+const ProductCard = ({ 
+  title  = "REd burll Energy drink",
+  price  = 3.55,
+  productName  = "product" ,
+}) => {
   return (
-    <Card className="h-96 p-4">
-      <img src="https://assets.woolworths.com.au/images/1005/105919.jpg?impolicy=wowsmkqiema&w=260&h=260" alt="apple" height={"148px"} width={"148px"} />
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <CardContent>
-          {price}
-        </CardContent>
-        <p>{productName}</p>
-      </CardContent>
-      <CardFooter className="w-full border-2 border-red-500">
-        <Button className="w-full border-2 border-red-500">Add to cart</Button> <br />
+    <div className=" flex p-3 h-[320px] w-[200px] flex-col rounded-sm  mt-5 gap-1 border border-gray-100">
+      <div className="flex-1 flex">
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqGK3diR3Zi-mnOXEaj-3ewmFyRYVxGzVzZw&s"
+          className="object-cover "
+        />
+      </div>
+      <Link to={`/product/${title}`}>
+        <span className="font-semibold  text-[12px] text-gray-700 hover:underline">
+          {title}
+        </span>
+      </Link>
+      <p className="text-[20px] font-semibold">{currencyFormatter(price)}</p>
+      <button className="bg-primary p-1 px-3 rounded-lg hover:bg-primary text-white hover:bg-blue-900 flex items-center justify-around">
+        <span className="flex-1 ">Buy</span>
+        <BsCartCheckFill />
+      </button>
+    </div>
+  );
+};
 
-      </CardFooter>
-    </Card>
-  )
-}
-
-export default ProductCart
+export default ProductCard;

@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import ErrorPage from "./Error-page";
 import SignUp from "./pages/users/SignUp";
@@ -9,11 +9,19 @@ import ForgetPassword from "./pages/users/ForgetPassword";
 import OPTVerification from "./pages/users/OPTVerification";
 import NewPassword from "./pages/users/NewPassword";
 import PrivatePage from "./pages/users/PrivatePage";
+import { useAppDispatch } from "./hooks";
+import { useEffect } from "react";
+import { getUserAction } from "./action/user.action";
 
-
-function App(){
+function App() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  useEffect(() => {
+    dispatch(getUserAction(navigate, pathname));
+  }, []);
   return (
-    <>    
+    <>
       <Routes>
         <Route
           path="/"
@@ -31,7 +39,6 @@ function App(){
           errorElement={<ErrorPage />}
         />
 
-
         <Route
           path="/sign-up"
           element={<SignUp />}
@@ -46,16 +53,23 @@ function App(){
 
         <Route
           path="/otp-verify"
-          element={<PrivatePage><OPTVerification /></PrivatePage> }
+          element={
+            <PrivatePage>
+              <OPTVerification />
+            </PrivatePage>
+          }
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/new-password"
-          element={<PrivatePage><NewPassword /> </PrivatePage>}
+          element={
+            <PrivatePage>
+              <NewPassword />{" "}
+            </PrivatePage>
+          }
           errorElement={<ErrorPage />}
         />
-    
       </Routes>{" "}
       <Loader />
     </>

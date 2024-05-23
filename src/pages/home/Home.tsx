@@ -1,9 +1,11 @@
-import ProductCart from "../productCart/ProductCart";
+import ProductCard from "../productCart/ProductCart";
 
 function Home() {
-  return<>
-  <ProductCart/>
-  </> 
+  return (
+    <>
+      <ProductCard />
+    </>
+  );
 }
 
 export default Home;

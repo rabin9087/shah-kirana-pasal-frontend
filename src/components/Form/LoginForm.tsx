@@ -17,10 +17,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginUserAction } from "@/action/user.action";
 
 const formSchema = z.object({
-  email_phone: z
-    .string({
-      required_error: "Email or phone is required",
-    }),
+  email_phone: z.string({
+    required_error: "Email or phone is required",
+  }),
 
   password: z.string({
     required_error: "Password is required",
@@ -54,7 +53,9 @@ function LoginForm() {
           name="email_phone"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className=" text-lg text-black">Email or Phone</FormLabel>
+              <FormLabel className=" text-lg text-black">
+                Email or Phone
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="john@xyz.com | 04563289561"
