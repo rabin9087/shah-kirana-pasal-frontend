@@ -12,6 +12,9 @@ import PrivatePage from "./pages/users/PrivatePage";
 import { useAppDispatch } from "./hooks";
 import { useEffect } from "react";
 import { getUserAction } from "./action/user.action";
+import About from "./pages/about/About";
+import Contact from "./pages/contact/Contact";
+import CreateProduct from "../src/pages/product/Create";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -26,7 +29,7 @@ function App() {
         <Route
           path="/"
           element={
-            <Layout>
+            <Layout title="">
               <Home />
             </Layout>
           }
@@ -70,7 +73,30 @@ function App() {
           }
           errorElement={<ErrorPage />}
         />
-      </Routes>{" "}
+
+        <Route
+          path="/about"
+          element={<Layout title=""> <About /></Layout>}
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="/contact"
+          element={<Layout title=""> <Contact /></Layout>}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/product/create"
+          element={<CreateProduct />}
+          errorElement={<ErrorPage />}
+        />
+
+
+
+        {/* This is last line  */}
+      </Routes>
+
+
       <Loader />
     </>
   );

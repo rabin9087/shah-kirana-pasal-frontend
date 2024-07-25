@@ -17,6 +17,12 @@ export type forgetPasswordParams = {
  email_phone: string;
 };
 
+export type otp_PasswordParams = {
+  email_phone: string,
+  otp: string,
+  password: string
+}
+
 export type otpParams = {
   email_phone: string;
   otp: string;
@@ -59,3 +65,21 @@ export type LocationState = {
 }
 
 export type TAxiosProcessor = Promise<serverReturnDataType>;
+
+type arg <T>= {
+  id:T
+}
+export const check = <T>(arg: arg<T>): number => {
+  if (typeof arg.id === 'number') {
+
+  return arg.id
+    
+  }
+  else {
+    return 0
+  }
+
+  
+}
+check<number>({ id: 10 })
+
