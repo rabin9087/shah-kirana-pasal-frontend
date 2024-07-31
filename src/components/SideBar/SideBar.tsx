@@ -4,28 +4,21 @@ import { RxCross1 } from "react-icons/rx";
 import { IoIosArrowForward } from "react-icons/io";
 import { toggleSideBar } from "@/redux/sidebar.slice";
 import { useEffect, useRef } from "react";
+import { getAllCategoriesAction } from "@/action/category.action";
 const SideBar = () => {
   const drawerRef = useRef(null);
   const { open } = useAppSelector((store) => store.sidebar);
   const dispatch = useAppDispatch();
 
-  const menuItems = [
-    { item: "Fruits & Veg", path: "/fruits_vegs" },
-    { item: "Bakery", path: "/bakery" },
-    { item: "Deli & Chilled Meals", path: "/deli_chilled_meals" },
-    { item: "dairy, Eggs & Fridge", path: "/dairy_eggs_fridge" },
-    { item: "Lunch", path: "/lunch" },
-    { item: "Pantry", path: "/pantry" },
-    { item: "International Foods", path: "/international_foods" },
-    { item: "Drinks", path: "/drinks" },
-    { item: "Chocolates", path: "/chocoloats" },
-    { item: "Kitchen", path: "/kitchen" },
-  ]
+
+
+  const { categories } = useAppSelector(state => state.categoryInfo)
 
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (drawerRef.current && !drawerRef?.current?.contains(event.target)) {
+    dispatch(getAllCategoriesAction())
+    const handleClickOutside = (event: MouseEvent) => {
+      if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
         dispatch(toggleSideBar());
       }
     };
@@ -34,7 +27,7 @@ const SideBar = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [drawerRef]);
+  }, [drawerRef, dispatch]);
 
 
   return (
@@ -57,13 +50,13 @@ const SideBar = () => {
 
 
         <ul className="flex flex-col gap-4 overflow-y-auto">
-          {menuItems
-            .map(({ item, path }, index) => (
-              <Link key={index} to={path}>
+          {categories
+            .map(({ _id, name, slug }) => (
+              <Link key={_id} to={slug}>
                 <li
                   className="flex p-2 items-center justify-between dark:text-secondary min-w-fit font-bold text-secondary-foreground rounded-md overflow-hidden bg-white hover:bg-gray-400"
                 >
-                  <span>{item}</span>
+                  <span>{name}</span>
                   <IoIosArrowForward />
                 </li>
               </Link>

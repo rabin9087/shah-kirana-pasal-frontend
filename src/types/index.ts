@@ -4,6 +4,7 @@ export interface IAxiosProcessParams {
   obj?: object;
   isPrivate?: boolean;
   refreshToken?: boolean;
+  params?: object
 }
 export type createUserParams = {
   fName: string;
@@ -56,12 +57,90 @@ export type serverReturnDataType = {
   user?: IUser;
   userEmail_Phone?: string;
   tokens?: { accessJWT: string; refreshJWT: string };
+  categoryList?: ICategoryTypes[] | undefined
+  products?: IProductTypes[] | undefined,
+  product?: IProductTypes | undefined
 };
 
 export type LocationState = {
   from: {
     pathname: string;
   };
+}
+
+export type ICategoryTypes = {
+    _id?: '',
+    status?: string,
+    name: string,
+    slug?: string,
+    description: string,
+}
+
+
+export enum Status {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+}
+
+export enum IStoredAt {
+  AMBIENT = "AMBIENT",
+  CHILLED = "CHILLED",
+  "FRUTES AND VEG" = "FRUTES AND VEG"
+}
+
+export interface IReviews{
+  userId: string,
+  review: string
+}
+
+export type IProductTypes = {
+  _id: string,
+  status?: Status,
+  name: string,
+  alternateName?: string,
+  parentCategoryID: string,
+  sku: string,
+  slug: string,
+  description: string,
+  image?: string,
+  brand?: string,
+  price: number,
+  quantity: number,
+  productWeight?: string,
+  storedAt: IStoredAt,
+  aggrateRating?: number,
+  thumbnail?: string,
+  qrCodeNumber: string,
+  salesPrice: number,
+  salesStartDate?: Date,
+  salesEndDate?: Date,
+  productReviews?: Array<IReviews>,
+  productLocation?: string;
+}
+
+export type IProductUpdateTypes = {
+  _id: string,
+  status?: Status,
+  name?: string,
+  alternateName?: string,
+  parentCategoryID?: string,
+  sku: string,
+  slug?: string,
+  description?: string,
+  image?: string,
+  brand?: string,
+  price?: number,
+  quantity?: number,
+  productWeight?: string,
+  storedAt?: IStoredAt,
+  aggrateRating?: number,
+  thumbnail?: string,
+  qrCodeNumber: string,
+  salesPrice?: number,
+  salesStartDate?: Date,
+  salesEndDate?: Date,
+  productReviews?: Array<IReviews>,
+  productLocation?: string;
 }
 
 export type TAxiosProcessor = Promise<serverReturnDataType>;

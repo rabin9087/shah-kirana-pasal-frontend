@@ -1,7 +1,7 @@
 import { IAxiosProcessParams, TAxiosProcessor } from "@/types";
 import axios from "axios";
 export const rootApi = !import.meta.env.PROD
-  ? "http://localhost:8080"
+  ? "http://192.168.20.5:8080"
   : import.meta.env.VITE_ROOTSERVER;
 
 export const getAccessJWt = () => {
@@ -16,6 +16,7 @@ export const axiosProcessor = async ({
   obj,
   isPrivate,
   refreshToken,
+  params,
 }: IAxiosProcessParams): TAxiosProcessor => {
   const token = refreshToken ? getRefreshJWT() : getAccessJWt();
   const headers = {
@@ -27,6 +28,7 @@ export const axiosProcessor = async ({
       url,
       data: obj,
       headers,
+      params
     });
     return data
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

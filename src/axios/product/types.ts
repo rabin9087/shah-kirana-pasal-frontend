@@ -35,5 +35,5 @@ export type createProductParams = {
   salesStartDate?: Date,
   salesEndDate?: Date,
   productReviews?: Array<IReviews>,
-  productLocation: string;
+  productLocation?: string;
 };

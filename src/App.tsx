@@ -15,6 +15,11 @@ import { getUserAction } from "./action/user.action";
 import About from "./pages/about/About";
 import Contact from "./pages/contact/Contact";
 import CreateProduct from "../src/pages/product/Create";
+import { getAllProductAction } from "./action/product.action";
+import UpdateProduct from "./pages/product/Update";
+import Modal from 'react-modal';
+// Set the app element
+Modal.setAppElement('#root');
 
 function App() {
   const dispatch = useAppDispatch();
@@ -22,7 +27,9 @@ function App() {
   const { pathname } = useLocation();
   useEffect(() => {
     dispatch(getUserAction(navigate, pathname));
-  }, []);
+    dispatch(getAllProductAction())
+
+  }, [dispatch]);
   return (
     <>
       <Routes>
@@ -91,7 +98,17 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/product/update"
+          element={<UpdateProduct />}
+          errorElement={<ErrorPage />}
+        />
 
+        <Route
+          path="/product/:_id"
+          element={<UpdateProduct />}
+          errorElement={<ErrorPage />}
+        />
 
         {/* This is last line  */}
       </Routes>

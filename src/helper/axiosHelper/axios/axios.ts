@@ -17,7 +17,7 @@ export const getRefreshJWT = (): string | null => {
  }
 
 // export const rootAPI = import.meta.env.VITE_API_ROOT
-export const rootAPI = "http://localhost:8800"
+export const rootAPI = "http://192.168.20.5:8080"
 export const axiosAPI = `${rootAPI}/api/v1`
 export const userAPI = `${axiosAPI}/user`
 

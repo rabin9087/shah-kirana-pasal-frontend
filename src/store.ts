@@ -2,11 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import loadingreducer from "./redux/Loading.slice";
 import userReducer from "./redux/user.slice";
 import sidebarReducer from "./redux/sidebar.slice";
+import categoryReducer from "./redux/category.slice";
+import productReducer from "./redux/product.slice";
 export const store = configureStore({
   reducer: {
     loader: loadingreducer,
     sidebar: sidebarReducer,
-    userInfor: userReducer,
+    userInfo: userReducer,
+    categoryInfo: categoryReducer,
+    productInfo: productReducer,
   },
 });
 

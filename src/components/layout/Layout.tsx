@@ -10,9 +10,7 @@ const Layout = ({ title, children }: { title: string, children: React.ReactNode 
     <div className={`flex flex-col border-2 bg-background  ${open ? "h-screen overflow-hidden" : "min-h-screen "}`}>
       <Header />
       <main className="relative w-full gap-2 border-2 ">
-
         <SideBar />
-
         <div>
           <div className="flex justify-center p-2 font-bold underline text-2xl">{title}</div>
           {children}

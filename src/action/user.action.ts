@@ -16,6 +16,7 @@ import {
   forgetPasswordParams,
   newPasswordParams,
   otpParams,
+  otp_PasswordParams,
 } from "@/types";
 import { NavigateFunction } from "react-router";
 import { toast } from "sonner";
@@ -57,7 +58,7 @@ export const forgetPasswordOTPRequest =
   };
 
 export const OTPVerificationRequest =
-  (data: otpParams) => async (dispatch: AppDispatch) => {
+  (data: otp_PasswordParams) => async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
     const pending = otp_PasswordVerify(data);
     const { status, message } = await pending;
