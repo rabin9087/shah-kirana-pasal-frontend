@@ -1,17 +1,23 @@
 
 import { ICategoryTypes } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+
 interface InititalState {
   categories: ICategoryTypes[];
+  selectedCategory: ICategoryTypes
 };
-const initialState: InititalState = {
-  categories: [{
+
+const categoryInitialState = {
     _id: "",
     name: '',
     slug: "",
     status: "",
     description: "",
-  }]
+  }
+
+const initialState: InititalState = {
+  categories: [categoryInitialState],
+  selectedCategory: categoryInitialState
 };
 
 const userSlice = createSlice({
@@ -21,11 +27,13 @@ const userSlice = createSlice({
     setCategory: (state, { payload }: PayloadAction<ICategoryTypes[]>) => {
       state.categories = payload;
     },
-  
+  setACategory: (state, { payload }: PayloadAction<ICategoryTypes>) => {
+      state.selectedCategory = payload;
+    },
   },
 });
 
 const { reducer, actions } = userSlice;
-export const { setCategory } = actions;
+export const { setCategory, setACategory } = actions;
 export default reducer;
 // export the action creator for other components to use it in dispatch() function of redux store

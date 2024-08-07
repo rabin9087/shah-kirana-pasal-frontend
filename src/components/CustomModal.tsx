@@ -1,10 +1,12 @@
 import React from 'react';
 import Modal from 'react-modal';
-import { CreateCategoryForm, ScanBarcodeComponent, WebcamComponent } from './ImageCapture';
+import { CreateCategoryForm, NotFoundModel, ScanBarcodeComponent, WebcamComponent } from './ImageCapture';
 import { MdOutlineCameraAlt } from "react-icons/md";
 import { Button } from './ui/button';
 import { BiScan } from "react-icons/bi";
 import { IoCreateOutline } from "react-icons/io5";
+import { useAppDispatch, useAppSelector } from '@/hooks';
+import { setAProductFoundStatus } from '@/redux/product.slice';
 
 const customStyles = {
     content: {
@@ -17,18 +19,16 @@ const customStyles = {
     },
 };
 
-
 interface Images {
-    setImage: (image: string | null) => void;
+    setImage?: (image: string | null) => void;
     setBarcode?: (barcode: string) => void;
+    scanCode?: (barcode: string) => void;
     scan?: boolean;
     create?: string;
-
-
+    openNotFound?: boolean
 }
 
-const CustomModal = ({ setImage, scan, setBarcode, create }: Images) => {
-
+const CustomModal = ({ scanCode, setImage, scan, setBarcode, create }: Images) => {
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -39,13 +39,15 @@ const CustomModal = ({ setImage, scan, setBarcode, create }: Images) => {
     function closeModal() {
         setIsOpen(false);
     }
+
+
     return (
         <>
             <Button size={'default'}
                 type='button'
-                onClick={openModal}>{create === "create" ? < IoCreateOutline size={25} /> : scan ? <BiScan size={20} /> : <MdOutlineCameraAlt size={20} />}</Button>
+                onClick={openModal}>{create === "createCategory" ? < IoCreateOutline size={25} /> : scan ? <BiScan size={20} /> : <MdOutlineCameraAlt size={20} />}</Button>
 
-            {create === "create" ?
+            {create === "createCategory" ?
                 <Modal
                     isOpen={modalIsOpen}
                     onRequestClose={closeModal}
@@ -62,9 +64,46 @@ const CustomModal = ({ setImage, scan, setBarcode, create }: Images) => {
                     style={customStyles}
                     contentLabel="Example Modal"
                 >
-                    {scan && modalIsOpen ? <ScanBarcodeComponent closeModal={closeModal} setBarcode={setBarcode} /> : <WebcamComponent setImage={setImage} closeModal={closeModal} />}
+                    {scan && modalIsOpen ? <ScanBarcodeComponent scanCode={scanCode} closeModal={closeModal} setBarcode={setBarcode} /> : <WebcamComponent setImage={setImage} closeModal={closeModal} />}
                 </Modal>}
+
         </>
     )
+}
+
+export const OpenNotFoundModal = () => {
+
+    const [modalIsOpen, setIsOpen] = React.useState(false);
+    const dispatch = useAppDispatch()
+
+
+    // function openModal() {
+    //     setIsOpen(true);
+    // }
+
+    function closeModal() {
+        setIsOpen(false);
+        dispatch(setAProductFoundStatus({ status: false, openNotFoundModal: false }))
+    }
+
+    const { productFoundStatus } = useAppSelector(state => state.productInfo)
+
+
+    return <>
+
+        {/* <Button size={'default'}
+            type='button'
+            onClick={openModal}>{<BiScan size={20} />}</Button> */}
+
+        <Modal
+            isOpen={productFoundStatus.openNotFoundModal}
+            onRequestClose={closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+        >
+            <NotFoundModel closeModal={closeModal} />
+        </Modal>
+    </>
+
 }
 export default CustomModal

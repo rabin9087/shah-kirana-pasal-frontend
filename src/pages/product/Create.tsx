@@ -177,7 +177,7 @@ const CreateProduct = () => {
 
       <div className='flex justify-center w-full'>
 
-        <form className='m-2 flex flex-col gap-2 w-full  md:max-w-[780px]' onSubmit={handleSubmit(onSubmit)}>
+        <form className='m-2 flex flex-col gap-2 w-full  md:max-w-[780px] border-2 p-4 rounded-md shadow-sm' onSubmit={handleSubmit(onSubmit)}>
           <div className='flex gap-2 items-center'>
             <Label
               htmlFor="image"
@@ -197,7 +197,6 @@ const CreateProduct = () => {
                 <Label htmlFor='file'>
                   <AiFillPicture size={20} />
                 </Label>
-
               </Button>
 
             </div>
@@ -224,20 +223,6 @@ const CreateProduct = () => {
               </Label>
 
               <div className='flex max-w-screen-md justify-center md:justify-start gap-3 me-2'>
-                {/* <Select {...register('parentCategoryID')} >
-                  <SelectTrigger className="w-full md:w-[310px]">
-                    <SelectValue placeholder="--Select a category--" />
-                  </SelectTrigger>
-                  <SelectContent className='w-full flex'>
-                    <SelectGroup>
-                      <SelectLabel id='category'>Categories</SelectLabel>
-                      {categories.map(({ _id, name }) => (
-                        <SelectItem key={_id} value={_id} className=''>--{name.toUpperCase()}--</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select> */}
-
                 <select
                   id="category"
                   className="w-full md:w-[310px] border-2 rounded-md text-center"
@@ -289,23 +274,6 @@ const CreateProduct = () => {
                       />}
                       {
                         inputeType &&
-                        // <Select {...register('storedAt')} >
-                        //   <SelectTrigger className="=">
-                        //     <SelectValue placeholder="--Select Stored At--" />
-                        //   </SelectTrigger>
-                        //   <SelectContent className='w-full'>
-                        //     <SelectGroup>
-                        //       <SelectLabel id='storedAt'>Stored Location</SelectLabel>
-                        //       <SelectItem value={IStoredAt.AMBIENT}>--{IStoredAt.AMBIENT}----</SelectItem>
-                        //       <SelectItem value={IStoredAt.CHILLED}>--{IStoredAt.CHILLED}--</SelectItem>
-                        //       <SelectItem value={IStoredAt['FRUTES AND VEG']}>--{IStoredAt['FRUTES AND VEG']}--</SelectItem>
-
-                        //     </SelectGroup>
-                        //   </SelectContent>
-                        // </Select>
-
-                        // &&
-
                         <select
                           className="w-full p-2 border-2 rounded-md text-center"
                           id="storedAt"

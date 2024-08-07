@@ -5,22 +5,27 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField, IStoredAt, productSchema, ProductSchema } from './formValidation';
 import { getAllCategoriesAction } from '@/action/category.action';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import CustomModal from '@/components/CustomModal';
+import CustomModal, { OpenNotFoundModal } from '@/components/CustomModal';
 import { getAProductAction, updateProductAction } from '@/action/product.action';
 import { IProductUpdateTypes } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { AiFillPicture } from "react-icons/ai";
 import { Input } from '@/components/ui/input';
+import { useParams } from 'react-router';
 
 const UpdateProduct = () => {
 
     const [barcode, setBarcode] = useState<string>('');
     const [image, setImage] = useState<string | null>("");
+    const { qrCodeNumber } = useParams()
+    console.log('barcode', qrCodeNumber)
 
     const dispatch = useAppDispatch()
     const { product } = useAppSelector(state => state.productInfo)
     const [form, setForm] = useState<IProductUpdateTypes>(product);
+
+    console.log(form)
 
     const convert2base64 = (image: Blob) => {
         const reader = new FileReader();
@@ -69,17 +74,19 @@ const UpdateProduct = () => {
 
     useEffect(() => {
         dispatch(getAllCategoriesAction());
-        if (barcode !== form.qrCodeNumber) {
+        if (barcode !== form.qrCodeNumber || qrCodeNumber !== "") {
+            setBarcode(() => qrCodeNumber as string)
             dispatch(getAProductAction({ qrCodeNumber: barcode }));
         }
         setForm(product);
+
         Object.keys(product).forEach((key) => {
             setValue(key as keyof ProductSchema, product[key as keyof ProductSchema]);
         });
         if (product.image) {
             setImage(product.image as string);
         }
-    }, [dispatch, barcode, product, setValue]);
+    }, [dispatch, barcode, form, setValue, qrCodeNumber]);
 
     useEffect(() => {
         if (image) {
@@ -195,7 +202,7 @@ const UpdateProduct = () => {
                             Scan Product's Barcode
                         </Label>
                         <div className='flex justify-center items-center gap-2'>
-                            <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} />
+                            <CustomModal scanCode={setBarcode} scan={true} setImage={setImage} />
                         </div>
                     </div>
                     <hr />
@@ -244,24 +251,12 @@ const UpdateProduct = () => {
                             </Label>
 
                             <div className='flex max-w-screen-md justify-center md:justify-start gap-3 me-2'>
-                                {/* <Select {...register('parentCategoryID')} >
-                  <SelectTrigger className="w-full md:w-[310px]">
-                    <SelectValue placeholder="--Select a category--" />
-                  </SelectTrigger>
-                  <SelectContent className='w-full flex'>
-                    <SelectGroup>
-                      <SelectLabel id='category'>Categories</SelectLabel>
-                      {categories.map(({ _id, name }) => (
-                        <SelectItem key={_id} value={_id} className=''>--{name.toUpperCase()}--</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select> */}
 
                                 <select
                                     id="category"
                                     className="w-full md:w-[310px] border-2 rounded-md"
                                     {...register('parentCategoryID')}
+                                    onChange={handelOnChange}
                                 >
                                     <option value="">--Select a category--</option>
                                     {categories.map(({ _id, name }, index) => (
@@ -272,7 +267,7 @@ const UpdateProduct = () => {
                                 </select>
 
                                 <Button type='button' size={'icon'} variant={'secondary'}>
-                                    <CustomModal create={"create"} setImage={setImage} />
+                                    <CustomModal create={"createCategory"} setImage={setImage} />
                                 </Button>
                             </div>
 
@@ -286,19 +281,9 @@ const UpdateProduct = () => {
                                             <Label htmlFor={name} className="block text-md font-medium leading-6 text-gray-900">
                                                 {label}
                                             </Label>
-                                            {/* <div className='flex justify-end gap-2'>
-                                                {generate === "barcode" && <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} />}
-
-                                                {generate &&
-                                                    <Button type='button' onClick={func}
-                                                    ><Label htmlFor={name}>Generate {generate} </Label>
-                                                    </Button>}
-                                            </div> */}
-
-
                                         </div>
 
-                                        <div className={`mt-2 flex `}>
+                                        <div className={`mt-2 flex`}>
                                             {!inputeType && <Input
                                                 id={name}
                                                 type={type}
@@ -307,30 +292,15 @@ const UpdateProduct = () => {
                                                 required={required}
                                                 placeholder={placeholder}
                                                 {...register(name)}
+                                                onChange={handelOnChange}
                                             />}
                                             {
                                                 inputeType &&
-                                                // <Select {...register('storedAt')} >
-                                                //   <SelectTrigger className="=">
-                                                //     <SelectValue placeholder="--Select Stored At--" />
-                                                //   </SelectTrigger>
-                                                //   <SelectContent className='w-full'>
-                                                //     <SelectGroup>
-                                                //       <SelectLabel id='storedAt'>Stored Location</SelectLabel>
-                                                //       <SelectItem value={IStoredAt.AMBIENT}>--{IStoredAt.AMBIENT}----</SelectItem>
-                                                //       <SelectItem value={IStoredAt.CHILLED}>--{IStoredAt.CHILLED}--</SelectItem>
-                                                //       <SelectItem value={IStoredAt['FRUTES AND VEG']}>--{IStoredAt['FRUTES AND VEG']}--</SelectItem>
-
-                                                //     </SelectGroup>
-                                                //   </SelectContent>
-                                                // </Select>
-
-                                                // &&
-
                                                 <select
                                                     className="w-full p-2 border-2 rounded-md"
                                                     id="storedAt"
                                                     {...register('storedAt')}
+                                                    onChange={handelOnChange}
                                                 >
                                                     <option value="">--Select a Stored At--</option>
                                                     <option value={IStoredAt.AMBIENT}>--{IStoredAt.AMBIENT}--</option>
@@ -354,6 +324,7 @@ const UpdateProduct = () => {
                                             id="description"
                                             {...register('description')}
                                             rows={5}
+                                            onChange={handelOnChange}
                                             className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             placeholder='Enter Product description'
                                         />

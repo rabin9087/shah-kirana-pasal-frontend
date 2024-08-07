@@ -20,6 +20,15 @@ export const updateProduct= (data: ProductSchema) => {
   });
 };
 
+export const updateAProductStatus= (_id: string, data: object) => {
+  return axiosProcessor({
+    method: "patch",
+    url: `${productApi}/${_id}`,
+    isPrivate: false,
+    obj: data,
+  });
+};
+
 export const getAllProducts= () => {
   return axiosProcessor({
     method: "get",
@@ -37,5 +46,3 @@ export const getAProduct= ({...data}: { [key: string]: any }) => {
     params: {...data}
   });
 };
-
-getAProduct({qrCodeNumber: "84752058442"})

@@ -57,7 +57,8 @@ export type serverReturnDataType = {
   user?: IUser;
   userEmail_Phone?: string;
   tokens?: { accessJWT: string; refreshJWT: string };
-  categoryList?: ICategoryTypes[] | undefined
+  categoryList?: ICategoryTypes[] | undefined;
+  category?: ICategoryTypes | undefined;
   products?: IProductTypes[] | undefined,
   product?: IProductTypes | undefined
 };
@@ -69,7 +70,7 @@ export type LocationState = {
 }
 
 export type ICategoryTypes = {
-    _id?: '',
+    _id?: string,
     status?: string,
     name: string,
     slug?: string,

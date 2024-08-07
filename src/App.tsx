@@ -18,6 +18,10 @@ import CreateProduct from "../src/pages/product/Create";
 import { getAllProductAction } from "./action/product.action";
 import UpdateProduct from "./pages/product/Update";
 import Modal from 'react-modal';
+import UpdateCategory from "./pages/category/Update";
+import AllCategories from "./pages/category/Categories";
+import AllProducts from "./pages/product/Products";
+import ScanProduct from "./pages/product/ScanProduct";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -99,16 +103,35 @@ function App() {
         />
 
         <Route
-          path="/product/update"
+          path="/all-products"
+          element={<AllProducts />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/scan-product"
+          element={<ScanProduct />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/product/update/:qrCodeNumber"
           element={<UpdateProduct />}
           errorElement={<ErrorPage />}
         />
 
         <Route
-          path="/product/:_id"
-          element={<UpdateProduct />}
+          path="/all-categories"
+          element={<AllCategories />}
           errorElement={<ErrorPage />}
         />
+
+        <Route
+          path="/category/update/:_id"
+          element={<UpdateCategory />}
+          errorElement={<ErrorPage />}
+        />
+
 
         {/* This is last line  */}
       </Routes>

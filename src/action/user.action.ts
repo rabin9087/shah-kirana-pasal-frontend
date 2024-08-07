@@ -15,7 +15,6 @@ import {
   createUserParams,
   forgetPasswordParams,
   newPasswordParams,
-  otpParams,
   otp_PasswordParams,
 } from "@/types";
 import { NavigateFunction } from "react-router";
