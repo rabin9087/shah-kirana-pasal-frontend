@@ -1,5 +1,5 @@
 import { createUserParams, forgetPasswordParams, newPasswordParams, otp_PasswordParams } from "@/types";
-import { axiosProcessor, getAccessJWt, getRefreshJWT, rootApi } from ".";
+import { axiosProcessor, getAccessJWt, getRefreshJWT, rootApi } from "..";
 const userApi = rootApi + "/api/v1/user";
 
 export const createUser = (data: createUserParams) => {

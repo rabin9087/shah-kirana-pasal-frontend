@@ -1,12 +1,5 @@
-import {
-  createAdmin,
-  createUser,
-  forgetPassword,
-  getUser,
-  loginUser,
-  otp_PasswordVerify,
-  update_Forget_Password,
-} from "@/axios/user.axios";
+
+import { createAdmin, createUser, forgetPassword, getUser, loginUser, otp_PasswordVerify, update_Forget_Password } from "@/axios/user/user.axios";
 import { setLoading } from "@/redux/Loading.slice";
 import { setEmail_Phone, setUser } from "@/redux/user.slice";
 import { AppDispatch } from "@/store";

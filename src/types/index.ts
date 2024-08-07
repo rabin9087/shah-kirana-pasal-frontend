@@ -14,6 +14,11 @@ export type createUserParams = {
   password: string;
 };
 
+export type signInUserParams = {
+    email_phone: string;
+    password: string;
+}
+
 export type forgetPasswordParams = {
  email_phone: string;
 };
@@ -144,22 +149,14 @@ export type IProductUpdateTypes = {
   productLocation?: string;
 }
 
+
+interface ImportMetaEnv {
+  readonly VITE_DEV_API: string;
+  readonly VITE_PROD_API: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 export type TAxiosProcessor = Promise<serverReturnDataType>;
-
-type arg <T>= {
-  id:T
-}
-export const check = <T>(arg: arg<T>): number => {
-  if (typeof arg.id === 'number') {
-
-  return arg.id
-    
-  }
-  else {
-    return 0
-  }
-
-  
-}
-check<number>({ id: 10 })
-
