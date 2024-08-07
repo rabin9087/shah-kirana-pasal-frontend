@@ -15,6 +15,7 @@ import TogglePasswordVisibility from "./TogglePassword";
 import { useAppDispatch } from "@/hooks";
 import { createNewAdmin, createNewUser } from "@/action/user.action";
 import { useNavigate } from "react-router";
+import { createUserParams } from "@/types";
 
 const formSchema = z.object({
   fName: z
@@ -42,14 +43,14 @@ const formSchema = z.object({
     required_error: "First Name is required",
     invalid_type_error: "Name must be a string",
   })
-  .min(3, { message: "At least 3 characters required" })
-  .max(15, { message: "Name must not be more than 15 characters" }),
+    .min(3, { message: "At least 3 characters required" })
+    .max(15, { message: "Name must not be more than 15 characters" }),
   confirmPassword: z.string({
     required_error: "First Name is required",
     invalid_type_error: "Name must be a string",
   })
-  .min(3, { message: "At least 3 characters required" })
-  .max(15, { message: "Name must not be more than 15 characters" }),
+    .min(3, { message: "At least 3 characters required" })
+    .max(15, { message: "Name must not be more than 15 characters" }),
 });
 
 type TForm = z.infer<typeof formSchema>;
@@ -78,9 +79,9 @@ function SignUpForm({ token }: { token: string }) {
     }
 
     if (!token) {
-      result = Boolean(await dispatch(createNewUser({ ...rest, password })));
+      result = Boolean(await dispatch(createNewUser({ ...rest, password } as createUserParams)));
     } else {
-      result = Boolean(await dispatch(createNewAdmin({ ...rest, password })));
+      result = Boolean(await dispatch(createNewAdmin({ ...rest, password } as createUserParams)));
     }
     if (result) {
       navigate("/sign-in");

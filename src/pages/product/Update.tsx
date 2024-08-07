@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField, IStoredAt, productSchema, ProductSchema } from './formValidation';
 import { getAllCategoriesAction } from '@/action/category.action';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import CustomModal, { OpenNotFoundModal } from '@/components/CustomModal';
+import CustomModal from '@/components/CustomModal';
 import { getAProductAction, updateProductAction } from '@/action/product.action';
 import { IProductUpdateTypes } from '@/types';
 import { Button } from '@/components/ui/button';

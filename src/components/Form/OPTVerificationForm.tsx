@@ -7,41 +7,42 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { OTPVerificationRequest } from '@/action/user.action';
+import { otp_PasswordParams } from '@/types';
 
 const OPTVerificationForm = () => {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-    const {email_Phone} = useAppSelector(state => state.userInfor)
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { email_Phone } = useAppSelector(state => state.userInfo)
 
-    const formSchema = z.object({
-        email_phone: z.string(),
-        otp: z
-          .string({
-            required_error: "otp is required",
-          }).length(6, {message: "otp must be 6 digit code"}),
-      });
-      
-      type TForm = z.infer<typeof formSchema>;
+  const formSchema = z.object({
+    email_phone: z.string(),
+    otp: z
+      .string({
+        required_error: "otp is required",
+      }).length(6, { message: "otp must be 6 digit code" }),
+  });
 
-    const form = useForm<TForm>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {
-        email_phone: email_Phone,
-        otp: "",
-            },
-    });
-  
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-      console.log(values)
-      await dispatch(OTPVerificationRequest(values)) && navigate('/new-password')
-    }
+  type TForm = z.infer<typeof formSchema>;
+
+  const form = useForm<TForm>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email_phone: email_Phone,
+      otp: "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values)
+    await dispatch(OTPVerificationRequest(values as otp_PasswordParams)) && navigate('/new-password')
+  }
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 flex flex-col w-full"
       >
-        
+
         <FormField
           control={form.control}
           name="otp"

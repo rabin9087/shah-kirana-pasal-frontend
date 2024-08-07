@@ -1,12 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { Link } from "react-router-dom";
 import { RxCross1 } from "react-icons/rx";
 import { IoIosArrowForward } from "react-icons/io";
 import { toggleSideBar } from "@/redux/sidebar.slice";
 import { useEffect, useRef } from "react";
 import { getAllCategoriesAction } from "@/action/category.action";
+import { Link } from "react-router-dom";
 const SideBar = () => {
-  const drawerRef = useRef(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
   const { open } = useAppSelector((store) => store.sidebar);
   const dispatch = useAppDispatch();
 
@@ -52,7 +52,7 @@ const SideBar = () => {
         <ul className="flex flex-col gap-4 overflow-y-auto">
           {categories
             .map(({ _id, name, slug }) => (
-              <Link key={_id} to={slug}>
+              <Link to={slug as string} key={_id}>
                 <li
                   className="flex p-2 items-center justify-between dark:text-secondary min-w-fit font-bold text-secondary-foreground rounded-md overflow-hidden bg-white hover:bg-gray-400"
                 >

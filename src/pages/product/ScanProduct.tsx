@@ -2,7 +2,7 @@ import { getAProductAction } from "@/action/product.action"
 import CustomModal, { OpenNotFoundModal } from "@/components/CustomModal"
 import Layout from "@/components/layout/Layout"
 import { Label } from "@/components/ui/label"
-import { useAppDispatch, useAppSelector } from "@/hooks"
+import { useAppDispatch } from "@/hooks"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 
@@ -12,7 +12,6 @@ const ScanProduct = () => {
     const navigate = useNavigate()
     console.log(barcode)
     const dispatch = useAppDispatch()
-    const { productFoundStatus } = useAppSelector(state => state.productInfo)
 
     useEffect(() => {
         console.log(barcode)

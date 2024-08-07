@@ -96,7 +96,7 @@ export const OpenNotFoundModal = () => {
             onClick={openModal}>{<BiScan size={20} />}</Button> */}
 
         <Modal
-            isOpen={productFoundStatus.openNotFoundModal}
+            isOpen={productFoundStatus.openNotFoundModal || modalIsOpen}
             onRequestClose={closeModal}
             style={customStyles}
             contentLabel="Example Modal"
