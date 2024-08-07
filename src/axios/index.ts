@@ -2,7 +2,7 @@ import { IAxiosProcessParams, TAxiosProcessor } from "@/types";
 import axios from "axios";
 export const rootApi = !import.meta.env.PROD
   ? "http://192.168.20.5:8080"
-  : import.meta.env.VITE_ROOTSERVER;
+  : import.meta.env.VITE_ROOT_API;
 
 export const getAccessJWt = () => {
   return sessionStorage.getItem("accessJWT");
