@@ -237,7 +237,7 @@ const CreateProduct = () => {
                 </select>
 
                 <Button type='button' size={'icon'} variant={'secondary'}>
-                  <CustomModal create={"create"} setImage={setImage} />
+                  <CustomModal create={"createCategory"} setImage={setImage} />
                 </Button>
               </div>
 
