@@ -1,12 +1,20 @@
 
+import { IProductTypes } from "@/types";
 import ProductCard from "../productCart/ProductCart";
+import Layout from "@/components/layout/Layout";
 
-function Home() {
+interface IHomeProps {
+  data: IProductTypes[],
+  setData: (data: IProductTypes[]) => void
+}
 
-  return (
+function Home({ data, setData }: IHomeProps): JSX.Element {
+
+  return (<Layout types="products" title={`${data.length} products found`} data={data} setData={setData} >
     <div className="flex justify-center">
-      <ProductCard />
+      <ProductCard data={data} />
     </div>
+  </Layout>
   );
 }
 

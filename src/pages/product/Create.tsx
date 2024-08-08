@@ -12,11 +12,13 @@ import { Button } from '@/components/ui/button';
 import { AiFillPicture } from "react-icons/ai";
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { useNavigate } from 'react-router';
 const CreateProduct = () => {
   const [sku, setSku] = useState<string>('');
   const [barcode, setBarcode] = useState<string>('');
   const [isBarcode, setIsBarcode] = useState<boolean>(false);
   const [image, setImage] = useState<string | null>("");
+  const navigate = useNavigate()
 
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
@@ -59,9 +61,6 @@ const CreateProduct = () => {
 
   const { categories } = useAppSelector(state => state.categoryInfo)
 
-  useEffect(() => {
-    setValue('image', image);
-  }, [image, setValue]);
 
   const onSubmit = async (data: ProductSchema) => {
     console.log(data)
@@ -75,8 +74,17 @@ const CreateProduct = () => {
       }
     }
 
-    await dispatch(createProductAction(data))
+    const create = await dispatch(createProductAction(data))
+    if (create) {
+      return navigate("/")
+    }
+
   };
+
+
+  useEffect(() => {
+    setValue('image', image);
+  }, [image, setValue]);
 
   useEffect(() => {
     dispatch(getAllCategoriesAction())
@@ -141,9 +149,9 @@ const CreateProduct = () => {
       label: "Product Location",
       name: "productLocation",
       type: "text",
-      value: "A02 - B20 - S6",
+      value: "",
       required: true,
-      placeholder: "A02 - B20 - S6",
+      placeholder: "12.8.3.5",
     },
 
     {
@@ -252,7 +260,9 @@ const CreateProduct = () => {
                         {label}
                       </Label>
                       <div className='flex justify-end gap-2'>
-                        {generate === "barcode" && <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} />}
+                        {generate === "barcode" &&
+                          <Label htmlFor={name}> <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} /></Label>
+                        }
 
                         {generate &&
                           <Button type='button' onClick={func}

@@ -30,12 +30,14 @@ const AllCategories = () => {
     }
 
     useEffect(() => {
+        if (!categories.length) {
+            dispatch(getAllCategoriesAction())
+        }
 
-        dispatch(getAllCategoriesAction())
-    }, [dispatch])
+    }, [dispatch, categories.length])
 
     return (
-        <Layout title="All Categories">
+        <Layout title="All Categories" types="" >
             <Table className="mx-2 m-1 border-2 rounded-md">
                 <TableCaption>A list of categories.</TableCaption>
                 <TableHeader>

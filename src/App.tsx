@@ -9,8 +9,8 @@ import ForgetPassword from "./pages/users/ForgetPassword";
 import OPTVerification from "./pages/users/OPTVerification";
 import NewPassword from "./pages/users/NewPassword";
 import PrivatePage from "./pages/users/PrivatePage";
-import { useAppDispatch } from "./hooks";
-import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import { useEffect, useState } from "react";
 import { getUserAction } from "./action/user.action";
 import About from "./pages/about/About";
 import Contact from "./pages/contact/Contact";
@@ -22,6 +22,7 @@ import UpdateCategory from "./pages/category/Update";
 import AllCategories from "./pages/category/Categories";
 import AllProducts from "./pages/product/Products";
 import ScanProduct from "./pages/product/ScanProduct";
+import { IProductTypes } from "./types";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -29,20 +30,27 @@ function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  useEffect(() => {
-    dispatch(getUserAction(navigate, pathname));
-    dispatch(getAllProductAction())
+  const { products } = useAppSelector(state => state.productInfo)
+  const { user } = useAppSelector(state => state.userInfo)
 
-  }, [dispatch]);
+  const [data, setData] = useState<IProductTypes[]>(products)
+
+  useEffect(() => {
+    if (user._id !== "") {
+      dispatch(getUserAction(navigate, pathname));
+    }
+    if (products.length) {
+      dispatch(getAllProductAction())
+      setData(products)
+    }
+  }, [dispatch, products.length, user._id]);
   return (
     <>
       <Routes>
         <Route
           path="/"
           element={
-            <Layout title="">
-              <Home />
-            </Layout>
+            <Home data={data} setData={setData} />
           }
           errorElement={<ErrorPage />}
         />
@@ -87,7 +95,7 @@ function App() {
 
         <Route
           path="/about"
-          element={<Layout title=""> <About /></Layout>}
+          element={<Layout title="" types=""> <About /></Layout>}
           errorElement={<ErrorPage />}
         />
         <Route

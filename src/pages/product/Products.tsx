@@ -21,10 +21,13 @@ const AllProducts = () => {
     }
 
     useEffect(() => {
-        dispatch(getAllProductAction())
-    }, [dispatch])
+        if (!products.length) {
+            dispatch(getAllProductAction())
+        }
+
+    }, [dispatch, products.length])
     return (
-        <Layout title="All Products">
+        <Layout title="All Products" types="products">
             <div>
                 <Table>
                     <TableCaption>A list of products.</TableCaption>

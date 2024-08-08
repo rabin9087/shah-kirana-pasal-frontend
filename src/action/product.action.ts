@@ -15,9 +15,12 @@ export const createProductAction = (data: ProductSchema) => async (dispatch: App
             const response: serverReturnDataType = await pending
                 toast[response.status](response.message)
                 if (response.status === "success") {
-                      dispatch(getAllProductAction())
+                        dispatch(getAllProductAction())
+                        return true
                 } else {
                         console.log("error")
+                        return false
+                        
                 }
         } catch (error) {
                 console.log(error)

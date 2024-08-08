@@ -9,6 +9,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import Cart from "./Cart";
 import { RxCross1 } from "react-icons/rx";
 import { Profile } from "../Profile";
+import { IProductTypes } from "@/types";
 
 const links = [
   {
@@ -24,7 +25,14 @@ const links = [
     path: "/contact",
   },
 ];
-const Header = () => {
+
+interface IHeaderProps {
+  types?: string,
+  setData?: (data: IProductTypes[]) => void
+  data?: IProductTypes[]
+}
+
+const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
   // const { user } = useAppSelector((state) => state.userInfor);
@@ -79,7 +87,7 @@ const Header = () => {
         </div>
       </div>
       <div className="flex justify-center items-center w-full mt-2">
-        <SearchBar />
+        <SearchBar data={data} types={types} setData={setData} />
       </div>
     </div>
   );
