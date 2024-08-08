@@ -7,7 +7,7 @@ import { IProductTypes } from "@/types";
 // import { setProducts } from "@/redux/product.slice";
 
 interface LayoutProps {
-  title?: string;
+  title: string;
   children: React.ReactNode;
   types?: "products" | "" // Change this line to expect an array
   setData?: (data: IProductTypes[]) => void;

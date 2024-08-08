@@ -1,16 +1,18 @@
 import { FaShoppingCart } from "react-icons/fa";
 
-const Cart = ({ cartNumber = 90 }) => {
-  return (
-    <div className="inline-flex items-center  relative">
-      <div className="flex items-center text-2xl">
-        <FaShoppingCart className="text-primary" />
-      </div>
-      <div className="flex items-center h-7 w-7 justify-center bg-primary text-white absolute rounded-full right-[-16px] top-[-16px] p-1">
-        {cartNumber}
-      </div>
-    </div>
-  )
+interface CartProps {
+  cartNumber?: number;
 }
 
-export default Cart
+const Cart: React.FC<CartProps> = ({ cartNumber = 0.89 }) => {
+  return (
+    <div className="flex justify-center items-center gap-1">
+      <FaShoppingCart className="text-white text-2xl" />
+      <div className="me-2 h-6 w-6 bg-primary text-white rounded-full text-xs font-semibold right-[-12px] top-[-12px]">
+        ${cartNumber}
+      </div>
+    </div>
+  );
+};
+
+export default Cart;

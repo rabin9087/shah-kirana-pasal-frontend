@@ -23,6 +23,7 @@ import AllCategories from "./pages/category/Categories";
 import AllProducts from "./pages/product/Products";
 import ScanProduct from "./pages/product/ScanProduct";
 import { IProductTypes } from "./types";
+import ProductLanding from "./pages/product/ProductLanding";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -137,6 +138,12 @@ function App() {
         <Route
           path="/category/update/:_id"
           element={<UpdateCategory />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/product/:_id"
+          element={<ProductLanding />}
           errorElement={<ErrorPage />}
         />
 
