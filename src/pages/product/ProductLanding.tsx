@@ -13,10 +13,10 @@ const ProductLanding = () => {
     const { product } = useAppSelector((s) => s.productInfo);
 
     const [size, SetSize] = useState("");
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(0);
 
     const decrement = () => {
-        if (count > 1) {
+        if (count > 0) {
             setCount((prev) => prev - 1);
         }
     };
@@ -68,7 +68,7 @@ const ProductLanding = () => {
                             </select>
                             <div className="mt-6 space-y-4">
                                 <span className="block text-base md:text-lg font-semibold">Quantity</span>
-                                <div className="flex items-center justify-between border border-gray-300 rounded-md w-full md:w-2/3 lg:w-1/2">
+                                {count > 0 ? <div className="flex items-center justify-between border border-gray-300 rounded-md w-full md:w-2/3 lg:w-1/2">
                                     <Button
                                         onClick={decrement}
                                         type="button"
@@ -85,11 +85,13 @@ const ProductLanding = () => {
                                         +
                                     </Button>
                                 </div>
-                                <Button
-                                    className="w-full bg-primary text-white hover:bg-primary-dark focus:ring-2 focus:ring-primary rounded-md py-2 text-lg"
-                                >
-                                    Add to Cart
-                                </Button>
+                                    :
+                                    <Button
+                                        onClick={increment}
+                                        className="flex items-center justify-center text-center border border-gray-300 rounded-md w-full md:w-2/3 lg:w-1/2"
+                                    >
+                                        Add to Cart
+                                    </Button>}
                                 {count === product.quantity && (
                                     <span className="block text-sm text-red-500 mt-2">
                                         You've reached the maximum quantity

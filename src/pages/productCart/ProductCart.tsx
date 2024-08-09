@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getAllProductAction } from "@/action/product.action";
 import { Link } from "react-router-dom";
 import { IProductTypes } from "@/types";
@@ -11,6 +11,24 @@ interface IProductCardProps {
 }
 
 const ProductCard: React.FC<IProductCardProps> = ({ data }) => {
+
+  const [count, setCount] = useState<number>(0);
+
+  const decrement = () => {
+    if (count > 0) {
+      setCount((prev: number) => prev - 1);
+    }
+  };
+
+  const increment = () => {
+    if (count < 100) {
+      setCount((prev: number) => prev + 1);
+    }
+  };
+
+  // useEffect(() => {
+  //   dispatch(getAProductAction({ qrCodeNumber: params }));
+  // }, [dispatch]);
 
   const dispatch = useAppDispatch()
   const { products } = useAppSelector(state => state.productInfo)
@@ -51,6 +69,31 @@ const ProductCard: React.FC<IProductCardProps> = ({ data }) => {
                     Add to Cart
                   </Button>
                 </div>
+
+                {/* {count > 0 ? <div className="w-full justify-between rounded-md bg-primary text-white hover:bg-primary-dark">
+                  <Button
+                    onClick={decrement}
+                    type="button"
+                    className="bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 rounded-l-md w-10 md:w-12 py-2 text-lg"
+                  >
+                    -
+                  </Button>
+                  <span className="flex-1 text-center text-lg font-medium">{count}</span>
+                  <Button
+                    onClick={increment}
+                    type="button"
+                    className="bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 rounded-r-md w-10 md:w-12 py-2 text-lg"
+                  >
+                    +
+                  </Button>
+                </div>
+                  :
+                  <Button
+                    onClick={increment}
+                    className="flex items-center justify-center text-center border border-gray-300 rounded-md w-full md:w-2/3 lg:w-1/2"
+                  >
+                    Add to Cart
+                  </Button>} */}
               </div>
             </div>
           ))}
