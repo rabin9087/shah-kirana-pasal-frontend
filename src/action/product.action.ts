@@ -1,4 +1,4 @@
-import { createProduct, getAProduct, getAllProducts, updateAProductStatus, updateProduct } from "@/axios/product/product";
+import { createProduct, getAProduct, getAllProducts, getAllProductsByCategory, updateAProductStatus, updateProduct } from "@/axios/product/product";
 import { ProductSchema } from "@/pages/product/formValidation";
 import { setAProduct, setAProductFoundStatus, setProducts } from "@/redux/product.slice";
 import { AppDispatch } from "@/store";
@@ -83,6 +83,27 @@ export const getAllProductAction = () => async (dispatch: AppDispatch) => {
                 console.log(error)
         }
 };
+
+export const getAllProductByCategoryAction = (slug: string) => async (dispatch: AppDispatch) => {
+        try {
+                console.log(slug)
+            const pending = getAllProductsByCategory(slug);
+            toast.promise(pending, {
+                pending: "Please wait"
+            })
+
+            const response: serverReturnDataType = await pending
+                toast[response.status](response.message)
+                if (response.status === "success") {
+                       dispatch(setProducts(response?.products ?? []))
+                } else {
+                        console.log("error")
+                }
+        } catch (error) {
+                console.log(error)
+        }
+};
+
 
 export const getAProductAction = ({...data}) => async (dispatch: AppDispatch) => {
         try {

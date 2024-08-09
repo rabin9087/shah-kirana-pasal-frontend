@@ -37,6 +37,15 @@ export const getAllProducts= () => {
   });
 };
 
+export const getAllProductsByCategory = (slug: string) => {
+  console.log(slug)
+  return axiosProcessor({
+    method: "get",
+    url: `${productApi}/category/${slug}`,
+    isPrivate: false,
+  });
+};
+
 export const getAProduct= ({...data}: { [key: string]: any }) => {
   return axiosProcessor({
     method: "get",

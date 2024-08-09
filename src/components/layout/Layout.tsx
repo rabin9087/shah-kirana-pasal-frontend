@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import SideBar from "../SideBar/SideBar";
@@ -9,7 +8,7 @@ import { IProductTypes } from "@/types";
 interface LayoutProps {
   title: string;
   children: React.ReactNode;
-  types?: "products" | "" // Change this line to expect an array
+  types?: "products" | "category" // Change this line to expect an array
   setData?: (data: IProductTypes[]) => void;
   data?: IProductTypes[]
 }

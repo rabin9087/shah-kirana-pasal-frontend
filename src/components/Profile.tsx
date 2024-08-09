@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "@/hooks";
 
+
 export function Profile() {
 
     const { user } = useAppSelector(state => state.userInfo)
@@ -32,7 +33,7 @@ export function Profile() {
                 <DropdownMenuItem><Link to={"/product/create"}>Create Product</Link></DropdownMenuItem>
                 <DropdownMenuItem><Link to={"/scan-product"}>Update Product</Link></DropdownMenuItem>
 
-                <DropdownMenuItem>{user?._id !== "" ?
+                <DropdownMenuItem>{user?._id === "" ?
                     <Link to={"/sign-in"}>Log In</Link>
                     : <Link to={"/sign-up"}>Log out</Link>}</DropdownMenuItem>
             </DropdownMenuContent>

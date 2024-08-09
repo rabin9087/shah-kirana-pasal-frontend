@@ -10,20 +10,19 @@ import OPTVerification from "./pages/users/OPTVerification";
 import NewPassword from "./pages/users/NewPassword";
 import PrivatePage from "./pages/users/PrivatePage";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getUserAction } from "./action/user.action";
 import About from "./pages/about/About";
 import Contact from "./pages/contact/Contact";
 import CreateProduct from "../src/pages/product/Create";
-import { getAllProductAction } from "./action/product.action";
 import UpdateProduct from "./pages/product/Update";
 import Modal from 'react-modal';
 import UpdateCategory from "./pages/category/Update";
 import AllCategories from "./pages/category/Categories";
 import AllProducts from "./pages/product/Products";
 import ScanProduct from "./pages/product/ScanProduct";
-import { IProductTypes } from "./types";
 import ProductLanding from "./pages/product/ProductLanding";
+import ProductCardByCategory from "./pages/category/ProductsByCategory";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -31,27 +30,20 @@ function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { products } = useAppSelector(state => state.productInfo)
   const { user } = useAppSelector(state => state.userInfo)
-
-  const [data, setData] = useState<IProductTypes[]>(products)
 
   useEffect(() => {
     if (user._id !== "") {
       dispatch(getUserAction(navigate, pathname));
     }
-    if (products.length) {
-      dispatch(getAllProductAction())
-      setData(products)
-    }
-  }, [dispatch, products.length, user._id]);
+  }, [dispatch, user._id]);
   return (
     <>
       <Routes>
         <Route
           path="/"
           element={
-            <Home data={data} setData={setData} />
+            <Home />
           }
           errorElement={<ErrorPage />}
         />
@@ -96,7 +88,7 @@ function App() {
 
         <Route
           path="/about"
-          element={<Layout title="" types=""> <About /></Layout>}
+          element={<Layout title=""> <About /></Layout>}
           errorElement={<ErrorPage />}
         />
         <Route
@@ -147,7 +139,11 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
-
+        <Route
+          path="/category/:slug"
+          element={<ProductCardByCategory />}
+          errorElement={<ErrorPage />}
+        />
         {/* This is last line  */}
       </Routes>
 

@@ -52,7 +52,7 @@ const SideBar = () => {
         <ul className="flex flex-col gap-4 overflow-y-auto">
           {categories
             .map(({ _id, name, slug }) => (
-              <Link to={slug as string} key={_id}>
+              <Link to={`/category/${slug}` as string} key={_id}>
                 <li
                   className="flex p-2 items-center justify-between dark:text-secondary min-w-fit font-bold text-secondary-foreground rounded-md overflow-hidden bg-white hover:bg-gray-400"
                 >

@@ -37,7 +37,7 @@ const AllCategories = () => {
     }, [dispatch, categories.length])
 
     return (
-        <Layout title="All Categories" types="" >
+        <Layout title="All Categories" >
             <Table className="mx-2 m-1 border-2 rounded-md">
                 <TableCaption>A list of categories.</TableCaption>
                 <TableHeader>

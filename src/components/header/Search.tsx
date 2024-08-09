@@ -10,6 +10,7 @@ interface ISearchProps {
 }
 
 const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placeholder }) => {
+  console.log(data)
 
   const { products } = useAppSelector(state => state.productInfo)
 
@@ -21,20 +22,22 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
     }
     let matchedFilter: IProductTypes[]
     switch (types) {
-
       case "products":
-
         if (value.trim() === "") {
           return setData(data)
         }
 
         matchedFilter = products.filter(item => item.name.toLowerCase().includes(value.toLocaleLowerCase()) || item.description.toLowerCase().includes(value))
         setData(matchedFilter)
-
-
-
         break;
+      case "category":
+        if (value.trim() === "") {
+          return setData(data)
+        }
 
+        matchedFilter = products.filter(item => item.name.toLowerCase().includes(value.toLocaleLowerCase()) || item.description.toLowerCase().includes(value))
+        setData(matchedFilter)
+        break;
     }
 
 

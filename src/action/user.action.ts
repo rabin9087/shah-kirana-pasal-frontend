@@ -101,5 +101,5 @@ export const getUserAction =
   async (dispatch: AppDispatch) => {
     const { user } = await getUser();
     dispatch(setUser(user as IUser));
-    if (user?._id) navigate(pathname ? pathname : "/");
+    if (user?._id) navigate( "/" || pathname);
   };
