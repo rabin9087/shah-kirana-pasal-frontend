@@ -19,7 +19,7 @@ export function Profile() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar>
+                <Avatar >
                     <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                     <AvatarFallback>C N</AvatarFallback>
                 </Avatar>

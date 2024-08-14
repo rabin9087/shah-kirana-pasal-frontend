@@ -4,6 +4,7 @@ import userReducer from "./redux/user.slice";
 import sidebarReducer from "./redux/sidebar.slice";
 import categoryReducer from "./redux/category.slice";
 import productReducer from "./redux/product.slice";
+import addToCartReducer from "./redux/addToCart.slice";
 export const store = configureStore({
   reducer: {
     loader: loadingreducer,
@@ -11,6 +12,7 @@ export const store = configureStore({
     userInfo: userReducer,
     categoryInfo: categoryReducer,
     productInfo: productReducer,
+    addToCartInfo: addToCartReducer
   },
 });
 

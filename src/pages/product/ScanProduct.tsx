@@ -27,7 +27,7 @@ const ScanProduct = () => {
 
     return (
         <Layout title="Scan Product">
-            <div className='flex  justify-center items-center gap-4 mt-2'>
+            <div className='flex justify-center items-center gap-4 mt-2'>
                 <Label
                     htmlFor="image"
                     className="block  text-md font-medium leading-6 text-gray-900"
@@ -36,6 +36,19 @@ const ScanProduct = () => {
                 </Label>
                 <div className='flex justify-center items-center gap-2'>
                     <CustomModal scanCode={setBarcode} scan={true} />
+                    <OpenNotFoundModal />
+                </div>
+            </div>
+
+            <div className='flex justify-center items-center gap-4 mt-2'>
+                <Label
+                    htmlFor="image"
+                    className="block  text-md font-medium leading-6 text-gray-900"
+                >
+                    Get Product's Location
+                </Label>
+                <div className='flex justify-center items-center gap-2'>
+                    <CustomModal location={"location"} scan={true} />
                     <OpenNotFoundModal />
                 </div>
             </div>

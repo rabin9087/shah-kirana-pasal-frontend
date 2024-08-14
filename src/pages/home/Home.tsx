@@ -1,10 +1,10 @@
 
 import { IProductTypes } from "@/types";
-import ProductCard from "../productCart/ProductCart";
 import Layout from "@/components/layout/Layout";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { getAllProductAction } from "@/action/product.action";
+import ProductCard from "../productCard/ProductCard";
 
 // interface IHomeProps {
 //   data: IProductTypes[],
@@ -14,6 +14,9 @@ import { getAllProductAction } from "@/action/product.action";
 function Home(): JSX.Element {
   const dispatch = useAppDispatch();
   const { products } = useAppSelector(state => state.productInfo)
+
+
+
   const [data, setData] = useState<IProductTypes[]>(products)
 
   useEffect(() => {
@@ -23,8 +26,12 @@ function Home(): JSX.Element {
 
 
   return (<Layout types="products" title={`${data.length} products found`} data={data} setData={setData} >
-    <div className="flex justify-center">
-      <ProductCard data={data} />
+    <div className="flex justify-center gap-5 items-center p-5 flex-wrap ">
+
+      {products.map((product) =>
+        <ProductCard key={product._id} item={product} />
+
+      )}
     </div>
   </Layout>
   );

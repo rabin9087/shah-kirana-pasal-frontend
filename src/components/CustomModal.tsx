@@ -25,10 +25,11 @@ interface Images {
     scanCode?: (barcode: string) => void;
     scan?: boolean;
     create?: string;
+    location?: string;
     openNotFound?: boolean
 }
 
-const CustomModal = ({ scanCode, setImage, scan, setBarcode, create }: Images) => {
+const CustomModal = ({ location, scanCode, setImage, scan, setBarcode, create }: Images) => {
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -46,6 +47,15 @@ const CustomModal = ({ scanCode, setImage, scan, setBarcode, create }: Images) =
             <Button size={'default'}
                 type='button'
                 onClick={openModal}>{create === "createCategory" ? < IoCreateOutline size={25} /> : scan ? <BiScan size={20} /> : <MdOutlineCameraAlt size={20} />}</Button>
+            {location === "location" &&
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                >
+                    <ScanBarcodeComponent location={"location"} scanCode={scanCode} closeModal={closeModal} setBarcode={setBarcode} />
+                </Modal>}
 
             {create === "createCategory" ?
                 <Modal

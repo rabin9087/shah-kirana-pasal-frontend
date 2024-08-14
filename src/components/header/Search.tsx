@@ -10,8 +10,6 @@ interface ISearchProps {
 }
 
 const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placeholder }) => {
-  console.log(data)
-
   const { products } = useAppSelector(state => state.productInfo)
 
   const handelOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {

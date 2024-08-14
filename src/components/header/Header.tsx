@@ -1,7 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { ThemeToggle } from "../ThemeToggle";
 import { Button } from "../ui/button";
-
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { toggleSideBar } from "@/redux/sidebar.slice";
 import SearchBar from "./Search";
@@ -40,7 +38,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   return (
     <div className="p-4 shadow-sm sticky top-0 rounded-md z-10 justify-center bg-primary">
       <div className="flex justify-between ">
-        <div className="flex gap-2 justify-center items-center text-md font-bold leading-none">
+        <div className="flex w-full gap-2 justify-start items-center text-md font-bold leading-none">
           <Button
             variant={"link"}
             onClick={() => {
@@ -50,18 +48,17 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
           >
             {open ? <RxCross1 className="text-red-500 bg-white" size={20} />
               :
-
               <GiHamburgerMenu size={20} />
             }
 
           </Button>
           <span className="text-primary-foreground p-2 hover:bg-gray-300">
             <Link to={"/"}>
-              Shah Shop Logo
-            </Link></span>
-
+              <img src="https://flowbite.com/docs/images/logo.svg" className="h-8 me-3" alt="FlowBite Logo" />
+            </Link>
+          </span>
         </div>
-        <div className="flex justify-between gap-2 mx-2">
+        <div className="hidden md:flex w-full justify-start gap-2">
           <div className="md:flex hidden gap-2 items-center justify-center">
             {links.map((item) => (
               <Link
@@ -75,15 +72,14 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
             ))}
 
           </div>
-
-
         </div>
-
-        <div className="flex gap-4 items-center justify-end">
-          <Cart />
-          {/* <NavbarDemo /> */}
-          <ThemeToggle />
-          <Profile />
+        <div className="flex w-full items-center justify-end gap-1">
+          <Link to={"/cart"} className="w-full flex justify-end item-end">
+            <Cart />
+          </Link>
+          <div className="w-fit">
+            <Profile />
+          </div>
         </div>
       </div>
       <div className="flex justify-center items-center w-full mt-2">

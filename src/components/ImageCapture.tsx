@@ -75,9 +75,10 @@ interface ScanBarcodeComponentProps {
     setBarcode?: (barcode: string) => void;
     scanCode?: (barcode: string) => void;
     closeModal: () => void;
+    location?: string;
 }
 
-export const ScanBarcodeComponent = ({ scanCode, setBarcode, closeModal }: ScanBarcodeComponentProps) => {
+export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModal }: ScanBarcodeComponentProps) => {
 
     const navigate = useNavigate()
     const { ref } = useZxing({
@@ -92,6 +93,10 @@ export const ScanBarcodeComponent = ({ scanCode, setBarcode, closeModal }: ScanB
                     setBarcode(result.getText())
                     closeModal()
                     return navigate(`/product/create/`)
+                }
+                if (location) {
+                    // scanCode(result.getText())
+                    // return closeModal()
                 }
             }
         },

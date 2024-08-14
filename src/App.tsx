@@ -23,6 +23,7 @@ import AllProducts from "./pages/product/Products";
 import ScanProduct from "./pages/product/ScanProduct";
 import ProductLanding from "./pages/product/ProductLanding";
 import ProductCardByCategory from "./pages/category/ProductsByCategory";
+import AddToCart from "./pages/addToCart/AddToCart";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -142,6 +143,12 @@ function App() {
         <Route
           path="/category/:slug"
           element={<ProductCardByCategory />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/cart"
+          element={<AddToCart />}
           errorElement={<ErrorPage />}
         />
         {/* This is last line  */}
