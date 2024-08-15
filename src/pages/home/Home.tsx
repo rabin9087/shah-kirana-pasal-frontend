@@ -15,8 +15,6 @@ function Home(): JSX.Element {
   const dispatch = useAppDispatch();
   const { products } = useAppSelector(state => state.productInfo)
 
-
-
   const [data, setData] = useState<IProductTypes[]>(products)
 
   useEffect(() => {
@@ -24,13 +22,11 @@ function Home(): JSX.Element {
     setData(products)
   }, [dispatch, products.length])
 
-
   return (<Layout types="products" title={`${data.length} products found`} data={data} setData={setData} >
     <div className="flex justify-center gap-5 items-center p-5 flex-wrap ">
 
       {products.map((product) =>
         <ProductCard key={product._id} item={product} />
-
       )}
     </div>
   </Layout>

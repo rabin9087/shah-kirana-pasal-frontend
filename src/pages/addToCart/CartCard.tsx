@@ -4,16 +4,28 @@ import {
 } from "@/components/ui/card"
 import { Link } from "react-router-dom"
 import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } from "@/utils/QuantityChange"
-import { useAppSelector } from "@/hooks"
+import { useAppDispatch, useAppSelector } from "@/hooks"
 import { IAddToCartTypes } from "../addToCart"
+import { Button } from "@/components/ui/button"
+import { RxCross1 } from "react-icons/rx";
+import { setAddToCart } from "@/redux/addToCart.slice"
+
 
 const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
     const { cart } = useAppSelector((state) => state.addToCartInfo)
     const orderQty = getOrderNumberQuantity(item._id, cart)
+    const dispatch = useAppDispatch()
+    const handleOnAddToCart = () => {
+        dispatch(setAddToCart({ ...item, orderQuantity: 0 }))
+    }
 
     return (
         <Card className="w-full md:w-[250px] rounded-none mb-1">
+            <div className="flex justify-end">
 
+                <Button className="w-fit flex justify-end border-none hover:bg-gray-300" variant={"outline"} onClick={handleOnAddToCart}><RxCross1 className="w-fit rounded-full border-2" size={20} /></Button>
+
+            </div>
             <div className="flex justify-start items-center gap-2 px-2 py-2">
                 <Link to={`/product/${item.qrCodeNumber}`}>
                     <img
@@ -39,7 +51,6 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                         // </span>
                     }
                     <div className="w-[120px] mb-2">
-
                         {!itemExist(item._id, cart).length ?
                             <AddToCartButton item={{ ...item, orderQuantity: orderQty || 0 }} />
                             :
@@ -48,7 +59,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
 
                 </div>
                 <div className="text-xl text-end items-center my-auto">
-                    ${item.price * item.orderQuantity}
+                    ${(item.price * item.orderQuantity).toFixed(2)}
                 </div>
             </div>
         </Card>)

@@ -74,9 +74,9 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
           </div>
         </div>
         <div className="flex w-full items-center justify-end gap-1">
-          <Link to={"/cart"} className="w-full flex justify-end item-end">
-            <Cart />
-          </Link>
+          {/* <Link to={"/cart"} className="w-full flex justify-end item-end"> */}
+          <Cart />
+          {/* </Link> */}
           <div className="w-fit">
             <Profile />
           </div>
