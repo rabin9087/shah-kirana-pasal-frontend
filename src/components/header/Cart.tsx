@@ -8,7 +8,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Button } from "../ui/button";
 import AddToCart from "@/pages/addToCart/AddToCart";
 
 

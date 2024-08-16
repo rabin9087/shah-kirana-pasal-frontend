@@ -67,14 +67,17 @@ export const updateAProductStatusAction = (_id: string, data: object) => async (
 
 export const getAllProductAction = () => async (dispatch: AppDispatch) => {
         try {
-            return await getAllProducts();
+                const res = await getAllProducts();
+                dispatch(setProducts(res))
+                return res
             
 
         //     const response: serverReturnDataType = await pending
         //         toast[response.status](response.message)
         //         if (response.status === "success") {
         //                 dispatch(setProducts(response?.products ?? []))
-        //                 return response.product || []
+                //                 return response.product || []
+                
                         
         //         } else {
         //                 console.log("error")

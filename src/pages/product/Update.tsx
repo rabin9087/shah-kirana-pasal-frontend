@@ -23,7 +23,7 @@ const UpdateProduct = () => {
     const { qrCodeNumber } = useParams()
     const dispatch = useAppDispatch()
 
-    const { data = [], isLoading, error, isFetching } = useQuery({
+    const { data = [] } = useQuery({
         queryKey: ['product'],
         queryFn: async () =>
             getAProduct({ barcode })
