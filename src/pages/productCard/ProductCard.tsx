@@ -17,7 +17,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes }> = ({ item
   const orderQty = getOrderNumberQuantity(item._id, cart)
 
   return (
-    <Card className="w-[250px]">
+    <Card className="w-[180px] md:w-[250px] h-[280px] md:h-full">
       <CardHeader>
         <CardDescription> <Link to={`/product/${item.qrCodeNumber}`}>
           <img
@@ -36,9 +36,9 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes }> = ({ item
       <CardContent className="text-2xl mt-0 ">
         ${item.price}
       </CardContent>
-      <CardFooter className="flex-col justify-between ">
+      <CardFooter className="flex-col justify-between items-end">
         {(cart.find((cart) => item._id === cart._id)?.orderQuantity || 0) >= item.quantity && (
-          <span className="block text-sm text-red-500 h-[20px] my-2">
+          <span className="block text-sm h-[20px] my-2">
             {item.quantity} item(s) left
           </span>
         )

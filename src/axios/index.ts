@@ -10,6 +10,12 @@ export const getAccessJWt = () => {
 export const getRefreshJWT = () => { 
   return localStorage.getItem("refreshJWT");
 };
+
+export const axiosInstance = axios.create({
+    baseURL: rootApi,
+    headers: { "Content-type": "application/json; charset = UTF-8" }
+})
+
 export const axiosProcessor = async ({
   method,
   url,

@@ -1,12 +1,19 @@
 import { IAddToCartTypes } from "@/pages/addToCart";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
+const getCart = () => {
+      const cart = localStorage.getItem("cart");
+      const value = (JSON.parse(cart as string))
+      return value
+    };
+const cart = getCart()
+
 interface InititalState {
   cart: IAddToCartTypes[];
 };
 
 const initialState: InititalState = {
-  cart: [],
+  cart: cart || [],
 };
 
 const userSlice = createSlice({
@@ -15,10 +22,7 @@ const userSlice = createSlice({
   reducers: { 
     setAddToCart: (state, { payload }: PayloadAction<IAddToCartTypes>) => {
       const index = state.cart.findIndex((cartItem) => cartItem._id === payload._id) 
-      // {console.log(payload.orderQuantity)}
       const filter = state.cart.findIndex((cart) => cart._id === payload._id && payload.orderQuantity === 0)
-      console.log(filter)
-      console.log(payload.orderQuantity)
        if (payload.orderQuantity === 0) {
             state.cart.splice(filter, 1)
           }
@@ -27,7 +31,8 @@ const userSlice = createSlice({
           } 
       else {
               state.cart.push(payload)
-          }
+       }
+    localStorage.setItem("cart", JSON.stringify(state.cart))
     },
   
   },

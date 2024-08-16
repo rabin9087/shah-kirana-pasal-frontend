@@ -23,8 +23,7 @@ function Home(): JSX.Element {
   }, [dispatch, products.length])
 
   return (<Layout types="products" title={`${data.length} products found`} data={data} setData={setData} >
-    <div className="flex justify-center gap-5 items-center p-5 flex-wrap ">
-
+    <div className="flex justify-center gap-5 items-center p-5 flex-wrap min-h-screen">
       {products.map((product) =>
         <ProductCard key={product._id} item={product} />
       )}

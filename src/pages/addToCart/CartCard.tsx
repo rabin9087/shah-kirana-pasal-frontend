@@ -22,9 +22,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
     return (
         <Card className="w-full md:w-[250px] rounded-none mb-1">
             <div className="flex justify-end">
-
                 <Button className="w-fit flex justify-end border-none hover:bg-gray-300" variant={"outline"} onClick={handleOnAddToCart}><RxCross1 className="w-fit rounded-full border-2" size={20} /></Button>
-
             </div>
             <div className="flex justify-start items-center gap-2 px-2 py-2">
                 <Link to={`/product/${item.qrCodeNumber}`}>

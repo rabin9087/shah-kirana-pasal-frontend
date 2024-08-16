@@ -24,6 +24,7 @@ import ScanProduct from "./pages/product/ScanProduct";
 import ProductLanding from "./pages/product/ProductLanding";
 import ProductCardByCategory from "./pages/category/ProductsByCategory";
 import AddToCart from "./pages/addToCart/AddToCart";
+import { setAddToCart } from "./redux/addToCart.slice";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -31,9 +32,11 @@ function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
   const { user } = useAppSelector(state => state.userInfo)
 
   useEffect(() => {
+
     if (user._id !== "") {
       dispatch(getUserAction(navigate, pathname));
     }
