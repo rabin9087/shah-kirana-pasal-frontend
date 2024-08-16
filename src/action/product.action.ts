@@ -67,20 +67,22 @@ export const updateAProductStatusAction = (_id: string, data: object) => async (
 
 export const getAllProductAction = () => async (dispatch: AppDispatch) => {
         try {
-            const pending = getAllProducts();
-            toast.promise(pending, {
-                pending: "Please wait"
-            })
+            return await getAllProducts();
+            
 
-            const response: serverReturnDataType = await pending
-                toast[response.status](response.message)
-                if (response.status === "success") {
-                       dispatch(setProducts(response?.products ?? []))
-                } else {
-                        console.log("error")
-                }
+        //     const response: serverReturnDataType = await pending
+        //         toast[response.status](response.message)
+        //         if (response.status === "success") {
+        //                 dispatch(setProducts(response?.products ?? []))
+        //                 return response.product || []
+                        
+        //         } else {
+        //                 console.log("error")
+        //                 throw new Error("Failed to fetch products");
+        //         }
         } catch (error) {
                 console.log(error)
+                throw new Error("Error to fetch products");
         }
 };
 
@@ -113,14 +115,11 @@ export const getAProductAction = ({...data}) => async (dispatch: AppDispatch) =>
             })
 
                 const response: serverReturnDataType = await pending
-                console.log(response)
                 toast[response.status](response.message)
                 if (response.status === "success" && response.product) {
-                        console.log("success")
                         dispatch(setAProduct(response?.product))
                         return true
                 } else if (response.status === "error" && response.message === "Product Not Found!") {
-                        console.log("error")
                         dispatch(setAProductFoundStatus({ status: false, openNotFoundModal: true }))
                         return false
                 } else {

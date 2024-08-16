@@ -28,7 +28,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes }> = ({ item
           />
         </Link>
         </CardDescription>
-        <CardTitle className="text-lg hover:underline "><Link to={`/product/${item.qrCodeNumber}`}>
+        <CardTitle className="text-md hover:underline font-thin"><Link to={`/product/${item.qrCodeNumber}`}>
           {item.name}
         </Link></CardTitle>
 

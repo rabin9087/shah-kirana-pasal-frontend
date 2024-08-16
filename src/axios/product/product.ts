@@ -29,12 +29,18 @@ export const updateAProductStatus= (_id: string, data: object) => {
   });
 };
 
-export const getAllProducts= () => {
-  return axiosProcessor({
+export const getAllProducts = async () => {
+  try {
+    const response = await axiosProcessor({
     method: "get",
     url: `${productApi}`,
     isPrivate: false,
   });
+  return response.products || [];
+  } catch (error) {
+    throw new Error("Failed to fetch products");
+  }
+  
 };
 
 export const getAllProductsByCategory = (slug: string) => {

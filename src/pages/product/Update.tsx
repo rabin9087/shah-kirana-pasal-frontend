@@ -13,19 +13,27 @@ import { Label } from '@/components/ui/label';
 import { AiFillPicture } from "react-icons/ai";
 import { Input } from '@/components/ui/input';
 import { useParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getAProduct } from '@/axios/product/product';
 
 const UpdateProduct = () => {
 
     const [barcode, setBarcode] = useState<string>('');
     const [image, setImage] = useState<string | null>("");
     const { qrCodeNumber } = useParams()
-    console.log('barcode', qrCodeNumber)
-
     const dispatch = useAppDispatch()
+
+    const { data = [], isLoading, error, isFetching } = useQuery({
+        queryKey: ['product'],
+        queryFn: async () =>
+            getAProduct({ barcode })
+        ,
+    });
+    console.log(data)
+
+
     const { product } = useAppSelector(state => state.productInfo)
     const [form, setForm] = useState<IProductUpdateTypes>(product);
-
-    console.log(form)
 
     const convert2base64 = (image: Blob) => {
         const reader = new FileReader();

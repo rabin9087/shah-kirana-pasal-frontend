@@ -180,6 +180,7 @@ const CreateProduct = () => {
     },
   ];
 
+
   return (
     <Layout title='Enter Product Details'>
 
