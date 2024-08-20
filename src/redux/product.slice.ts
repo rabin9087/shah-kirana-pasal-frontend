@@ -34,13 +34,13 @@ export type IProductStatus = {
 
 const productStatus = <IProductStatus>{status: false, openNotFoundModal: false}
 interface InititalState {
-    products: IProductTypes[];
+  products: IProductTypes[];
   product: IProductTypes,
   productFoundStatus: IProductStatus,
 };
 
 const initialState: InititalState = {
-    products: [productInitialState],
+    products: [],
     product: productInitialState,
     productFoundStatus: productStatus,
 };

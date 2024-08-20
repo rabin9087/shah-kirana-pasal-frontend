@@ -6,19 +6,37 @@ import { useParams } from "react-router";
 import ProductDetails from "./components/ProductDetails";
 import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } from "@/utils/QuantityChange";
 import { Card, CardDescription } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { getAProduct } from "@/axios/product/product";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
+import { setAProduct } from "@/redux/product.slice";
+import { IProductTypes } from "@/types";
 
 const ProductLanding = () => {
     const params = useParams();
     const dispatch = useAppDispatch();
     const { product } = useAppSelector((s) => s.productInfo);
     const { cart } = useAppSelector((state) => state.addToCartInfo)
-
     const orderQty = getOrderNumberQuantity(product._id, cart)
     const index = cart.find((item) => item._id === product._id)
 
+    const { data = {} as IProductTypes, isLoading, error, isFetching } = useQuery<IProductTypes>({
+        queryKey: ['aproduct'],
+        queryFn: async () =>
+            getAProduct({ qrCodeNumber: params })
+        ,
+    });
+
     useEffect(() => {
-        dispatch(getAProductAction({ qrCodeNumber: params }));
-    }, [dispatch]);
+        if (data._id !== "") {
+            dispatch(setAProduct(data))
+        }
+    }, [dispatch, data._id]);
+
+    if (isLoading || isFetching) return <Loading />;
+
+    if (error) return <Error />
 
     return (
         <Layout title={product.name}>
@@ -44,7 +62,7 @@ const ProductLanding = () => {
                         </h3>
                         <div className="flex justify-between items-center">
                             <p className="text-xl md:text-3xl mt-2 font-serif px-4 lg:px-0">
-                                ${product.price}.00
+                                ${product.price}
                             </p>
                             <p className="text-md mt-2 font-serif px-4 lg:px-0">
                                 ${product.price} / item

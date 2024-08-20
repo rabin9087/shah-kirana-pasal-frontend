@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData }
 
   const { open } = useAppSelector((Store => Store.sidebar))
   return (
-    <div className={`flex flex-col border-2 bg-background  ${open ? "h-screen overflow-hidden" : "min-h-screen "}`}>
+    <div className={`flex min-h-screen flex-col border-2 bg-background  ${open ? "h-screen overflow-hidden" : "min-h-screen "}`}>
       <Header data={data} types={types} setData={setData} />
       <main className="relative w-full gap-2 border-2 ">
         <SideBar />

@@ -19,7 +19,7 @@ const AddToCart = () => {
         // <Layout title="Cart">
         <div className="p-2 shadow-md w-fit overflow-auto mt-2">
             {cart.length ?
-                <div className="w-full md:w-[250px] flex flex-col justify-end items-end  ">
+                <div className="w-[300px] md:w-[250px] flex flex-col justify-end items-end  ">
                     <hr className="w-full" />
                     {cart.map((product) =>
                         <CartCard key={product._id} item={product} />)}
