@@ -3,98 +3,78 @@ import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField, IStoredAt, productSchema, ProductSchema } from './formValidation';
-import { getAllCategoriesAction } from '@/action/category.action';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import CustomModal from '@/components/CustomModal';
-import { getAProductAction, updateProductAction } from '@/action/product.action';
-import { IProductUpdateTypes } from '@/types';
+import { IProductTypes } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { AiFillPicture } from "react-icons/ai";
 import { Input } from '@/components/ui/input';
 import { useParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
-import { getAProduct } from '@/axios/product/product';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getAProduct, updateProduct } from '@/axios/product/product';
+import { Link } from 'react-router-dom';
+import { setAProduct } from '@/redux/product.slice';
+import Loading from '@/components/ui/Loading';
+import Error from '@/components/ui/Error';
+import { convertToBase64 } from '@/utils/convertToBase64';
+import ProductNotFound from './components/ProductNotFound';
 
 const UpdateProduct = () => {
 
-    const [barcode, setBarcode] = useState<string>('');
     const [image, setImage] = useState<string | null>("");
-    const { qrCodeNumber } = useParams()
+    const params = useParams()
     const dispatch = useAppDispatch()
-
-    const { data = [] } = useQuery({
-        queryKey: ['product'],
-        queryFn: async () =>
-            getAProduct({ barcode })
-        ,
-    });
-    console.log(data)
-
-
     const { product } = useAppSelector(state => state.productInfo)
-    const [form, setForm] = useState<IProductUpdateTypes>(product);
+    const { categories } = useAppSelector(state => state.categoryInfo)
 
-    const convert2base64 = (image: Blob) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImage(reader.result as string);
-        };
-        return reader.readAsDataURL(image);
-    };
+    const { data = {} as IProductTypes, isLoading, error, isFetching } = useQuery<IProductTypes>({
+        queryKey: [params?.qrCodeNumber],
+        queryFn: async () =>
+            await getAProduct(params)
+    });
+
+    useEffect(() => {
+        if (data._id) {
+            dispatch(setAProduct(data))
+            setImage(data.image as string);
+            Object.keys(product).forEach((key) => {
+                setValue(key as keyof ProductSchema, data[key as keyof ProductSchema]);
+            });
+        }
+    }, [dispatch, data._id])
+
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProductSchema>({
+        resolver: zodResolver(productSchema),
+    });
 
     const handleOnImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            convert2base64(file);
+            convertToBase64(file, setImage);
         }
     };
 
     const handelOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
         setValue(name as keyof ProductSchema, value);
-
+        console.log(name, value)
     }
 
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProductSchema>({
-        resolver: zodResolver(productSchema),
-    });
-
-    const { categories } = useAppSelector(state => state.categoryInfo)
+    const mutation = useMutation({
+        mutationFn: async (data: ProductSchema) => {
+            return await updateProduct(data)
+        },
+    })
 
     const onSubmit = async (data: ProductSchema) => {
+        const productData: ProductSchema = {
+            ...data,
+            image: data.image ? (data.image as File) : image, // Assuming image is a file input
+        };
 
-        const formData = new FormData();
-        formData.append("image", image as string)
-        for (const key in data) {
-
-            if (key === 'image') {
-                setValue('image', image);
-
-            } else {
-                formData.append(key, data[key as keyof ProductSchema]);
-            }
-        }
-
-        await dispatch(updateProductAction(data))
-
+        return mutation.mutate(productData)
     };
-
-    useEffect(() => {
-        dispatch(getAllCategoriesAction());
-        if (barcode !== form.qrCodeNumber || qrCodeNumber !== "") {
-            setBarcode(() => qrCodeNumber as string)
-            dispatch(getAProductAction({ qrCodeNumber: barcode }));
-        }
-        setForm(product);
-
-        Object.keys(product).forEach((key) => {
-            setValue(key as keyof ProductSchema, product[key as keyof ProductSchema]);
-        });
-        if (product.image) {
-            setImage(product.image as string);
-        }
-    }, [dispatch, barcode, form, setValue, qrCodeNumber]);
 
     useEffect(() => {
         if (image) {
@@ -102,25 +82,33 @@ const UpdateProduct = () => {
         }
     }, [image, setValue]);
 
+    if (isLoading || isFetching) return <Loading />;
+
+    if (!data) return <Layout title='Update Product Details'><Link to={"/scan-product"} className='ms-4'>
+        <Button>&lt; Back</Button>
+    </Link><ProductNotFound /> </Layout>
+
+    if (error) return <Error />
+
     const input: InputField[] = [
         {
             label: "Product Name",
             name: "name",
             required: true,
-            value: form.name,
+            value: product.name,
             placeholder: "Enter Product Name",
         },
         {
             label: "Alternate Name (optional)",
             name: "alternateName",
-            value: form.alternateName,
+            value: product.alternateName,
             placeholder: "Enter Product Alternative Name",
         },
         {
             label: "SKU",
             name: "sku",
             generate: "sku",
-            value: form.sku,
+            value: product.sku,
             required: true,
             placeholder: "Enter Product SKU Value or Generate",
         },
@@ -128,7 +116,7 @@ const UpdateProduct = () => {
             label: "Barcode ",
             name: "qrCodeNumber",
             type: "text",
-            value: form.qrCodeNumber,
+            value: product.qrCodeNumber,
             generate: "barcode",
             classname: "col-span-full",
             required: true,
@@ -138,7 +126,7 @@ const UpdateProduct = () => {
             label: "Price",
             name: "price",
             type: "string",
-            value: form.price,
+            value: product.price,
             required: true,
             placeholder: "Enter Product Price",
         },
@@ -146,7 +134,7 @@ const UpdateProduct = () => {
             label: "Quantity",
             name: "quantity",
             type: "string",
-            value: form.quantity,
+            value: product.quantity,
             required: true,
             placeholder: "Enter Product Quantity",
         },
@@ -155,7 +143,7 @@ const UpdateProduct = () => {
             name: "productLocation",
             type: "text",
             required: true,
-            value: form.productLocation,
+            value: product.productLocation,
             placeholder: "A02 - B20 - S6",
         },
         {
@@ -165,55 +153,49 @@ const UpdateProduct = () => {
             required: true,
             inputeType: "select",
             select: 'select',
-            value: form.storedAt,
+            value: product.storedAt,
             placeholder: "",
         },
         {
             label: "Product Weight (optional)",
             name: "productWeight",
             type: "text",
-            value: form.productWeight,
+            value: product.productWeight,
             placeholder: "Enter Product Weight",
         },
         {
             label: "Sales Price (optional)",
             name: "salesPrice",
             type: "string",
-            value: form.salesPrice,
+            value: product.salesPrice,
             placeholder: "Enter Product Sales Price",
         },
         {
             label: "Sales Start Date (optional)",
             name: "salesStartDate",
             type: "date",
-            value: form.salesStartDate,
+            value: product.salesStartDate,
             placeholder: "Enter Product Sale Start Date",
         },
         {
             label: "Sales End Date (optional)",
             name: "salesEndDate",
             type: "date",
-            value: form.salesEndDate,
+            value: product.salesEndDate,
             placeholder: "Enter Product Sale End Date",
         },
     ];
 
+
+
     return (
         <Layout title='Update Product Details'>
+            <Link to={"/scan-product"} className='ms-4'>
+                <Button>&lt; Back</Button>
+            </Link>
+
             <div className='flex justify-center w-full '>
                 <form className='m-2 flex flex-col gap-2 w-full  md:max-w-[780px] border-2 p-4 rounded-md shadow-sm' onSubmit={handleSubmit(onSubmit)}>
-                    <div className='flex  justify-start items-center gap-4'>
-                        <Label
-                            htmlFor="image"
-                            className="block  text-md font-medium leading-6 text-gray-900"
-                        >
-                            Scan Product's Barcode
-                        </Label>
-                        <div className='flex justify-center items-center gap-2'>
-                            <CustomModal scanCode={setBarcode} scan={true} setImage={setImage} />
-                        </div>
-                    </div>
-                    <hr />
                     <div className='flex gap-2 items-center'>
                         <Label
                             htmlFor="image"
@@ -263,6 +245,7 @@ const UpdateProduct = () => {
                                 <select
                                     id="category"
                                     className="w-full md:w-[310px] border-2 rounded-md"
+                                    defaultValue={product.parentCategoryID}
                                     {...register('parentCategoryID')}
                                     onChange={handelOnChange}
                                 >
@@ -307,6 +290,7 @@ const UpdateProduct = () => {
                                                 <select
                                                     className="w-full p-2 border-2 rounded-md"
                                                     id="storedAt"
+                                                    defaultValue={product.storedAt}
                                                     {...register('storedAt')}
                                                     onChange={handelOnChange}
                                                 >
@@ -332,6 +316,7 @@ const UpdateProduct = () => {
                                             id="description"
                                             {...register('description')}
                                             rows={5}
+                                            defaultValue={product.description}
                                             onChange={handelOnChange}
                                             className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             placeholder='Enter Product description'
@@ -346,6 +331,7 @@ const UpdateProduct = () => {
                     <div className="mt-2 flex items-center justify-end gap-2">
                         <Button
                             type="submit"
+                            disabled={mutation.isPending}
                         >
                             Save
                         </Button >
@@ -355,8 +341,6 @@ const UpdateProduct = () => {
                         >
                             Cancel
                         </Button >
-
-
                     </div>
 
                 </form>

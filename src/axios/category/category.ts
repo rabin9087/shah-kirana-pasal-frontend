@@ -4,21 +4,32 @@ import { IGetACategoryParams } from "./types";
 import { UpdateCategorySchema } from "@/pages/category/categoryFormValidation";
 const categoryApi = rootApi + "/api/v1/category";
 
-export const createCategory= (data: ICategoryTypes) => {
-  return axiosProcessor({
+export const createCategory = async(data: ICategoryTypes) => {
+  try {
+    const response = await axiosProcessor({
     method: "post",
     url: `${categoryApi}`,
     isPrivate: false,
     obj: data,
-  });
+    });
+    return response.status
+  } catch (error) {
+    throw new Error("Failed to fetch products");
+  }
 };
 
-export const getAllCategories= () => {
-  return axiosProcessor({
+export const getAllCategories = async() => {
+  try {
+    const response = await axiosProcessor({
     method: "get",
     url: `${categoryApi}`,
     isPrivate: false,
-  });
+    });
+    
+    return response.categoryList as ICategoryTypes[]
+  } catch (error) {
+    throw new Error("Failed to fetch products");
+  }
 };
 
 export const getACategory= (_id: IGetACategoryParams) => {

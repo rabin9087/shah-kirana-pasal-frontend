@@ -28,8 +28,8 @@ export function Profile() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => {
-                    console.log('first')
                 }}>Profile</DropdownMenuItem>
+                <DropdownMenuItem><Link to={"/all-products"}>All Product</Link></DropdownMenuItem>
                 <DropdownMenuItem><Link to={"/product/create"}>Create Product</Link></DropdownMenuItem>
                 <DropdownMenuItem><Link to={"/scan-product"}>Update Product</Link></DropdownMenuItem>
 

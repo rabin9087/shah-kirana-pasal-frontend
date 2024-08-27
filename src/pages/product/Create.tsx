@@ -4,27 +4,64 @@ import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField, IStoredAt, productSchema, ProductSchema } from './formValidation';
-import { getAllCategoriesAction } from '@/action/category.action';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import CustomModal from '@/components/CustomModal';
-import { createProductAction } from '@/action/product.action';
 import { Button } from '@/components/ui/button';
 import { AiFillPicture } from "react-icons/ai";
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createProduct } from '@/axios/product/product';
+import { getAllCategories } from '@/axios/category/category';
+import { ICategoryTypes } from '@/types';
+import { setCategory } from '@/redux/category.slice';
+import { toast } from '@/components/ui/use-toast';
 const CreateProduct = () => {
   const [sku, setSku] = useState<string>('');
   const [barcode, setBarcode] = useState<string>('');
   const [isBarcode, setIsBarcode] = useState<boolean>(false);
   const [image, setImage] = useState<string | null>("");
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const { categories } = useAppSelector(state => state.categoryInfo)
+
+  const { data = [] } = useQuery<ICategoryTypes[]>({
+    queryKey: ['categories'],
+    queryFn: () => getAllCategories()
+  });
+
+  useEffect(() => {
+    if (data.length !== categories.length) {
+      dispatch(setCategory(data))
+    }
+  }, [dispatch, data.length, categories.length])
+
+  const mutation = useMutation({
+    mutationFn: (data: ProductSchema) =>
+      createProduct(data),
+    onError: (error) => {
+      toast({
+        title: "Creating",
+        description: error.message
+      })
+      console.log(error.message)
+    },
+    onSuccess: (message) => {
+      toast({
+        title: "Creating",
+        description: message
+      })
+      navigate("/")
+
+    }
+  })
 
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
   });
 
-  const dispatch = useAppDispatch()
 
   const handleOnGenerateSKU = () => {
     const code = generateRandomCode();
@@ -37,10 +74,6 @@ const CreateProduct = () => {
     setIsBarcode(true);
     setBarcode(code);
   };
-
-  // const handelOnCaptureImage = () => {
-  //   return <WebcamComponent />s
-  // }
 
   const convert2base64 = (image: Blob) => {
     const reader = new FileReader();
@@ -58,37 +91,27 @@ const CreateProduct = () => {
     }
   };
 
-
-  const { categories } = useAppSelector(state => state.categoryInfo)
-
-
   const onSubmit = async (data: ProductSchema) => {
-    console.log(data)
-    const formData = new FormData();
-    formData.append("image", image as string)
-    for (const key in data) {
-      if (key === 'image') {
-        setValue('image', image);
-      } else {
-        formData.append(key, data[key as keyof ProductSchema]);
+
+    if (image) {
+      setValue('image', image); // Optionally set the value in the form
+      data.image = image as any; // Assuming image is a file or similar
+
+      const formData = new FormData();
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          formData.append(key, data[key as keyof ProductSchema] as any);
+        }
       }
     }
 
-    const create = await dispatch(createProductAction(data))
-    if (create) {
-      return navigate("/")
-    }
+    return mutation.mutate(data)
 
   };
-
 
   useEffect(() => {
     setValue('image', image);
   }, [image, setValue]);
-
-  useEffect(() => {
-    dispatch(getAllCategoriesAction())
-  }, [dispatch])
 
   const input: InputField[] = [
     {
@@ -325,6 +348,7 @@ const CreateProduct = () => {
           <div className="mt-2 flex items-center justify-end gap-2">
             <Button
               type="submit"
+              disabled={mutation.isPending}
             >
               Save
             </Button >
@@ -334,8 +358,6 @@ const CreateProduct = () => {
             >
               Cancel
             </Button >
-
-
           </div>
         </form>
       </div>

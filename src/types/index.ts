@@ -57,15 +57,16 @@ export interface IUser {
 }
 export type serverReturnDataType = {
   status: "success" | "error";
-  message: string;
+  message?: string;
   result?: [];
   user?: IUser;
   userEmail_Phone?: string;
   tokens?: { accessJWT: string; refreshJWT: string };
-  categoryList?: ICategoryTypes[] | undefined;
-  category?: ICategoryTypes | undefined;
-  products?: IProductTypes[] | undefined,
-  product?: IProductTypes | undefined
+  categoryList?: ICategoryTypes[];
+  category?: ICategoryTypes;
+  products?: IProductTypes[],
+  product?: IProductTypes,
+  clientSecret?: string
 };
 
 export type LocationState = {

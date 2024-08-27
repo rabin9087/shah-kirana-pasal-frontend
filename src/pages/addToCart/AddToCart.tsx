@@ -2,6 +2,7 @@ import { useAppSelector } from "@/hooks"
 import CartCard from "./CartCard"
 import EmptyCart from "./EmptyCart"
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 // import { RxCross1 } from "react-icons/rx";
 // import {
 //     Drawer,
@@ -32,7 +33,11 @@ const AddToCart = () => {
                         <span className="">${toatl.toFixed(2)}</span>
 
                     </div>}
-                {cart.length && <div className="w-full md:w-[250px] py-2 flex justify-center"><Button className="w-full md:w-[250px]">Checkout</Button></div>}
+                {cart.length && <div className="w-full md:w-[250px] py-2 flex justify-center">
+                    <Link to={"/payment"}>
+                        <Button className="w-full md:w-[250px]">Checkout</Button>
+                    </Link>
+                </div>}
             </div>
 
         </div>

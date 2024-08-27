@@ -12,12 +12,12 @@ import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } fro
 import { useAppSelector } from "@/hooks"
 import { IAddToCartTypes } from "../addToCart"
 
-const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes }> = ({ item }) => {
+const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: string }> = ({ item, addClass }) => {
   const { cart } = useAppSelector((state) => state.addToCartInfo)
   const orderQty = getOrderNumberQuantity(item._id, cart)
 
   return (
-    <Card className="w-full sm:w-[180px] md:w-[250px] h-full md:h-full ">
+    <Card className={`w-full sm:w-[180px] md:w-[250px] h-full md:h-full ${addClass}`} >
       <CardHeader>
         <CardDescription> <Link to={`/product/${item.qrCodeNumber}`}>
           <img

@@ -16,7 +16,7 @@ const categoryInitialState = {
   }
 
 const initialState: InititalState = {
-  categories: [categoryInitialState],
+  categories: [],
   selectedCategory: categoryInitialState
 };
 

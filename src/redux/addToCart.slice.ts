@@ -12,7 +12,7 @@ interface InititalState {
   cart: IAddToCartTypes[];
 };
 
-const initialState: InititalState = {
+export const initialState: InititalState = {
   cart: cart || [],
 };
 

@@ -1,7 +1,6 @@
 
 import { useAppDispatch } from "@/hooks";
 import React, { useCallback, useRef, useState } from "react";
-import { useNavigate } from "react-router";
 import Webcam from "react-webcam";
 import { useZxing } from "react-zxing";
 import { Button } from "./ui/button";
@@ -12,9 +11,11 @@ import { Input } from '@/components/ui/input';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { categorySchema } from "@/pages/category/categoryFormValidation";
-import { createCategoryAction } from "@/action/category.action";
+
 import { ICategoryTypes } from "@/types";
 import { setAProductFoundStatus } from "@/redux/product.slice";
+import { useMutation } from "@tanstack/react-query";
+import { createCategory } from "@/axios/category/category";
 
 const videoConstraints = {
     width: 1280,
@@ -34,7 +35,6 @@ export const WebcamComponent: React.FC<WebcamComponentProps> = ({ setImage, clos
     // create a capture function
     const capture = useCallback(() => {
         const imageSrc = webcamRef?.current?.getScreenshot();
-        console.log(typeof (imageSrc))
         if (imageSrc) {
             setImage?.(imageSrc);
             closeModal();
@@ -79,20 +79,23 @@ interface ScanBarcodeComponentProps {
 }
 
 export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModal }: ScanBarcodeComponentProps) => {
-
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     const { ref } = useZxing({
         onDecodeResult(result) {
             if (result.getText() !== "") {
                 if (scanCode) {
                     scanCode(result.getText())
-                    return closeModal()
+                    closeModal()
+                    return
+
                     // return navigate(`/product/update/${result.getText()}`)
                 }
                 if (setBarcode) {
                     setBarcode(result.getText())
-                    closeModal()
-                    return navigate(`/product/create/`)
+                    return closeModal()
+
+
+                    // return navigate(`/product/create/`)
                 }
                 if (location) {
                     // scanCode(result.getText())
@@ -124,17 +127,19 @@ export const CreateCategoryForm = ({ closeModal }: CreateCategoryComponentProps)
         resolver: zodResolver(categorySchema),
     });
 
-    const dispatch = useAppDispatch()
-    const onSubmit = async (data: ICategoryTypes) => {
+    const mutation = useMutation({
+        mutationFn: (data: ICategoryTypes) => createCategory(data),
+    })
 
-        await dispatch(createCategoryAction(data))
-        closeModal()
+    const onSubmit = (data: ICategoryTypes) => {
+        mutation.mutate(data)
+        if (mutation.isSuccess) return closeModal()
     };
 
-    return <form className="w-full m-2 md:w-[500px] p-2 rounded-md" onSubmit={handleSubmit(onSubmit)}>
+    return <form className="w-full md:w-[500px] p-2 rounded-md" onSubmit={handleSubmit(onSubmit)}>
         <div className=''>
             <div className="flex justify-center mb-2">
-                <h2 className="align-middle underline">Create New Category</h2>
+                <h3 className="align-middle underline">Create New Category</h3>
             </div>
 
             <div>
@@ -159,11 +164,11 @@ export const CreateCategoryForm = ({ closeModal }: CreateCategoryComponentProps)
                 />
             </div>
         </div>
-        <div className="mt-2 w-full flex justify-end gap-4 ">
-            <Button type='button' className=" px-2" size={'icon'} variant={'default'} onClick={handleSubmit(onSubmit)}>
+        <div className="mt-2 w-full flex justify-center gap-4 ">
+            <Button type='button' className="px-2 w-1/2" size={'icon'} variant={'default'} onClick={handleSubmit(onSubmit)} disabled={mutation.isPending}>
                 Save
             </Button>
-            <Button type='button' className="px-4" size={'icon'} variant={'outline'}
+            <Button type='button' className="px-2 w-1/2" size={'icon'} variant={'outline'}
                 onClick={closeModal}
             >
                 Cancel

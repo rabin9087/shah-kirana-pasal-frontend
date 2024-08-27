@@ -1,5 +1,5 @@
 
-import { getAllCategoriesAction, updateACategoryAction } from "@/action/category.action"
+import { updateACategoryAction } from "@/action/category.action"
 import Layout from "@/components/layout/Layout"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -13,7 +13,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { useAppDispatch, useAppSelector } from "@/hooks"
-import { useEffect } from "react"
+
 import { IoCreateOutline } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
 import { Link } from "react-router-dom"
@@ -29,25 +29,25 @@ const AllCategories = () => {
         await dispatch(updateACategoryAction({ _id: value, status: checked ? "ACTIVE" : "INACTIVE" }))
     }
 
-    useEffect(() => {
-        if (!categories.length) {
-            dispatch(getAllCategoriesAction())
-        }
+    // useEffect(() => {
+    //     if (!categories.length) {
+    //         dispatch(getAllCategoriesAction())
+    //     }
 
-    }, [dispatch, categories.length])
+    // }, [dispatch, categories.length])
 
     return (
         <Layout title="All Categories" >
             <Table className="mx-2 m-1 border-2 rounded-md">
-                <TableCaption>A list of categories.</TableCaption>
+                <TableCaption>All list of categories.</TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px]">S.N.</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Description</TableHead>
-                        <TableHead className="text-right">Edit</TableHead>
-                        <TableHead className="text-right">Delete</TableHead>
+                        <TableHead className="text-left">Edit</TableHead>
+                        <TableHead className="text-left">Delete</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -64,12 +64,12 @@ const AllCategories = () => {
                             <TableCell>{name}</TableCell>
                             <TableCell>{description}</TableCell>
 
-                            <TableCell className="text-right text-yellow-500">
+                            <TableCell className="text-left text-yellow-500">
                                 <Link to={`/category/update/${_id}`}>
                                     <IoCreateOutline size={25} />
                                 </Link>
                             </TableCell>
-                            <TableCell className="text-right text-red-500"><MdDeleteOutline size={25} /></TableCell>
+                            <TableCell className="text-left text-red-500"><MdDeleteOutline size={25} /></TableCell>
                         </TableRow>
                     ))}
 

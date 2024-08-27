@@ -24,6 +24,12 @@ import ScanProduct from "./pages/product/ScanProduct";
 import ProductLanding from "./pages/product/ProductLanding";
 import ProductCardByCategory from "./pages/category/ProductsByCategory";
 import AddToCart from "./pages/addToCart/AddToCart";
+import { ICategoryTypes } from "./types";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategories } from "./axios/category/category";
+import { setCategory } from "./redux/category.slice";
+import Payment from "./pages/payments/Payment";
+import SuccessfullPayment from "./pages/payments/SuccessfullPayment";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -33,8 +39,18 @@ function App() {
   const { pathname } = useLocation();
   const { user } = useAppSelector(state => state.userInfo)
 
-  useEffect(() => {
+  const { data = [] } = useQuery<ICategoryTypes[]>({
+    queryKey: ['categories'],
+    queryFn: () => getAllCategories()
+  });
 
+  useEffect(() => {
+    if (data.length) {
+      dispatch(setCategory(data))
+    }
+  }, [dispatch, data.length])
+
+  useEffect(() => {
     if (user._id !== "") {
       dispatch(getUserAction(navigate, pathname));
     }
@@ -152,6 +168,19 @@ function App() {
           element={<AddToCart />}
           errorElement={<ErrorPage />}
         />
+
+        <Route
+          path="/payment"
+          element={<Payment />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/payment/success"
+          element={<SuccessfullPayment />}
+          errorElement={<ErrorPage />}
+        />
+
         {/* This is last line  */}
       </Routes>
 
