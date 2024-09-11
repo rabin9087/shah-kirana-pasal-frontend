@@ -2,8 +2,12 @@ import { Button } from '@/components/ui/button';
 import { AddressElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { FormEvent, useState } from 'react';
 
-const CheckoutForm = () => {
+export const return_url = import.meta.env.PROD
+    ? import.meta.env.VITE_SUCCESS_URL + "/payment/success"
+    : "http://localhost:5173/payment/success";
 
+const CheckoutForm = () => {
+    // const dispatch = useAppDispatch()
     const stripe = useStripe();
     const elements = useElements();
     const [isAddressComplete, setIsAddressComplete] = useState<boolean>(false); // State to manage steps
@@ -26,8 +30,11 @@ const CheckoutForm = () => {
 
             elements,
             confirmParams: {
-                return_url: "http://localhost:5173/payment/success",
+                return_url: return_url,
+
             },
+            redirect: 'if_required'
+
         });
 
         if (result.error) {
@@ -38,8 +45,33 @@ const CheckoutForm = () => {
             // methods like iDEAL, your customer will be redirected to an intermediate
             // site first to authorize the payment, then redirected to the `return_url`.
             console.log("success payment")
-            // dispatch(setAddToCart())
+
+            const addressElement = elements.getElement('address');
+
+
+            if (addressElement) {
+                const address = addressElement.getValue()
+                console.log("Address Elements: ", address)
+                // console.log("payment Elements: ", payment)
+                // const order = await createOrder({
+                //     name: 'Rabin',
+                //     email,
+                //     phone,
+                //     address,
+                //     deliverStatus,
+                //     items,
+                //     payment
+                // });
+
+                // console.log("Order created", order);
+            } else {
+                console.log("Address or Payment elements not found");
+            }
+
         }
+
+
+
         setIspending(false)
     };
 
@@ -77,14 +109,12 @@ const CheckoutForm = () => {
                                     >Loading...</span>
 
                                 </div>
-                                <span className="ms-2">Loading...</span>
+                                <span className="ms-2">Processing payment...</span>
                             </div> :
-                                "Submit"}
+                                "Complete Purchase"}
                         </Button>
                     </div>
-                    {/* <div className='flex justify-center text-center m-4'>
-                       
-                    </div> */}
+
                 </>
             )}
         </form>

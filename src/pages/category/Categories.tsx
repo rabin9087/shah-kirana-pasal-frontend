@@ -29,13 +29,6 @@ const AllCategories = () => {
         await dispatch(updateACategoryAction({ _id: value, status: checked ? "ACTIVE" : "INACTIVE" }))
     }
 
-    // useEffect(() => {
-    //     if (!categories.length) {
-    //         dispatch(getAllCategoriesAction())
-    //     }
-
-    // }, [dispatch, categories.length])
-
     return (
         <Layout title="All Categories" >
             <Table className="mx-2 m-1 border-2 rounded-md">

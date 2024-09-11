@@ -1,5 +1,5 @@
 import { updateAProductStatusAction } from "@/action/product.action"
-import { getAllProducts } from "@/axios/product/product";
+import { deleteAProduct, getAllProducts } from "@/axios/product/product";
 import Layout from "@/components/layout/Layout"
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select"
 import ProductNotFound from "./components/ProductNotFound";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 
 const AllProducts = () => {
 
@@ -51,6 +52,23 @@ const AllProducts = () => {
 
         const newProducts = data.filter((product) => product.parentCategoryID === value)
         return dispatch(setProducts(newProducts))
+    }
+
+    const handelOnDelete = async (_id: string) => {
+        if (window.confirm("Are you sure want to delete a Product")) {
+            const deleteProduct = await deleteAProduct(_id)
+            if (deleteProduct === "success") {
+                return toast({
+                    title: "Success",
+                    description: "Product has been successfully deleted!",
+                })
+            }
+            return toast({
+                title: "Failed",
+                description: "Unable to delete Product!",
+            })
+        }
+
     }
 
     if (isLoading || isFetching) return <Loading />;
@@ -84,7 +102,7 @@ const AllProducts = () => {
 
                     <ProductNotFound />
                 </div> : <Table>
-                    <TableCaption>A list of products.</TableCaption>
+                    <TableCaption>All list of products.</TableCaption>
                     <TableHeader>
                         <TableRow className="">
                             <TableHead className="w-[60px]">S.N.</TableHead>
@@ -101,10 +119,10 @@ const AllProducts = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {products.map(({ _id, image, status, name, price, quantity, qrCodeNumber, productLocation, salesPrice }, i) => (
+                        {products.map(({ _id, status, name, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail }, i) => (
                             <TableRow key={_id}>
                                 <TableCell className="font-medium">{i + 1}.</TableCell>
-                                <TableCell className="font-medium"><img src={image} width={"100px"} height={"100px"} /></TableCell>
+                                <TableCell className="font-medium"><img src={thumbnail} width={"100px"} height={"100px"} /></TableCell>
                                 <TableCell className={status === 'ACTIVE' ? "text-green-500" : "text-red-500"}>
                                     <React.Fragment>
                                         <div className="flex justify-start items-center gap-2 text-sm ">
@@ -127,7 +145,9 @@ const AllProducts = () => {
                                         to={`/product/update/${qrCodeNumber}`}>
                                         <IoCreateOutline size={25} />
                                     </Link></TableCell>
-                                <TableCell className="text-right text-red-500"><MdDeleteOutline size={25} /></TableCell>
+                                <TableCell className="text-right text-red-500 hover:text-red-400">
+                                    <MdDeleteOutline size={25} onClick={() => handelOnDelete(_id)} />
+                                </TableCell>
 
                             </TableRow>
                         ))}

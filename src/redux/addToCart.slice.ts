@@ -1,26 +1,21 @@
 import { IAddToCartTypes } from "@/pages/addToCart";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const getCart = () => {
-      const cart = localStorage.getItem("cart");
-      const value = (JSON.parse(cart as string))
-      return value
-    };
-const cart = getCart()
-
 interface InititalState {
   cart: IAddToCartTypes[];
 };
 
 export const initialState: InititalState = {
-  cart: cart || [],
+  cart:[]
 };
 
 const userSlice = createSlice({
   name: "cart",
   initialState,
   reducers: { 
-    setAddToCart: (state, { payload }: PayloadAction<IAddToCartTypes>) => {
+    setAddToCart: (state, { payload }: PayloadAction<IAddToCartTypes >) => {
+      
+    
       const index = state.cart.findIndex((cartItem) => cartItem._id === payload._id) 
       const filter = state.cart.findIndex((cart) => cart._id === payload._id && payload.orderQuantity === 0)
        if (payload.orderQuantity === 0) {
@@ -32,13 +27,15 @@ const userSlice = createSlice({
       else {
               state.cart.push(payload)
        }
-    localStorage.setItem("cart", JSON.stringify(state.cart))
     },
   
+    resetCart: (state) => {
+      state.cart=[]
+    }
   },
 });
 
 const { reducer, actions } = userSlice;
-export const { setAddToCart,  } = actions;
+export const { setAddToCart, resetCart } = actions;
 export default reducer;
 // export the action creator for other components to use it in dispatch() function of redux store

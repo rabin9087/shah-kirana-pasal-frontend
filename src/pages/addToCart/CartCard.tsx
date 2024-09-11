@@ -27,7 +27,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
             <div className="flex justify-start items-center gap-2 px-2 py-2">
                 <Link to={`/product/${item.qrCodeNumber}`}>
                     <img
-                        src={item.image}
+                        src={item?.thumbnail}
                         alt={item.name}
                         className="w-[100px] h-[80px] rounded-md shadow-sm p-2 object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                         loading="lazy"

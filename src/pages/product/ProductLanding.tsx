@@ -40,11 +40,11 @@ const ProductLanding = () => {
         <Layout title={product.name}>
             <div className="block md:grid md:grid-cols-2 min-h-[73vh] gap-8 p-4">
                 <div className="block md:flex justify-center lg:gap-8">
-                    <div className="w-full md:w-2/3 flex justify-center items-start h-full">
+                    <div className="w-full md:w-2/3 flex justify-center items-start h-full  bg-red-500">
                         <Card className="w-full">
                             <CardDescription>
                                 <img
-                                    src={product.image}
+                                    src={product.thumbnail}
                                     alt={product.name}
                                     className="w-full h-full object-contain transition-transform duration-300 ease-in-out group-hover:scale-105"
                                     loading="lazy"

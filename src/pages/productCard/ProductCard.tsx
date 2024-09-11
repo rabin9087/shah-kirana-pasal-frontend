@@ -21,7 +21,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
       <CardHeader>
         <CardDescription> <Link to={`/product/${item.qrCodeNumber}`}>
           <img
-            src={item.image}
+            src={item?.thumbnail}
             alt={item.name}
             className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
             loading="lazy"

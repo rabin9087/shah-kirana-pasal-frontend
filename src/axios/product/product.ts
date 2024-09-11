@@ -1,9 +1,8 @@
-import { ProductSchema } from "@/pages/product/formValidation";
 import { axiosProcessor, rootApi } from "..";
 import { IProductTypes } from "@/types";
 const productApi = rootApi + "/api/v1/product";
 
-export const createProduct = async(data: ProductSchema) => {
+export const createProduct = async(data: FormData) => {
   try {
     const response = await axiosProcessor({
     method: "post",
@@ -18,11 +17,11 @@ export const createProduct = async(data: ProductSchema) => {
   }
 };
 
-export const updateProduct = async(data: ProductSchema) => {
+export const updateProduct = async(data: FormData, _id: string) => {
   try {
      const response = await axiosProcessor({
     method: "put",
-    url: `${productApi}/${data._id}`,
+    url: `${productApi}/${_id}`,
     isPrivate: false,
     obj: data,
      });
@@ -67,7 +66,19 @@ export const getAllProductsByCategory = async(slug: string) => {
   } catch (error) {
     throw new Error("Failed to fetch products");
   }
-  
+};
+
+export const deleteAProduct = async(_id: string) => {
+  try {
+     const response = await axiosProcessor({
+    method: "delete",
+    url: `${productApi}/${_id}`,
+    isPrivate: false,
+     });
+    return response.status
+  } catch (error) {
+    throw new Error("Failed to update product");
+  }
 };
 
 export const getAProduct = async({ ...data }: { [key: string]: any }) => {
@@ -89,5 +100,6 @@ export const getAProduct = async({ ...data }: { [key: string]: any }) => {
   } catch (error) {
       throw new Error("Failed to fetch products");
   }
-  
 };
+
+

@@ -22,7 +22,7 @@ export type createProductParams = {
   parentCategoryID: string,
   sku: string,
   description: string,
-  image?: string,
+  images?: Array<string>,
   brand?: string,
   price: number,
   quantity: number,

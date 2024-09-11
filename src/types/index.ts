@@ -1,3 +1,6 @@
+import { IOrder } from "@/axios/order/types";
+import { ImageType } from "@/pages/product/formValidation";
+
 export interface IAxiosProcessParams {
   method: string;
   url: string;
@@ -67,6 +70,7 @@ export type serverReturnDataType = {
   products?: IProductTypes[],
   product?: IProductTypes,
   clientSecret?: string
+  order: IOrder[]
 };
 
 export type LocationState = {
@@ -109,10 +113,11 @@ export type IProductTypes = {
   sku: string,
   slug: string,
   description: string,
-  image?: string,
+  images?: ImageType[] | Array<string>,
   brand?: string,
   price: number,
   quantity: number,
+  imageToDelete?: Array<string>;
   productWeight?: string,
   storedAt: IStoredAt,
   aggrateRating?: number,
@@ -134,7 +139,7 @@ export type IProductUpdateTypes = {
   sku: string,
   slug?: string,
   description?: string,
-  image?: string,
+  images?: ImageType[] | Array<string>,
   brand?: string,
   price?: number,
   quantity?: number,

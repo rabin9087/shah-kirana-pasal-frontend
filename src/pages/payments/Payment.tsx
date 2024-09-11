@@ -30,6 +30,7 @@ const Payment = () => {
         return null
     }
     return (
+
         <Layout title="Payment Details">
             <Elements stripe={stripePromise} options={{ clientSecret: data?.clientSecret }} >
                 <CheckoutForm />

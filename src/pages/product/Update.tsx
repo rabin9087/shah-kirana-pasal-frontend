@@ -2,7 +2,7 @@ import Layout from '@/components/layout/Layout'
 import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { InputField, IStoredAt, productSchema, ProductSchema } from './formValidation';
+import { InputField, IStoredAt, updateProductSchema, UpdateProductSchema } from './formValidation';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import CustomModal from '@/components/CustomModal';
 import { IProductTypes } from '@/types';
@@ -11,18 +11,21 @@ import { Label } from '@/components/ui/label';
 import { AiFillPicture } from "react-icons/ai";
 import { Input } from '@/components/ui/input';
 import { useParams } from 'react-router';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAProduct, updateProduct } from '@/axios/product/product';
 import { Link } from 'react-router-dom';
 import { setAProduct } from '@/redux/product.slice';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
-import { convertToBase64 } from '@/utils/convertToBase64';
+import { RxCross1 } from "react-icons/rx";
 import ProductNotFound from './components/ProductNotFound';
 
 const UpdateProduct = () => {
-
     const [image, setImage] = useState<string | null>("");
+    const [imagesToDelete, setImagesToDelete] = useState<Array<string>>([]);
+    const [images, setImages] = useState<string[]>([]);
+    const [newImages, setNewImages] = useState<string[]>([]);
+    const [thumbnail, setThumbnail] = useState<string>("");
     const params = useParams()
     const dispatch = useAppDispatch()
     const { product } = useAppSelector(state => state.productInfo)
@@ -30,57 +33,221 @@ const UpdateProduct = () => {
 
     const { data = {} as IProductTypes, isLoading, error, isFetching } = useQuery<IProductTypes>({
         queryKey: [params?.qrCodeNumber],
-        queryFn: async () =>
-            await getAProduct(params)
+        queryFn: () => getAProduct(params)
+    });
+
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm<UpdateProductSchema>({
+        resolver: zodResolver(updateProductSchema),
     });
 
     useEffect(() => {
         if (data._id) {
+            if (data.thumbnail) {
+                setThumbnail(data.thumbnail as string)
+            }
+            if (data.images) {
+                setImages(data.images as string[]);
+            }
+            // Object.keys(product).forEach((key) => {
+            //     setValue(key as keyof UpdateProductSchema, data[key as keyof UpdateProductSchema]);
+            //     console.log(key as keyof UpdateProductSchema, data[key as keyof UpdateProductSchema])
+            // });
             dispatch(setAProduct(data))
-            setImage(data.image as string);
-            Object.keys(product).forEach((key) => {
-                setValue(key as keyof ProductSchema, data[key as keyof ProductSchema]);
-            });
         }
     }, [dispatch, data._id])
 
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProductSchema>({
-        resolver: zodResolver(productSchema),
-    });
+    const convert2base64 = (image: Blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result as string
+            setImage(base64String);
+            setThumbnail(base64String)
+            // Check if the image already exists in the array
+            const imageExists = images.some((item) => item === base64String);
+            if (!imageExists) {
+                setNewImages([...newImages, base64String]);
+            } else {
+                setImages([...images]);
+            }
+        };
+        return reader.readAsDataURL(image);
+    };
 
     const handleOnImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            convertToBase64(file, setImage);
+            return convert2base64(file);
         }
     };
+
+    const handleImageClick = (url: string) => {
+        const clickedImage = images.find(image => image === url);
+        if (clickedImage) {
+            setImage(url);
+            setThumbnail(url); // Replace the thumbnail array with the clicked image object
+        }
+    };
+
+    const handleDeleteImage = (url: string) => {
+        setImages((prevImages) => prevImages.filter((item) => item !== url));
+        const isBase64Image = url.startsWith("data:image");
+
+        // If it's a base64 image, return early (i.e., do nothing)
+        if (isBase64Image) {
+            return;
+        }
+
+        const imageExists = imagesToDelete.some((item) => item === url);
+        if (!imageExists) {
+            setImagesToDelete((prevImagesToDelete) => [...prevImagesToDelete, url])
+        } else {
+            setImagesToDelete(imagesToDelete)
+        }
+    };
+
 
     const handelOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
-        setValue(name as keyof ProductSchema, value);
-        console.log(name, value)
+        setValue(name as keyof UpdateProductSchema, value);
+
+        console.log(name as keyof UpdateProductSchema, value)
+        // setUpdateForm((prevForm) => ({ ...prevForm, [name as keyof ProductSchema]: value }))
     }
 
+    const queryClient = useQueryClient()
     const mutation = useMutation({
-        mutationFn: async (data: ProductSchema) => {
-            return await updateProduct(data)
+        mutationFn: async (data: FormData) => {
+            return await updateProduct(data, params?.qrCodeNumber as string)
         },
+        onError: () => {
+            console.log("error")
+        },
+        onSuccess: () => {
+            console.log("success")
+        },
+        onSettled: async (_, error) => {
+            if (error) {
+                console.log(error)
+            } else {
+                await queryClient.invalidateQueries({ queryKey: [params?.qrCodeNumber] })
+            }
+        }
     })
 
-    const onSubmit = async (data: ProductSchema) => {
-        const productData: ProductSchema = {
-            ...data,
-            image: data.image ? (data.image as File) : image, // Assuming image is a file input
-        };
 
-        return mutation.mutate(productData)
+    const onSubmit = async (data: UpdateProductSchema) => {
+
+        const formData = new FormData();
+        formData.append("_id", product._id as string);
+        console.log(data)
+        // const changedValues: Partial<ProductSchema> = {};
+
+        // if (updateForm) {
+        //     Object.keys(data).forEach((key) => {
+        //         const initialValue = changedValues[key as keyof ProductSchema]
+        //         const currentValue = data[key as keyof ProductSchema]
+        //         if (initialValue !== currentValue) {
+        //             changedValues[key as keyof ProductSchema] = currentValue
+        //         }
+        //         if (currentValue instanceof File || currentValue instanceof FileList) {
+        //             formData.append(key, currentValues[0]); // Handle file inputs
+        //         } else if (Array.isArray(currentValue)) {
+        //             currentValue.forEach((value, index) => {
+        //                 formData.append(`${key}[${index}]`, value);
+        //             });
+        //         } else {
+        //             formData.append(key, currentValue as string);
+        //         }
+        //     })
+        // }
+
+
+        // Append non-file fields
+        // Object.keys(data).forEach((key) => {
+        //     if (key !== 'images' && key !== 'thumbnail' && key !== "imageToDelete") {
+        //         formData.append(key, data[key as keyof ProductSchema] as any);
+        //     }
+        // });
+
+        // formData.append(updateForm)
+
+        // Convert images from base64 to File and append to FormData    
+        // formData.append("images", JSON.stringify(["https://shahkiranapasal.s3.us-east-1.amazonaws.com/1725372846449-image1.jpg"]))
+
+        if (images && images.length > 0) {
+
+            const oldImages = images.filter((image) => image.includes("https://"))
+            console.log(typeof (JSON.stringify(oldImages)))
+            formData.append("images", JSON.stringify(oldImages));
+
+            // const newImages = oldImages.map(({ url }) => url)
+            // console.log(typeof (newImages), newImages)
+
+            // const decodedImages = images.filter((image) => !image.url.includes("https://"))
+            // decodedImages.forEach((image, index) => {
+            //     const file = base64ToFile(image.url as string, `image${index}.jpg`);
+            //     formData.append('addImages', file);
+            // });
+
+            // if (oldImages.length) {
+            //     // const oldImageUrls = oldImages.map((image) => image.url);
+            //     formData.append("images", oldImages.map(({ url }) => url) as string[])
+            // }
+        }
+
+        // if (imagesToDelete.length) {
+        //     imagesToDelete.forEach((image) => {
+        //         formData.append('imagesToDelete', image);
+        //     });
+        // }
+
+        // if (typeof (thumbnail) === "string" && thumbnail.includes("https://")) {
+        //     formData.append('thumbnail', thumbnail);
+        // } else {
+        //     if (thumbnail) {
+        //         const file = base64ToFile(thumbnail as string, 'thumbnail.jpg');
+        //         formData.append('newThumbnail', file);
+        //     }
+        // }
+
+        // Convert thumbnail from base64 to File and append to FormData
+        // if (thumbnail) {
+        //     const file = base64ToFile(thumbnail as string, 'thumbnail.jpg');
+        //    
+        //     formData.append('newThumbnail', file);
+        // }
+
+        // Append images and thumbnail separately
+
+
+        // for (let [key, value] of formData.entries()) {
+
+        // }
+        // Debugging output
+
+        mutation.mutate(formData)
+        return reset
     };
 
     useEffect(() => {
-        if (image) {
-            setValue('image', image);
+        if (image !== "") {
+            setThumbnail(image as string)
+
+            const imageExists = images.some((item) => item === image);
+
+            if (!imageExists) {
+                setImages([...images, image as string]);
+            } else {
+                setImages([...images]);
+            }
         }
+        setValue('thumbnail', thumbnail);
+        if (image) {
+            setValue('images', images);
+        }
+
     }, [image, setValue]);
+
 
     if (isLoading || isFetching) return <Loading />;
 
@@ -94,99 +261,90 @@ const UpdateProduct = () => {
         {
             label: "Product Name",
             name: "name",
-            required: true,
-            value: product.name,
+            value: data?.name,
             placeholder: "Enter Product Name",
         },
         {
             label: "Alternate Name (optional)",
             name: "alternateName",
-            value: product.alternateName,
+            value: data?.alternateName,
             placeholder: "Enter Product Alternative Name",
         },
         {
             label: "SKU",
             name: "sku",
             generate: "sku",
-            value: product.sku,
-            required: true,
+            value: data?.sku,
             placeholder: "Enter Product SKU Value or Generate",
         },
         {
             label: "Barcode ",
             name: "qrCodeNumber",
             type: "text",
-            value: product.qrCodeNumber,
+            value: data?.qrCodeNumber,
             generate: "barcode",
             classname: "col-span-full",
-            required: true,
             placeholder: "Enter Product QR Code Value or Generate",
         },
         {
             label: "Price",
             name: "price",
             type: "string",
-            value: product.price,
-            required: true,
+            value: data?.price,
             placeholder: "Enter Product Price",
         },
         {
             label: "Quantity",
             name: "quantity",
             type: "string",
-            value: product.quantity,
-            required: true,
+            value: data?.quantity,
             placeholder: "Enter Product Quantity",
         },
         {
             label: "Product Location",
             name: "productLocation",
             type: "text",
-            required: true,
-            value: product.productLocation,
+            value: data?.productLocation,
             placeholder: "A02 - B20 - S6",
         },
         {
             label: "Stored Location",
             name: "storedAt",
             type: "text",
-            required: true,
             inputeType: "select",
             select: 'select',
-            value: product.storedAt,
+            value: data?.storedAt,
             placeholder: "",
         },
         {
             label: "Product Weight (optional)",
             name: "productWeight",
             type: "text",
-            value: product.productWeight,
+            value: data?.productWeight,
             placeholder: "Enter Product Weight",
         },
         {
             label: "Sales Price (optional)",
             name: "salesPrice",
             type: "string",
-            value: product.salesPrice,
+            value: data?.salesPrice,
             placeholder: "Enter Product Sales Price",
         },
         {
             label: "Sales Start Date (optional)",
             name: "salesStartDate",
             type: "date",
-            value: product.salesStartDate,
+            value: data?.salesStartDate,
             placeholder: "Enter Product Sale Start Date",
         },
         {
             label: "Sales End Date (optional)",
             name: "salesEndDate",
             type: "date",
-            value: product.salesEndDate,
+            value: data?.salesEndDate,
             placeholder: "Enter Product Sale End Date",
         },
     ];
-
-
 
     return (
         <Layout title='Update Product Details'>
@@ -205,7 +363,7 @@ const UpdateProduct = () => {
                         </Label>
                         <div className='flex justify-center  gap-2 flex-row '>
                             <CustomModal setImage={setImage} />
-                            <Input type='file' className='hidden' {...register('image')}
+                            <Input type='file' className='hidden' {...register('images')}
                                 id='file'
                                 onChange={handleOnImageChange}
                                 multiple
@@ -220,17 +378,48 @@ const UpdateProduct = () => {
                         </div>
                     </div>
 
-                    <div className='flex justify-center gap-4 col-span-full my-2 '>
-                        <div className='mt-2 flex justify-center w-full md:w-[500px]'>
+                    <div className=''>
+                        {thumbnail !== null && <div className='mt-2 mx-auto md:w-[300px] text-center w-[250px]  mb-4'>
+                            <span>Thumbnail</span>
+                            <img
+                                src={data.thumbnail as string}
 
-                            {image !== "" && image !== null && <img
-                                src={image !== "" ? image : ''}
+                                {...register('thumbnail')}
                                 className='md:order-2 mt-2 p-2 border-2 rounded-md object-cover'
-                                alt='Product Image' />}
-                        </div>
+                                alt='Product Image'
+                            />
+                        </div>}
+
+                        <hr />
+                        {images.length &&
+                            <> <div className='flex justify-center p-2 shadow-md'>Images</div>
+                                <div className='flex w-full flex-row  justify-center gap-4 items-center flex-wrap py-4 border-2'>
+                                    {images?.map((url, index) => (
+                                        <div key={index} className='relative w-[100px] h-[130px] md:w-[140px] md:h-[180px]'>
+                                            <img
+                                                src={url as string}
+                                                alt={url as string}
+                                                {...register("images")}
+                                                className='w-full h-full object-cover cursor-pointer hover:bg-slate-200 transition-colors duration-300'
+                                                onClick={() => handleImageClick(url as string)}
+                                            />
+                                            <Button
+                                                type='button'
+                                                size='icon'
+                                                variant={"outline"}
+                                                className='top-[-0.4rem] absolute right-[-0.5rem] '
+                                                onClick={() => handleDeleteImage(url as string)}
+                                            >
+                                                <RxCross1 className='w-fit border-none rounded-full border-2' size={20} />
+                                            </Button>
+                                        </div>
+
+                                    ))}
+                                </div>
+                            </>}
                     </div>
 
-                    {errors.image && <span className="text-red-600">{errors.image.message as ReactNode}</span>}
+                    {errors.images && <span className="text-red-600">{`${errors.images?.message}` as ReactNode}</span>}
                     <div className="space-y-2 mt-2">
                         <div className="block">
                             <Label
@@ -241,32 +430,28 @@ const UpdateProduct = () => {
                             </Label>
 
                             <div className='flex max-w-screen-md justify-center md:justify-start gap-3 me-2'>
-
                                 <select
                                     id="category"
                                     className="w-full md:w-[310px] border-2 rounded-md"
-                                    defaultValue={product.parentCategoryID}
+                                    defaultValue={product.parentCategoryID ?? ""}
                                     {...register('parentCategoryID')}
                                     onChange={handelOnChange}
                                 >
-                                    <option value="">--Select a category--</option>
+                                    <option value={""}>--Select a category--</option>
                                     {categories.map(({ _id, name }, index) => (
                                         <option className="py-1" key={index} value={_id}>
                                             --{name}--
                                         </option>
                                     ))}
                                 </select>
-
-                                <Button type='button' size={'icon'} variant={'secondary'}>
-                                    <CustomModal create={"createCategory"} setImage={setImage} />
-                                </Button>
+                                <CustomModal create={"createCategory"} setImage={setImage} />
                             </div>
 
                         </div>
                         <div className="border-gray-900/10">
 
                             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                {input.map(({ label, name, placeholder, required, type, generate, value, classname, inputeType }) => (
+                                {input.map(({ label, name, placeholder, type, generate, value, classname, inputeType }) => (
                                     <div className={`sm:col-span-3 ${classname}`} key={name}>
                                         <div className='flex justify-between place-items-baseline'>
                                             <Label htmlFor={name} className="block text-md font-medium leading-6 text-gray-900">
@@ -280,7 +465,6 @@ const UpdateProduct = () => {
                                                 type={type}
                                                 disabled={generate === 'sku' || generate === "barcode"}
                                                 defaultValue={value}
-                                                required={required}
                                                 placeholder={placeholder}
                                                 {...register(name)}
                                                 onChange={handelOnChange}
@@ -303,7 +487,7 @@ const UpdateProduct = () => {
 
                                             }
                                         </div>
-                                        {errors.name && <span className="text-red-600">{errors.name.message}</span>}
+                                        {errors.name && <span className="text-red-600">{`${errors.name.message}`}</span>}
                                     </div>
                                 ))}
 
@@ -321,7 +505,7 @@ const UpdateProduct = () => {
                                             className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             placeholder='Enter Product description'
                                         />
-                                        {errors.description && <span className="text-red-600">{errors?.description?.message}</span>}
+                                        {errors.description && <span className="text-red-600">{`${errors?.description?.message}`}</span>}
                                     </div>
                                 </div>
                             </div>
@@ -333,7 +517,7 @@ const UpdateProduct = () => {
                             type="submit"
                             disabled={mutation.isPending}
                         >
-                            Save
+                            {mutation.isPending ? "Updating..." : 'Update'}
                         </Button >
                         <Button
                             type="reset"
