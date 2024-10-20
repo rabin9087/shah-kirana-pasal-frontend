@@ -26,6 +26,7 @@ const ProductLanding = () => {
             getAProduct({ qrCodeNumber: params })
     });
 
+
     useEffect(() => {
         if (data._id !== "") {
             dispatch(setAProduct(data))
@@ -40,7 +41,7 @@ const ProductLanding = () => {
         <Layout title={product.name}>
             <div className="block md:grid md:grid-cols-2 min-h-[73vh] gap-8 p-4">
                 <div className="block md:flex justify-center lg:gap-8">
-                    <div className="w-full md:w-2/3 flex justify-center items-start h-full  bg-red-500">
+                    <div className="w-full md:w-2/3 flex justify-center items-start h-full">
                         <Card className="w-full">
                             <CardDescription>
                                 <img
