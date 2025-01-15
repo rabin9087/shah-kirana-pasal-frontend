@@ -28,7 +28,7 @@ export function Profile() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => {
-                }}>Profile</DropdownMenuItem>
+                }}><Link to={"/my-profile"}>My Profile</Link></DropdownMenuItem>
                 <DropdownMenuItem><Link to={"/all-products"}>All Product</Link></DropdownMenuItem>
                 <DropdownMenuItem><Link to={"/product/create"}>Create Product</Link></DropdownMenuItem>
                 <DropdownMenuItem><Link to={"/scan-product"}>Update Product</Link></DropdownMenuItem>

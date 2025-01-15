@@ -22,6 +22,7 @@ const AddToCart = () => {
             {cart.length ?
                 <div className="w-[300px] md:w-[250px] flex flex-col justify-end items-end  ">
                     <hr className="w-full" />
+                    
                     {cart.map((product) =>
                         <CartCard key={product._id} item={product} />)}
                 </div> : <EmptyCart />}

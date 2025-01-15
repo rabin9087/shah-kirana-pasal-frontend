@@ -29,7 +29,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllCategories } from "./axios/category/category";
 import { setCategory } from "./redux/category.slice";
 import Payment from "./pages/payments/Payment";
-import SuccessfullPayment from "./pages/payments/SuccessfullPayment";
+import SuccessfullPayment, { OrderPlaced } from "./pages/payments/SuccessfullPayment";
+import MyProfile from "./pages/my-profile/MyProfile";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -178,6 +179,18 @@ function App() {
         <Route
           path="/payment/success"
           element={<SuccessfullPayment />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/order-placed"
+          element={<OrderPlaced />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/my-profile"
+          element={<MyProfile />}
           errorElement={<ErrorPage />}
         />
 

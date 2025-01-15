@@ -2,6 +2,7 @@ export interface IItemTypes {
     productId: string,
     quantity: number,
     price: number,
+    note?: string
 }
 
 export interface IOrder  {
@@ -10,7 +11,12 @@ export interface IOrder  {
     phone: string,
     email: string,
     items: IItemTypes[];
-    orderNumber: number,
     deliverStatus: string,
+    deliveryDate: {
+                    date: string,
+                    time: string
+    },
+    requestDeliveryDate: string,
     payment: string
+    amount: number
 }

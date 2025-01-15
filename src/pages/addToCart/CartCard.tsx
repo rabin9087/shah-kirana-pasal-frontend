@@ -9,15 +9,23 @@ import { IAddToCartTypes } from "../addToCart"
 import { Button } from "@/components/ui/button"
 import { RxCross1 } from "react-icons/rx";
 import { setAddToCart } from "@/redux/addToCart.slice"
+import { useState } from "react"
 
 
 const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
     const { cart } = useAppSelector((state) => state.addToCartInfo)
+    const [opennNote, setOpenNote] = useState(false);
+    const [note, setNote] = useState(item.note || "");
     const orderQty = getOrderNumberQuantity(item._id, cart)
     const dispatch = useAppDispatch()
     const handleOnAddToCart = () => {
-        dispatch(setAddToCart({ ...item, orderQuantity: 0 }))
+        dispatch(setAddToCart({ ...item, note }))
+        setOpenNote(false);
     }
+
+    const handelOnChangeNote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setNote(e.target.value);
+    };
 
     return (
         <Card className="w-full md:w-[250px] rounded-none mb-1">
@@ -54,11 +62,36 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                             :
                             <ChangeItemQty item={{ ...item, orderQuantity: orderQty || 0 }} />}
                     </div>
-
                 </div>
                 <div className="text-xl text-end items-center my-auto">
                     ${(item.price * item.orderQuantity).toFixed(2)}
                 </div>
+
+            </div>
+            <div>
+                <p
+                    className="underline cursor-pointer ps-2 pb-2"
+                    onClick={() => setOpenNote(!opennNote)}
+                >
+                    Add note
+                </p>
+                {opennNote && (
+                    <>
+                        <textarea
+                            rows={4}
+                            className="w-full me-2 p-2 rounded-md border-2 border-gray-300"
+                            placeholder="What do you want to change..."
+                            onChange={handelOnChangeNote}
+                            value={note}
+                        />
+
+                        <div className="flex justify-end gap-2 items-center w-full p-2">
+                            <Button className="bg-gray-500" onClick={() => setOpenNote(false)}>Cancel</Button>
+                            <Button onClick={handleOnAddToCart} >Save</Button>
+                        </div>
+                    </>
+
+                )}
             </div>
         </Card>)
 }

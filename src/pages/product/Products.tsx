@@ -132,7 +132,7 @@ const AllProducts = () => {
                                     </React.Fragment>
                                 </TableCell>
                                 <TableCell>{name}</TableCell>
-                                <TableCell className="bg-red-500"><div>
+                                <TableCell className=""><div>
                                     ${price}
                                 </div>{salesPrice && <span className="flex text-yellow-500 min-w-fit"> Sale:$ {salesPrice}</span>}</TableCell>
                                 <TableCell>{quantity}</TableCell>

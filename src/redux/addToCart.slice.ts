@@ -14,16 +14,19 @@ const userSlice = createSlice({
   initialState,
   reducers: { 
     setAddToCart: (state, { payload }: PayloadAction<IAddToCartTypes >) => {
-      
-    
       const index = state.cart.findIndex((cartItem) => cartItem._id === payload._id) 
       const filter = state.cart.findIndex((cart) => cart._id === payload._id && payload.orderQuantity === 0)
+
        if (payload.orderQuantity === 0) {
             state.cart.splice(filter, 1)
           }
        else if(index > -1) {
-              state.cart.filter(cartItem => cartItem._id)[index].orderQuantity = payload.orderQuantity
-          } 
+         state.cart.filter(cartItem => cartItem._id)[index].orderQuantity = payload.orderQuantity
+          if (payload.note !== undefined) {
+            state.cart[index].note = payload.note;
+        }
+       } 
+    
       else {
               state.cart.push(payload)
        }
