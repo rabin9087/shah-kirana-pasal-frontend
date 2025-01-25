@@ -1,4 +1,4 @@
-import { getAllProducts,  updateAProductStatus, } from "@/axios/product/product";
+import { getAllProducts,  getAllProductsByCategory,  updateAProductStatus, } from "@/axios/product/product";
 
 import {setProducts } from "@/redux/product.slice";
 import { AppDispatch } from "@/store";
@@ -89,25 +89,29 @@ export const getAllProductAction = () => async (dispatch: AppDispatch) => {
         }
 };
 
-// export const getAllProductByCategoryAction = (slug: string) => async (dispatch: AppDispatch) => {
-//         try {
-//                 console.log(slug)
-//             const pending = getAllProductsByCategory(slug);
-//             toast.promise(pending, {
-//                 pending: "Please wait"
-//             })
+export const getAllProductByCategoryAction = (slug: string) => async (dispatch: AppDispatch) => {
+        try {
+                
+            const pending = getAllProductsByCategory(slug);
+            toast.promise(pending, {
+                pending: "Please wait"
+            })
+                
+                const res = await getAllProductsByCategory(slug);
+                dispatch(setProducts(res))
+                return res
 
-//             const response: serverReturnDataType = await pending
-//                 toast[response.status](response.message)
-//                 if (response.status === "success") {
-//                        dispatch(setProducts(response?.products ?? []))
-//                 } else {
-//                         console.log("error")
-//                 }
-//         } catch (error) {
-//                 console.log(error)
-//         }
-// };
+        //     const response: serverReturnDataType = await pending
+        //         toast[response.status](response.message)
+        //         if (response.status === "success") {
+        //                dispatch(setProducts(response?.products ?? []))
+        //         } else {
+        //                 console.log("error")
+        //         }
+        } catch (error) {
+                console.log(error)
+        }
+};
 
 
 // export const getAProductAction = ({...data}) => async (dispatch: AppDispatch) => {

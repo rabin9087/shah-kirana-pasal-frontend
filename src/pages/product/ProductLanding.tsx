@@ -11,6 +11,7 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import { setAProduct } from "@/redux/product.slice";
 import { IProductTypes } from "@/types";
+import ImageCarousel from "./components/ImageCarousel";
 
 const ProductLanding = () => {
     const params = useParams();
@@ -20,12 +21,20 @@ const ProductLanding = () => {
     const orderQty = getOrderNumberQuantity(product._id, cart)
     const index = cart.find((item) => item._id === product._id)
 
+
     const { data = {} as IProductTypes, isLoading, error, isFetching } = useQuery<IProductTypes>({
         queryKey: ['products', params?.qrCodeNumber],
         queryFn: async () =>
             getAProduct({ qrCodeNumber: params })
     });
+    const fetchedImages: (string | { url: string })[] | undefined = product?.images;
 
+    const images: { url: string; alt: string }[] = fetchedImages
+        ? fetchedImages?.map((image) => ({
+            url: typeof image === 'string' ? image : image.url,
+            alt: `${product.name}`,
+        }
+        )) : [];
 
     useEffect(() => {
         if (data._id !== "") {
@@ -43,16 +52,20 @@ const ProductLanding = () => {
                 <div className="block md:flex justify-center lg:gap-8">
                     <div className="w-full md:w-2/3 flex justify-center items-start h-full">
                         <Card className="w-full">
-                            <CardDescription>
-                                <img
+                            <CardDescription className="m-2 rounded-md">
+
+                                <div className="mb-4 flex items-center justify-center bg-gray-100 w-full h-full object-contain transition-transform duration-300 ease-in-out group-hover:scale-105">
+                                    <ImageCarousel images={images || []} thumbnail={product.thumbnail} />
+                                </div>
+                                {/* <img
                                     src={product.thumbnail}
                                     alt={product.name}
                                     className="w-full h-full object-contain transition-transform duration-300 ease-in-out group-hover:scale-105"
                                     loading="lazy"
-                                />
+                                /> */}
                             </CardDescription>
                             <CardContent >
-                                <div className="mt-6 w-full lg:w-1/2 lg:mt-0">
+                                <div className="mt-6 w-full lg:mt-0 border-2 border-blue-400/2 rounded-md p-4">
                                     <h3 className="w-full text-xl md:text-wxl text-gray-700 font-mono px-4 lg:px-0">
                                         {product.name}
                                     </h3>
@@ -67,9 +80,8 @@ const ProductLanding = () => {
 
                                     {/* <div className="px-4 lg:px-0 my-2"></div> */}
                                     <div className="px-4 lg:px-0 font-bold text-gray-700 mt-6 text-base md:text-xl">
-
                                         <div className="mt-6 space-y-4">
-                                            <span className="block text-start md:text-lg font-semibold">Quantity</span>
+                                            {/* <span className="block text-start md:text-lg font-semibold">Quantity</span> */}
                                             {!itemExist(product._id, cart).length ?
                                                 <AddToCartButton item={{ ...product, orderQuantity: orderQty || 0 }} />
                                                 :

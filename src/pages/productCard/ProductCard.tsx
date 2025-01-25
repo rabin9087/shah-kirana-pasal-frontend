@@ -23,10 +23,10 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
           <img
             src={item?.thumbnail}
             alt={item.name}
-            className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+            className="w-full h-32 max-h-[300px] md:max-h-[400px] lg:max-h-[500px] object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
             loading="lazy"
           />
-        </Link>
+        </Link> 
         </CardDescription>
         <CardTitle className="text-md h-12 overflow-hidden text-ellipsis line-clamp-2  hover:underline font-thin "><Link to={`/product/${item.qrCodeNumber}`}>
           {item.name}

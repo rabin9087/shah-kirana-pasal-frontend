@@ -194,6 +194,12 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/products/search"
+          element={<ProductCardByCategory />}
+          errorElement={<ErrorPage />}
+        />
+
         {/* This is last line  */}
       </Routes>
 

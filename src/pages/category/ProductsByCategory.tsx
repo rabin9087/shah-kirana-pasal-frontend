@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { IProductTypes } from "@/types";
 import Layout from "@/components/layout/Layout";
 import ProductNotFound from "../product/components/ProductNotFound";
@@ -19,19 +19,20 @@ import ProductCard from "../productCard/ProductCard";
 const ProductCardByCategory: React.FC = () => {
 
     const dispatch = useAppDispatch();
+    const [searchParams] = useSearchParams();
     const { slug } = useParams()
+    const searchTerm = searchParams.get('searchTerm') || ''
     const { products } = useAppSelector(state => state.productInfo)
     // const [data, setData] = useState<IProductTypes[]>(products)
-
+console.log(searchTerm)
     const { data = [] as IProductTypes[], isLoading, error, isFetching } = useQuery<IProductTypes[]>({
-        queryKey: ["categories", slug],
-        queryFn: async () =>
-            await getAllProductsByCategory(slug as string)
+        queryKey: ["categories", slug, searchTerm],
+        queryFn: async () => searchTerm !== undefined ? await getAllProductsByCategory(searchTerm as string) :await getAllProductsByCategory(slug as string)
     });
     useEffect(() => {
         if (data?.length) { dispatch(setProducts(data)) }
         // dispatch(toggleSideBar());
-    }, [dispatch, slug, data.length])
+    }, [dispatch, slug, data.length, searchTerm])
 
     if (isLoading || isFetching) return <Loading />;
 
