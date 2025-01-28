@@ -1,8 +1,12 @@
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import SideBar from "../SideBar/SideBar";
-import { useAppSelector } from "@/hooks";
-import { IProductTypes } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { ICategoryTypes, IProductTypes } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategories } from "@/axios/category/category";
+import { useEffect } from "react";
+import { setCategory } from "@/redux/category.slice";
 // import { setProducts } from "@/redux/product.slice";
 
 interface LayoutProps {
@@ -15,6 +19,18 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData, addClass }) => {
+  const dispatch = useAppDispatch();
+  const { data: categories = [] } = useQuery<ICategoryTypes[]>({
+    queryKey: ['categories'],
+    queryFn: () => getAllCategories()
+  });
+
+  useEffect(() => {
+    if (categories.length) {
+      dispatch(setCategory(categories))
+    }
+  }, [dispatch, categories.length])
+  
 
   const { open } = useAppSelector((Store => Store.sidebar))
   return (

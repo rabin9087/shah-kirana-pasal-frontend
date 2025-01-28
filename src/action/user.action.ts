@@ -1,6 +1,7 @@
 
-import { createAdmin, createUser, forgetPassword, getUser, loginUser, otp_PasswordVerify, update_Forget_Password } from "@/axios/user/user.axios";
+import { createAdmin, createUser, forgetPassword, getAllUsers, getUser, loginUser, otp_PasswordVerify, update_Forget_Password } from "@/axios/user/user.axios";
 import { setLoading } from "@/redux/Loading.slice";
+import { setUsers } from "@/redux/dashboard.slice";
 import { setEmail_Phone, setUser } from "@/redux/user.slice";
 import { AppDispatch } from "@/store";
 import {
@@ -94,7 +95,12 @@ export const loginUserAction =
       return;
     }
     toast[status](message);
-  };
+    };
+
+  
+export const autoLoginUserAction = (navigate: NavigateFunction) => async (dispatch: AppDispatch) => {
+    dispatch(getUserAction(navigate));
+}
 
 export const getUserAction =
   (navigate: NavigateFunction, pathname?: string) =>
@@ -102,4 +108,12 @@ export const getUserAction =
     const { user } = await getUser();
     dispatch(setUser(user as IUser));
     if (user?._id) navigate( "/" || pathname);
-  };
+    };
+  
+export const getAllUserAction = async() =>
+  async (dispatch: AppDispatch) => {
+    const { users, status } = await getAllUsers();
+    if (status === "success") {
+      dispatch(setUsers(users as IUser[]));
+    }
+    };

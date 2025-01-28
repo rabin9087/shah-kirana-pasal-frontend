@@ -12,10 +12,9 @@ import Error from "@/components/ui/Error";
 
 function Home(): JSX.Element {
   const dispatch = useAppDispatch();
-
   const { products } = useAppSelector(state => state.productInfo)
   const { categories } = useAppSelector(s => s.categoryInfo)
-
+  const activeProducts = products?.filter((item) => item.status === "ACTIVE");
   const { data = [], isLoading, error, isFetching } = useQuery<IProductTypes[]>({
     queryKey: ['products'],
     queryFn: () =>
@@ -25,13 +24,25 @@ function Home(): JSX.Element {
   const electronicsId = categories.find((item) => item.slug === "electronics")
   const { data: elecytronicsProduct = [] } = useQuery<IProductTypes[]>({
     queryKey: ["category", electronicsId],
-    queryFn: () =>
-      getAllProductsByCategory(electronicsId?.slug as string)
+    queryFn: async() => {
+      if (electronicsId) {
+        await getAllProductsByCategory(electronicsId?.slug as string)
+      }
+      return []
+    }
+      
   });
 
   useEffect(() => {
     if (data.length) { dispatch(setProducts(data)) }
-  }, [dispatch, data])
+    // const refreshJWT = localStorage.getItem("refreshJWT");
+    // const accessJWT = sessionStorage.getItem("accessJWT");
+
+    // if (refreshJWT || accessJWT) {
+    //   // Dispatch auto-login if tokens exist
+    //   dispatch(autoLoginUserAction(navigate));
+    // }
+  }, [dispatch, data]);
 
   if (isLoading || isFetching) return <Loading />;
 
@@ -46,10 +57,10 @@ function Home(): JSX.Element {
         ))}
       </div>
     </div>
-    <div className="flex justify-center gap-4 items-center flex-wrap py-4">
-      {products.map((product: IProductTypes) =>
+    <div className="grid justify-center  gap-1 py-4 grid-cols-2 sm:grid-col-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      {activeProducts.map((product: IProductTypes) => (
         <ProductCard key={product._id} item={product} />
-      )}
+      ))}
     </div>
   </Layout>
   );

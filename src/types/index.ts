@@ -48,6 +48,7 @@ export interface IUser {
   fName: string;
   lName: string;
   phone: string;
+  password?: string;
   role: "ADMIN" | "USER";
   email: string;
   isVerified: boolean;
@@ -63,6 +64,7 @@ export type serverReturnDataType = {
   message?: string;
   result?: [];
   user?: IUser;
+  users?: IUser[];
   userEmail_Phone?: string;
   tokens?: { accessJWT: string; refreshJWT: string };
   categoryList?: ICategoryTypes[];

@@ -24,10 +24,18 @@ const ProductCardByCategory: React.FC = () => {
     const searchTerm = searchParams.get('searchTerm') || ''
     const { products } = useAppSelector(state => state.productInfo)
     // const [data, setData] = useState<IProductTypes[]>(products)
-console.log(searchTerm)
+    
     const { data = [] as IProductTypes[], isLoading, error, isFetching } = useQuery<IProductTypes[]>({
         queryKey: ["categories", slug, searchTerm],
-        queryFn: async () => searchTerm !== undefined ? await getAllProductsByCategory(searchTerm as string) :await getAllProductsByCategory(slug as string)
+        queryFn: async () => {
+            if (searchTerm) {
+                return await getAllProductsByCategory(searchTerm as string);
+            }
+            if (slug) {
+                return await getAllProductsByCategory(slug as string);
+            }
+            return [];
+        }
     });
     useEffect(() => {
         if (data?.length) { dispatch(setProducts(data)) }
@@ -38,9 +46,9 @@ console.log(searchTerm)
 
     if (error) return <Error />
 
-    return (<Layout title={`All ${slug} products`} types="category">
+    return (<Layout title={`All ${slug || searchTerm} products`} types="category">
         {data.length < 1 ? <ProductNotFound /> :
-            <div className="flex justify-center gap-4 items-center flex-wrap py-4">
+            <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {products.map((product: IProductTypes) =>
                     <ProductCard key={product._id} item={product} />
                 )}

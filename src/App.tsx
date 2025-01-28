@@ -24,13 +24,11 @@ import ScanProduct from "./pages/product/ScanProduct";
 import ProductLanding from "./pages/product/ProductLanding";
 import ProductCardByCategory from "./pages/category/ProductsByCategory";
 import AddToCart from "./pages/addToCart/AddToCart";
-import { ICategoryTypes } from "./types";
-import { useQuery } from "@tanstack/react-query";
-import { getAllCategories } from "./axios/category/category";
-import { setCategory } from "./redux/category.slice";
 import Payment from "./pages/payments/Payment";
 import SuccessfullPayment, { OrderPlaced } from "./pages/payments/SuccessfullPayment";
 import MyProfile from "./pages/my-profile/MyProfile";
+import PrivateRouter from "./pages/users/PrivateRouter";
+import Dashboard from "./components/dashboard/Dashboard";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -40,22 +38,11 @@ function App() {
   const { pathname } = useLocation();
   const { user } = useAppSelector(state => state.userInfo)
 
-  const { data = [] } = useQuery<ICategoryTypes[]>({
-    queryKey: ['categories'],
-    queryFn: () => getAllCategories()
-  });
-
   useEffect(() => {
-    if (data.length) {
-      dispatch(setCategory(data))
-    }
-  }, [dispatch, data.length])
-
-  useEffect(() => {
-    if (user._id !== "") {
+    if (user?._id !== "") {
       dispatch(getUserAction(navigate, pathname));
     }
-  }, [dispatch, user._id]);
+  }, [dispatch, user?._id]);
   return (
     <>
       <Routes>
@@ -124,7 +111,13 @@ function App() {
 
         <Route
           path="/all-products"
-          element={<AllProducts />}
+          element={<PrivateRouter>< AllProducts /></PrivateRouter>}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/all-products"
+          element={< AllProducts />}
           errorElement={<ErrorPage />}
         />
 
@@ -136,19 +129,20 @@ function App() {
 
         <Route
           path="/product/update/:qrCodeNumber"
-          element={<UpdateProduct />}
+          element={<PrivateRouter><UpdateProduct /></PrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/all-categories"
-          element={<AllCategories />}
+          element={<PrivateRouter><AllCategories /></PrivateRouter >
+}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/category/update/:_id"
-          element={<UpdateCategory />}
+          element={<PrivateRouter><UpdateCategory /></PrivateRouter >}
           errorElement={<ErrorPage />}
         />
 
@@ -200,10 +194,16 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/dashboard"
+          element={<PrivateRouter><Dashboard /></PrivateRouter>}
+          errorElement={<ErrorPage />}
+        />
+
         {/* This is last line  */}
       </Routes>
 
-
+      
       <Loader />
     </>
   );

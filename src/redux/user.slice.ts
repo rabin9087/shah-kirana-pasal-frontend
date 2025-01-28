@@ -5,7 +5,7 @@ type TinititalState = {
   user: IUser;
   email_Phone: string | "";
 };
-const initialState: TinititalState = {
+export const initialState: TinititalState = {
   user: {
     _id: "",
     role: "USER",

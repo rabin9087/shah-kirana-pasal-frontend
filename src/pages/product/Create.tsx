@@ -277,6 +277,7 @@ const CreateProduct = () => {
               <Input type='file' className='hidden' {...register('images')}
                 id='file'
                 onChange={handleOnImageChange}
+                
                 multiple
               />
 

@@ -125,7 +125,7 @@ export const ResultsComponent = ({ results }: { results: IResults[] | [] }) => {
             <Link
               to={`/products/search?searchTerm=${getCategoryName(item.parentCategoryID)}`}
             >
-                <p className="text-black text-sm">{item?.name}</p> :
+                <p className="text-black text-sm">{item?.name}</p>
             </Link>
           </div>
         ))

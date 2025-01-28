@@ -41,7 +41,7 @@ const AllProducts = () => {
 
     const handelOnChecked = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { checked, value } = e.target
-        await dispatch(updateAProductStatusAction(value, { statue: checked ? "ACTIVE" : "INACTIVE" }))
+        await dispatch(updateAProductStatusAction(value, { status: checked ? "ACTIVE" : "INACTIVE" }))
     }
 
     const handelOnChange = async (value: string) => {
@@ -125,10 +125,20 @@ const AllProducts = () => {
                                 <TableCell className="font-medium"><img src={thumbnail} width={"100px"} height={"100px"} /></TableCell>
                                 <TableCell className={status === 'ACTIVE' ? "text-green-500" : "text-red-500"}>
                                     <React.Fragment>
-                                        <div className="flex justify-start items-center gap-2 text-sm ">
-                                            <Input type="checkbox" className="text-sm w-5 " value={_id} defaultChecked={status === "ACTIVE"} onChange={handelOnChecked} />
-                                            <span className="">  {status}</span>
+                                        <div className="flex justify-start items-center gap-2 text-sm">
+                                            <label htmlFor={`checkbox-${_id}`} className="flex items-center gap-2">
+                                                <Input
+                                                    id={`checkbox-${_id}`}
+                                                    type="checkbox"
+                                                    className="text-sm w-5"
+                                                    value={_id}
+                                                    defaultChecked={status === "ACTIVE"}
+                                                    onChange={handelOnChecked}
+                                                />
+                                                <span>{status}</span>
+                                            </label>
                                         </div>
+
                                     </React.Fragment>
                                 </TableCell>
                                 <TableCell>{name}</TableCell>

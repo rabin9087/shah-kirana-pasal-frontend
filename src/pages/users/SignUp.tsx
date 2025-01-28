@@ -1,44 +1,63 @@
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
+import { FaApple, FaFacebook } from "react-icons/fa";
 import SignUpForm from "@/components/Form/SignUpForm";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import Layout from "@/components/layout/Layout";
+
 const SignUp = () => {
   const [params] = useSearchParams();
   const token = params.get("token") as string;
-  console.log(token);
 
+  // Store token in session storage
   useEffect(() => {
-    sessionStorage.setItem("accessJWT", token);
+    if (token) {
+      sessionStorage.setItem("accessJWT", token);
+    }
   }, [token]);
+
   return (
-    <div className="bg-sign-up  min-h-screen w-full bg-cover flex justify-center items-center">
-      <div className=" rounded-md  py-10 sm:w-[70%] w-full backdrop-blur-lg flex  flex-col sm:flex-row bg-black/70">
-        <div className="flex  p-5 flex-col sm:flex-1">
-          <p className="text-4xl font-bold text-white">Sign Up </p> 
-          <div className=" mt-5">
-            <SignUpForm token={token} />
+    <Layout title="">
+      <div className="flex flex-col items-center justify-center h-screen bg-sign-up bg-cover">
+        {/* Main container */}
+        <div className="w-full max-w-md bg-white/90 p-6 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
+
+          <SignUpForm token={token} />
+
+          <div className="text-center mt-4">
+            <p className="text-sm">
+              Already have an account?{" "}
+              <Link to="/sign-in" className="text-blue-500 font-semibold">
+                Sign in now
+              </Link>
+            </p>
           </div>
-        </div>
-        <div className="flex  items-center justify-center sm:flex-1 flex-col gap-5">
-          <p className="text-[20px] text-white">
-            Already have an account?{" "}
-            <a href="/sign-in" className="text-blue-400">
-              Log In
-            </a>
-          </p>
-          <p className="text-white font-bold">OR</p>
-          <div className=" flex flex-col gap-5">
-            <button className="bg-white rounded-full p-3 text-black text-sm font-bold px-5 flex gap-2">
-              <FcGoogle size={25} /> Sign up with google
-            </button>
-            <button className="bg-white rounded-full p-3 text-black text-sm font-bold px-4 flex gap-2">
-              <FaFacebook size={25} /> Sign up with Facebook
-            </button>
+
+          {/* Divider */}
+          <div className="flex items-center mt-6">
+            <div className="flex-1 h-px bg-gray-300" />
+            <span className="px-2 text-gray-500 text-sm">OR</span>
+            <div className="flex-1 h-px bg-gray-300" />
           </div>
+
+          {/* Social Sign-up Buttons */}
+          <div className="flex justify-center gap-4 mt-6">
+            <Button variant="outline" className="bg-white border border-gray-300 shadow-sm">
+              <FcGoogle size={24} />
+            </Button>
+            <Button variant="outline" className="bg-white border border-gray-300 shadow-sm">
+              <FaFacebook size={24} color="#1877F2" />
+            </Button>
+            <Button variant="outline" className="bg-white border border-gray-300 shadow-sm">
+              <FaApple size={24} />
+            </Button>
+          </div>
+
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

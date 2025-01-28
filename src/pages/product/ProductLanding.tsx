@@ -65,18 +65,19 @@ const ProductLanding = () => {
                                 /> */}
                             </CardDescription>
                             <CardContent >
-                                <div className="mt-6 w-full lg:mt-0 border-2 border-blue-400/2 rounded-md p-4">
-                                    <h3 className="w-full text-xl md:text-wxl text-gray-700 font-mono px-4 lg:px-0">
+                                <div className="mt-6 w-full lg:mt-0 border-2 border-blue-400/20 rounded-md p-4">
+                                    <h3 className="w-full text-sm font-thin md:text-xl text-gray-700 px-4 lg:px-0 break-words whitespace-normal leading-snug">
                                         {product.name}
                                     </h3>
                                     <div className="flex justify-between items-center">
-                                        <p className="text-xl md:text-3xl mt-2 font-serif px-4 lg:px-0">
+                                        <p className="text-xl md:text-2xl mt-2 font-serif px-4 lg:px-0">
                                             ${product.price}
                                         </p>
                                         <p className="text-md mt-2 font-serif px-4 lg:px-0">
                                             ${product.price} / item
                                         </p>
                                     </div>
+                                
 
                                     {/* <div className="px-4 lg:px-0 my-2"></div> */}
                                     <div className="px-4 lg:px-0 font-bold text-gray-700 mt-6 text-base md:text-xl">

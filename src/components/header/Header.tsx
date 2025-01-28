@@ -103,8 +103,10 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
           setResults={setResults}
         />
         {results.length > 0 && (
-          <div className="flex justify-center absolute top-full md:w-[750px] lg:w-[750px] left-0 w-full shadow-md rounded-md bg-white max-h-96 overflow-y-auto">
-            <ResultsComponent results={results} />
+          <div className="flex justify-center">
+          <div className="absolute mx-auto top-full md:w-[750px] lg:w-[750px] left-0 w-full shadow-md rounded-md bg-white max-h-96 overflow-y-auto">
+              <ResultsComponent results={results} />
+              </div>
           </div>
         )}
       </div>

@@ -7,15 +7,15 @@ import { Button } from "./ui/button";
 import { PiCameraRotate } from "react-icons/pi";
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { categorySchema } from "@/pages/category/categoryFormValidation";
-
 import { ICategoryTypes } from "@/types";
 import { setAProductFoundStatus } from "@/redux/product.slice";
 import { useMutation } from "@tanstack/react-query";
 import { createCategory } from "@/axios/category/category";
+import { MdFlashlightOn, MdFlashlightOff } from "react-icons/md";
+import { isMobile } from "react-device-detect";
 
 const videoConstraints = {
     width: 1280,
@@ -31,7 +31,8 @@ interface WebcamComponentProps {
 export const WebcamComponent: React.FC<WebcamComponentProps> = ({ setImage, closeModal }) => {
     const webcamRef = useRef<Webcam>(null);
     const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
-
+    const [isFlashOn, setIsFlashOn] = useState(false);
+    const [stream, setStream] = useState<MediaStream | null>(null);
     // create a capture function
     const capture = useCallback(() => {
         const imageSrc = webcamRef?.current?.getScreenshot();
@@ -45,9 +46,52 @@ export const WebcamComponent: React.FC<WebcamComponentProps> = ({ setImage, clos
         setFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
     };
 
+    const toggleFlashlight = async () => {
+        if (!isMobile) {
+            alert("Flashlight is only supported on mobile devices.");
+            return;
+        }
+
+        try {
+            // Get the current media stream or request a new one
+            let currentStream = stream;
+            if (!currentStream) {
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                });
+                setStream(currentStream);
+            }
+
+            // Get the video track and apply the torch constraint
+            const videoTrack = currentStream.getVideoTracks()[0];
+            const capabilities = videoTrack.getCapabilities() as MediaTrackCapabilities & {
+                torch?: boolean;
+            };
+
+            if (capabilities?.torch) {
+                const newFlashState = !isFlashOn;
+                await videoTrack.applyConstraints({
+                    advanced: [{ torch: newFlashState }] as unknown as MediaTrackConstraintSet[],
+                });
+                setIsFlashOn(newFlashState);
+            } else {
+                alert("Torch is not supported on this device.");
+            }
+        } catch (error) {
+            console.error("Error toggling flashlight:", error);
+            alert("Unable to access the flashlight.");
+        }
+    };
+
+    // Stop the media stream when the component unmounts
+    React.useEffect(() => {
+        return () => {
+            stream?.getTracks().forEach((track) => track.stop());
+        };
+    }, [stream]);
+
     return (
         <div>
-
             <Webcam audio={false}
                 height={600}
                 width={600}
@@ -56,16 +100,18 @@ export const WebcamComponent: React.FC<WebcamComponentProps> = ({ setImage, clos
                 mirrored={facingMode === 'user' ? true : false}
                 videoConstraints={{ ...videoConstraints, facingMode }} />
             <div className="flex justify-center items-center gap-2 p-2">
-                <Button className="bg-green-500 hover:bg-green-400"
-                    onClick={capture}>Capture photo</Button>
-                <Button
-                    onClick={toggleFacingMode}
-
-                >
-                    {<PiCameraRotate size={20} />}
+                <Button className="bg-green-500 hover:bg-green-400" onClick={capture}>
+                    Capture photo
                 </Button>
-                <Button className="bg-red-500 hover:bg-red-400"
-                    onClick={closeModal}>Close camera</Button>
+                <Button onClick={toggleFacingMode}>
+                    <PiCameraRotate size={20} />
+                </Button>
+                <Button className="bg-yellow-500 hover:bg-yellow-400" onClick={toggleFlashlight}>
+                    {isFlashOn ? <MdFlashlightOff size={20} /> : <MdFlashlightOn size={20} />}
+                </Button>
+                <Button className="bg-red-500 hover:bg-red-400" onClick={closeModal}>
+                    Close camera
+                </Button>
             </div>
         </div>
     )
@@ -80,6 +126,8 @@ interface ScanBarcodeComponentProps {
 
 export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModal }: ScanBarcodeComponentProps) => {
     // const navigate = useNavigate()
+    const [isFlashOn, setIsFlashOn] = useState(false);
+    const [stream, setStream] = useState<MediaStream | null>(null);
     const { ref } = useZxing({
         onDecodeResult(result) {
             if (result.getText() !== "") {
@@ -105,10 +153,57 @@ export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModa
         },
     });
 
+    const toggleFlashlight = async () => {
+        if (!isMobile) {
+            alert("Flashlight is only supported on mobile devices.");
+            return;
+        }
+
+        try {
+            // Get the current media stream or request a new one
+            let currentStream = stream;
+            if (!currentStream) {
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                });
+                setStream(currentStream);
+            }
+
+            // Get the video track and apply the torch constraint
+            const videoTrack = currentStream.getVideoTracks()[0];
+            const capabilities = videoTrack.getCapabilities() as MediaTrackCapabilities & {
+                torch?: boolean;
+            };
+
+            if (capabilities?.torch) {
+                const newFlashState = !isFlashOn;
+                await videoTrack.applyConstraints({
+                    advanced: [{ torch: newFlashState }] as unknown as MediaTrackConstraintSet[],
+                });
+                setIsFlashOn(newFlashState);
+            } else {
+                alert("Torch is not supported on this device.");
+            }
+        } catch (error) {
+            console.error("Error toggling flashlight:", error);
+            alert("Unable to access the flashlight.");
+        }
+    };
+
+    // Stop the media stream when the component unmounts
+    React.useEffect(() => {
+        return () => {
+            stream?.getTracks().forEach((track) => track.stop());
+        };
+    }, [stream]);
+
     return (
         <div>
             <video ref={ref} />
-            <div className="flex justify-end items-center">
+            <div className="flex justify-end items-center gap-2">
+                <Button className="bg-yellow-500 hover:bg-yellow-400 mt-2" onClick={toggleFlashlight}>
+                    {isFlashOn ? <MdFlashlightOff size={20} /> : <MdFlashlightOn size={20} />}
+                </Button>
                 <Button className="mt-2 bg-red-500"
                     onClick={closeModal}>Close camera</Button>
             </div>

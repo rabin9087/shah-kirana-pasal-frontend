@@ -1,52 +1,52 @@
-import LoginForm from "@/components/Form/LoginForm";
 import { Button } from "@/components/ui/button";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
-import { IoIosArrowBack } from "react-icons/io";
+import LoginForm from "@/components/Form/LoginForm";
+import Layout from "@/components/layout/Layout";
+
 const SignIn = () => {
   return (
-    <div className="bg-sign-up h-screen bg-cover flex ">
+    <Layout title="">
+      <div className="flex flex-col items-center justify-center h-screen bg-sign-up bg-cover">
 
-      <Link to={"/"}>
-      <button className="flex items-center shadow-md rounded-md ms-4 font-medium text-2xl w-fit px-2"><IoIosArrowBack className="mt-1"/> <span>Back</span></button></Link>
-   
-      
-      <div className="flex-1 bg-white/75 backdrop-blur-sm p-4 sm:rounded-lg flex justify-center items-center text-black flex-col">
-        <p className="text-2xl font-bold ">Log in</p>
-        <div className=" w-full sm:w-[400px]">
+        {/* Login Form Section */}
+        <div className="w-full max-w-md bg-white/90 p-6 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
+
           <LoginForm />
-        </div>
-        <span className="mt-5">
-          New to Shah Kirana Pasal Online? {" "}
-          <a
-            href="/sign-up"
-            className="font-semibold text-blue-500 underline cursor-pointer"
-          >
-            Sign up now
-          </a>
-          
-        </span>
-        <div className="flex justify-center w-full items-center gap-10 mt-10">
-          <div className=" w-full border border-gray-400 " />
-          <span className="text-gray-400">OR</span>
-          <div className=" w-full border border-gray-400 "></div>
-        </div>
 
-        <div className="flex justify-center gap-5 mt-10">
-          <Button variant={"outline"} className="bg-white border-none">
-            <FcGoogle size={30} />
-          </Button>
-          <Button variant={"outline"} className="bg-white border-none">
-            <FaFacebook size={30} color="blue" />
-          </Button>
-          <Button variant={"outline"} className="bg-white border-none">
-            <FaApple size={30} />
-          </Button>
+          <div className="text-center mt-4">
+            <p className="text-sm">
+              New to Shah Kirana Pasal Online?{" "}
+              <Link to="/sign-up" className="text-blue-500 font-semibold">
+                Sign up now
+              </Link>
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div className="flex items-center mt-6">
+            <div className="flex-1 h-px bg-gray-300" />
+            <span className="px-2 text-gray-500 text-sm">OR</span>
+            <div className="flex-1 h-px bg-gray-300" />
+          </div>
+
+          {/* Social Login Buttons */}
+          <div className="flex justify-center gap-4 mt-6">
+            <Button variant="outline" className="bg-white border border-gray-300 shadow-sm">
+              <FcGoogle size={24} />
+            </Button>
+            <Button variant="outline" className="bg-white border border-gray-300 shadow-sm">
+              <FaFacebook size={24} color="#1877F2" />
+            </Button>
+            <Button variant="outline" className="bg-white border border-gray-300 shadow-sm">
+              <FaApple size={24} />
+            </Button>
+          </div>
         </div>
       </div>
-      <div className="sm:flex-1 flex justify-center"></div>
-    </div>
+    </Layout>
   );
 };
 

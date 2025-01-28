@@ -19,14 +19,14 @@ export const ChangeItemQty = ({ item }: { item: IAddToCartTypes }) => {
         <div className="flex w-full items-center">
 
             <Button variant={'default'}
-                className="rounded-none rounded-l-md"
+                className="rounded-none rounded-l-md w-1/4"
                 onClick={() => { dispatch(setAddToCart({ ...item, orderQuantity: item.orderQuantity - 1 })) }}>
                 -
             </Button>
             <p className="h-10 w-full  border flex items-center justify-center ">{item.orderQuantity}</p>
             <Button variant={'default'}
                 onClick={() => { dispatch(setAddToCart({ ...item, orderQuantity: item.orderQuantity + 1 })) }}
-                className="rounded-none rounded-r-md">
+                className="rounded-none rounded-r-md w-1/4">
                 +
             </Button>
         </div>

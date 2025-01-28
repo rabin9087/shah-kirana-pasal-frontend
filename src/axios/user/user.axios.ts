@@ -1,5 +1,5 @@
 import { createUserParams, forgetPasswordParams, newPasswordParams, otp_PasswordParams } from "@/types";
-import { axiosProcessor, getAccessJWt, getRefreshJWT, rootApi } from "..";
+import { axiosProcessor, rootApi } from "..";
 const userApi = rootApi + "/api/v1/user";
 
 export const createUser = (data: createUserParams) => {
@@ -48,12 +48,10 @@ export const update_Forget_Password = (data: newPasswordParams) => {
 
 export const logoutUser = () => {
   const obj = {
-    method: "post",
+    method: "get",
     url: userApi + "/logout",
-    obj: {
-      accessJWT: getAccessJWt(),
-      refreshJWT: getRefreshJWT(),
-    },
+    isPrivate: true,
+    refreshToken: true,
   };
   return axiosProcessor(obj);
 };
@@ -82,5 +80,26 @@ export const getUser = () => {
     method: "get",
     url: userApi,
     isPrivate: true,
+    // refreshToken: true
+  });
+};
+
+export const getAllUsers = async() => {
+  const res =await axiosProcessor({
+    method: "get",
+    url: userApi + "/all",
+    isPrivate: true,
+    // refreshToken: true
+  });
+  return res
+};
+
+export const updateUserProfile = (data: FormData) => {
+  return axiosProcessor({
+    method: "patch",
+    url: userApi+ "/profile",
+    isPrivate: true,
+    obj: data,
+    // refreshToken: true
   });
 };

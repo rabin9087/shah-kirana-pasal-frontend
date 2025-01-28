@@ -5,10 +5,11 @@ import { toggleSideBar } from "@/redux/sidebar.slice";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
+
 const SideBar = () => {
   const drawerRef = useRef<HTMLDivElement>(null);
   const { open } = useAppSelector((store) => store.sidebar);
-  const { categories } = useAppSelector(state => state.categoryInfo)
+  const { categories } = useAppSelector((state) => state.categoryInfo);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -18,49 +19,75 @@ const SideBar = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [drawerRef, dispatch]);
 
   return (
-    // <motion.div
-    //   initial={{ width: "0px" }}
-    //   animate={{ width: open ? "300px" : "200px" }}
-    //   className={`bg-accent overflow-y-auto z-10 animate-side-bar-open  ${open ? "w-full block sm:w-full md:w-[240px]" : "hidden"
-    //     }`}
-    // >
     <div>
-
-      {open && (<div className="flex w-full md:w-2/4 lg:w-1/4 flex-col p-1 bg-accent max-h-screen overflow-y-scroll" ref={drawerRef}>
-        <div className="flex justify-end me-2 p-1">
-          <Button className="mt-1 mb-3 text-end" type="button" onClick={() => {
-            dispatch(toggleSideBar());
-          }}>
-            <RxCross1 className="text-red-500 bg-white" size={25} />
-          </Button>
-        </div>
-
-
-        <ul className="flex flex-col gap-4 overflow-y-scroll min-h-screen">
-          {categories
-            .map(({ _id, name, slug }) => (
-              <Link to={`/category/${slug}` as string} key={_id} onClick={() => {
+      {open && (
+        <div
+          ref={drawerRef}
+          className="fixed top-0 left-0 z-40 w-full md:w-72 lg:w-80 h-full bg-white shadow-lg dark:bg-gray-900 transform transition-transform duration-300 ease-in-out"
+        >
+          {/* Header */}
+          <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+              Categories
+            </h2>
+            <Button
+              className="text-white hover:text-white/80 dark:text-gray-400"
+              type="button"
+              onClick={() => {
                 dispatch(toggleSideBar());
-              }}>
-                <li
-                  className="flex p-2 items-center justify-between dark:text-secondary min-w-fit font-bold text-secondary-foreground rounded-md overflow-hidden bg-white hover:bg-gray-400"
-                >
-                  <span>{name.toLocaleUpperCase()}</span>
-                  <IoIosArrowForward />
+              }}
+            >
+              <RxCross1 size={24} />
+            </Button>
+          </div>
+
+          {/* Category List */}
+          <ul className="mt-4 px-4 space-y-2 overflow-y-auto max-h-[calc(100vh-4rem)]">
+            {categories.map(({ _id, name, slug }) => (
+              <Link
+                to={`/category/${slug}`}
+                key={_id}
+                onClick={() => {
+                  dispatch(toggleSideBar());
+                }}
+              >
+                <li className="flex items-center justify-between px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-all duration-150">
+                  <span className="text-gray-700 dark:text-gray-200 font-medium">
+                    {name.toLocaleUpperCase()}
+                  </span>
+                  <IoIosArrowForward className="text-gray-500 dark:text-gray-400" />
                 </li>
               </Link>
             ))}
-        </ul>
-      </div>)}
-    </div >
-    // </motion.div>
+          </ul>
+
+          {/* Footer */}
+          <div className="absolute bottom-0 w-full px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <Button
+              onClick={() => alert("Additional Actions")}
+              className="w-full bg-blue-500 text-white hover:bg-blue-600"
+            >
+              More Actions
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Overlay */}
+      {open && (
+        <div
+          onClick={() => dispatch(toggleSideBar())}
+          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+        ></div>
+      )}
+    </div>
   );
 };
 
