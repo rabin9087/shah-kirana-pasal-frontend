@@ -42,7 +42,7 @@ const MyProfile = () => {
                 console.log(res.message);
                 if (res.status === "success") {
                     dispatch(updateProfileAction())
-                      
+
                 } else {
                     alert(res.message);
                 }
@@ -76,6 +76,7 @@ const MyProfile = () => {
                             type="file"
                             id="profileImage"
                             accept="image/*"
+                            capture="environment"
                             onChange={handleImageChange}
                             className="hidden"
                         />
@@ -120,7 +121,7 @@ const MyProfile = () => {
                     {selectedImage && (
                         <div className="mt-6 text-center">
                             <Button onClick={handleSaveImage} className="bg-blue-500 text-white">
-                                {loading ? <FaSpinner>"Updating..."</FaSpinner> :  "Update Image"}
+                                {loading ? <FaSpinner>"Updating..."</FaSpinner> : "Update Image"}
                             </Button>
                         </div>
                     )}

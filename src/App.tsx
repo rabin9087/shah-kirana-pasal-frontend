@@ -13,7 +13,6 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 import { useEffect } from "react";
 import { autoLoginUserAction } from "./action/user.action";
 import About from "./pages/about/About";
-import Contact from "./pages/contact/Contact";
 import CreateProduct from "../src/pages/product/Create";
 import UpdateProduct from "./pages/product/Update";
 import Modal from 'react-modal';
@@ -30,6 +29,7 @@ import MyProfile from "./pages/my-profile/MyProfile";
 import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRouter, { AdminPrivateRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
+import ContactUs from "./pages/contact/Contact";
 
 // Set the app element
 Modal.setAppElement('#root');
@@ -127,7 +127,7 @@ function App() {
 
         <Route
           path="/contact"
-          element={<Layout title=""><Contact /></Layout>}
+          element={<Layout title=""><ContactUs /></Layout>}
           errorElement={<ErrorPage />}
         />
 

@@ -56,8 +56,8 @@ function SignUpForm({ token }: { token: string }) {
     ToggleVisibility: toggleConfirmPassword,
     type: confirmPasswordType,
   } = TogglePasswordVisibility();
-
-  const [selectedCountry, setSelectedCountry] = useState(countryCodes[0]); // Default to the first country
+  const nepal = countryCodes.findIndex((item) => item.name === 'Nepal')
+  const [selectedCountry, setSelectedCountry] = useState(countryCodes[nepal] || {}); // Default to the first country
 
   const form = useForm<TForm>({
     resolver: zodResolver(formSchema),
@@ -67,13 +67,12 @@ function SignUpForm({ token }: { token: string }) {
       email: "",
       lName: "",
       password: "",
-      phone: selectedCountry + "",
+      phone: "",
       address: "",
     },
   });
-
   async function onSubmit(values: TForm) {
-    const { confirmPassword, password, ...rest } = values;
+    const { confirmPassword, password, phone, ...rest } = values;
 
     if (confirmPassword !== password) {
       toast.error("Passwords do not match!", {
@@ -84,8 +83,8 @@ function SignUpForm({ token }: { token: string }) {
     }
 
     const result = !token
-      ? Boolean(await dispatch(createNewUser({ ...rest, password } as createUserParams)))
-      : Boolean(await dispatch(createNewAdmin({ ...rest, password } as createUserParams)));
+      ? Boolean(await dispatch(createNewUser({ ...rest, phone: selectedCountry.dial_code + values.phone, password } as createUserParams)))
+      : Boolean(await dispatch(createNewAdmin({ ...rest, phone: selectedCountry.dial_code + values.phone, password } as createUserParams)));
 
     if (result) {
       toast.success("Account created successfully!", {
@@ -166,38 +165,40 @@ function SignUpForm({ token }: { token: string }) {
             )}
           />
         </div>
-        <div className="flex gap-5 flex-col">
-          <select
-            value={selectedCountry.dial_code}
-            onChange={(e) => {
-              const selectedCode = e.target.value;
-              const selectedCountryData = countryCodes.find(
-                (country) => country.code === selectedCode
-              );
-              setSelectedCountry(selectedCountryData || countryCodes[0]); // Default to first country if not found
-            }}
-            className="w-fit bg-white border border-gray-300 rounded-md px-2 py-1 mr-2"
-          >
-            {countryCodes.map((country) => (
-              <option key={country.code} value={country.code}>
-                {country.name} {country.emoji} {country.dial_code}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex gap-5 flex-col">
-         
+        <FormLabel className="text-lg text-black">Phone Number</FormLabel>
+
+        <select
+          value={selectedCountry.dial_code} // Use dial_code for value
+          onChange={(e) => {
+            const selectedDialCode = e.target.value;
+            const selectedCountryData = countryCodes.find(
+              (country) => country.dial_code === selectedDialCode
+            )
+            setSelectedCountry(selectedCountryData || countryCodes[0]); // Default to first country if not found
+          }}
+          className="w-fit bg-white border border-gray-300 rounded-md px-2 py-1 mr-2"
+        >
+          {countryCodes.map((country) => (
+            <option key={country.code} value={country.dial_code}>
+              {country.name} {country.emoji} {country.dial_code}
+            </option>
+          ))}
+        </select>
+        
+        <div className="flex gap-5 flex-col sm:flex-row">
+          
           <FormField
             control={form.control}
             name="phone"
             render={({ field }) => (
-              <FormItem className="w-full">
+              <FormItem className="w-full relative">
+                
                 <FormControl>
                   <Input
-                    placeholder="Enter phone number"
+                    placeholder="Enter your phone number"
                     {...field}
-                    className="bg-white w-full rounded-lg border-primary"
-                    type="text"
+                    className="bg-white rounded-lg border-primary focus:outline-primary/80"
+                    type={"text"}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />

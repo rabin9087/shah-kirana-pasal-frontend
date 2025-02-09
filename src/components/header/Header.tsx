@@ -65,7 +65,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
             <Link to={"/"}>
               <img
                 src="/assets/shahKiranaPasal.png"
-                className="w-20 h-20 object-contain rounded-md"
+                className="w-16 h-16 object-contain rounded-full"
                 alt="Shah Kirana Pasal Logo"
               />
 

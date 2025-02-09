@@ -35,7 +35,9 @@ export function Profile() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage
+                        src={user?.profile ? user.profile : "https://github.com/shadcn.png"}
+                        alt={user?.fName ? user?.fName + " " + user?.lName: "Profile"} />
                     <AvatarFallback>C N</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
@@ -45,21 +47,21 @@ export function Profile() {
                 <DropdownMenuItem>
                     <Link to={"/my-profile"}>My Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+               {user.role === "ADMIN" && <DropdownMenuItem>
                     <Link to={"/dashboard"}>Dashboard</Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem>}
                 <DropdownMenuItem>
                     <Link to={"/order-placed"}>Purchased History</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                {user.role === "ADMIN" && <DropdownMenuItem>
                     <Link to={"/all-products"}>All Product</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
+                </DropdownMenuItem>}
+                {user.role === "ADMIN" && <DropdownMenuItem>
                     <Link to={"/product/create"}>Create Product</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
+                </DropdownMenuItem>}
+                {user.role === "ADMIN" && <DropdownMenuItem>
                     <Link to={"/scan-product"}>Update Product</Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem>}
                 <DropdownMenuItem>
                     {user?._id === "" ? (
                         <Button
