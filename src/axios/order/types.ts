@@ -12,11 +12,11 @@ export interface IOrder  {
     email: string,
     items: IItemTypes[];
     deliverStatus: string,
-    deliveryDate: {
+    deliveryDate?: {
                     date: string,
                     time: string
     },
-    requestDeliveryDate: string,
+    requestDeliveryDate?: string,
     payment: string
     amount: number
 }

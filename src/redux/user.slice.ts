@@ -8,7 +8,7 @@ type TinititalState = {
 export const initialState: TinititalState = {
   user: {
     _id: "",
-    role: "USER",
+    role: "",
     email: "",
     fName: "",
     lName: "",
@@ -18,6 +18,8 @@ export const initialState: TinititalState = {
     isVerified: false,
     phone: "",
     profile: "",
+    cart: [],
+    cartHistory: [],
     status: "",
     updatedAt: "",
     verificationCode: "",
@@ -33,11 +35,27 @@ const userSlice = createSlice({
       state.user = payload;
     },
     logOut: (state) => {
+      localStorage.removeItem("cart")
+      localStorage.removeItem("refreshJWT");
+      sessionStorage.removeItem("accessJWT");
       state.user = initialState.user;
     },
     setEmail_Phone: (state, {payload}: PayloadAction<string>) => {
       state.email_Phone = payload
-    }
+    },
+//     setCart: (state, { payload }: PayloadAction<IAddToCartTypes>) => {
+//   const existingProductIndex = state.user.cart.findIndex(
+//     (item) => item?.product_id === payload?.product_id
+//   );
+
+//   if (existingProductIndex !== -1) {
+//     // If the product exists, update the quantity
+//     state.user.cart[existingProductIndex].orderQuantity += payload.orderQuantity;
+//   } else {
+//     // If the product does not exist, add it to the cart
+//     state.user.cart.push(payload);
+//   }
+// },
   },
 });
 

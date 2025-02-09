@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { FaShoppingCart } from "react-icons/fa";
 import {
   Drawer,
@@ -9,18 +9,45 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import AddToCart from "@/pages/addToCart/AddToCart";
-
-
+import { IUpdateCartToUserTypes } from "@/pages/addToCart";
+import { useEffect } from "react";
+import { updateCartInUserAxios } from "@/action/user.action";
+import { debounce } from "lodash";
 
 const Cart: React.FC = () => {
+  const dispatch = useAppDispatch()
   const { cart } = useAppSelector((state) => state.addToCartInfo)
+  const { user } = useAppSelector((state) => state.userInfo)
   const cartPrice = cart.reduce((acc, { orderQuantity, price }) => {
     return acc + (orderQuantity * price)
   }, 0)
 
-  const cartQuantity = cart.reduce((acc, { orderQuantity }) => {
-    return acc + orderQuantity
-  }, 0)
+  const cartQuantity = cart.reduce((acc, { orderQuantity }) => acc + orderQuantity, 0);
+
+  const updatedCart: IUpdateCartToUserTypes[] = cart.filter((item) => item.productId?._id !== '')
+    .map(({ _id, price, orderQuantity, note }) => ({
+    productId: _id,
+    orderQuantity,
+    note,
+    price,
+    }));
+
+  useEffect(() => {
+    if (user?._id && cartQuantity) {
+      const debouncedUpdate = debounce(() => {
+        dispatch(updateCartInUserAxios(user.phone, updatedCart));
+
+        // if (user.phone && cart.filter((item) => item.productId?._id !== '' && item.orderQuantity !< 1 && item.price !== 0).length > 0) {
+        // }
+      }, 1000); // 1000ms delay
+      console.log("UpdateCart", updatedCart)
+      debouncedUpdate();
+
+      return () => debouncedUpdate.cancel(); // Cleanup function to prevent unnecessary calls
+    }
+  }, [cart, cartQuantity, user?._id, dispatch]);
+
+  
 
   return (
     <Drawer>

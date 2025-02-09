@@ -9,9 +9,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "@/components/ui/button"; // Assuming you have a Button component
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { initialState, setUser } from "@/redux/user.slice";
-import { logoutUser } from "@/axios/user/user.axios";
 import { Link, useNavigate } from "react-router-dom";
+import { logOutUserAction } from "@/action/user.action";
+import { resetCart } from "@/redux/addToCart.slice";
 
 export function Profile() {
     const dispatch = useAppDispatch();
@@ -19,11 +19,12 @@ export function Profile() {
     const { user } = useAppSelector((state) => state.userInfo);
 
     const handleOnSignout = async () => {
-        await logoutUser();
-        localStorage.removeItem("refreshJWT");
-        sessionStorage.removeItem("accessJWT");
-        dispatch(setUser(initialState.user));
-        navigate("/sign-in");
+        const logout = await dispatch(logOutUserAction())
+        dispatch(resetCart())
+        if (logout) {
+            navigate("/sign-in");
+        }
+        return
     };
 
     const handleOnLogin = () => {
@@ -46,6 +47,9 @@ export function Profile() {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                     <Link to={"/dashboard"}>Dashboard</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Link to={"/order-placed"}>Purchased History</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                     <Link to={"/all-products"}>All Product</Link>

@@ -22,7 +22,7 @@ const SignUp = () => {
       <div className="flex flex-col items-center justify-center h-screen bg-sign-up bg-cover">
         {/* Main container */}
         <div className="w-full max-w-md bg-white/90 p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
+          {/* <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2> */}
 
           <SignUpForm token={token} />
 

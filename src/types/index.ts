@@ -1,4 +1,5 @@
 import { IOrder } from "@/axios/order/types";
+import { IAddToCartTypes } from "@/pages/addToCart";
 import { ImageType } from "@/pages/product/formValidation";
 
 export interface IAxiosProcessParams {
@@ -49,16 +50,25 @@ export interface IUser {
   lName: string;
   phone: string;
   password?: string;
-  role: "ADMIN" | "USER";
+  role: "ADMIN" | "USER" | "";
   email: string;
   isVerified: boolean;
   verificationCode: string | null;
   address: string;
   profile: string;
+  cart: IAddToCartTypes[]; // Current active cart
+  cartHistory: ICartHistory[]; 
   createdAt: string;
   updatedAt: string;
   __v: number;
 }
+export interface ICartHistory {
+  items: IAddToCartTypes[];
+  amount: number;// Store previous cart data
+  purchasedAt: Date; // Store timestamp of purchase
+}
+
+
 export type serverReturnDataType = {
   status: "success" | "error";
   message?: string;
@@ -124,7 +134,7 @@ export type IProductTypes = {
   storedAt: IStoredAt,
   aggrateRating?: number,
   thumbnail?: string,
-  qrCodeNumber: string,
+  qrCodeNumber?: string,
   salesPrice: number,
   salesStartDate?: Date,
   salesEndDate?: Date,

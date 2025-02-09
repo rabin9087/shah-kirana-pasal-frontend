@@ -33,14 +33,14 @@ const formSchema = z.object({
 // Infer TypeScript types from schema
 type TForm = z.infer<typeof formSchema>;
 
-function LoginForm() {
+function SignInForm() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Determine where the user was navigating from
   const fromLocation = location?.state?.from?.pathname || location.pathname || "/";
-
+  // const fromLocation =  location.pathname || "/";
   // Access user state from Redux store
   const { user } = useAppSelector((state) => state.userInfo);
 
@@ -58,7 +58,12 @@ function LoginForm() {
 
   // Handle form submission
   const onSubmit = async (values: TForm) => {
-    await dispatch(loginUserAction(values, navigate));
+    const signin = await dispatch(loginUserAction(values))
+    if (signin) {
+      navigate("/")
+      return
+    }
+    return
   };
 
   // Auto-login redirection if user is already logged in
@@ -67,6 +72,7 @@ function LoginForm() {
       navigate(fromLocation, { replace: true });
     }
   }, [user?._id, fromLocation, navigate]);
+
 
   return (
     <Form {...form}>
@@ -127,11 +133,11 @@ function LoginForm() {
           type="submit"
           className="bg-primary rounded-full text-white hover:bg-primary/80"
         >
-          Submit
+          Sign In
         </Button>
       </form>
     </Form>
   );
 }
 
-export default LoginForm;
+export default SignInForm;

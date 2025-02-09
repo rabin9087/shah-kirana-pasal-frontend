@@ -26,6 +26,8 @@ const UpdateProduct = () => {
     const [images, setImages] = useState<string[]>([]);
     const [newImages, setNewImages] = useState<string[]>([]);
     const [thumbnail, setThumbnail] = useState<string>("");
+    const [notFound, setNotFound] = useState(false)
+    // const [isModalOpen, setIsModalOpen] = useState(false);
     const params = useParams()
     const dispatch = useAppDispatch()
     const { product } = useAppSelector(state => state.productInfo)
@@ -48,16 +50,14 @@ const UpdateProduct = () => {
             if (data.images) {
                 setImages(data.images as string[]);
             }
-            // Object.keys(product).forEach((key) => {
-            //     setValue(key as keyof UpdateProductSchema, data[key as keyof UpdateProductSchema]);
-            //     console.log(key as keyof UpdateProductSchema, data[key as keyof UpdateProductSchema])
-            // });
             dispatch(setAProduct(data))
         }
     }, [dispatch, data._id])
 
     const convert2base64 = (image: Blob) => {
         const reader = new FileReader();
+        setNotFound(false)
+        // isModalOpen(false)
         reader.onloadend = () => {
             const base64String = reader.result as string
             setImage(base64String);
@@ -122,8 +122,12 @@ const UpdateProduct = () => {
         onError: () => {
             console.log("error")
         },
-        onSuccess: () => {
-            console.log("success")
+        onSuccess: (response) => {
+            if (response.message === "Product Not Found!") {
+                // setIsModalOpen(true);
+            } else {
+                console.log("success");
+            }
         },
         onSettled: async (_, error) => {
             if (error) {
@@ -136,10 +140,9 @@ const UpdateProduct = () => {
 
 
     const onSubmit = async (data: UpdateProductSchema) => {
-
+        console.log(data)
         const formData = new FormData();
         formData.append("_id", product._id as string);
-        console.log(data)
         // const changedValues: Partial<ProductSchema> = {};
 
         // if (updateForm) {
@@ -248,10 +251,9 @@ const UpdateProduct = () => {
 
     }, [image, setValue]);
 
-
     if (isLoading || isFetching) return <Loading />;
 
-    if (!data) return <Layout title='Update Product Details'><Link to={"/scan-product"} className='ms-4'>
+    if (!data || notFound) return <Layout title='Update Product Details'><Link to={"/scan-product"} className='ms-4'>
         <Button>&lt; Back</Button>
     </Link><ProductNotFound /> </Layout>
 
@@ -347,6 +349,7 @@ const UpdateProduct = () => {
     ];
 
     return (
+        <>
         <Layout title='Update Product Details'>
             <Link to={"/scan-product"} className='ms-4'>
                 <Button>&lt; Back</Button>
@@ -530,7 +533,7 @@ const UpdateProduct = () => {
                 </form>
             </div>
         </Layout>
-
+</>
     )
 }
 export default UpdateProduct

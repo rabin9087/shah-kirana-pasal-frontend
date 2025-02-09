@@ -25,7 +25,7 @@ export const updateProduct = async(data: FormData, _id: string) => {
     isPrivate: false,
     obj: data,
      });
-    return response.product
+    return response 
   } catch (error) {
     throw new Error("Failed to update product");
   }

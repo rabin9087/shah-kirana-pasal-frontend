@@ -14,13 +14,19 @@ import { useState } from "react"
 
 const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
     const { cart } = useAppSelector((state) => state.addToCartInfo)
+    
     const [opennNote, setOpenNote] = useState(false);
     const [note, setNote] = useState(item.note || "");
     const orderQty = getOrderNumberQuantity(item._id, cart)
     const dispatch = useAppDispatch()
+
     const handleOnAddToCart = () => {
         dispatch(setAddToCart({ ...item, note }))
         setOpenNote(false);
+    }
+
+    const handleOnResetCart = () => {
+        dispatch(setAddToCart({...item, orderQuantity: 0}))
     }
 
     const handelOnChangeNote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -30,7 +36,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
     return (
         <Card className="w-full md:w-[250px] rounded-none mb-1">
             <div className="flex justify-end">
-                <Button className="w-fit flex justify-end border-none hover:bg-gray-300" variant={"outline"} onClick={handleOnAddToCart}><RxCross1 className="w-fit rounded-full border-2" size={20} /></Button>
+                <Button className="w-fit flex justify-end border-none hover:bg-gray-300" variant={"outline"} onClick={(handleOnResetCart)}><RxCross1 className="w-fit rounded-full border-2" size={20} /></Button>
             </div>
             <div className="flex justify-start items-center gap-2 px-2 py-2">
                 <Link to={`/product/${item.qrCodeNumber}`}>
@@ -73,6 +79,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                     className="underline cursor-pointer ps-2 pb-2"
                     onClick={() => setOpenNote(!opennNote)}
                 >
+                   
                     Add note
                 </p>
                 {opennNote && (

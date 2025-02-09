@@ -61,13 +61,14 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
               <GiHamburgerMenu size={20} />
             )}
           </Button>
-          <span className="text-primary-foreground p-2 hover:bg-gray-300">
+          <span className="text-primary-foreground p-2">
             <Link to={"/"}>
               <img
-                src="https://flowbite.com/docs/images/logo.svg"
-                className="h-8 me-3"
-                alt="FlowBite Logo"
+                src="/assets/shahKiranaPasal.png"
+                className="w-20 h-20 object-contain rounded-md"
+                alt="Shah Kirana Pasal Logo"
               />
+
             </Link>
           </span>
         </div>

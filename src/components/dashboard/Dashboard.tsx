@@ -12,11 +12,11 @@ const Dashboard = () => {
 
     // Prepare data for charts
     const userChartData = {
-        labels: users.map((user) => user.fName),
+        labels: users?.map((user) => user.fName),
         datasets: [
             {
                 label: "Number of Users",
-                data: users.length,
+                data: users?.length,
                 backgroundColor: "rgba(54, 162, 235, 0.6)",
                 borderColor: "rgba(54, 162, 235, 1)",
                 borderWidth: 1,
@@ -25,11 +25,11 @@ const Dashboard = () => {
     };
 
     const productChartData = {
-        labels: products.map((product) => product.name),
+        labels: products?.map((product) => product.name),
         datasets: [
             {
                 label: "Stock Count",
-                data: products.map((product) => product.quantity),
+                data: products?.map((product) => product.quantity),
                 backgroundColor: "rgba(255, 99, 132, 0.6)",
                 borderColor: "rgba(255, 99, 132, 1)",
                 borderWidth: 1,
@@ -38,13 +38,13 @@ const Dashboard = () => {
     };
 
     const categoryChartData = {
-        labels: categories.map((category) => category.name),
+        labels: categories?.map((category) => category.name),
         datasets: [
             {
                 label: "Number of Products",
-                data: categories.length,
-                backgroundColor: categories.map(() => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.6)`),
-                borderColor: categories.map(() => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`),
+                data: categories?.length,
+                backgroundColor: categories?.map(() => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.6)`),
+                borderColor: categories?.map(() => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`),
                 borderWidth: 1,
             },
         ],

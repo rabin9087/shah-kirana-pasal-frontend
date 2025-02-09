@@ -21,3 +21,24 @@ const ProductNotFound: React.FC = () => {
 };
 
 export default ProductNotFound;
+
+// Assuming you're using ShadCN UI
+import { Dialog, DialogClose, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
+
+export const ProductNotFoundModel = (isModalOpen: any, setIsModalOpen: any) => {
+    return (
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent>
+
+                <DialogTitle>Product Not Found</DialogTitle>
+                <DialogClose asChild>
+                    <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
+                        ✕
+                    </button>
+                </DialogClose>
+
+                <ProductNotFound />
+            </DialogContent>
+        </Dialog>
+    )
+}

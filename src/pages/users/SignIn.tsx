@@ -1,20 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
-import LoginForm from "@/components/Form/LoginForm";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
+import SignInForm from "@/components/Form/SignInForm";
+import { useAppSelector } from "@/hooks";
 
 const SignIn = () => {
+  const { user } = useAppSelector(s => s.userInfo)
+  const navigate = useNavigate()
+  // const location = useLocation()
+  // const fromLocation = location?.state?.from?.pathname || location.pathname || "/";
+  if (user?._id) {
+    navigate("/")
+    return
+  }
   return (
     <Layout title="">
       <div className="flex flex-col items-center justify-center h-screen bg-sign-up bg-cover">
 
         {/* Login Form Section */}
         <div className="w-full max-w-md bg-white/90 p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
+          {/* <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2> */}
 
-          <LoginForm />
+          <SignInForm />
 
           <div className="text-center mt-4">
             <p className="text-sm">

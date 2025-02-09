@@ -11,7 +11,7 @@ import NewPassword from "./pages/users/NewPassword";
 import PrivatePage from "./pages/users/PrivatePage";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { useEffect } from "react";
-import { getUserAction } from "./action/user.action";
+import { autoLoginUserAction } from "./action/user.action";
 import About from "./pages/about/About";
 import Contact from "./pages/contact/Contact";
 import CreateProduct from "../src/pages/product/Create";
@@ -25,32 +25,59 @@ import ProductLanding from "./pages/product/ProductLanding";
 import ProductCardByCategory from "./pages/category/ProductsByCategory";
 import AddToCart from "./pages/addToCart/AddToCart";
 import Payment from "./pages/payments/Payment";
-import SuccessfullPayment, { OrderPlaced } from "./pages/payments/SuccessfullPayment";
+import SuccessfullPayment from "./pages/payments/SuccessfullPayment";
 import MyProfile from "./pages/my-profile/MyProfile";
-import PrivateRouter from "./pages/users/PrivateRouter";
 import Dashboard from "./components/dashboard/Dashboard";
+import PrivateRouter, { AdminPrivateRouter } from "./pages/users/PrivateRouter";
+import { OrderPlaced } from "./pages/orders/OrderPlaced";
+
 // Set the app element
 Modal.setAppElement('#root');
 
 function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const { user } = useAppSelector(state => state.userInfo)
+  const location = useLocation();
+
+  // Determine where the user was navigating from
+  const fromLocation = location?.state?.from?.pathname || location.pathname || "/";
+  // const { pathname } = useLocation();
+  const { user } = useAppSelector(state => state.userInfo);
+
+  // Auto-login logic
+  useEffect(() => {
+    const autoLogin = async () => {
+      const refreshJWT = localStorage.getItem("refreshJWT");
+      const accessJWT = sessionStorage.getItem("accessJWT");
+
+      if (!user._id && (refreshJWT || accessJWT)) {
+        try {
+          const autologin = await dispatch(autoLoginUserAction());
+          if (autologin) {
+            navigate(fromLocation);
+          }
+        } catch (error) {
+          console.error("Auto-login failed:", error);
+        }
+      }
+    };
+
+    autoLogin();
+  }, [dispatch, fromLocation]);
 
   useEffect(() => {
-    if (user?._id !== "") {
-      dispatch(getUserAction(navigate, pathname));
+    if (user?._id) {
+      navigate(fromLocation, { replace: true });
     }
-  }, [dispatch, user?._id]);
+  }, [user?._id, fromLocation, navigate]);
+
+
   return (
     <>
       <Routes>
         <Route
           path="/"
-          element={
-            <Home />
-          }
+          element={<Home />}
           errorElement={<ErrorPage />}
         />
 
@@ -86,7 +113,7 @@ function App() {
           path="/new-password"
           element={
             <PrivatePage>
-              <NewPassword />{" "}
+              <NewPassword />
             </PrivatePage>
           }
           errorElement={<ErrorPage />}
@@ -94,55 +121,49 @@ function App() {
 
         <Route
           path="/about"
-          element={<Layout title=""> <About /></Layout>}
+          element={<Layout title=""><About /></Layout>}
           errorElement={<ErrorPage />}
         />
+
         <Route
           path="/contact"
-          element={<Layout title=""> <Contact /></Layout>}
+          element={<Layout title=""><Contact /></Layout>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/product/create"
-          element={<CreateProduct />}
+          element={<AdminPrivateRouter><CreateProduct /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/all-products"
-          element={<PrivateRouter>< AllProducts /></PrivateRouter>}
-          errorElement={<ErrorPage />}
-        />
-
-        <Route
-          path="/all-products"
-          element={< AllProducts />}
+          element={<AdminPrivateRouter><AllProducts /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/scan-product"
-          element={<ScanProduct />}
+          element={<AdminPrivateRouter><ScanProduct /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/product/update/:qrCodeNumber"
-          element={<PrivateRouter><UpdateProduct /></PrivateRouter>}
+          element={<AdminPrivateRouter><UpdateProduct /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/all-categories"
-          element={<PrivateRouter><AllCategories /></PrivateRouter >
-}
+          element={<AdminPrivateRouter><AllCategories /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/category/update/:_id"
-          element={<PrivateRouter><UpdateCategory /></PrivateRouter >}
+          element={<AdminPrivateRouter><UpdateCategory /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
@@ -166,25 +187,27 @@ function App() {
 
         <Route
           path="/payment"
-          element={<Payment />}
+          element={<PrivateRouter><Payment /></PrivateRouter >
+}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/payment/success"
-          element={<SuccessfullPayment />}
+          element={<PrivateRouter><SuccessfullPayment /></PrivateRouter >
+}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/order-placed"
-          element={<OrderPlaced />}
+          element={<PrivateRouter><OrderPlaced /></PrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/my-profile"
-          element={<MyProfile />}
+          element={<PrivateRouter><MyProfile /></PrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
@@ -196,14 +219,10 @@ function App() {
 
         <Route
           path="/dashboard"
-          element={<PrivateRouter><Dashboard /></PrivateRouter>}
+          element={<AdminPrivateRouter><Dashboard /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
-
-        {/* This is last line  */}
       </Routes>
-
-      
       <Loader />
     </>
   );

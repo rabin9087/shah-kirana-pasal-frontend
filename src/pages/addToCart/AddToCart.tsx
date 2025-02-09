@@ -3,11 +3,6 @@ import CartCard from "./CartCard"
 import EmptyCart from "./EmptyCart"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
-// import { RxCross1 } from "react-icons/rx";
-// import {
-//     Drawer,
-//     DrawerTrigger,
-// } from "@/components/ui/drawer"
 
 const AddToCart = () => {
     const { cart } = useAppSelector(s => s.addToCartInfo)
