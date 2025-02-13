@@ -102,8 +102,9 @@ const CheckoutForm = () => {
             throw new Error("Shipping Address field is required!");
         }
 
-        if (orderType === "delivery" && !requestDeliveryDate) {
-            alert("Please select a delivery date")
+        if (!requestDeliveryDate) {
+            orderType === "delivery" &&  alert("Please select a delivery date")
+            orderType === "pickup" &&  alert("Please select a pickup date")
             setIsAddressComplete(false)
             throw new Error("Delivery date is required.");
         }
@@ -137,7 +138,7 @@ const CheckoutForm = () => {
                     phone: phone,
                     address: full_address,
                     email: contactInfo.email,
-                    items: orderItems,
+                    items: orderItems as any,
                     deliverStatus: "Not Yet Delivered",
                     deliveryDate: {
                         date: "NY",
@@ -146,6 +147,7 @@ const CheckoutForm = () => {
                     requestDeliveryDate: requestDeliveryDate,
                     payment: result?.paymentIntent?.status,
                     amount: parseFloat(cartAmount.toFixed(2)),
+                    orderType: orderType
                 }
                 await createOrder(customer_details)
                 updateCartAndUserCart()
@@ -160,15 +162,17 @@ const CheckoutForm = () => {
                    phone: user.phone,
                    address: user.address,
                    email: user.email,
-                   items: orderItems,
+                   items: orderItems as any,
                    deliverStatus: "Not Yet Delivered",
                    deliveryDate: {
                        date: "NY",
                        time: "NY"
                    },
-                   requestDeliveryDate: "",
+                   requestDeliveryDate: requestDeliveryDate,
                    payment: paymentType,
                    amount: parseFloat(cartAmount.toFixed(2)),
+                   orderType: orderType
+
                }
             await   createOrder(customer_details)
                     updateCartAndUserCart()
@@ -279,7 +283,7 @@ console.log(contactInfo)
                                 />
                             </div>}
 
-                            {orderType === "delivery" &&  <DeliveryDateSelector requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />}                        </div>
+                            {  <DeliveryDateSelector orderType={orderType} requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />}                        </div>
                         {/* <label htmlFor='deliveryDate'>Delivery Date: </label>
                                 <input id='deliveryDate' type="date" name="deliveryDate" required onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                     const date = (e.target.value);

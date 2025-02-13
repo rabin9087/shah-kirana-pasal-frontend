@@ -57,6 +57,9 @@ export function Profile() {
                     <Link to={"/all-products"}>All Product</Link>
                 </DropdownMenuItem>}
                 {user.role === "ADMIN" && <DropdownMenuItem>
+                    <Link to={"/all-orders"}>All Orders</Link>
+                </DropdownMenuItem>}
+                {user.role === "ADMIN" && <DropdownMenuItem>
                     <Link to={"/product/create"}>Create Product</Link>
                 </DropdownMenuItem>}
                 {user.role === "ADMIN" && <DropdownMenuItem>

@@ -1,13 +1,17 @@
+import { IProductTypes } from "@/types";
+
 export interface IItemTypes {
-    productId: string,
+    productId: IProductTypes,
     quantity: number,
     price: number,
     note?: string
 }
 
 export interface IOrder  {
+    _id?: string,
     name: string,
     address: string,
+    orderNumber?: number,
     phone: string,
     email: string,
     items: IItemTypes[];
@@ -17,6 +21,9 @@ export interface IOrder  {
                     time: string
     },
     requestDeliveryDate?: string,
-    payment: string
-    amount: number
+    orderType?: string,
+    payment: string,
+    amount: number,
+    createdAt?: Date | string,
+    updatedAt?: Date,
 }

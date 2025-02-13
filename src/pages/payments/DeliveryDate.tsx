@@ -1,11 +1,13 @@
 interface DeliveryDateSelectorProps {
     requestDeliveryDate: string;
     setRequestDeliveryDate: React.Dispatch<React.SetStateAction<string>>;
+    orderType: "pickup" | "delivery";
 }
 
 const DeliveryDateSelector: React.FC<DeliveryDateSelectorProps> = ({
     requestDeliveryDate,
     setRequestDeliveryDate,
+    orderType
 }) => {
     const length = 7
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -37,7 +39,7 @@ const DeliveryDateSelector: React.FC<DeliveryDateSelectorProps> = ({
     return (
         <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2 py-2'>
             <div  >
-                <h3 className='p-2 font-bold text-xl'>Select a Delivery Date</h3>
+                <h3 className='p-2 font-bold text-xl'>Select a {orderType === "delivery" ? "Delivery" : "Pickup"}  Date</h3>
             </div>
             <div className="flex gap-2 overflow-x-auto whitespace-nowrap">
                 {dates.map((date) => (

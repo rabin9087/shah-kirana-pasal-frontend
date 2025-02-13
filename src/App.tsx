@@ -30,6 +30,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRouter, { AdminPrivateRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
+import OrdersPage from "./pages/orders/OrderPage";
 
 // Set the app element
 Modal.setAppElement('#root');
@@ -204,6 +205,18 @@ function App() {
           element={<PrivateRouter><OrderPlaced /></PrivateRouter>}
           errorElement={<ErrorPage />}
         />
+
+        <Route
+          path="/all-orders"
+          element={<AdminPrivateRouter><OrdersPage /></AdminPrivateRouter>}
+          errorElement={<ErrorPage />}
+        />
+
+        {/* <Route
+          path="/all-orders/:orderNumber"
+          element={<AdminPrivateRouter><OrderDetails/></AdminPrivateRouter>}
+          errorElement={<ErrorPage />}
+        /> */}
 
         <Route
           path="/my-profile"

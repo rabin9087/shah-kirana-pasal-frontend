@@ -6,6 +6,7 @@ import categoryReducer from "./redux/category.slice";
 import productReducer from "./redux/product.slice";
 import addToCartReducer from "./redux/addToCart.slice";
 import dashboardDataSlice from "./redux/dashboard.slice";
+import ordersSlice from "./redux/allOrders.slice";
 import storage from 'redux-persist/lib/storage'
 import {persistStore,persistReducer} from 'redux-persist'
 
@@ -24,6 +25,7 @@ export const store = configureStore({
     productInfo: productReducer,
     addToCartInfo: persistedReducer,
     dashboardData: dashboardDataSlice,
+    ordersInfo: ordersSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

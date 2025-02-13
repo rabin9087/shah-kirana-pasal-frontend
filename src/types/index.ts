@@ -83,6 +83,7 @@ export type serverReturnDataType = {
   product?: IProductTypes,
   clientSecret?: string
   order: IOrder[]
+  orders: IOrder[]
 };
 
 export type LocationState = {

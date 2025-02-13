@@ -5,7 +5,7 @@ const Footer = () => {
 
         {/* Store Logo & Info */}
         <div className="flex flex-col items-center md:items-start">
-          <img src="./public/assets/shahKiranaPasal.png" alt="Shah Kirana Pasal Logo" className="w-24 h-24 rounded-full" />
+          <img src="/public/assets/shahKiranaPasal.png" alt="Shah Kirana Pasal Logo" className="w-24 h-24 rounded-full" />
           <h2 className="text-2xl font-bold mt-2">Shah Kirana Pasal</h2>
           <p className="text-gray-200 mt-1 text-center md:text-left">
             Your one-stop shop for groceries and essentials.

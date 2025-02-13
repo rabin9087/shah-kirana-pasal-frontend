@@ -1,6 +1,8 @@
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 
 const ContactUs = () => {
+
+  const googleAPI = import.meta.env.GOOGLE_API
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-2xl">
       <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
@@ -61,7 +63,7 @@ const ContactUs = () => {
         </p>
         <iframe
           className="w-full h-64 mt-4 rounded-lg"
-          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDLMrxSvlWPGp_6DDvMfgvsK9MyQKx8huw&q=26.568254015988057,87.68418811261654"
+          src={`https://www.google.com/maps/embed/v1/place?key=${googleAPI}&q=26.568254015988057,87.68418811261654`}
           allowFullScreen
           loading="lazy"
         ></iframe>
