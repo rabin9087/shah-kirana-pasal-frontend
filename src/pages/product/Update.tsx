@@ -140,97 +140,22 @@ const UpdateProduct = () => {
 
 
     const onSubmit = async (data: UpdateProductSchema) => {
-        console.log(data)
+        console.log(data);
         const formData = new FormData();
         formData.append("_id", product._id as string);
-        // const changedValues: Partial<ProductSchema> = {};
-
-        // if (updateForm) {
-        //     Object.keys(data).forEach((key) => {
-        //         const initialValue = changedValues[key as keyof ProductSchema]
-        //         const currentValue = data[key as keyof ProductSchema]
-        //         if (initialValue !== currentValue) {
-        //             changedValues[key as keyof ProductSchema] = currentValue
-        //         }
-        //         if (currentValue instanceof File || currentValue instanceof FileList) {
-        //             formData.append(key, currentValues[0]); // Handle file inputs
-        //         } else if (Array.isArray(currentValue)) {
-        //             currentValue.forEach((value, index) => {
-        //                 formData.append(`${key}[${index}]`, value);
-        //             });
-        //         } else {
-        //             formData.append(key, currentValue as string);
-        //         }
-        //     })
-        // }
-
-
-        // Append non-file fields
-        // Object.keys(data).forEach((key) => {
-        //     if (key !== 'images' && key !== 'thumbnail' && key !== "imageToDelete") {
-        //         formData.append(key, data[key as keyof ProductSchema] as any);
-        //     }
-        // });
-
-        // formData.append(updateForm)
-
-        // Convert images from base64 to File and append to FormData    
-        // formData.append("images", JSON.stringify(["https://shahkiranapasal.s3.us-east-1.amazonaws.com/1725372846449-image1.jpg"]))
 
         if (images && images.length > 0) {
+            const oldImages = images.filter((image) => image.includes("https://"));
 
-            const oldImages = images.filter((image) => image.includes("https://"))
-            console.log(typeof (JSON.stringify(oldImages)))
-            formData.append("images", JSON.stringify(oldImages));
-
-            // const newImages = oldImages.map(({ url }) => url)
-            // console.log(typeof (newImages), newImages)
-
-            // const decodedImages = images.filter((image) => !image.url.includes("https://"))
-            // decodedImages.forEach((image, index) => {
-            //     const file = base64ToFile(image.url as string, `image${index}.jpg`);
-            //     formData.append('addImages', file);
-            // });
-
-            // if (oldImages.length) {
-            //     // const oldImageUrls = oldImages.map((image) => image.url);
-            //     formData.append("images", oldImages.map(({ url }) => url) as string[])
-            // }
+            oldImages.forEach((image) => {
+                formData.append("images[]", image); // Ensure it's treated as an array
+            });
         }
 
-        // if (imagesToDelete.length) {
-        //     imagesToDelete.forEach((image) => {
-        //         formData.append('imagesToDelete', image);
-        //     });
-        // }
-
-        // if (typeof (thumbnail) === "string" && thumbnail.includes("https://")) {
-        //     formData.append('thumbnail', thumbnail);
-        // } else {
-        //     if (thumbnail) {
-        //         const file = base64ToFile(thumbnail as string, 'thumbnail.jpg');
-        //         formData.append('newThumbnail', file);
-        //     }
-        // }
-
-        // Convert thumbnail from base64 to File and append to FormData
-        // if (thumbnail) {
-        //     const file = base64ToFile(thumbnail as string, 'thumbnail.jpg');
-        //    
-        //     formData.append('newThumbnail', file);
-        // }
-
-        // Append images and thumbnail separately
-
-
-        // for (let [key, value] of formData.entries()) {
-
-        // }
-        // Debugging output
-
-        mutation.mutate(formData)
-        return reset
+        mutation.mutate(formData);
+        return reset();
     };
+
 
     useEffect(() => {
         if (image !== "") {

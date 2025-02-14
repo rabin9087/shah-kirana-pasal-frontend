@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { getAOrderAction } from "@/action/order.action";
 import { updateAOrder } from "@/axios/order/order";
+import { updateSuppliedQuantity } from "@/redux/allOrders.slice";
+import { Link } from "react-router-dom";
 
 type ProductLocation = {
     A: number;
@@ -42,6 +43,7 @@ const StartPickingOrder = () => {
     const [modalImage, setModalImage] = useState<string | null>(null);
 
     const sortedItems = sortItems(order?.items || []);
+    const currentItem = sortedItems[currentIndex];
 
     useEffect(() => {
         dispatch(getAOrderAction(orderNumber as string));
@@ -72,7 +74,9 @@ const StartPickingOrder = () => {
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true)
         if (order?._id) {
-            await updateAOrder(order._id, { deliveryStatus: status })
+            const items = order?.items.map(({ productId, quantity, _id, price, note, supplied }) =>
+                ({ productId: productId._id, price, quantity, note, supplied, _id }));
+            await updateAOrder(order._id, { deliveryStatus: status, items})
             setPacking(false)
             return navignate("/all-orders")
         }
@@ -80,19 +84,41 @@ const StartPickingOrder = () => {
         return;
     }
 
-    const currentItem = sortedItems[currentIndex];
+    const updateSuppliedQuintity = () => {
+        const supplied = currentItem?.supplied + 1
+        if (supplied > currentItem?.quantity) {
+            return
+        }
+        
+        dispatch(updateSuppliedQuantity({ _id: currentItem._id, supplied }))
+        if (currentIndex + 1 === order?.items?.length) {
+            return
+        }
+        if (supplied === currentItem?.quantity) {
+            setCurrentIndex(currentIndex + 1);
+        }
+    }
+
+    const resetSuppliedQuintity = () => {
+        dispatch(updateSuppliedQuantity({ _id: currentItem._id, supplied: 0 }))
+    }
 
     return (
-        <div className="p-4 w-full h-screen max-w-md mx-auto flex flex-col">
+        <div className="w-full h-screen max-w-md mx-auto flex flex-col">
             <Card className="flex flex-col flex-1 p-4 border rounded-lg shadow-lg bg-white">
-                <div className="p-2 bg-primary w-fit rounded-md">
-                    <Link to={"/all-orders"} className="text-white">
-                        {"<"} back
-                    </Link>
-                </div>
-                <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
                 
-                <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
+                <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
+
+                <div>
+                    <Link to={"/all-orders"} className="bg-primary text-white p-2 rounded-md ms-2"
+                        onClick={() => updateDeliveryStatus("Picking")}
+                    >
+                    {"<"} BACK
+                    </Link>
+                    <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
+                </div>
+                
+                
                 <div className="flex flex-col items-start justify-start p-2">
                     <p>Name: {order?.name}</p>
                     <p>Phone: {order?.phone}</p>
@@ -102,14 +128,14 @@ const StartPickingOrder = () => {
                 <div className="mt-4 space-y-3 flex-1 overflow-auto h-full">
                     {currentItem && (
                         <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
-                            <div className="flex justify-between w-full border-2 text-center p-2 bg-primary rounded-md">
-                                <p className="text-2xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                            <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md">
+                                <p className="text-3xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
                                 <div className="text-center text-md me-2 text-white">
                                     {sortedItems.length - currentIndex}/{sortedItems.length}
                                 </div>
                             </div>
                             <div className="min-h-[4rem]">
-                                <h3 className="text-l my-2 text-start font-medium ms-2 space-y-4">
+                                <h3 className="text-base my-2 text-start font-bold ms-2">
                                     {currentItem?.productId.name}
                                 </h3>
                             </div>
@@ -120,10 +146,11 @@ const StartPickingOrder = () => {
                             </div>
 
                             <div className="flex justify-between gap-2 text-left w-full">
-                                <div className="ms-2">
+                                <div className="ms-2 py-2">
                                 <p className="text-xs">SKU: {currentItem?.productId.sku}</p>
                                 <p className="text-xs">Price: ${currentItem?.productId.price}</p>
                                 <p className="text-xs">SOH: {currentItem?.productId.quantity}</p>
+                               
                             </div>
                             <img
                                 src={currentItem?.productId?.thumbnail}
@@ -132,6 +159,9 @@ const StartPickingOrder = () => {
                                 onClick={() => openModal(currentItem?.productId?.thumbnail)}
                                 />
                             </div>
+                            <p className={`text-xs min-h-[2rem] text-center text-red-400 
+                                ${currentItem?.note !== "" && "border px-2"}` }>
+                                {currentItem?.note ? currentItem?.note : ""}</p>
                         </CardContent>
                     )}
                     
@@ -139,13 +169,14 @@ const StartPickingOrder = () => {
                         <div className="flex justify-around px-2 gap-1">
                             <Button
                                 className="w-1/2"
-                                onClick={handleBack}>
+                                onClick={updateSuppliedQuintity}
+                            >
                                  ScanProduct
                             </Button>
                         
                             <Button
                                 className="w-1/2"
-                                onClick={handleNext} >
+                                onClick={updateSuppliedQuintity} >
                                 WSCAN
                             </Button>
                         </div>
@@ -157,7 +188,7 @@ const StartPickingOrder = () => {
                             </Button>
                             <Button
                                 className="w-1/3"
-                                onClick={handleBack}>
+                                onClick={resetSuppliedQuintity}>
                                 RESET
                             </Button>
                             <Button

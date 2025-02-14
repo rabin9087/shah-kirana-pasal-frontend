@@ -22,9 +22,20 @@ const ordersSlice = createSlice({
     setAOrder: (state, { payload }: PayloadAction<IOrder>) => {
       state.order = payload;
     },
+
+    updateSuppliedQuantity: (state, { payload }: PayloadAction<{ _id: string; supplied: number }>) => {
+      if (state.order && state.order?.items.filter((item) => (item._id === payload._id))) {
+    state.order = {
+      ...state.order,
+      items: state.order.items.map(item =>
+        item?._id === payload._id ? { ...item, supplied: payload.supplied } : item
+      ),
+    };
+  }
+},
   },
 });
 
 const { reducer, actions } = ordersSlice;
-export const { setOrders, setAOrder } = actions;
+export const { setOrders, setAOrder, updateSuppliedQuantity } = actions;
 export default reducer;

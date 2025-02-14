@@ -5,7 +5,8 @@ export interface IItemTypes {
     quantity: number,
     supplied?: number,
     price: number,
-    note?: string
+    note?: string,
+    _id?: string,
 }
 
 export interface IOrder  {

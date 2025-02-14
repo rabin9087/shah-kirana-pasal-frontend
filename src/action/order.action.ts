@@ -7,7 +7,6 @@ export const getAllOrdersAction = () => async (dispatch: AppDispatch) => {
         const res = await getOrders();
         if (res.status === "success") {
             dispatch(setOrders(res.orders))
-            console.log(res.orders)
             return true
         }
         return false
@@ -19,7 +18,6 @@ export const getAllOrdersAction = () => async (dispatch: AppDispatch) => {
 export const getAllOrdersByDateAction = (date: string) => async (dispatch: AppDispatch) => {
     try { 
         const res = await getAOrdersByDate(date);
-        console.log(res)
         if (res.status === "success") {
             dispatch(setOrders(res.orders))
             return true
@@ -34,7 +32,6 @@ export const getAllOrdersByDateAction = (date: string) => async (dispatch: AppDi
 export const getAOrderAction = (orderNumber: string) => async (dispatch: AppDispatch) => {
     try { 
         const res = await getAOrder(orderNumber);
-        console.log(res)
         if (res.status === "success") {
             dispatch(setAOrder(res.order))
             return true

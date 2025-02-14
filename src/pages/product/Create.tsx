@@ -434,7 +434,7 @@ const CreateProduct = () => {
               type="submit"
               disabled={mutation.isPending}
             >
-              Save
+              {mutation.isPending ? "Saving..." : "Save"}
             </Button >
             <Button
               type="reset"

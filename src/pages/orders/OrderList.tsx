@@ -2,7 +2,7 @@ import { IOrder } from "@/axios/order/types";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useEffect, useState } from "react";
 import OrderDetails from "./OrderDetails";
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { format, addDays, subDays } from "date-fns";
 import { getAllOrdersByDateAction } from "@/action/order.action";
 
@@ -24,8 +24,8 @@ const OrdersList = () => {
     return (
         <div className="container mx-auto p-4">
             <h2 className="text-2xl font-semibold mb-4">Orders</h2>
-            <div className="flex justify-center mb-4">
-                <div className="flex items-center space-x-2">
+            <div className="flex justify-center gap-2 mb-4">
+                {/* <div className="flex items-center space-x-2 justify-between"> */}
                     {/* Previous Day Button */}
                     <button
                         className="p-2 border rounded-md hover:bg-gray-200"
@@ -42,7 +42,7 @@ const OrdersList = () => {
                             value={format(date, "yyyy-MM-dd")}
                             onChange={(e) => changeDate(new Date(e.target.value))}
                         />
-                        <CalendarIcon className="absolute right-2 top-3 text-gray-500" size={16} />
+                        {/* <CalendarIcon className="absolute right-2 top-3 text-gray-500" size={16} /> */}
                     </div>
 
                     {/* Next Day Button */}
@@ -52,7 +52,7 @@ const OrdersList = () => {
                     >
                         <ChevronRight size={16} />
                     </button>
-                </div>
+                {/* </div> */}
             </div>
 
             {orders?.length ? (
@@ -80,7 +80,12 @@ const OrdersList = () => {
                                         <td className="p-2 text-blue-500 underline">{order?.orderNumber}</td>
                                         <td className="p-2">{order?.name}</td>
                                         <td className="p-2">${order?.amount?.toFixed(2)}</td>
-                                        <td className="p-2">{order?.deliveryStatus}</td>
+                                        <td className={`p-2 
+                                            ${order?.deliveryStatus === "Packed" && "text-green-500"}
+                                            ${order?.deliveryStatus === "Picking" && "text-yellow-700"}
+                                            
+                                            `}>
+                                            {order?.deliveryStatus}</td>
                                         <td className="p-2">{order?.paymentStatus}</td>
                                         <td className="p-2">{order?.createdAt?.toLocaleString().split("T")[0]}</td>
                                         <td className="p-2 text-end">{order?.items?.length}</td>
