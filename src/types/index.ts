@@ -82,7 +82,7 @@ export type serverReturnDataType = {
   products?: IProductTypes[],
   product?: IProductTypes,
   clientSecret?: string
-  order: IOrder[]
+  order: IOrder
   orders: IOrder[]
 };
 

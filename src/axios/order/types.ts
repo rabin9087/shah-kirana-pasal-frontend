@@ -3,6 +3,7 @@ import { IProductTypes } from "@/types";
 export interface IItemTypes {
     productId: IProductTypes,
     quantity: number,
+    supplied?: number,
     price: number,
     note?: string
 }
@@ -22,7 +23,8 @@ export interface IOrder  {
     },
     requestDeliveryDate?: string,
     orderType?: string,
-    payment: string,
+    paymentType: string,
+    paymentStatus: string,
     amount: number,
     createdAt?: Date | string,
     updatedAt?: Date,

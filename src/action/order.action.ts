@@ -1,5 +1,5 @@
-import { getAOrdersByDate, getOrders } from "@/axios/order/order";
-import { initialState, setOrders } from "@/redux/allOrders.slice";
+import { getAOrder, getAOrdersByDate, getOrders } from "@/axios/order/order";
+import { initialState, setAOrder, setOrders } from "@/redux/allOrders.slice";
 import { AppDispatch } from "@/store";
 
 export const getAllOrdersAction = () => async (dispatch: AppDispatch) => {
@@ -27,6 +27,20 @@ export const getAllOrdersByDateAction = (date: string) => async (dispatch: AppDi
         dispatch(setOrders(initialState.orders))
         return false
     } catch (error) {
-        console.log(error)
+        
+    }
+};
+
+export const getAOrderAction = (orderNumber: string) => async (dispatch: AppDispatch) => {
+    try { 
+        const res = await getAOrder(orderNumber);
+        console.log(res)
+        if (res.status === "success") {
+            dispatch(setAOrder(res.order))
+            return true
+        } 
+        return false
+    } catch (error) {
+       
     }
 };

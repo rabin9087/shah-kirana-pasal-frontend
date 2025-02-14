@@ -76,7 +76,6 @@ const MyProfile = () => {
                             type="file"
                             id="profileImage"
                             accept="image/*"
-                            capture="environment"
                             onChange={handleImageChange}
                             className="hidden"
                         />

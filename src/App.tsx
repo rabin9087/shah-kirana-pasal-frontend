@@ -31,6 +31,7 @@ import PrivateRouter, { AdminPrivateRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
 import OrdersPage from "./pages/orders/OrderPage";
+import StartPickingOrder from "./pages/orders/StartPickingOrder";
 
 // Set the app element
 Modal.setAppElement('#root');
@@ -212,11 +213,11 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
-        {/* <Route
-          path="/all-orders/:orderNumber"
-          element={<AdminPrivateRouter><OrderDetails/></AdminPrivateRouter>}
+        <Route
+          path="/orderNumber=/:orderNumber"
+          element={<AdminPrivateRouter><StartPickingOrder /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
-        /> */}
+        />
 
         <Route
           path="/my-profile"

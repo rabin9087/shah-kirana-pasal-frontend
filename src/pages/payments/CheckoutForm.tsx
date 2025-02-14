@@ -45,8 +45,8 @@ const CheckoutForm = () => {
     const [placeOrderStatus, setPlaceOrderStatus] = useState<string>("Place order")
 
     const { cart } = useAppSelector(state => state.addToCartInfo)
-    const orderItems = cart.map(item => ({ productId: item?._id, quantity: item.quantity, price: item.price, note: item.note === undefined ? "" : item.note }));
-    const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.quantity, price: item.price, note: item.note }));
+    const orderItems = cart.map(item => ({ productId: item?._id, quantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
+    const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note }));
 
     const cartAmount = cart.reduce((acc, { orderQuantity, price }) => {
         return acc + (orderQuantity * price)
@@ -145,9 +145,10 @@ const CheckoutForm = () => {
                         time: "NY"
                     },
                     requestDeliveryDate: requestDeliveryDate,
-                    payment: result?.paymentIntent?.status,
+                    paymentType: "card",
                     amount: parseFloat(cartAmount.toFixed(2)),
-                    orderType: orderType
+                    orderType: orderType,
+                    paymentStatus: "Paid",
                 }
                 await createOrder(customer_details)
                 updateCartAndUserCart()
@@ -169,9 +170,10 @@ const CheckoutForm = () => {
                        time: "NY"
                    },
                    requestDeliveryDate: requestDeliveryDate,
-                   payment: paymentType,
+                   paymentType: paymentType,
                    amount: parseFloat(cartAmount.toFixed(2)),
-                   orderType: orderType
+                   orderType: orderType,
+                   paymentStatus: "Not Yet Paid",
 
                }
             await   createOrder(customer_details)
@@ -333,7 +335,7 @@ console.log(contactInfo)
                                 </div>
                             </div>
                             <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                <h3 className='p-2 font-bold text-xl text-center' >Amount to be paid: {cartAmount}</h3></div>
+                                <h3 className='p-2 font-bold text-xl text-center' >Amount to be paid: {cartAmount?.toFixed(2)}</h3></div>
                             {paymentType === "card" && <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />}
                     </>
 
