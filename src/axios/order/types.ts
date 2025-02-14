@@ -16,7 +16,7 @@ export interface IOrder  {
     phone: string,
     email: string,
     items: IItemTypes[];
-    deliverStatus: string,
+    deliveryStatus: string,
     deliveryDate?: {
                     date: string,
                     time: string

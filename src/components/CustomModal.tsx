@@ -30,7 +30,6 @@ interface Images {
 }
 
 const CustomModal = ({ location, scanCode, setImage, scan, setBarcode, create }: Images) => {
-
     const [modalIsOpen, setIsOpen] = React.useState(false);
     function openModal() {
         setIsOpen(true);

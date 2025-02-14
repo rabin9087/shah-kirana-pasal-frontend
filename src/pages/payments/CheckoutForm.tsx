@@ -139,7 +139,7 @@ const CheckoutForm = () => {
                     address: full_address,
                     email: contactInfo.email,
                     items: orderItems as any,
-                    deliverStatus: "Not Yet Delivered",
+                    deliveryStatus: "Not Yet Delivered",
                     deliveryDate: {
                         date: "NY",
                         time: "NY"
@@ -164,7 +164,7 @@ const CheckoutForm = () => {
                    address: user.address,
                    email: user.email,
                    items: orderItems as any,
-                   deliverStatus: "Not Yet Delivered",
+                   deliveryStatus: "Not Yet Delivered",
                    deliveryDate: {
                        date: "NY",
                        time: "NY"

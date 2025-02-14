@@ -135,14 +135,11 @@ export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModa
                     scanCode(result.getText())
                     closeModal()
                     return
-
                     // return navigate(`/product/update/${result.getText()}`)
                 }
                 if (setBarcode) {
                     setBarcode(result.getText())
                     return closeModal()
-
-
                     // return navigate(`/product/create/`)
                 }
                 if (location) {
@@ -151,7 +148,8 @@ export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModa
                 }
             }
         },
-    });
+    }
+    );
 
     const toggleFlashlight = async () => {
         if (!isMobile) {
