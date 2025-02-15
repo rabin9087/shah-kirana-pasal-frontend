@@ -11,12 +11,12 @@ interface OrderDetailsProps {
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
     const [status, setStatus] = useState(order?.deliveryStatus);
     const [paymentStatus, setPaymentStatus] = useState(order?.paymentStatus);
-  
+
 
     const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
-        if (order?._id ) {
+        if (order?._id) {
             await updateAOrder(order._id, { deliverStatus: newStatus });
         }
         return;
@@ -31,9 +31,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
         return;
     };
 
-     const updateDeliveryStatus = async (status: string) => { 
+    const updateDeliveryStatus = async (status: string) => {
         if (order?._id && order.deliveryStatus !== "Picking") {
-            await updateAOrder(order._id, { deliveryStatus: status }) 
+            await updateAOrder(order._id, { deliveryStatus: status })
         }
         return;
     }
@@ -44,9 +44,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                 <h3 className="text-lg sm:text-xl font-semibold mb-4">Order Details</h3>
 
                 <div className="flex justify-end mb-4">
-                    <Link to={`/orderNumber=/${order?.orderNumber}`}
+                    <Link
+                        to={`/order/orderNumber=/${order?.orderNumber}`}
                         className="text-white text-right p-2 shadow-md bg-primary rounded-md"
-                    onClick={() => updateDeliveryStatus("Picking")}>
+                        onClick={() => updateDeliveryStatus("Picking")}
+                    >
                         Start Picking
                     </Link>
                 </div>
@@ -55,38 +57,38 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                 <table className="w-full mb-4">
                     <tbody>
                         <tr>
-                            <td className="font-semibold p-2">Order Number:</td>
-                            <td className="p-2">{order?.orderNumber}</td>
+                            <td className="font-semibold p-1">Order Number:</td>
+                            <td className="p-1">{order?.orderNumber}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-2">Order Type:</td>
-                            <td className="p-2">{order?.orderType}</td>
+                            <td className="font-semibold p-1">Order Type:</td>
+                            <td className="p-1">{order?.orderType}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-2">Name:</td>
-                            <td className="p-2">{order?.name}</td>
+                            <td className="font-semibold p-1">Name:</td>
+                            <td className="p-1">{order?.name}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-2">Address:</td>
-                            <td className="p-2">{order?.address}</td>
+                            <td className="font-semibold p-1">Address:</td>
+                            <td className="p-1">{order?.address}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-2">Phone:</td>
-                            <td className="p-2">{order?.phone}</td>
+                            <td className="font-semibold p-1">Phone:</td>
+                            <td className="p-1">{order?.phone}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-2">Email:</td>
-                            <td className="p-2">{order?.email}</td>
+                            <td className="font-semibold p-1">Email:</td>
+                            <td className="p-1">{order?.email}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-2">Payment By:</td>
-                            <td className="p-2">{order?.paymentType}</td>
+                            <td className="font-semibold p-1">Payment By:</td>
+                            <td className="p-1">{order?.paymentType}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-2">Payment Status:</td>
-                            <td className="p-2">
+                            <td className="font-semibold p-1">Payment Status:</td>
+                            <td className="p-1">
                                 <select
-                                    className="border p-2 rounded-md bg-white text-gray-700 w-full"
+                                    className="border p-1 rounded-md bg-white text-gray-700 w-full"
                                     value={paymentStatus}
                                     onChange={handleChangePaymentStatus}
                                 >
@@ -98,15 +100,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
 
                         {order?.deliveryDate?.date !== "NY" && (
                             <tr>
-                                <td className="font-semibold p-2">Delivery Date:</td>
-                                <td className="p-2">{order?.deliveryDate?.date || "Not Specified"}</td>
+                                <td className="font-semibold p-1">Delivery Date:</td>
+                                <td className="p-1">{order?.deliveryDate?.date || "Not Specified"}</td>
                             </tr>
                         )}
                         <tr>
-                            <td className="font-semibold p-2">Status:</td>
-                            <td className="p-2">
+                            <td className="font-semibold p-1">Status:</td>
+                            <td className="p-1">
                                 <select
-                                    className="border p-2 rounded-md bg-white text-gray-700 w-full"
+                                    className="border p-1 rounded-md bg-white text-gray-700 w-full"
                                     value={status}
                                     onChange={handleChange}
                                 >
@@ -120,6 +122,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                 </select>
                             </td>
                         </tr>
+                        <tr >
+                            <td className="font-semibold p-1">Created Date:</td>
+                            <td className="p-1">{order?.createdAt?.toLocaleString().split("T")[0]}</td>
+                        </tr>
+                        <tr>
+                            <td className="font-semibold p-1">Delivery Date:</td>
+                            <td className="p-1">{order?.requestDeliveryDate}</td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -129,31 +139,31 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                     <table className="w-full min-w-[600px] border rounded-lg">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="p-2 text-xs sm:text-sm">#</th>
-                                <th className="p-2 text-xs sm:text-sm">Article</th>
-                                <th className="p-2 text-xs sm:text-sm">Thumbnail</th>
-                                <th className="p-2 text-xs sm:text-sm">Name</th>
-                                <th className="p-2 text-xs sm:text-sm">Ordered</th>
-                                <th className="p-2 text-xs sm:text-sm">Supplied</th>
-                                <th className="p-2 text-xs sm:text-sm">Amount</th>
+                                <th className="p-1 ms-1 text-xs sm:text-sm">#</th>
+                                <th className="p-1 text-xs sm:text-sm">Article</th>
+                                <th className="p-1 text-xs sm:text-sm">Thumbnail</th>
+                                <th className="p-1 text-xs sm:text-sm">Name</th>
+                                <th className="p-1 text-xs sm:text-sm">Ordered</th>
+                                <th className="p-1 text-xs sm:text-sm">Supplied</th>
+                                <th className="p-1 text-xs sm:text-sm">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             {order?.items?.map((item, index) => (
                                 <tr key={index} className="border-b">
-                                    <td className="p-2">{index + 1}</td>
-                                    <td className="p-2 underline">{item?.productId?.sku}</td>
-                                    <td className="p-2">
+                                    <td className="p-1 ps-2">{index + 1}</td>
+                                    <td className="p-1 underline">{item?.productId?.sku}</td>
+                                    <td className="p-1">
                                         <img
                                             src={item?.productId?.thumbnail as string || item?.productId.images?.[0] as string}
                                             alt={item.productId.name}
                                             className="w-16 h-16 object-cover rounded-md"
                                         />
                                     </td>
-                                    <td className="p-2">{item?.productId?.name}</td>
-                                    <td className="p-2">{item?.quantity}</td>
-                                    <td className="p-2">{item.supplied ? item.quantity : 0}</td>
-                                    <td className="p-2">${item?.price?.toFixed(2)}</td>
+                                    <td className="p-1">{item?.productId?.name}</td>
+                                    <td className="p-1">{item?.quantity}</td>
+                                    <td className="p-1">{item.supplied ? item.quantity : 0}</td>
+                                    <td className="p-1">${item?.price?.toFixed(2)}</td>
                                 </tr>
                             ))}
                         </tbody>

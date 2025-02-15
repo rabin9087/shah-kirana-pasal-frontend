@@ -148,6 +148,9 @@ export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModa
                 }
             }
         },
+        constraints: {
+            video: { facingMode: "environment" }
+        }
     }
     );
 
@@ -158,29 +161,26 @@ export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModa
         }
 
         try {
-            // Get the current media stream or request a new one
-            let currentStream = stream;
-            if (!currentStream) {
-                currentStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "environment" },
+            if (!stream) {
+                const newStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" }
                 });
-                setStream(currentStream);
+                setStream(newStream);
             }
 
-            // Get the video track and apply the torch constraint
-            const videoTrack = currentStream.getVideoTracks()[0];
-            const capabilities = videoTrack.getCapabilities() as MediaTrackCapabilities & {
-                torch?: boolean;
-            };
+            const videoTrack = stream?.getVideoTracks()[0];
+            if (videoTrack) {
+                const capabilities = videoTrack.getCapabilities() as MediaTrackCapabilities & { torch?: boolean };
 
-            if (capabilities?.torch) {
-                const newFlashState = !isFlashOn;
-                await videoTrack.applyConstraints({
-                    advanced: [{ torch: newFlashState }] as unknown as MediaTrackConstraintSet[],
-                });
-                setIsFlashOn(newFlashState);
-            } else {
-                alert("Torch is not supported on this device.");
+                if (capabilities?.torch) {
+                    const newFlashState = !isFlashOn;
+                    await videoTrack.applyConstraints({
+                        advanced: [{ torch: newFlashState }]
+                    } as unknown as MediaTrackConstraints);
+                    setIsFlashOn(newFlashState);
+                } else {
+                    alert("Torch is not supported on this device.");
+                }
             }
         } catch (error) {
             console.error("Error toggling flashlight:", error);
@@ -190,8 +190,34 @@ export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModa
 
     // Stop the media stream when the component unmounts
     React.useEffect(() => {
+        const enableAutoFocus = async () => {
+            try {
+                if (!stream) {
+                    const newStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "environment" }
+                    });
+                    setStream(newStream);
+                }
+
+                const videoTrack = stream?.getVideoTracks()[0];
+                if (videoTrack) {
+                    const capabilities = videoTrack.getCapabilities() as MediaTrackCapabilities & { focusDistance?: number };
+
+                    if (capabilities?.focusDistance) {
+                        await videoTrack.applyConstraints({
+                            advanced: [{ focusMode: "continuous" }]
+                        } as unknown as MediaTrackConstraints);
+                    }
+                }
+            } catch (error) {
+                console.error("Error enabling autofocus:", error);
+            }
+        };
+
+        enableAutoFocus();
+
         return () => {
-            stream?.getTracks().forEach((track) => track.stop());
+            stream?.getTracks().forEach(track => track.stop());
         };
     }, [stream]);
 

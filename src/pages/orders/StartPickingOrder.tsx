@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getAOrderAction } from "@/action/order.action";
-import { updateAOrder } from "@/axios/order/order";
-import { updateSuppliedQuantity } from "@/redux/allOrders.slice";
+import { getAOrder, updateAOrder } from "@/axios/order/order";
+import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrders.slice";
 import { Link } from "react-router-dom";
 import ScanOrderProduct from "./ScanOrderProduct";
+import { useQuery } from "@tanstack/react-query";
+import { IOrder } from "@/axios/order/types";
+import Loading from "@/components/ui/Loading";
 
 type ProductLocation = {
     A: number;
@@ -48,9 +50,22 @@ const StartPickingOrder = () => {
     const sortedItems = sortItems(order?.items || []);
     const currentItem = sortedItems[currentIndex];
 
+    const { data = initialState.order, isLoading, isFetching } = useQuery<IOrder>({
+        queryKey: ['order', orderNumber],
+        queryFn: () => getAOrder(orderNumber as string)
+    })
+
     useEffect(() => {
-        dispatch(getAOrderAction(orderNumber as string));
-    }, [dispatch, orderNumber]);
+        if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
+            dispatch(setAOrder(data as IOrder));
+        } else if (data?._id === "") {
+            dispatch(setAOrder(initialState.order as IOrder));
+        }
+    }, [dispatch, data]);
+
+    // useEffect(() => {
+    //     dispatch(getAOrderAction(orderNumber as string));
+    // }, [dispatch, orderNumber]);
 
     const handleNext = () => {
         if (currentIndex < sortedItems.length - 1) {
@@ -117,7 +132,8 @@ const StartPickingOrder = () => {
     };
 
     return (
-        <div className="w-full h-screen max-w-md mx-auto flex flex-col">
+        <>
+            {isFetching || isLoading ? <Loading /> :<div className="w-full h-screen max-w-md mx-auto flex flex-col">
             <Card className="flex flex-col flex-1 p-4 border rounded-lg shadow-lg bg-white">
                 
                 <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
@@ -257,7 +273,8 @@ const StartPickingOrder = () => {
                     </div>
                 </div>
             )}
-        </div>
+            </div>}
+        </>
     );
 };
 

@@ -214,8 +214,12 @@ function App() {
         />
 
         <Route
-          path="/orderNumber=/:orderNumber"
-          element={<AdminPrivateRouter><StartPickingOrder /></AdminPrivateRouter>}
+          path="/order/orderNumber=/:orderNumber"
+          element={
+            <AdminPrivateRouter>
+              <StartPickingOrder />
+            </AdminPrivateRouter>
+          }
           errorElement={<ErrorPage />}
         />
 

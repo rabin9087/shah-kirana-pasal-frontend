@@ -40,7 +40,7 @@ export const getAOrdersByDate = async(date: string) => {
     isPrivate: true,
     });
     
-    return response
+    return response.orders
   } catch (error) {
     throw new Error("Failed to update product");
   }
@@ -54,7 +54,7 @@ export const getAOrder = async(orderNumber: string) => {
     isPrivate: true,
     });
     
-    return response
+    return response.order
   } catch (error) {
     throw new Error("Failed to update product");
   }
