@@ -8,8 +8,6 @@ interface OrderDetailsProps {
     onClose: () => void;
 }
 
-
-
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
     const [status, setStatus] = useState(order?.deliveryStatus);
     const [paymentStatus, setPaymentStatus] = useState(order?.paymentStatus);

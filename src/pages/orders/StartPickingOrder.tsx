@@ -40,6 +40,7 @@ const StartPickingOrder = () => {
     const { order } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [notFound, setNotFound] = useState(false);
     const [packing, setPacking] = useState(false);
     const [barcode, setBarcode] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
@@ -70,6 +71,7 @@ const StartPickingOrder = () => {
 
     const closeModal = () => {
         setIsModalOpen(false);
+        setNotFound(false)
         setModalImage(null);
     };
 
@@ -109,6 +111,8 @@ const StartPickingOrder = () => {
         if (scannedCode === currentItem?.productId?.qrCodeNumber) {
             setBarcode("");
             updateSuppliedQuintity();
+        } else {
+            setNotFound(true)
         }
     };
 
@@ -156,11 +160,9 @@ const StartPickingOrder = () => {
 
                             <div className="flex justify-between gap-2 text-left w-full">
                                 <div className="ms-2 py-2">
-                                    <p className="text-xs">SKU: | {currentItem?.productId.sku} | { barcode}</p>
+                                <p className="text-xs">SKU: | {currentItem?.productId.sku} | { barcode}</p>
                                 <p className="text-xs">Price: ${currentItem?.productId.price}</p>
                                 <p className="text-xs">SOH: {currentItem?.productId.quantity}</p>
-                               
-                               
                             </div>
                             <img
                                 src={currentItem?.productId?.thumbnail}
@@ -234,6 +236,19 @@ const StartPickingOrder = () => {
                             alt="Product"
                             className="w-full h-screen/2 object-cover rounded-md"
                         />
+                        <div className="flex justify-center items-center mt-2">
+                            <Button variant="outline" onClick={closeModal} className="mt-2">
+                                Close
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {notFound && (
+                <div className="fixed inset-0 w-fit my-auto h-full  max-w-md mx-auto bg-black bg-opacity-50 flex items-center justify-center mt-20 z-50">
+                    <div className="bg-white p-4 mx-16 rounded-md shadow-lg max-w-md w-72  flex flex-col justify-center items-center">
+                        <h3>Article not found!</h3>
                         <div className="flex justify-center items-center mt-2">
                             <Button variant="outline" onClick={closeModal} className="mt-2">
                                 Close

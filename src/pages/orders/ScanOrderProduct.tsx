@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useZxing } from "react-zxing";
 
 import Modal from 'react-modal';
@@ -58,20 +58,53 @@ interface IScanCode {
     closeModal: () => void;
 }
 export const ScanProduct = ({ closeModal, setBarcode }: IScanCode) => {
-
     const [isFlashOn, setIsFlashOn] = useState(false);
     const [stream, setStream] = useState<MediaStream | null>(null);
     const { ref } = useZxing({
         onDecodeResult(result) {
             if (result.getText() !== "") {
-                if (setBarcode) {
-                    setBarcode(result.getText())
-                    return closeModal()
-                    // return navigate(`/product/create/`)
-                }
+                setBarcode?.(result.getText());
+                closeModal();
             }
         },
-    }) 
+        constraints: {
+            video: { facingMode: "environment" }
+        }
+    });
+
+    // Enable autofocus and handle flashlight toggle
+    useEffect(() => {
+        const enableAutoFocus = async () => {
+            try {
+                if (!stream) {
+                    const newStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "environment" }
+                    });
+                    setStream(newStream);
+                }
+
+                const videoTrack = stream?.getVideoTracks()[0];
+                if (videoTrack) {
+                    const capabilities = videoTrack.getCapabilities() as MediaTrackCapabilities & { focusDistance?: number };
+
+                    if (capabilities?.focusDistance) {
+                        await videoTrack.applyConstraints({
+                            advanced: [{ focusMode: "continuous" }]
+                        } as unknown as MediaTrackConstraints);
+                    }
+                }
+            } catch (error) {
+                console.error("Error enabling autofocus:", error);
+            }
+        };
+
+        enableAutoFocus();
+
+        return () => {
+            stream?.getTracks().forEach(track => track.stop());
+        };
+    }, [stream]);
+
     const toggleFlashlight = async () => {
         if (!isMobile) {
             alert("Flashlight is only supported on mobile devices.");
@@ -79,29 +112,26 @@ export const ScanProduct = ({ closeModal, setBarcode }: IScanCode) => {
         }
 
         try {
-            // Get the current media stream or request a new one
-            let currentStream = stream;
-            if (!currentStream) {
-                currentStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "environment" },
+            if (!stream) {
+                const newStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" }
                 });
-                setStream(currentStream);
+                setStream(newStream);
             }
 
-            // Get the video track and apply the torch constraint
-            const videoTrack = currentStream.getVideoTracks()[0];
-            const capabilities = videoTrack.getCapabilities() as MediaTrackCapabilities & {
-                torch?: boolean;
-            };
+            const videoTrack = stream?.getVideoTracks()[0];
+            if (videoTrack) {
+                const capabilities = videoTrack.getCapabilities() as MediaTrackCapabilities & { torch?: boolean };
 
-            if (capabilities?.torch) {
-                const newFlashState = !isFlashOn;
-                await videoTrack.applyConstraints({
-                    advanced: [{ torch: newFlashState }] as unknown as MediaTrackConstraintSet[],
-                });
-                setIsFlashOn(newFlashState);
-            } else {
-                alert("Torch is not supported on this device.");
+                if (capabilities?.torch) {
+                    const newFlashState = !isFlashOn;
+                    await videoTrack.applyConstraints({
+                        advanced: [{ torch: newFlashState }]
+                    } as unknown as MediaTrackConstraints);
+                    setIsFlashOn(newFlashState);
+                } else {
+                    alert("Torch is not supported on this device.");
+                }
             }
         } catch (error) {
             console.error("Error toggling flashlight:", error);
@@ -109,24 +139,15 @@ export const ScanProduct = ({ closeModal, setBarcode }: IScanCode) => {
         }
     };
 
-    // Stop the media stream when the component unmounts
-    React.useEffect(() => {
-        return () => {
-            stream?.getTracks().forEach((track) => track.stop());
-        };
-    }, [stream]);
-
     return (
         <div>
-            <video ref={ref} />
+            <video ref={ref} className="w-full h-auto" />
             <div className="flex justify-end items-center gap-2">
                 <Button className="bg-yellow-500 hover:bg-yellow-400 mt-2" onClick={toggleFlashlight}>
                     {isFlashOn ? <MdFlashlightOff size={20} /> : <MdFlashlightOn size={20} />}
                 </Button>
-                <Button className="mt-2 bg-red-500"
-                    onClick={closeModal}>Close camera</Button>
+                <Button className="mt-2 bg-red-500" onClick={closeModal}>Close Camera</Button>
             </div>
-
         </div>
     );
-}
+};
