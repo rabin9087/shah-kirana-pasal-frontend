@@ -7,6 +7,7 @@ import { getAOrderAction } from "@/action/order.action";
 import { updateAOrder } from "@/axios/order/order";
 import { updateSuppliedQuantity } from "@/redux/allOrders.slice";
 import { Link } from "react-router-dom";
+import ScanOrderProduct from "./ScanOrderProduct";
 
 type ProductLocation = {
     A: number;
@@ -40,6 +41,7 @@ const StartPickingOrder = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [packing, setPacking] = useState(false);
+    const [barcode, setBarcode] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
 
     const sortedItems = sortItems(order?.items || []);
@@ -89,7 +91,6 @@ const StartPickingOrder = () => {
         if (supplied > currentItem?.quantity) {
             return
         }
-        
         dispatch(updateSuppliedQuantity({ _id: currentItem._id, supplied }))
         if (currentIndex + 1 === order?.items?.length) {
             return
@@ -102,6 +103,14 @@ const StartPickingOrder = () => {
     const resetSuppliedQuintity = () => {
         dispatch(updateSuppliedQuantity({ _id: currentItem._id, supplied: 0 }))
     }
+
+    const handleBarcodeScan = (scannedCode: string) => {
+        setBarcode(scannedCode);
+        if (scannedCode === currentItem?.productId?.qrCodeNumber) {
+            setBarcode("");
+            updateSuppliedQuintity();
+        }
+    };
 
     return (
         <div className="w-full h-screen max-w-md mx-auto flex flex-col">
@@ -147,9 +156,10 @@ const StartPickingOrder = () => {
 
                             <div className="flex justify-between gap-2 text-left w-full">
                                 <div className="ms-2 py-2">
-                                <p className="text-xs">SKU: {currentItem?.productId.sku}</p>
+                                    <p className="text-xs">SKU: | {currentItem?.productId.sku} | { barcode}</p>
                                 <p className="text-xs">Price: ${currentItem?.productId.price}</p>
                                 <p className="text-xs">SOH: {currentItem?.productId.quantity}</p>
+                               
                                
                             </div>
                             <img
@@ -167,12 +177,14 @@ const StartPickingOrder = () => {
                     
                     <div className="flex flex-col">
                         <div className="flex justify-around px-2 gap-1">
-                            <Button
+                            <ScanOrderProduct setBarcode={handleBarcodeScan}/>
+
+                            {/* <Button
                                 className="w-1/2"
                                 onClick={updateSuppliedQuintity}
                             >
                                  ScanProduct
-                            </Button>
+                            </Button> */}
                         
                             <Button
                                 className="w-1/2"

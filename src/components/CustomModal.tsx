@@ -76,6 +76,7 @@ const CustomModal = ({ location, scanCode, setImage, scan, setBarcode, create }:
         </>
     )
 }
+export default CustomModal
 
 export const OpenNotFoundModal = () => {
 
@@ -112,4 +113,3 @@ export const OpenNotFoundModal = () => {
     </>
 
 }
-export default CustomModal
