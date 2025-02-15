@@ -82,7 +82,7 @@ const CheckoutForm = () => {
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
-        if (paymentType==="card" && !stripe || !elements) {
+        if (paymentType === "card" && !stripe || !elements) {
             // Stripe.js hasn't yet loaded.
             // Make sure to disable form submission until Stripe.js has loaded.
             return;
@@ -93,7 +93,7 @@ const CheckoutForm = () => {
             setIsAddressComplete(false)
             throw new Error("Email is Required!.");
         }
-        
+
         const { city, country, line1, name, phone, state, postal_code } = contactInfo.shipping
         if (orderType === "delivery" && (!city || !country || !line1 || !name || !phone ||
             !state || !postal_code || !contactInfo.email)) {
@@ -103,8 +103,8 @@ const CheckoutForm = () => {
         }
 
         if (!requestDeliveryDate) {
-            orderType === "delivery" &&  alert("Please select a delivery date")
-            orderType === "pickup" &&  alert("Please select a pickup date")
+            orderType === "delivery" && alert("Please select a delivery date")
+            orderType === "pickup" && alert("Please select a pickup date")
             setIsAddressComplete(false)
             throw new Error("Delivery date is required.");
         }
@@ -114,30 +114,56 @@ const CheckoutForm = () => {
 
         try {
             setIspending(true)
-           if(paymentType=== "card"){ const result = await stripe?.confirmPayment({
-                elements,
-                confirmParams: {
-                    // return_url: return_url,
-                },
-                redirect: "if_required",
-            });
-            
-            if (result?.error) {
-                // Show error to your customer (for example, payment details incomplete)
-                console.log(result.error.message);
-            }
-            else if (result?.paymentIntent?.status === "succeeded") {
-                // Your customer will be redirected to your `return_url`. For some payment
-                // methods like iDEAL, your customer will be redirected to an intermediate
-                // site first to authorize the payment, then redirected to the `return_url`.
+            if (paymentType === "card") {
+                const result = await stripe?.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        // return_url: return_url,
+                    },
+                    redirect: "if_required",
+                });
 
-                const { line1, line2, city, postal_code, state, country, phone, name } = contactInfo.shipping
-                const full_address = `${line2 !== "" ? "UNIT " + line2 + " " : ""} ${line1}, ${city}, ${state}, ${postal_code}, ${country}`
+                if (result?.error) {
+                    // Show error to your customer (for example, payment details incomplete)
+                    console.log(result.error.message);
+                }
+                else if (result?.paymentIntent?.status === "succeeded") {
+                    // Your customer will be redirected to your `return_url`. For some payment
+                    // methods like iDEAL, your customer will be redirected to an intermediate
+                    // site first to authorize the payment, then redirected to the `return_url`.
+
+                    const { line1, line2, city, postal_code, state, country, phone, name } = contactInfo.shipping
+                    const full_address = `${line2 !== "" ? "UNIT " + line2 + " " : ""} ${line1}, ${city}, ${state}, ${postal_code}, ${country}`
+                    const customer_details = {
+                        name: name,
+                        phone: phone,
+                        address: full_address,
+                        email: contactInfo.email,
+                        items: orderItems as any,
+                        deliveryStatus: "Not Yet Delivered",
+                        deliveryDate: {
+                            date: "NY",
+                            time: "NY"
+                        },
+                        requestDeliveryDate: requestDeliveryDate,
+                        paymentType: "card",
+                        amount: parseFloat(cartAmount.toFixed(2)),
+                        orderType: orderType,
+                        paymentStatus: "Paid",
+                    }
+                    await createOrder(customer_details)
+                    updateCartAndUserCart()
+                    setPlaceOrderStatus("Payment Completed")
+                    return navigate("/payment/success")
+
+                }
+            }
+            else if (paymentType === "cash") {
                 const customer_details = {
-                    name: name,
-                    phone: phone,
-                    address: full_address,
-                    email: contactInfo.email,
+                    name: user.fName + " " + user.lName,
+                    phone: user.phone,
+                    address: user.address,
+                    email: user.email,
                     items: orderItems as any,
                     deliveryStatus: "Not Yet Delivered",
                     deliveryDate: {
@@ -145,50 +171,25 @@ const CheckoutForm = () => {
                         time: "NY"
                     },
                     requestDeliveryDate: requestDeliveryDate,
-                    paymentType: "card",
+                    paymentType: paymentType,
                     amount: parseFloat(cartAmount.toFixed(2)),
                     orderType: orderType,
-                    paymentStatus: "Paid",
+                    paymentStatus: "Not Yet Paid",
+
                 }
                 await createOrder(customer_details)
                 updateCartAndUserCart()
                 setPlaceOrderStatus("Payment Completed")
                 return navigate("/payment/success")
-                
-               }
-           }
-           else if(paymentType=== "cash"){
-               const customer_details = {
-                   name: user.fName + " " + user.lName,
-                   phone: user.phone,
-                   address: user.address,
-                   email: user.email,
-                   items: orderItems as any,
-                   deliveryStatus: "Not Yet Delivered",
-                   deliveryDate: {
-                       date: "NY",
-                       time: "NY"
-                   },
-                   requestDeliveryDate: requestDeliveryDate,
-                   paymentType: paymentType,
-                   amount: parseFloat(cartAmount.toFixed(2)),
-                   orderType: orderType,
-                   paymentStatus: "Not Yet Paid",
-
-               }
-            await   createOrder(customer_details)
-                    updateCartAndUserCart()
-                    setPlaceOrderStatus("Payment Completed")
-                return navigate("/payment/success")
             } else {
                 return
             }
-            
+
         } catch (error) {
             console.error("Error confirming payment:", error);
         }
 
-       return setIspending(false)
+        return setIspending(false)
     };
 
     useEffect(() => {
@@ -210,7 +211,6 @@ const CheckoutForm = () => {
             });
         }
     }, [user]);
-console.log(contactInfo)
     return (
         <form onSubmit={handleSubmit}>
             <div className='mx-4 my-4'>
@@ -266,15 +266,18 @@ console.log(contactInfo)
                                     </div>
                                 </div>}
                             </div>
-                            
-                           {orderType === "delivery" && <div className='shadow-md bg-slate-100 rounded-md ps-2'>
+
+                            {orderType === "delivery" && <div className='shadow-md bg-slate-100 rounded-md ps-2'>
                                 <h3 className='p-2 font-bold text-xl'>Shipping Details</h3>
                                 <AddressElement
                                     className="p-4"
                                     options={{
                                         mode: "shipping",
+                                        allowedCountries: [], // Ensure Nepal is allowed
+                                        blockPoBox: false,
                                         fields: {
                                             phone: "always",
+                                            // Set to "auto" to avoid validation issues
                                         },
                                         autocomplete: {
                                             mode: "automatic"
@@ -285,7 +288,7 @@ console.log(contactInfo)
                                 />
                             </div>}
 
-                            {  <DeliveryDateSelector orderType={orderType} requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />}                        </div>
+                            {<DeliveryDateSelector orderType={orderType} requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />}                        </div>
                         {/* <label htmlFor='deliveryDate'>Delivery Date: </label>
                                 <input id='deliveryDate' type="date" name="deliveryDate" required onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                     const date = (e.target.value);
@@ -306,37 +309,37 @@ console.log(contactInfo)
                         </div>
                     </>
                 ) : (
-                        <>
-                            <div className='flex flex-col gap-2'>
-                                <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                    <h3 className='p-2 font-bold text-xl' >Payment Type</h3>
-                                    <div className="flex items-center space-x-4">
-                                        <Button type='button'
-                                            className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "cash"
-                                                ? "bg-blue-500 text-white"
-                                                : "bg-gray-200 text-gray-700"
-                                                }`}
-                                            onClick={() => setPaymentType("cash")}
-                                        >
-                                            Cash
-                                        </Button>
+                    <>
+                        <div className='flex flex-col gap-2'>
+                            <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
+                                <h3 className='p-2 font-bold text-xl' >Payment Type</h3>
+                                <div className="flex items-center space-x-4">
+                                    <Button type='button'
+                                        className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "cash"
+                                            ? "bg-blue-500 text-white"
+                                            : "bg-gray-200 text-gray-700"
+                                            }`}
+                                        onClick={() => setPaymentType("cash")}
+                                    >
+                                        Cash
+                                    </Button>
 
-                                        <Button
-                                            type='button'
-                                            className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "card"
-                                                ? "bg-blue-500 text-white"
-                                                : "bg-gray-200 text-gray-700"
-                                                }`}
-                                            onClick={() => setPaymentType("card")}
-                                        >
-                                            Card
-                                        </Button>
-                                    </div>
+                                    <Button
+                                        type='button'
+                                        className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "card"
+                                            ? "bg-blue-500 text-white"
+                                            : "bg-gray-200 text-gray-700"
+                                            }`}
+                                        onClick={() => setPaymentType("card")}
+                                    >
+                                        Card
+                                    </Button>
                                 </div>
                             </div>
-                            <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                <h3 className='p-2 font-bold text-xl text-center' >Amount to be paid: {cartAmount?.toFixed(2)}</h3></div>
-                            {paymentType === "card" && <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />}
+                        </div>
+                        <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
+                            <h3 className='p-2 font-bold text-xl text-center' >Amount to be paid: {cartAmount?.toFixed(2)}</h3></div>
+                        {paymentType === "card" && <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />}
                     </>
 
                 )}

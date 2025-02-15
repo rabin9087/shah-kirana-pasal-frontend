@@ -18,7 +18,7 @@ type ProductLocation = {
 };
 
 const formatLocation = (location: string): string => {
-    const parts = location.split(".").map((num) => num.padStart(2,""));
+    const parts = location.split(".").map((num) => num.padStart(2, ""));
     return `A${parts[0]} - B${parts[1]} - S${parts[2]}`;
 };
 
@@ -95,7 +95,7 @@ const StartPickingOrder = () => {
         if (order?._id) {
             const items = order?.items.map(({ productId, quantity, _id, price, note, supplied }) =>
                 ({ productId: productId._id, price, quantity, note, supplied, _id }));
-            await updateAOrder(order._id, { deliveryStatus: status, items})
+            await updateAOrder(order._id, { deliveryStatus: status, items })
             setPacking(false)
             return navignate("/all-orders")
         }
@@ -133,146 +133,143 @@ const StartPickingOrder = () => {
 
     return (
         <>
-            {isFetching || isLoading ? <Loading /> :<div className="w-full h-screen max-w-md mx-auto flex flex-col">
-            <Card className="flex flex-col flex-1 p-4 border rounded-lg shadow-lg bg-white">
-                
-                <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
+            {isFetching || isLoading ? <Loading /> : <div className="w-full h-screen max-w-md mx-auto flex flex-col">
+                <Card className="flex flex-col flex-1 p-4 border rounded-lg shadow-lg bg-white">
 
-                <div>
-                    <Link to={"/all-orders"} className="bg-primary text-white p-2 rounded-md ms-2"
-                        onClick={() => updateDeliveryStatus("Picking")}
-                    >
-                    {"<"} BACK
-                    </Link>
-                    <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
-                </div>
-                
-                
-                <div className="flex flex-col items-start justify-start p-2">
-                    <p>Name: {order?.name}</p>
-                    <p>Phone: {order?.phone}</p>
-                    <p>Email: {order?.email}</p>
-                    <p>Address: {order?.address}</p>
-                </div>
-                <div className="mt-4 space-y-3 flex-1 overflow-auto h-full">
-                    {currentItem && (
-                        <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
-                            <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md">
-                                <p className="text-3xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
-                                <div className="text-center text-md me-2 text-white">
-                                    {sortedItems.length - currentIndex}/{sortedItems.length}
+                    <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
+
+                    <div>
+                        <Link to={"/all-orders"} className="bg-primary text-white p-2 rounded-md ms-2"
+                            onClick={() => updateDeliveryStatus("Picking")}
+                        >
+                            {"<"} BACK
+                        </Link>
+                        <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
+                    </div>
+
+
+                    <div className="flex flex-col items-start justify-start p-2">
+                        <p>Name: {order?.name}</p>
+                        <p>Phone: {order?.phone}</p>
+                        <p>Email: {order?.email}</p>
+                        <p>Address: {order?.address}</p>
+                    </div>
+                    <div className="mt-4 space-y-3 flex-1 overflow-auto h-full">
+                        {currentItem && (
+                            <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
+                                <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md">
+                                    <p className="text-3xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                    <div className="text-center text-md me-2 text-white">
+                                        {sortedItems.length - currentIndex}/{sortedItems.length}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="min-h-[4rem]">
-                                <h3 className="text-base my-2 text-start font-bold ms-2">
-                                    {currentItem?.productId.name}
-                                </h3>
-                            </div>
-                            
-                            <div className="flex justify-around gap-4 py-2">
-                                <p className="text-xs border p-2">Ordered: <span className="text-xl"> {currentItem?.quantity}</span> </p>
-                                <p className="text-xs border p-2">Supplied:  <span className="text-xl"> {currentItem?.supplied ? currentItem?.supplied : 0} </span></p>
-                            </div>
+                                <div className="min-h-[4rem]">
+                                    <h3 className="text-base my-2 text-start font-bold ms-2">
+                                        {currentItem?.productId.name}
+                                    </h3>
+                                </div>
 
-                            <div className="flex justify-between gap-2 text-left w-full">
-                                <div className="ms-2 py-2">
-                                <p className="text-xs">SKU: | {currentItem?.productId.sku} | { barcode}</p>
-                                <p className="text-xs">Price: ${currentItem?.productId.price}</p>
-                                <p className="text-xs">SOH: {currentItem?.productId.quantity}</p>
-                            </div>
-                            <img
-                                src={currentItem?.productId?.thumbnail}
-                                alt={currentItem?.productId?.name}
-                                className="w-16 h-16 mt-4 object-cover rounded-md cursor-pointer"
-                                onClick={() => openModal(currentItem?.productId?.thumbnail)}
-                                />
-                            </div>
-                            <p className={`text-xs min-h-[2rem] text-center text-red-400 
-                                ${currentItem?.note !== "" && "border px-2"}` }>
-                                {currentItem?.note ? currentItem?.note : ""}</p>
-                        </CardContent>
-                    )}
-                    
-                    <div className="flex flex-col">
-                        <div className="flex justify-around px-2 gap-1">
-                            <ScanOrderProduct setBarcode={handleBarcodeScan}/>
+                                <div className="flex justify-around gap-4 py-2">
+                                    <p className="text-xs border p-2">Ordered: <span className="text-xl"> {currentItem?.quantity}</span> </p>
+                                    <p className="text-xs border p-2">Supplied:  <span className="text-xl"> {currentItem?.supplied ? currentItem?.supplied : 0} </span></p>
+                                </div>
 
-                            {/* <Button
-                                className="w-1/2"
-                                onClick={updateSuppliedQuintity}
-                            >
-                                 ScanProduct
-                            </Button> */}
-                        
-                            <Button
-                                className="w-1/2"
-                                onClick={updateSuppliedQuintity} >
-                                WSCAN
-                            </Button>
-                        </div>
-                        <div className="flex justify-around p-2 gap-1">
-                            <Button
-                                className="w-1/3"
-                                onClick={handleBack} disabled={currentIndex === 0}>
-                                {"<"} BACK
-                            </Button>
-                            <Button
-                                className="w-1/3"
-                                onClick={resetSuppliedQuintity}>
-                                RESET
-                            </Button>
-                            <Button
-                                className="w-1/3"
-                                onClick={handleNext} disabled={currentIndex === sortedItems.length - 1}>
-                                NEXT {">"}
-                            </Button>
-                        </div>
+                                <div className="flex justify-between gap-2 text-left w-full">
+                                    <div className="ms-2 py-2">
+                                        <p className="text-xs">SKU: | {currentItem?.productId.sku} | {barcode}</p>
+                                        <p className="text-xs">Price: ${currentItem?.productId.price}</p>
+                                        <p className="text-xs">SOH: {currentItem?.productId.quantity}</p>
+                                    </div>
+                                    <img
+                                        src={currentItem?.productId?.thumbnail}
+                                        alt={currentItem?.productId?.name}
+                                        className="w-16 h-16 mt-4 object-cover rounded-md cursor-pointer"
+                                        onClick={() => openModal(currentItem?.productId?.thumbnail)}
+                                    />
+                                </div>
+                                <p className={`text-xs min-h-[2rem] text-center text-red-400 
+                                ${currentItem?.note !== "" && "border px-2"}`}>
+                                    {currentItem?.note ? currentItem?.note : ""}</p>
+                            </CardContent>
+                        )}
 
-                        {currentIndex + 1 === order?.items.length && (
-                            <div className="flex justify-center items-center bg-primary mx-2 rounded-lg shadow-md mt-1">
+                        <div className="flex flex-col">
+                            <div className="flex justify-around px-2 gap-1">
+                                <ScanOrderProduct setBarcode={handleBarcodeScan} />
+
                                 <Button
-                                    className="px-6 text-white py-2 text-lg font-medium"
-                                    onClick={() => updateDeliveryStatus("Packed")}
-                                >
-                                    {packing ? "PACKING..." : "PACK"}
+                                    className="w-1/2"
+                                    disabled= {packing}
+                                    onClick={updateSuppliedQuintity} >
+                                    WSCAN
                                 </Button>
                             </div>
-                        )}
+                            <div className="flex justify-around p-2 gap-1">
+                                <Button
+                                    className="w-1/3"
+
+                                    onClick={handleBack} disabled={currentIndex === 0 || packing}>
+                                    {"<"} BACK
+                                </Button>
+                                <Button
+                                    className="w-1/3"
+                                    disabled={packing}
+                                    onClick={resetSuppliedQuintity}>
+                                    RESET
+                                </Button>
+                                <Button
+                                    className="w-1/3"
+                                    onClick={handleNext} disabled={currentIndex === sortedItems.length - 1 || packing}>
+                                    NEXT {">"}
+                                </Button>
+                            </div>
+
+                            {currentIndex + 1 === order?.items.length && (
+                                <div className="flex justify-center items-center bg-primary mx-2 rounded-lg shadow-md mt-1">
+                                    <Button
+                                        className="px-6 text-white py-2 text-lg font-medium"
+                                        disabled={packing}
+                                        onClick={() => updateDeliveryStatus("Packed")}
+                                    >
+                                        {packing ? "PACKING..." : "PACK"}
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+
                     </div>
+                </Card>
 
-                </div>      
-            </Card>
-
-            {/* Modal for displaying the image */}
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-4 mx-10 rounded-md shadow-lg max-w-md w-full flex flex-col justify-center items-center">
-                        <img
-                            src={modalImage || ""}
-                            alt="Product"
-                            className="w-full h-screen/2 object-cover rounded-md"
-                        />
-                        <div className="flex justify-center items-center mt-2">
-                            <Button variant="outline" onClick={closeModal} className="mt-2">
-                                Close
-                            </Button>
+                {/* Modal for displaying the image */}
+                {isModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white p-4 mx-10 rounded-md shadow-lg max-w-md w-full flex flex-col justify-center items-center">
+                            <img
+                                src={modalImage || ""}
+                                alt="Product"
+                                className="w-full h-screen/2 object-cover rounded-md"
+                            />
+                            <div className="flex justify-center items-center mt-2">
+                                <Button variant="outline" onClick={closeModal} className="mt-2">
+                                    Close
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            {notFound && (
-                <div className="fixed inset-0 w-fit my-auto h-full  max-w-md mx-auto bg-black bg-opacity-50 flex items-center justify-center mt-20 z-50">
-                    <div className="bg-white p-4 mx-16 rounded-md shadow-lg max-w-md w-72  flex flex-col justify-center items-center">
-                        <h3>Article not found!</h3>
-                        <div className="flex justify-center items-center mt-2">
-                            <Button variant="outline" onClick={closeModal} className="mt-2">
-                                Close
-                            </Button>
+                {notFound && (
+                    <div className="fixed inset-0 w-fit my-auto h-full  max-w-md mx-auto bg-black bg-opacity-50 flex items-center justify-center mt-20 z-50">
+                        <div className="bg-white p-4 mx-16 rounded-md shadow-lg max-w-md w-72  flex flex-col justify-center items-center">
+                            <h3>Article not found!</h3>
+                            <div className="flex justify-center items-center mt-2">
+                                <Button variant="outline" onClick={closeModal} className="mt-2">
+                                    Close
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
             </div>}
         </>
     );

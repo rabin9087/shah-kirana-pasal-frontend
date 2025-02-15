@@ -32,6 +32,7 @@ import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
 import OrdersPage from "./pages/orders/OrderPage";
 import StartPickingOrder from "./pages/orders/StartPickingOrder";
+import UserDetails from "./components/dashboard/userDashboard/UserDetails";
 
 // Set the app element
 Modal.setAppElement('#root');
@@ -240,6 +241,14 @@ function App() {
           element={<AdminPrivateRouter><Dashboard /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
+
+        <Route
+          path="/dashboard/user/:userPhone"
+          element={<AdminPrivateRouter><UserDetails /></AdminPrivateRouter>}
+          errorElement={<ErrorPage />}
+        />
+
+        
       </Routes>
       <Loader />
     </>

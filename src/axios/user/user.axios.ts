@@ -85,8 +85,21 @@ export const getUser = () => {
   });
 };
 
+export const getAUser = async (phone: string) => {   
+  try {
+    const response = await axiosProcessor({
+    method: "get",
+    url: `${userApi}` + "/userDetails/" + phone,
+    isPrivate: true,
+    });
+    
+    return response.user
+  } catch (error) {
+    throw new Error("Failed to update product");
+  } 
+};
+
 export const updateCartInUser = (phone: string, cart: IUpdateCartToUserTypes[]) => {
-  console.log(cart)
   return axiosProcessor({
     method: "patch",
     url: userApi + "/cart",
@@ -109,7 +122,7 @@ export const updateCartHistoryInUser = (phone: string, items: IUpdateCartToUserT
 // cartHistory
 
 export const getAllUsers = async() => {
-  const res =await axiosProcessor({
+  const res = await axiosProcessor({
     method: "get",
     url: userApi + "/all",
     isPrivate: true,

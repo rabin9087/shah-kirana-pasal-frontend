@@ -17,7 +17,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
         if (order?._id) {
-            await updateAOrder(order._id, { deliverStatus: newStatus });
+            await updateAOrder(order._id, { deliveryStatus: newStatus });
         }
         return;
     };
@@ -162,7 +162,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                     </td>
                                     <td className="p-1">{item?.productId?.name}</td>
                                     <td className="p-1">{item?.quantity}</td>
-                                    <td className="p-1">{item.supplied ? item.quantity : 0}</td>
+                                    <td className="p-1">{item?.supplied ? item?.supplied : 0}</td>
                                     <td className="p-1">${item?.price?.toFixed(2)}</td>
                                 </tr>
                             ))}

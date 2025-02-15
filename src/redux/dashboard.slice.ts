@@ -7,12 +7,14 @@ interface DashboardState {
   categories: ICategoryTypes[];
   loading: boolean;
   error: string | null;
+  userDetail: IUser | null
 }
 
 // Initial state
 const initialState: DashboardState = {
   users: [],
   products: [],
+  userDetail:{} as IUser,
   categories: [],
   loading: false,
   error: null,
@@ -43,6 +45,9 @@ const dashboardDataSlice = createSlice({
     setProducts(state, action: PayloadAction<IProductTypes[]>) {
       state.products = action.payload;
     },
+    setAUserDetail(state, action: PayloadAction<IUser>) {
+      state.userDetail = action.payload;
+    },
     setCategories(state, action: PayloadAction<ICategoryTypes[]>) {
       state.categories = action.payload;
     },
@@ -68,5 +73,5 @@ const dashboardDataSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { setUsers, setProducts, setCategories } = dashboardDataSlice.actions;
+export const { setUsers, setProducts, setCategories, setAUserDetail } = dashboardDataSlice.actions;
 export default dashboardDataSlice.reducer;

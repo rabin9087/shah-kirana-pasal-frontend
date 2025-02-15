@@ -30,7 +30,7 @@ const SideBar = () => {
       {open && (
         <div
           ref={drawerRef}
-          className="fixed top-0 left-0 z-40 w-full md:w-72 lg:w-80 h-full bg-white shadow-lg dark:bg-gray-900 transform transition-transform duration-300 ease-in-out"
+          className="fixed top-0 left-0 z-40 w-full md:w-72 lg:w-80 h-full bg-white shadow-lg dark:bg-gray-900 transform transition-transform duration-300 ease-in-out max-h-screen md:max-h-none md:relative"
         >
           {/* Header */}
           <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700">
@@ -49,7 +49,7 @@ const SideBar = () => {
           </div>
 
           {/* Category List */}
-          <ul className="mt-4 px-4 space-y-2 overflow-y-auto max-h-[calc(100vh-4rem)]">
+          <ul className="mt-4 px-4 mb-8 space-y-2 overflow-y-auto max-h-[calc(100vh-4rem)] md:max-h-none pb-8">
             {categories.map(({ _id, name, slug }) => (
               <Link
                 to={`/category/${slug}`}
@@ -69,14 +69,14 @@ const SideBar = () => {
           </ul>
 
           {/* Footer */}
-          <div className="absolute bottom-0 w-full px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          {/* <div className="absolute bottom-0 w-full px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
             <Button
               onClick={() => alert("Additional Actions")}
               className="w-full bg-blue-500 text-white hover:bg-blue-600"
             >
               More Actions
             </Button>
-          </div>
+          </div> */}
         </div>
       )}
 
@@ -84,7 +84,7 @@ const SideBar = () => {
       {open && (
         <div
           onClick={() => dispatch(toggleSideBar())}
-          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
         ></div>
       )}
     </div>
