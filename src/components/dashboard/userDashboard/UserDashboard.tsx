@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getAllUserAction } from "@/action/user.action";
 import { useEffect } from "react";

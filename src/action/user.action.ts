@@ -1,9 +1,9 @@
 
-import { createAdmin, createUser, forgetPassword, getAUser, getAllUsers, getNewAccessJWT, getUser, loginUser, logoutUser, otp_PasswordVerify, updateCartHistoryInUser, updateCartInUser, update_Forget_Password } from "@/axios/user/user.axios";
+import { createAdmin, createUser, forgetPassword, getAllUsers, getNewAccessJWT, getUser, loginUser, logoutUser, otp_PasswordVerify, updateCartHistoryInUser, updateCartInUser, update_Forget_Password } from "@/axios/user/user.axios";
 import { IAddToCartTypes, IUpdateCartToUserTypes } from "@/pages/addToCart";
 import { setLoading } from "@/redux/Loading.slice";
 import { setAddToCart } from "@/redux/addToCart.slice";
-import { setAUserDetail, setUsers } from "@/redux/dashboard.slice";
+import { setUsers } from "@/redux/dashboard.slice";
 import { logOut, setEmail_Phone, setUser } from "@/redux/user.slice";
 import { AppDispatch } from "@/store";
 import {
