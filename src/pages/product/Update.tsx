@@ -15,7 +15,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAProduct, updateProduct } from '@/axios/product/product';
 import { Link } from 'react-router-dom';
 import { setAProduct } from '@/redux/product.slice';
-import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
 import { RxCross1 } from "react-icons/rx";
 import ProductNotFound from './components/ProductNotFound';
@@ -33,7 +32,7 @@ const UpdateProduct = () => {
     const { product } = useAppSelector(state => state.productInfo)
     const { categories } = useAppSelector(state => state.categoryInfo)
 
-    const { data = {} as IProductTypes, isLoading, error, isFetching } = useQuery<IProductTypes>({
+    const { data = {} as IProductTypes, error } = useQuery<IProductTypes>({
         queryKey: [params?.qrCodeNumber],
         queryFn: () => getAProduct(params)
     });
@@ -41,18 +40,6 @@ const UpdateProduct = () => {
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm<UpdateProductSchema>({
         resolver: zodResolver(updateProductSchema),
     });
-
-    useEffect(() => {
-        if (data._id) {
-            if (data.thumbnail) {
-                setThumbnail(data.thumbnail as string)
-            }
-            if (data.images) {
-                setImages(data.images as string[]);
-            }
-            dispatch(setAProduct(data))
-        }
-    }, [dispatch, data._id])
 
     const convert2base64 = (image: Blob) => {
         const reader = new FileReader();
@@ -117,26 +104,33 @@ const UpdateProduct = () => {
     const queryClient = useQueryClient()
     const mutation = useMutation({
         mutationFn: async (data: FormData) => {
-            return await updateProduct(data, params?.qrCodeNumber as string)
+            return await updateProduct(data, params?.qrCodeNumber as string);
         },
         onError: () => {
-            console.log("error")
+            console.log("error");
         },
         onSuccess: (response) => {
             if (response.message === "Product Not Found!") {
                 // setIsModalOpen(true);
             } else {
                 console.log("success");
+                reset();  // Reset form values
+                setImage(null);
+                setImages([]);
+                setNewImages([]);
+                setThumbnail("");
+                setImagesToDelete([]);
             }
         },
         onSettled: async (_, error) => {
             if (error) {
-                console.log(error)
+                console.log(error);
             } else {
-                await queryClient.invalidateQueries({ queryKey: [params?.qrCodeNumber] })
+                await queryClient.invalidateQueries({ queryKey: [params?.qrCodeNumber] });
             }
         }
-    })
+    });
+
 
 
     const onSubmit = async (data: UpdateProductSchema) => {
@@ -155,6 +149,44 @@ const UpdateProduct = () => {
         mutation.mutate(formData);
         return reset();
     };
+
+    useEffect(() => {
+        if (data._id) {
+            if (data.thumbnail) {
+                setThumbnail(data.thumbnail as string)
+            }
+            if (data.images) {
+                setImages(data.images as string[]);
+            }
+            dispatch(setAProduct(data))
+        }
+    }, [dispatch, data._id])
+
+    // useEffect(() => {
+    //     if (data && data._id) {
+    //         reset({
+    //             name: data.name || "",
+    //             alternateName: data.alternateName || "",
+    //             sku: data.sku || "",
+    //             qrCodeNumber: data.qrCodeNumber || "",
+    //             price: data.price || "",
+    //             quantity: data.quantity || "",
+    //             productLocation: data.productLocation || "",
+    //             storedAt: data.storedAt || "",
+    //             productWeight: data.productWeight || "",
+    //             salesPrice: data.salesPrice || "",
+    //             salesStartDate: data.salesStartDate || "",
+    //             salesEndDate: data.salesEndDate || "",
+    //             thumbnail: data.thumbnail || "",
+    //             images: data.images || [],
+    //         });
+
+    //         if (data.thumbnail) setThumbnail(data.thumbnail);
+    //         if (data.images) setImages(data.images);
+    //         dispatch(setAProduct(data));
+    //     }
+    // }, [data, reset, dispatch]);
+
 
 
     useEffect(() => {
@@ -176,7 +208,7 @@ const UpdateProduct = () => {
 
     }, [image, setValue]);
 
-    if (isLoading || isFetching) return <Loading />;
+    // if (isLoading || isFetching) return <Loading />;
 
     if (!data || notFound) return <Layout title='Update Product Details'><Link to={"/scan-product"} className='ms-4'>
         <Button>&lt; Back</Button>
@@ -276,8 +308,8 @@ const UpdateProduct = () => {
     return (
         <>
         <Layout title='Update Product Details'>
-            <Link to={"/scan-product"} className='ms-4'>
-                <Button>&lt; Back</Button>
+            <Link to={"/dashboard"} className='ms-4 bg-primary text-white p-2 px-2 rounded-md'>
+                &lt; Dashboard
             </Link>
 
             <div className='flex justify-center w-full '>

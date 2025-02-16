@@ -17,8 +17,6 @@ import CreateProduct from "../src/pages/product/Create";
 import UpdateProduct from "./pages/product/Update";
 import Modal from 'react-modal';
 import UpdateCategory from "./pages/category/Update";
-import AllCategories from "./pages/category/Categories";
-import AllProducts from "./pages/product/Products";
 import ScanProduct from "./pages/product/ScanProduct";
 import ProductLanding from "./pages/product/ProductLanding";
 import ProductCardByCategory from "./pages/category/ProductsByCategory";
@@ -30,9 +28,9 @@ import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRouter, { AdminPrivateRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
-import OrdersPage from "./pages/orders/OrderPage";
 import StartPickingOrder from "./pages/orders/StartPickingOrder";
 import UserDetails from "./components/dashboard/userDashboard/UserDetails";
+import UserProfileEdit from "./components/dashboard/userDashboard/UserProfile";
 
 // Set the app element
 Modal.setAppElement('#root');
@@ -141,12 +139,6 @@ function App() {
         />
 
         <Route
-          path="/all-products"
-          element={<AdminPrivateRouter><AllProducts /></AdminPrivateRouter>}
-          errorElement={<ErrorPage />}
-        />
-
-        <Route
           path="/scan-product"
           element={<AdminPrivateRouter><ScanProduct /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
@@ -155,12 +147,6 @@ function App() {
         <Route
           path="/product/update/:qrCodeNumber"
           element={<AdminPrivateRouter><UpdateProduct /></AdminPrivateRouter>}
-          errorElement={<ErrorPage />}
-        />
-
-        <Route
-          path="/all-categories"
-          element={<AdminPrivateRouter><AllCategories /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
@@ -209,12 +195,6 @@ function App() {
         />
 
         <Route
-          path="/all-orders"
-          element={<AdminPrivateRouter><OrdersPage /></AdminPrivateRouter>}
-          errorElement={<ErrorPage />}
-        />
-
-        <Route
           path="/order/orderNumber=/:orderNumber"
           element={
             <AdminPrivateRouter>
@@ -248,6 +228,11 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/edit/userProfile/:userPhone"
+          element={<AdminPrivateRouter><UserProfileEdit /></AdminPrivateRouter>}
+          errorElement={<ErrorPage />}
+        />
         
       </Routes>
       <Loader />

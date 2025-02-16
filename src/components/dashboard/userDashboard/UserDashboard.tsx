@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { getAllUserAction } from "@/action/user.action";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -46,8 +45,8 @@ const UsersDashboard = () => {
                                         <TableCell className="whitespace-nowrap">{user.phone}</TableCell>
                                         <TableCell className="whitespace-nowrap">{user.address}</TableCell>
                                         <TableCell className="whitespace-nowrap">
-                                            <span className={user?.status === "active" ? "text-green-500" : "text-red-500"}>
-                                                {user.status === "active" ? "ACTIVE" : "INACTIVE"}
+                                            <span className={user?.status === "ACTIVE" ? "text-green-500" : "text-red-500"}>
+                                                {user.status}
                                             </span>
                                         </TableCell>
                                         <TableCell className="whitespace-nowrap">
@@ -60,9 +59,8 @@ const UsersDashboard = () => {
                                         </TableCell>
                                         <TableCell className="whitespace-nowrap">
                                             <div className="flex items-center gap-2">
-                                                <Link to={`/dashboard/user/${user.phone}`} className="p-2 w-1/3 bg-gray-200 rounded-md text-sm ">View</Link>
-                                                <Button variant="default" className="w-1/3" size="sm">Edit</Button>
-                                                <Button variant="destructive" className="w-1/3" size="sm">Delete</Button>
+                                                <Link to={`/dashboard/user/${user.phone}`} className="p-2 px-4 w-1/2 bg-gray-200 rounded-md text-sm ">View</Link>
+                                                <Link to={`/edit/userProfile/${user.phone}`} className="p-2 px-4 w-1/2 bg-blue-500 text-white rounded-md text-sm ">Edit</Link>
                                             </div>
                                         </TableCell>
                                     </TableRow>

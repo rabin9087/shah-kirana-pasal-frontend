@@ -1,8 +1,6 @@
 import { updateAProductStatusAction } from "@/action/product.action"
 import { deleteAProduct, getAllProducts } from "@/axios/product/product";
-import Layout from "@/components/layout/Layout"
 import Error from "@/components/ui/Error";
-import Loading from "@/components/ui/Loading";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAppDispatch, useAppSelector } from "@/hooks"
@@ -20,16 +18,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import ProductNotFound from "./components/ProductNotFound";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 
-const AllProducts = () => {
+const ProductsDashboard = () => {
 
     const { products } = useAppSelector(state => state.productInfo)
     const { categories } = useAppSelector(state => state.categoryInfo)
     const dispatch = useAppDispatch()
-    const { data = [], isLoading, error, isFetching } = useQuery<IProductTypes[]>({
+    const { data = [], error } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
         queryFn: () =>
             getAllProducts()
@@ -71,15 +68,20 @@ const AllProducts = () => {
 
     }
 
-    if (isLoading || isFetching) return <Loading />;
+    // const screenWidth = screen.width;
+    // console.log(`Device screen width: ${screenWidth}px`);
+
+    // const viewportWidth = window.innerWidth;
+    // console.log(`Viewport width: ${viewportWidth}px`);
+    // if (isLoading || isFetching) return <Loading />;
 
     if (error) return <Error />
     return (
-        <Layout title="" types="products">
+        <div>
             <div className="flex justify-between me-4 px-2">
-                <div>
-                    <Select onValueChange={handelOnChange}>
-                        <SelectTrigger className="w-full md:w-[500px]">
+                <div className="w-full me-4">
+                    <Select onValueChange={handelOnChange} >
+                        <SelectTrigger className="w-full">
                             <SelectValue placeholder="All Products" />
                         </SelectTrigger>
                         <SelectContent className="px-2 mx-4">
@@ -100,7 +102,6 @@ const AllProducts = () => {
             <div className="mt-4 border w-full px-2 overflow-x-scroll">
                 {products.length < 1 ? <div className="flex justify-center py-4">
 
-                    <ProductNotFound />
                 </div> : <Table>
                     <TableCaption>All list of products.</TableCaption>
                     <TableHeader>
@@ -166,7 +167,7 @@ const AllProducts = () => {
 
             </div>
 
-        </Layout>
+        </div>
     )
 }
-export default AllProducts
+export default ProductsDashboard

@@ -1,55 +1,46 @@
-import { useState } from "react";
-import SideBar from "./SideBar";
-import UsersDashboard from "./userDashboard/UserDashboard";
-import ProductsDashboard from "./ProductDashBoard";
-import CategoriesDashboard from "./CategoryDashboard";
+import { useState } from 'react';
+import UsersDashboard from './userDashboard/UserDashboard';
+import { Button } from '../ui/button';
+import ProductsDashboard from './productsDashboard/ProductsDashboard';
+import CategoriesDashboard from './categoryDashboard/CategoriesDashboard';
+import OrdersDashboard from './ordersDashboard/OrdersDashboard';
 
 const DashboardLayout = () => {
-    const [activeMenu, setActiveMenu] = useState<string>("users");
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const menuItems = ['users', 'products', 'categories', "orders"];
+    const [activeMenu, setActiveMenu] = useState(menuItems[0]);
 
     const renderContent = () => {
         switch (activeMenu) {
-            case "users":
+            case menuItems[0]:
                 return <UsersDashboard />;
-            case "products":
+            case menuItems[1]:
                 return <ProductsDashboard />;
-            case "categories":
+            case menuItems[2]:
                 return <CategoriesDashboard />;
+            case menuItems[3]:
+                return <OrdersDashboard />;
             default:
                 return <div>Select a menu item to view details</div>;
         }
     };
 
     return (
-        <div className="flex min-h-screen">
-            {/* Mobile Sidebar Toggle Button */}
-            <button
-                className="fixed top-4 left-4 z-50 bg-blue-600 text-white px-3 py-2 rounded md:hidden"
-                onClick={() => setSidebarOpen(true)}
-            >
-                ☰ Menu
-            </button>
-
-            {/* Sidebar */}
-            <div
-                className={`fixed inset-y-0 left-0 w-64 bg-gray-800 text-white transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-                    } md:relative md:translate-x-0 md:w-64`}
-            >
-                <button
-                    className="absolute top-4 right-4 text-white md:hidden"
-                    onClick={() => setSidebarOpen(false)}
-                >
-                    ✕
-                </button>
-                <SideBar onSelect={(menu) => {
-                    setActiveMenu(menu);
-                    setSidebarOpen(false); // Close sidebar after selection
-                }} />
+        <div>
+            <div className="flex justify-center gap-2">
+                {menuItems.map((item) => (
+                    <Button
+                        key={item}
+                        onClick={() => setActiveMenu(item)}
+                        className={`${activeMenu === item ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'
+                            } px-4 py-2 rounded-md focus:outline-none`}
+                    >
+                        {item.charAt(0).toUpperCase() + item.slice(1)}
+                    </Button>
+                ))}
             </div>
-
-            {/* Main Content */}
-            <div className="flex-1 p-4 md:p-6 bg-gray-100 w-full">{renderContent()}</div>
+            <div className="flex min-h-screen my-4">
+                <div className="flex-1 p-4 md:p-6 bg-gray-100 w-full">{renderContent()}</div>
+            </div>
         </div>
     );
 };

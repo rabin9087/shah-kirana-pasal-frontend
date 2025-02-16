@@ -7,7 +7,6 @@ import ProductNotFound from "../product/components/ProductNotFound";
 import { useQuery } from "@tanstack/react-query";
 import { setProducts } from "@/redux/product.slice";
 import { getAllProductsByCategory } from "@/axios/product/product";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import ProductCard from "../productCard/ProductCard";
 
@@ -25,7 +24,7 @@ const ProductCardByCategory: React.FC = () => {
     const { products } = useAppSelector(state => state.productInfo)
     // const [data, setData] = useState<IProductTypes[]>(products)
     
-    const { data = [] as IProductTypes[], isLoading, error, isFetching } = useQuery<IProductTypes[]>({
+    const { data = [] as IProductTypes[], error } = useQuery<IProductTypes[]>({
         queryKey: ["categories", slug, searchTerm],
         queryFn: async () => {
             if (searchTerm) {
@@ -42,7 +41,7 @@ const ProductCardByCategory: React.FC = () => {
         // dispatch(toggleSideBar());
     }, [dispatch, slug, data.length, searchTerm])
 
-    if (isLoading || isFetching) return <Loading />;
+    // if (isLoading || isFetching) return <Loading />;
 
     if (error) return <Error />
 
@@ -53,7 +52,6 @@ const ProductCardByCategory: React.FC = () => {
                     <ProductCard key={product._id} item={product} />
                 )}
             </div>}
-
     </Layout>
     );
 };

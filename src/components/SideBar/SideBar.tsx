@@ -49,7 +49,7 @@ const SideBar = () => {
           </div>
 
           {/* Category List */}
-          <ul className="mt-4 px-4 mb-8 space-y-2 overflow-y-auto max-h-[calc(100vh-4rem)] md:max-h-none pb-8">
+          <ul className="mt-4 px-4 mb-8 space-y-2 overflow-y-auto max-h-[calc(100vh-8rem)] pb-8">
             {categories.map(({ _id, name, slug }) => (
               <Link
                 to={`/category/${slug}`}
@@ -67,16 +67,6 @@ const SideBar = () => {
               </Link>
             ))}
           </ul>
-
-          {/* Footer */}
-          {/* <div className="absolute bottom-0 w-full px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-            <Button
-              onClick={() => alert("Additional Actions")}
-              className="w-full bg-blue-500 text-white hover:bg-blue-600"
-            >
-              More Actions
-            </Button>
-          </div> */}
         </div>
       )}
 

@@ -140,3 +140,14 @@ export const updateUserProfile = (data: FormData) => {
     // refreshToken: true
   });
 };
+
+export const updateAUser = (phone: string, data: object) => {
+  return axiosProcessor({
+    method: "put",
+    url: userApi+ `/${phone}`,
+    isPrivate: true,
+    refreshToken: true,
+    obj: data,
+    // refreshToken: true
+  });
+};

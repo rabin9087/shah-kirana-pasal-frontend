@@ -11,9 +11,11 @@ import { Status } from "../product/formValidation"
 import { getACategoryAction, updateACategoryAction } from "@/action/category.action"
 import { ICategoryTypes } from "@/types"
 import { useParams } from "react-router"
+import { Link } from "react-router-dom"
 
 const UpdateCategory = () => {
     const dispatch = useAppDispatch()
+    const [updating, setUpdating] = useState<boolean>(false)
     const { selectedCategory } = useAppSelector(state => state.categoryInfo)
     const [form, setForm] = useState<ICategoryTypes>(selectedCategory);
     const { _id } = useParams()
@@ -29,11 +31,10 @@ const UpdateCategory = () => {
     });
 
     const onSubmit = async (data: UpdateCategorySchema) => {
+        setUpdating(true)
         await dispatch(updateACategoryAction(data))
-
+        setUpdating(false)
     };
-
-    console.log(_id)
 
     useEffect(() => {
         if (_id !== "") {
@@ -51,7 +52,8 @@ const UpdateCategory = () => {
 
     return (
         <Layout title='Update Category Details'>
-            <div className='flex justify-center w-full '>
+            <Link to={"/dashboard"} className='ms-6 my-4 p-3 bg-primary rounded-md text-white mx-auto'>{"<"} Categories</Link>
+            <div className='flex justify-center w-full mt-6'>
                 <form className='m-2 flex flex-col gap-2 w-full  md:max-w-[780px] border-2 p-4 rounded-md shadow-sm' onSubmit={handleSubmit(onSubmit)}>
                     <div className="col-span-full">
                         <Label htmlFor="description" className="block text-md font-medium leading-6 text-gray-900">
@@ -112,18 +114,20 @@ const UpdateCategory = () => {
 
 
 
-                    <div className="mt-2 flex items-center justify-end gap-2">
+                    <div className="mt-2 flex items-center justify-center w-full gap-2">
                         <Button
+                            disabled= {updating}
                             type="submit"
+                            className="w-full"
                         >
-                            Save
+                            {updating ? 'Updating...' : 'Update'}
                         </Button >
-                        <Button
+                        {/* <Button
                             type="reset"
                             variant={"outline"}
                         >
                             Cancel
-                        </Button >
+                        </Button > */}
 
 
                     </div>

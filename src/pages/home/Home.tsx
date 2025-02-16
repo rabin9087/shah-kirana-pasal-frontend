@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import { setProducts } from "@/redux/product.slice";
 import { getAllProducts, getAllProductsByCategory } from "@/axios/product/product";
 import { useEffect } from "react";
-import Loading from "@/components/ui/Loading";
 import NetworkError from "@/components/network Error/NetworkError";
 
 function Home(): JSX.Element {
@@ -17,9 +16,7 @@ function Home(): JSX.Element {
 
   const {
     data = [],
-    isLoading,
     error,
-    isFetching,
     refetch
   } = useQuery<IProductTypes[]>({
     queryKey: ['products'],
@@ -46,7 +43,7 @@ function Home(): JSX.Element {
     }
   }, [dispatch, data]);
 
-  if (isLoading || isFetching) return <Loading />;
+  // if (isLoading || isFetching) return <Loading />;
 
   if (error || electronicsError) {
     return (

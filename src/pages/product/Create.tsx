@@ -118,7 +118,6 @@ const CreateProduct = () => {
   };
 
   const onSubmit = async (data: ProductSchema) => {
-
     const formData = new FormData();
 
     // Append non-file fields
@@ -139,19 +138,22 @@ const CreateProduct = () => {
     // Convert thumbnail from base64 to File and append to FormData
     if (thumbnail && thumbnail.length > 0) {
       const file = base64ToFile(thumbnail[0].url, 'thumbnail.jpg');
-      console.log(file)
       formData.append('thumbnail', file);
     }
 
-    // Append images and thumbnail separately
-
-    console.log('FormData before submission:', ...formData); // Debugging output
-
-    // Post the formData using your mutation
-    mutation.mutate(formData);
-    return reset
-
+    mutation.mutate(formData, {
+      onSuccess: () => {
+        reset(); // Reset the form only if mutation is successful
+        setImages([]);
+        setThumbnail([]);
+        setImage(null);
+        setSku('');
+        setBarcode('');
+        setIsBarcode(false);
+      }
+    });
   };
+
 
   useEffect(() => {
     setValue('images', images);

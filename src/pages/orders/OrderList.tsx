@@ -7,7 +7,6 @@ import { format, addDays, subDays } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getAOrdersByDate } from "@/axios/order/order";
 import { initialState, setOrders } from "@/redux/allOrders.slice";
-import { LoadingData } from "@/components/ui/Loading";
 
 const OrdersList = () => {
 
@@ -19,7 +18,7 @@ const OrdersList = () => {
         setDate(newDate);
     };
 
-    const { data = [], isLoading, isFetching } = useQuery<IOrder[]>({
+    const { data = []} = useQuery<IOrder[]>({
         queryKey: ['orders', date?.toISOString().split("T")[0]],
         queryFn: () => getAOrdersByDate(date?.toISOString().split("T")[0])
     })
@@ -34,7 +33,7 @@ const OrdersList = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h2 className="text-2xl font-semibold mb-4">Orders</h2>
+            {/* <h2 className="text-2xl font-semibold mb-4">Orders</h2>  */}
             <div className="flex justify-center gap-2 mb-4">
 
                 <button
@@ -68,7 +67,7 @@ const OrdersList = () => {
             {orders?.length ? (
                 <div className="bg-white shadow-md rounded-lg overflow-hidden">
                     {/* Responsive Table Wrapper */}
-                    {isFetching || isLoading ? <LoadingData /> : <div className="w-full overflow-x-auto">
+                    { <div className="w-full overflow-x-auto">
                         <table className="w-full border-collapse min-w-[600px]">
                             <thead>
                                 <tr className="bg-gray-200 text-sm md:text-base">
