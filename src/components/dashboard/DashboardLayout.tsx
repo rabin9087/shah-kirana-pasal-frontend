@@ -1,23 +1,37 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import UsersDashboard from './userDashboard/UserDashboard';
 import { Button } from '../ui/button';
 import ProductsDashboard from './productsDashboard/ProductsDashboard';
 import CategoriesDashboard from './categoryDashboard/CategoriesDashboard';
 import OrdersDashboard from './ordersDashboard/OrdersDashboard';
+import { useNavigate, useParams } from 'react-router';
 
 const DashboardLayout = () => {
-    const menuItems = ['users', 'products', 'categories', "orders"];
-    const [activeMenu, setActiveMenu] = useState(menuItems[0]);
+    const menuItems = ['users', 'products', 'categories', 'orders'];
+    const { menu } = useParams();
+    const navigate = useNavigate();
+    const [activeMenu, setActiveMenu] = useState(menuItems.includes(menu as string) ? menu : menuItems[0]);
+
+    useEffect(() => {
+        if (menuItems.includes(menu as string)) {
+            setActiveMenu(menu);
+        }
+    }, [menu]);
+
+    const handleMenuClick = (item: string) => {
+        setActiveMenu(item);
+        navigate(`/dashboard/${item}`);
+    };
 
     const renderContent = () => {
         switch (activeMenu) {
-            case menuItems[0]:
+            case 'users':
                 return <UsersDashboard />;
-            case menuItems[1]:
+            case 'products':
                 return <ProductsDashboard />;
-            case menuItems[2]:
+            case 'categories':
                 return <CategoriesDashboard />;
-            case menuItems[3]:
+            case 'orders':
                 return <OrdersDashboard />;
             default:
                 return <div>Select a menu item to view details</div>;
@@ -30,9 +44,9 @@ const DashboardLayout = () => {
                 {menuItems.map((item) => (
                     <Button
                         key={item}
-                        onClick={() => setActiveMenu(item)}
-                        className={`${activeMenu === item ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'
-                            } px-4 py-2 rounded-md focus:outline-none`}
+                        onClick={() => handleMenuClick(item)}
+                        className={`px-4 py-2 rounded-md focus:outline-none ${activeMenu === item ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'
+                            }`}
                     >
                         {item.charAt(0).toUpperCase() + item.slice(1)}
                     </Button>

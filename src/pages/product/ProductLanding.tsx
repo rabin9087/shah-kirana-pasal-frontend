@@ -1,21 +1,21 @@
 import Layout from "@/components/layout/Layout";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useEffect } from "react";
-import { useParams } from "react-router";
-import ProductDetails from "./components/ProductDetails";
+import { useNavigate, useParams } from "react-router";
 import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } from "@/utils/QuantityChange";
 import { Card, CardDescription } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { getAProduct } from "@/axios/product/product";
+import { getAProduct} from "@/axios/product/product";
 import Error from "@/components/ui/Error";
-import { setAProduct } from "@/redux/product.slice";
+import { setAProduct} from "@/redux/product.slice";
 import { IProductTypes } from "@/types";
 import ImageCarousel from "./components/ImageCarousel";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const ProductLanding = () => {
     const params = useParams();
     const dispatch = useAppDispatch();
+    const navigate = useNavigate()
     const { product } = useAppSelector((s) => s.productInfo);
     const { cart } = useAppSelector((state) => state.addToCartInfo);
     const orderQty = getOrderNumberQuantity(product._id, cart);
@@ -39,14 +39,12 @@ const ProductLanding = () => {
             dispatch(setAProduct(data));
         }
     }, [dispatch, data._id]);
-    const history = window.history
-    console.log(history.back)
-    // if (isLoading || isFetching) return <Loading />;
+
     if (error) return <Error />;
 
     return (
         <Layout title={""}>
-            <Link to={"/"} className="p-2 ms-8 mb-4 bg-primary text-white rounded-md">{"<"} Back</Link>
+            <Button onClick={() => navigate(-1)} className="p-2 ms-8 mb-4 bg-primary text-white rounded-md">{"<"} Back</Button>
 
             <div className="container mx-auto p-4 mt-8">
 
@@ -85,9 +83,6 @@ const ProductLanding = () => {
                         )}
                     </div>
                 </div>
-
-                {/* Product Details Section */}
-                <ProductDetails product={product} />
             </div>
         </Layout>
     );

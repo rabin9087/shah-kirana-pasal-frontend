@@ -83,7 +83,17 @@ const UserProfileEdit = () => {
         <Layout title="Edit User Profile">
             <Link to={"/dashboard"} className='ms-16 my-4 p-3 bg-primary rounded-md text-white mx-auto'>{"<"} Dashboard</Link>
             <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-md">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-6">User Profile</h2>
+                <div className='flex justify-between'>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">User Profile</h2>
+                    <div>
+                        <img
+                            src={data?.profile || ""}
+                            alt="Product"
+                            className="w-36 rounded-full h-36  object-cover"
+                        />
+                    </div>
+                    
+                </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Role */}
                     <div>

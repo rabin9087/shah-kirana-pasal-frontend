@@ -1,11 +1,11 @@
 import { getAUser } from "@/axios/user/user.axios";
 import Layout from "@/components/layout/Layout";
-import { LoadingData } from "@/components/ui/Loading";
+import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setAUserDetail } from "@/redux/dashboard.slice";
 import { IUser } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 
@@ -13,13 +13,21 @@ const UserDetails = () => {
     const { userPhone } = useParams();
     const dispatch = useAppDispatch();
     const { userDetail } = useAppSelector((s) => s.dashboardData);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { data = {} as IUser, isFetching, isLoading } = useQuery<IUser | undefined>({
+    const { data = {} as IUser } = useQuery<IUser | undefined>({
         queryKey: ["userDetails", userPhone],
         queryFn: async (): Promise<IUser | undefined> => await getAUser(userPhone as string),
         enabled: !!userPhone,
     });
 
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
         if (data?._id) {
@@ -31,9 +39,9 @@ const UserDetails = () => {
         <Layout title="User Details">
             <Link to={"/dashboard"} className='ms-16 my-4 p-3 bg-primary rounded-md text-white mx-auto'>{"<"} Dashboard</Link>
 
-            {isFetching || isLoading ? <LoadingData /> : <div className="max-w-lg mx-auto bg-white shadow-lg rounded-2xl p-6 mt-5">
+            {<div className="max-w-lg mx-auto bg-white shadow-lg rounded-2xl p-6 mt-5">
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4" onClick={openModal}>
                     <img
                         src={userDetail?.profile || "https://via.placeholder.com/100"}
                         alt="Profile"
@@ -74,6 +82,22 @@ const UserDetails = () => {
                         <strong>Order History:</strong> {userDetail?.cartHistory?.length}
                     </p>
                 </div>
+                {isModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white p-4 mx-10 rounded-md shadow-lg max-w-md w-full flex flex-col  justify-center items-center">
+                            <img
+                                src={userDetail?.profile || ""}
+                                alt="Product"
+                                className="w-full rounded-full h-screen/3 object-cover"
+                            />
+                            <div className="flex justify-center items-center mt-2">
+                                <Button variant="outline" onClick={closeModal} className="mt-2">
+                                    Close
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>}
         </Layout>
     );

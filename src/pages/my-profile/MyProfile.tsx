@@ -13,10 +13,19 @@ const MyProfile = () => {
     const { user } = useAppSelector((state) => state.userInfo);
     const [loading, setLoading] = useState(false)
     const dispatch = useAppDispatch()
-    // const navigate = useNavigate()
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     // const location = useLocation();
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     // Determine where the user was navigating from
     // const fromLocation = location?.state?.from?.pathname || location.pathname || "/";
@@ -28,7 +37,6 @@ const MyProfile = () => {
             setSelectedImage(URL.createObjectURL(file)); // Preview the selected image
         }
     };
-
 
     const handleSaveImage = async () => {
         setLoading(true)
@@ -59,7 +67,7 @@ const MyProfile = () => {
             <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2">
                     {/* Profile Image Section */}
-                    <div className="relative flex justify-center mb-6">
+                    <div className="relative flex justify-center mb-6" onClick={openModal}>
                         <img
                             src={selectedImage || user?.profile || "/default-profile.png"} // Default profile image fallback
                             alt="Profile"
@@ -135,6 +143,22 @@ const MyProfile = () => {
                         </p>
                     </div>
                 </div>
+                {isModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white p-4 mx-10 rounded-md shadow-md max-w-md w-full flex flex-col  justify-center items-center">
+                            <img
+                                src={user.profile || ""}
+                                alt="Product"
+                                className="w-72 rounded-full h-72 object-cover"
+                            />
+                            <div className="flex justify-center items-center mt-2">
+                                <Button variant="outline" onClick={closeModal} className="mt-2">
+                                    Close
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </Layout>
     );

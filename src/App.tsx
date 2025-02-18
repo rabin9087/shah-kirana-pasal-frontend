@@ -31,7 +31,7 @@ import ContactUs from "./pages/contact/Contact";
 import StartPickingOrder from "./pages/orders/StartPickingOrder";
 import UserDetails from "./components/dashboard/userDashboard/UserDetails";
 import UserProfileEdit from "./components/dashboard/userDashboard/UserProfile";
-
+import NotFoundPage from "./components/notFound/NotFound";
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -223,6 +223,14 @@ function App() {
         />
 
         <Route
+          path="/dashboard/:menu"
+          element={<AdminPrivateRouter><Dashboard /></AdminPrivateRouter>}
+          errorElement={<ErrorPage />}
+        />
+
+        {/* <Route path="/:menu" element={<DashboardLayout />} /> */}
+
+        <Route
           path="/dashboard/user/:userPhone"
           element={<AdminPrivateRouter><UserDetails /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
@@ -231,6 +239,12 @@ function App() {
         <Route
           path="/edit/userProfile/:userPhone"
           element={<AdminPrivateRouter><UserProfileEdit /></AdminPrivateRouter>}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/*"
+          element={<NotFoundPage />}
           errorElement={<ErrorPage />}
         />
         

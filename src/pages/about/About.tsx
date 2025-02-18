@@ -32,14 +32,13 @@ const About = () => {
                 <div className="mt-12">
                     <h3 className="text-2xl font-semibold text-gray-800">Meet Our Team</h3>
                     <div className="mt-8 flex flex-wrap justify-center gap-8">
-                        <div className="w-48 h-48 rounded-full overflow-hidden bg-gray-200">
-                            <img src="/team/member1.jpg" alt="Team Member 1" className="w-full h-full object-cover" />
-                        </div>
-                        <div className="w-48 h-48 rounded-full overflow-hidden bg-gray-200">
-                            <img src="/team/member2.jpg" alt="Team Member 2" className="w-full h-full object-cover" />
-                        </div>
-                        <div className="w-48 h-48 rounded-full overflow-hidden bg-gray-200">
-                            <img src="/team/member3.jpg" alt="Team Member 3" className="w-full h-full object-cover" />
+                        <div className="flex flex-col items-center">
+                            <div className=" w-48 h-48 rounded-full overflow-hidden bg-gray-200">
+                                <img src="https://cricket-gear-images.s3.us-east-1.amazonaws.com/1739105429436-image.jpg"
+                                    alt="Team Member 1" className="w-full h-full object-cover" />
+                                
+                            </div>
+                            <p className="mt-2">Rabin Shah (CEO)</p>
                         </div>
                     </div>
                 </div>

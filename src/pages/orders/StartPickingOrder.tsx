@@ -5,11 +5,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getAOrder, updateAOrder } from "@/axios/order/order";
 import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrders.slice";
-import { Link } from "react-router-dom";
 import ScanOrderProduct from "./ScanOrderProduct";
 import { useQuery } from "@tanstack/react-query";
 import { IOrder } from "@/axios/order/types";
-import Loading from "@/components/ui/Loading";
 
 type ProductLocation = {
     A: number;
@@ -50,7 +48,7 @@ const StartPickingOrder = () => {
     const sortedItems = sortItems(order?.items || []);
     const currentItem = sortedItems[currentIndex];
 
-    const { data = initialState.order, isLoading, isFetching } = useQuery<IOrder>({
+    const { data = initialState.order } = useQuery<IOrder>({
         queryKey: ['order', orderNumber],
         queryFn: () => getAOrder(orderNumber as string)
     })
@@ -97,7 +95,7 @@ const StartPickingOrder = () => {
                 ({ productId: productId._id, price, quantity, note, supplied, _id }));
             await updateAOrder(order._id, { deliveryStatus: status, items })
             setPacking(false)
-            return navignate("/all-orders")
+            return navignate(-1)
         }
         setPacking(false)
         return;
@@ -133,17 +131,17 @@ const StartPickingOrder = () => {
 
     return (
         <>
-            {isFetching || isLoading ? <Loading /> : <div className="w-full h-screen max-w-md mx-auto flex flex-col">
+            {<div className="w-full h-screen max-w-md mx-auto flex flex-col">
                 <Card className="flex flex-col flex-1 p-4 border rounded-lg shadow-lg bg-white">
 
                     <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
 
                     <div>
-                        <Link to={"/all-orders"} className="bg-primary text-white p-2 rounded-md ms-2"
+                        <Button className="bg-primary text-white p-2 rounded-md ms-2"
                             onClick={() => updateDeliveryStatus("Picking")}
                         >
                             {"<"} BACK
-                        </Link>
+                        </Button>
                         <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
                     </div>
 

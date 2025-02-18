@@ -18,7 +18,7 @@ const OrdersList = () => {
         setDate(newDate);
     };
 
-    const { data = []} = useQuery<IOrder[]>({
+    const { data = [] } = useQuery<IOrder[]>({
         queryKey: ['orders', date?.toISOString().split("T")[0]],
         queryFn: () => getAOrdersByDate(date?.toISOString().split("T")[0])
     })
@@ -26,7 +26,7 @@ const OrdersList = () => {
     useEffect(() => {
         if (data?.length && JSON.stringify(data) !== JSON.stringify(orders)) {
             dispatch(setOrders(data as IOrder[]));
-        } else if (data.length < 1){
+        } else if (data.length < 1) {
             dispatch(setOrders(initialState.orders));
         }
     }, [dispatch, data, orders]);
@@ -67,7 +67,7 @@ const OrdersList = () => {
             {orders?.length ? (
                 <div className="bg-white shadow-md rounded-lg overflow-hidden">
                     {/* Responsive Table Wrapper */}
-                    { <div className="w-full overflow-x-auto">
+                    {<div className="w-full overflow-x-auto">
                         <table className="w-full border-collapse min-w-[600px]">
                             <thead>
                                 <tr className="bg-gray-200 text-sm md:text-base">
@@ -78,6 +78,7 @@ const OrdersList = () => {
                                     <th className="p-2 text-left whitespace-nowrap">Payment</th>
                                     <th className="p-2 text-left whitespace-nowrap">Ordered Date</th>
                                     <th className="p-2 text-left whitespace-nowrap">Pickup Date</th>
+                                    <th className="p-2 text-left whitespace-nowrap">Supplied_All</th>
                                     <th className="p-2 text-left whitespace-nowrap">Articles</th>
                                 </tr>
                             </thead>
@@ -100,7 +101,14 @@ const OrdersList = () => {
                                         <td className="p-2 whitespace-nowrap">{order?.paymentStatus}</td>
                                         <td className="p-2 whitespace-nowrap">{order?.createdAt?.toLocaleString().split("T")[0]}</td>
                                         <td className="p-2 whitespace-nowrap">{order?.requestDeliveryDate}</td>
-                                        <td className="p-2 whitespace-nowrap text-end">{order?.items?.length}</td>
+                                        <td className="p-2 whitespace-nowrap text-center">{order?.items?.reduce((acc, { supplied }) => {
+                                            return acc + (supplied as number)
+                                        }, 0) === order?.items?.reduce((acc, { quantity }) => {
+                                            return acc + (quantity as number)
+                                        }, 0) ? "Yes" : "NO"}</td>
+
+                                        <td className="p-2 whitespace-nowrap text-end">
+                                            {order?.items?.length} |</td>
                                     </tr>
                                 ))}
                             </tbody>
