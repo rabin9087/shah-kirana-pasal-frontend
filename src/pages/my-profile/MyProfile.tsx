@@ -13,11 +13,11 @@ const MyProfile = () => {
     const { user } = useAppSelector((state) => state.userInfo);
     const [loading, setLoading] = useState(false)
     const dispatch = useAppDispatch()
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     // const location = useLocation();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -111,8 +111,8 @@ const MyProfile = () => {
                             <span className="text-gray-500">{user?.status}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="font-medium text-gray-700">Address:</span>
-                            <span className="text-gray-500">
+                            <span className="font-medium text-gray-700">Address: </span>
+                            <span className="text-gray-500 text-end">
                                 {user?.address || "No address provided"}
                             </span>
                         </div>

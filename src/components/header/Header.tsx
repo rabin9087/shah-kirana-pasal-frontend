@@ -42,9 +42,10 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((s) => s.sidebar);
   const [results, setResults] = useState<IResults[] | []>([]);
+ 
 
   return (
-    <div className="p-4 shadow-sm sticky top-0 rounded-md z-10 justify-center bg-primary">
+    <div className="p-4 shadow-sm sticky top-0 rounded-md z-10 flex flex-col justify-center mx-auto w-full bg-primary">
       <div className="flex justify-between">
         {/* Header Content */}
         <div className="flex w-full gap-2 justify-start items-center text-md font-bold leading-none">
@@ -95,7 +96,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
       </div>
 
       {/* Search Bar and Results */}
-      <div className="relative flex justify-center items-center w-full mt-2">
+      <div className="relative flex flex-col justify-center items-center w-full mx-auto mt-2">
         <SearchBar
           data={data}
           types={types}
@@ -104,10 +105,9 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
           setResults={setResults}
         />
         {results.length > 0 && (
-          <div className="flex justify-center">
-          <div className="absolute mx-auto top-full md:w-[750px] lg:w-[750px] left-0 w-full shadow-md rounded-md bg-white max-h-96 overflow-y-auto">
-              <ResultsComponent results={results} />
-              </div>
+ 
+          <div  className="absolute rounded-tl-md mx-auto top-full left-0 w-full">
+            <ResultsComponent results={results} setResults={setResults} />
           </div>
         )}
       </div>

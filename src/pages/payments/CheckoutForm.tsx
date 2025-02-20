@@ -9,6 +9,7 @@ import DeliveryDateSelector from './DeliveryDate';
 import { resetCart } from '@/redux/addToCart.slice';
 import { updateCartHistoryInUserAxios, updateCartInUserAxios } from '@/action/user.action';
 import { useNavigate } from 'react-router';
+import { FaRegEdit } from "react-icons/fa";
 
 const CheckoutForm = () => {
     const { user } = useAppSelector((state) => state.userInfo);
@@ -108,9 +109,6 @@ const CheckoutForm = () => {
             setIsAddressComplete(false)
             throw new Error("Delivery date is required.");
         }
-        // const return_url = import.meta.env.PROD
-        //     ? import.meta.env.VITE_SUCCESS_URL + "/payment/success"
-        //     : "http://localhost:5173/payment/success";
 
         try {
             setIspending(true)
@@ -133,11 +131,15 @@ const CheckoutForm = () => {
                     // site first to authorize the payment, then redirected to the `return_url`.
 
                     const { line1, line2, city, postal_code, state, country, phone, name } = contactInfo.shipping
+                    // if (!line1 || !line2 || !city || !state || ! country || !postal_code) {
+                        
+                    // }
                     const full_address = `${line2 !== "" ? "UNIT " + line2 + " " : ""} ${line1}, ${city}, ${state}, ${postal_code}, ${country}`
+
                     const customer_details = {
                         name: name,
                         phone: phone,
-                        address: full_address,
+                        address:full_address,
                         email: contactInfo.email,
                         items: orderItems as any,
                         deliveryStatus: "Not Yet Delivered",
@@ -255,8 +257,14 @@ const CheckoutForm = () => {
                                 <LinkAuthenticationElement
                                     onChange={(event) => handleEmailChange(event?.value?.email)} />
                                 {/* If collecting shipping */}
-                                {orderType === "pickup" && <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-                                    <h2 className="text-xl font-semibold text-gray-800 mb-4">User Details</h2>
+                                {orderType === "pickup" &&
+                                    
+                                    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+                                    <div className='flex justify-between'>
+                                        <h2 className="text-xl font-semibold text-gray-800 mb-4">User Details</h2>
+                                        <Button type='button'><FaRegEdit size={20}/></Button>
+                                        </div>
+                                    
                                     <div className="space-y-2">
                                         <p><span className="font-medium">First Name:</span> {user.fName || "N/A"}</p>
                                         <p><span className="font-medium">Last Name:</span> {user.lName || "N/A"}</p>

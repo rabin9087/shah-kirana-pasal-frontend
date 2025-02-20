@@ -1,7 +1,7 @@
 import { searchItem } from "@/axios/search/search";
 import { useAppSelector } from "@/hooks";
 import { IProductTypes } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 interface ISearchProps {
@@ -21,6 +21,7 @@ type IResults = {
 
 const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placeholder, setResults }) => {
   const { products } = useAppSelector(state => state.productInfo)
+  const inputRef = useRef<HTMLInputElement>(null);
 
 
   const handelOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +51,14 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
     }
   }
 
+  const handleClearInput = () => {
+    setDebouncedValue("");
+    setResults([]);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
   const [debouncedValue, setDebouncedValue] = useState("");
   // const [results, setResults] = useState<IResults[] | []>([]);
 
@@ -78,11 +87,16 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
   return (
     <div className="relative inline-flex w-full lg:w-fit items-center justify-start">
       <input type="text"
+        ref={inputRef}
         className="w-full md:w-[750px] lg:w-[750px] border-2 rounded-md border-primary ps-4 py-1 text-primary bg-secondary inline-flex hover:cursor-pointer"
         placeholder={placeholder ? placeholder : "Search ..."}
         onChange={handelOnChange}
       />
-      {/* <Search className="absolute right-4 md:right-6" /> */}
+      <div className="text-center absolute right-4 md:right-4 size-6 cursor-pointer hover:bg-gray-300" onClick={handleClearInput} >
+        <span >X</span>
+
+      </div>
+   
     </div>
   )
 }
@@ -106,21 +120,34 @@ export const useDebounce = (value: any, delay: number) => {
   return debouncedValue;
 };
 
-export const ResultsComponent = ({ results }: { results: IResults[] | [] }) => {
+export const ResultsComponent = ({ results, setResults }: { results: IResults[] | [], setResults: (result: [])  => void}) => {
   const { categories } = useAppSelector((s) => s.categoryInfo);
 
   const getCategoryName = (parentCategoryID: string): string | undefined => {
     const category = categories.find((cat) => cat._id === parentCategoryID);
     return category?.slug; // Return the name if found, otherwise undefined
   };
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (resultsRef.current && !resultsRef.current.contains(event.target as Node)) {
+        setResults([]); // Close results
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="w-full">
+    <div ref={resultsRef} className=" relative w-full md:w-[750px] lg:w-[750px] mx-auto overflow-y-auto max-h-64 md:max-h-96">
       {results?.length > 0 &&
         results?.map((item) => (
           <div
             key={item?._id}
-            className="p-2 last:border-none shadow-sm flex justify-between hover:shadow-md hover:rounded-md hover:bg-gray-100"
+            className="bg-white p-2 ps-4 last:border-none  shadow-sm flex justify-between hover:shadow-md hover:bg-gray-100"
           >
             <Link
               to={`/products/search?searchTerm=${getCategoryName(item.parentCategoryID)}`}

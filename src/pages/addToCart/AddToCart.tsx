@@ -7,29 +7,39 @@ import { Link } from "react-router-dom"
 const AddToCart = () => {
     const { cart } = useAppSelector(s => s.addToCartInfo)
 
-    const toatl = cart.reduce((acc, { orderQuantity, price }) => {
-        return acc + orderQuantity * price
+    const actualToatl = cart.reduce((acc, { orderQuantity, price }) => {
+        return acc + orderQuantity * (price)
+    }, 0)
+    const toatl = cart.reduce((acc, { orderQuantity, price, salesPrice }) => {
+        return acc + orderQuantity * (salesPrice > 0 ? salesPrice : price)
     }, 0)
 
     return (
         // <Layout title="Cart">
-        <div className="p-2 shadow-md w-fit overflow-auto mt-2">
+        <div className="p-2 shadow-md w-full overflow-auto mt-2">
             {cart.length ?
-                <div className="w-[300px] md:w-[250px] flex flex-col justify-end items-end  ">
+                <div className="w-full md:w-[400px] flex flex-col justify-center items-center mx-auto">
                     <hr className="w-full" />
-                    
+
                     {cart.map((product) =>
                         <CartCard key={product._id} item={product} />)}
                 </div> : <EmptyCart />}
 
-            <div className="w-full md:w-[250px] p-2 flex flex-col justify-end items-end  border-t-2">
+            <div className="w-full md:w-[400px] p-2 flex flex-col justify-between  border-t-2 mx-auto ">
                 {cart.length &&
-                    <div className="w-full md:w-[250px] flex justify-between  font-bold py-4 px-2">
-                        <span>Subtotal</span>
-                        <span className="">${toatl.toFixed(2)}</span>
+                    <div className="flex flex-col">
+                        <div className="flex justify-between w-full md:w-[400px] text-xl font-bold pt-4 px-2 ">
+                            <span className="text-gray-600">Subtotal </span>
+                            <span> ${toatl.toFixed(2)}</span>
+                                
+                        </div>
+                        {(actualToatl - toatl) > 0 && <div className="w-full text-sm md:w-[400px] flex justify-end p-2 font-bold px-2">
+                            <span className="w-fit bg-yellow-400 rounded-md px-2 py-1 text-end"> SAVING ${(actualToatl - toatl).toFixed(2)}</span>
+                        </div>}
+                    </div>
 
-                    </div>}
-                {cart.length && <div className="w-full md:w-[250px] py-2 flex justify-center">
+                }
+                {cart.length && <div className="w-full md:w-[400px]  py-2 flex justify-center">
                     <Link to={"/payment"}>
                         <Button className="w-full md:w-[250px]">Checkout</Button>
                     </Link>

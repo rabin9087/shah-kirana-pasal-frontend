@@ -134,20 +134,26 @@ const UpdateProduct = () => {
 
 
     const onSubmit = async (data: UpdateProductSchema) => {
-        console.log(data);
         const formData = new FormData();
         formData.append("_id", product._id as string);
 
-        if (images && images.length > 0) {
-            const oldImages = images.filter((image) => image.includes("https://"));
+        // Check and append only modified fields
+        Object.keys(data).forEach((key) => {
+            const typedKey = key as keyof UpdateProductSchema;
+            if (data[typedKey] && data[typedKey] !== product[typedKey]) {
+                formData.append(key, data[typedKey] as string);
+            }
+        });
 
-            oldImages.forEach((image) => {
-                formData.append("images[]", image); // Ensure it's treated as an array
-            });
+        if (newImages.length > 0) {
+            newImages.forEach((image) => formData.append("newImages[]", image));
+        }
+
+        if (imagesToDelete.length > 0) {
+            imagesToDelete.forEach((image) => formData.append("imagesToDelete[]", image));
         }
 
         mutation.mutate(formData);
-        return reset();
     };
 
     useEffect(() => {
@@ -161,33 +167,6 @@ const UpdateProduct = () => {
             dispatch(setAProduct(data))
         }
     }, [dispatch, data._id])
-
-    // useEffect(() => {
-    //     if (data && data._id) {
-    //         reset({
-    //             name: data.name || "",
-    //             alternateName: data.alternateName || "",
-    //             sku: data.sku || "",
-    //             qrCodeNumber: data.qrCodeNumber || "",
-    //             price: data.price || "",
-    //             quantity: data.quantity || "",
-    //             productLocation: data.productLocation || "",
-    //             storedAt: data.storedAt || "",
-    //             productWeight: data.productWeight || "",
-    //             salesPrice: data.salesPrice || "",
-    //             salesStartDate: data.salesStartDate || "",
-    //             salesEndDate: data.salesEndDate || "",
-    //             thumbnail: data.thumbnail || "",
-    //             images: data.images || [],
-    //         });
-
-    //         if (data.thumbnail) setThumbnail(data.thumbnail);
-    //         if (data.images) setImages(data.images);
-    //         dispatch(setAProduct(data));
-    //     }
-    // }, [data, reset, dispatch]);
-
-
 
     useEffect(() => {
         if (image !== "") {

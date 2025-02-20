@@ -379,8 +379,6 @@ const CreateProduct = () => {
                           ><Label htmlFor={name}>Generate {generate} </Label>
                           </Button>}
                       </div>
-
-
                     </div>
 
                     <div className={`mt-2 flex `}>

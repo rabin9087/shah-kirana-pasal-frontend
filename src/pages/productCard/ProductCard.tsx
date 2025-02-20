@@ -34,8 +34,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
         <img
           src={item.thumbnail}
           alt={item.name}
-            className="p-4 w-full h-48 object-cover transition-transform duration-300 ease-in-out"
-            // w-full h-32 max-h-[300px] md:max-h-[400px] lg:max-h-[500px] object-cover transition-transform duration-300 ease-in-out group-hover:scale-105
+          className="p-4 w-full h-48 object-cover transition-transform duration-300 ease-in-out"
           loading="lazy"
         />
       </Link>
@@ -54,7 +53,9 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
         )}
       </CardHeader>
 
-      {/* Pricing Information */}
+        {/* Pricing Information */}
+
+        <div className="">
       <CardContent className="px-4 pb-4">
         {item.salesPrice ? (
           <div className="flex items-baseline space-x-2">
@@ -78,13 +79,14 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
       </CardContent>
 
       {/* Action Buttons */}
-      <CardFooter className="p-4 pt-0 flex items-center justify-between">
+        <CardFooter className="p-4 pt-0 flex items-center justify-between">
         {itemExist(item._id, cart).length ? (
           <ChangeItemQty item={{ ...item, orderQuantity: orderQty || 0 }} />
         ) : (
           <AddToCartButton item={{ ...item, orderQuantity: orderQty || 0 }} />
         )}
-      </CardFooter>
+        </CardFooter>
+        </div>
     </Card>
     </>
     

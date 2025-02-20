@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllCategories } from "@/axios/category/category";
 import { useEffect } from "react";
 import { setCategory } from "@/redux/category.slice";
+import HeaderNav from "../header/HeaderNav";
 // import { setProducts } from "@/redux/product.slice";
 
 interface LayoutProps {
@@ -36,13 +37,13 @@ const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData, 
   return (
     <div className={`flex flex-col border-2 bg-background ${open ? "h-screen overflow-hidden " : "min-h-screen"}`}>
       <Header data={data} types={types} setData={setData} />
+      <HeaderNav/>
       <main className="relative w-full gap-2 border-2 mb-2">
         <SideBar />
         <div>
           <div className={`flex justify-center p-2 font-bold underline text-2xl ${addClass}`}>{title}</div>
           {children}
         </div>
-
       </main>
       <Footer />
     </div>

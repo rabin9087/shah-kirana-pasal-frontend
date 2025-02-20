@@ -68,10 +68,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                             <td className="font-semibold p-1">Name:</td>
                             <td className="p-1">{order?.name}</td>
                         </tr>
-                        <tr>
+                        {order.address !== "" && <tr>
                             <td className="font-semibold p-1">Address:</td>
                             <td className="p-1">{order?.address}</td>
-                        </tr>
+                        </tr>}
                         <tr>
                             <td className="font-semibold p-1">Phone:</td>
                             <td className="p-1">{order?.phone}</td>

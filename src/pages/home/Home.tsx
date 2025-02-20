@@ -62,9 +62,8 @@ function Home(): JSX.Element {
   }
 
   return (
-    <Layout types="products" title="All Products">
-
-      <div className="border-2 shadow-md">
+    <Layout types="products" title="">
+      <div className=" shadow-md mt-6 md:mt-24">
         <h1 className="text-center md:text-start font-normal py-2 ps-4">Sales Products</h1>
         <div className="mx-auto flex gap-4 items-center overflow-x-auto py-4 px-2 w-full">
           {productsOnSale.map((product: IProductTypes) => (
@@ -73,7 +72,7 @@ function Home(): JSX.Element {
         </div>
       </div>
 
-      <div className="border-2 shadow-md my-32">
+      <div className="border-2 shadow-md my-16">
         <h1 className="text-center md:text-start font-normal py-2 ps-4">Electronics Items</h1>
         <div className="mx-auto flex gap-4 items-center overflow-x-auto py-4 px-2 w-full">
           {electronicsNotOnSale.map((product: IProductTypes) => (
@@ -94,16 +93,16 @@ function Home(): JSX.Element {
         </div>
       </div>
 
-      <div className="border-2 shadow-md mt-28">
-      <h1 className="text-center md:text-start font-normal py-2 ps-4">More Products</h1>
-      <div className="grid justify-center gap-1 py-4 grid-cols-2 sm:grid-col-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {productsNotOnSale.map((product: IProductTypes) => (
-          <ProductCard key={product._id} item={product} />
-        ))}
+      <div className="border-2 shadow-md mt-20">
+        <h1 className="text-center md:text-start font-normal py-2 ps-4">More Products</h1>
+        <div className="grid justify-center gap-1 py-4 grid-cols-2 sm:grid-col-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {productsNotOnSale.map((product: IProductTypes) => (
+            <ProductCard key={product._id} item={product} />
+          ))}
         </div>
       </div>
 
-      <div className="border-2 shadow-md mt-32">
+      <div className="border-2 shadow-md mt-20">
         <h1 className="text-center md:text-start font-normal py-2 ps-4">Half Price specials</h1>
         <div className="grid justify-center gap-1 py-4 grid-cols-2 sm:grid-col-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {halfPriceSpecials.map((product: IProductTypes) => (

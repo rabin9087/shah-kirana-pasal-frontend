@@ -23,6 +23,9 @@ const ProductCardByCategory: React.FC = () => {
     const searchTerm = searchParams.get('searchTerm') || ''
     const { products } = useAppSelector(state => state.productInfo)
     // const [data, setData] = useState<IProductTypes[]>(products)
+
+    const saleOnProducts = products.filter((item) => item.salesPrice > 0)
+    const NotsaleOnProducts = products.filter((item) => !item.salesPrice)
     
     const { data = [] as IProductTypes[], error } = useQuery<IProductTypes[]>({
         queryKey: ["categories", slug, searchTerm],
@@ -45,13 +48,22 @@ const ProductCardByCategory: React.FC = () => {
 
     if (error) return <Error />
 
-    return (<Layout title={`All ${slug || searchTerm} products`} types="category">
+    return (<Layout title={`${(slug || searchTerm).toUpperCase()} PRODUCTS`} types="category">
         {data.length < 1 ? <ProductNotFound /> :
-            <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {products.map((product: IProductTypes) =>
+            
+            <>
+            <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-20">
+                    {saleOnProducts.map((product: IProductTypes) =>
                     <ProductCard key={product._id} item={product} />
                 )}
-            </div>}
+            </div>
+                <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    {NotsaleOnProducts.map((product: IProductTypes) =>
+                    <ProductCard key={product._id} item={product} />
+                )}
+            </div>
+            </>
+        }
     </Layout>
     );
 };

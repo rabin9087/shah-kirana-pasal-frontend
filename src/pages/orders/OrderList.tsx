@@ -107,8 +107,8 @@ const OrdersList = () => {
                                             return acc + (quantity as number)
                                         }, 0) ? "Yes" : "NO"}</td>
 
-                                        <td className="p-2 whitespace-nowrap text-end">
-                                            {order?.items?.length} |</td>
+                                        <td className="p-2 whitespace-nowrap text-center">
+                                            {order?.items?.length}</td>
                                     </tr>
                                 ))}
                             </tbody>

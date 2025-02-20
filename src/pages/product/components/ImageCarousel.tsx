@@ -1,34 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 
 interface ImageCarouselProps {
-    images?: { url: string; alt: string }[] | undefined;
-    thumbnail?: string
+    images?: { url: string; alt: string }[];
+    thumbnail?: string;
+    selectedImage?: string | null;
 }
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = [], thumbnail }) => {
-
-    // if (images.length === 0 || images.map(({url}) => (url === ""))) {
-    //     return <div>No images to display</div>;
-    // }
-
+const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = [], thumbnail, selectedImage }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+        const newIndex = images.findIndex((image) => image.url === selectedImage);
+        if (newIndex !== -1) {
+            setCurrentIndex(newIndex);
+        }
+    }, [selectedImage, images]);
 
     const handleNext = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     };
 
     const handlePrev = () => {
-        setCurrentIndex((prevIndex) =>
-            prevIndex === 0 ? images.length - 1 : prevIndex - 1
-        );
+        setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
     };
 
     const handlers = useSwipeable({
         onSwipedLeft: handleNext,
         onSwipedRight: handlePrev,
         preventScrollOnSwipe: true,
-        trackMouse: true, // Allow swiping with mouse
+        trackMouse: true,
     });
 
     return (
@@ -47,32 +48,21 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = [], thumbnail })
                     &#8594;
                 </button>
             </div>
-            {(images.length !== 0 && images.map(({ url }) => (url !== ""))) && <div className="flex justify-center">
+            <div className="flex justify-center">
                 <img
-                    src={images[currentIndex]?.url}
+                    src={images[currentIndex]?.url || thumbnail}
                     alt={images[currentIndex]?.alt}
                     className="w-full h-auto rounded-md shadow-md"
                 />
-            </div>}
-            {(images.length !== 0 || images.map(({ url }) => (url !== ""))) && <div className="flex justify-center">
-                {
-                    images.map((_, index) => (
-                        <div
-                            key={index}
-                            className={`h-2 w-2 mx-1 rounded-full my-2 ${currentIndex === index ? "bg-blue-500" : "bg-gray-300"
-                                }`}
-                        ></div>
-                    ))
-                }
-            </div>}
-            {(images.length === 0 || images.length === 1 && images.map(({ url }) => (url === "")) && thumbnail !== "") && <div>
-                { <img
-                    src={thumbnail}
-                    alt={thumbnail}
-                    className="w-full h-auto rounded-md shadow-md"
-                />
-                }
-            </div>}
+            </div>
+            <div className="flex justify-center mt-2">
+                {images.map((_, index) => (
+                    <div
+                        key={index}
+                        className={`h-2 w-2 mx-1 rounded-full ${currentIndex === index ? "bg-blue-500" : "bg-gray-300"}`}
+                    />
+                ))}
+            </div>
         </div>
     );
 };

@@ -34,7 +34,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
     };
 
     return (
-        <Card className="w-full md:w-[250px] rounded-none mb-1">
+        <Card className="w-full md:w-[400px] rounded-none mb-1">
             <div className="flex justify-end">
                 <Button className="w-fit flex justify-end border-none hover:bg-gray-300" variant={"outline"} onClick={(handleOnResetCart)}><RxCross1 className="w-fit rounded-full border-2" size={20} /></Button>
             </div>
@@ -53,9 +53,9 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                 </Link></CardTitle>
             </div>
             <div className="flex items-center justify-between w-full px-2">
-                <div className="flex-col w-full justify-between  items-center">
+                <div className="flex-col w-2/3 justify-between  items-center">
                     {(cart.find((cart) => item._id === cart._id)?.orderQuantity || 0) >= item.quantity && (
-                        <span className="block text-sm text-red-500 h-[25px] px-2">
+                        <span className="block text-sm h-[25px] px-2">
                             {item.quantity} item(s) left
                         </span>
                     )
@@ -69,8 +69,9 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                             <ChangeItemQty item={{ ...item, orderQuantity: orderQty || 0 }} />}
                     </div>
                 </div>
-                <div className="text-xl text-end items-center my-auto">
-                    ${(item.price * item.orderQuantity).toFixed(2)}
+                <div className="text-xl w-fit text-start items-center my-auto">
+                    <p> ${((item.salesPrice > 0 ? item.salesPrice : item.price) * item.orderQuantity).toFixed(2)} </p>
+                    {item.salesPrice > 0 && <p className="text-sm text-end  text-gray-500">was ${(item.price * item.orderQuantity).toFixed(2)}</p>}
                 </div>
 
             </div>

@@ -62,7 +62,7 @@ const Cart: React.FC = () => {
         {/* </Button> */}
         {cartQuantity > 0 && <span className="text-white text-sm md:text-md bg-red-500 rounded-full px-3 py-1 top-[-0.8rem] absolute right-[-0.9rem]">{cartQuantity} </span>}
       </DrawerTrigger>
-      <DrawerContent className="top-10 flex items-center w-full md:w-[283px]">
+      <DrawerContent className="top-10 flex items-center w-full md:w-[500px]">
         <DrawerHeader>
           <DrawerTitle>Cart</DrawerTitle>
           <DrawerDescription></DrawerDescription>
