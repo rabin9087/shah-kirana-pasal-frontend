@@ -32,6 +32,9 @@ import StartPickingOrder from "./pages/orders/StartPickingOrder";
 import UserDetails from "./components/dashboard/userDashboard/UserDetails";
 import UserProfileEdit from "./components/dashboard/userDashboard/UserProfile";
 import NotFoundPage from "./components/notFound/NotFound";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
 // Set the app element
 Modal.setAppElement('#root');
 
@@ -247,9 +250,20 @@ function App() {
           element={<NotFoundPage />}
           errorElement={<ErrorPage />}
         />
-        
+      
       </Routes>
       <Loader />
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light" />
     </>
   );
 }

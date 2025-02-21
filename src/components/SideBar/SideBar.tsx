@@ -49,7 +49,7 @@ const SideBar = () => {
           </div>
 
           {/* Category List */}
-          <ul className="mt-4 px-4 mb-8 space-y-2 overflow-y-auto max-h-[calc(100vh-8rem)] pb-8">
+          <ul className="mt-4 px-4 space-y-2 overflow-y-auto max-h-[600px] sm:max-h-[500px] pb-8 mb-8">
             {categories.map(({ _id, name, slug }) => (
               <Link
                 to={`/category/${slug}`}

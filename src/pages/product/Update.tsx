@@ -18,6 +18,7 @@ import { setAProduct } from '@/redux/product.slice';
 import Error from '@/components/ui/Error';
 import { RxCross1 } from "react-icons/rx";
 import ProductNotFound from './components/ProductNotFound';
+import { toast } from 'react-toastify';
 
 const UpdateProduct = () => {
     const [image, setImage] = useState<string | null>("");
@@ -113,7 +114,8 @@ const UpdateProduct = () => {
             if (response.message === "Product Not Found!") {
                 // setIsModalOpen(true);
             } else {
-                console.log("success");
+                toast.success("Product updated successfully");
+                dispatch(setAProduct(data))
                 reset();  // Reset form values
                 setImage(null);
                 setImages([]);

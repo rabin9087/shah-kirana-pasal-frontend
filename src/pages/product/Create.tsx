@@ -15,9 +15,9 @@ import { createProduct } from '@/axios/product/product';
 import { getAllCategories } from '@/axios/category/category';
 import { ICategoryTypes } from '@/types';
 import { setCategory } from '@/redux/category.slice';
-import { toast } from '@/components/ui/use-toast';
 import { RxCross1 } from "react-icons/rx";
 import { base64ToFile } from '@/utils/convertToBase64';
+import { toast } from 'react-toastify';
 
 const CreateProduct = () => {
   const [sku, setSku] = useState<string>('');
@@ -46,18 +46,14 @@ const CreateProduct = () => {
     mutationFn: (data: FormData) =>
       createProduct(data),
     onError: (error) => {
-      toast({
-        title: "Error Creating Product!",
-        description: error.message
-      })
-      console.log(error.message)
+      toast.success(error.message)
+      // toast({
+      //   title: "Error Creating Product!",
+      //   description: error.message
+      // })
     },
     onSuccess: (message) => {
-      toast({
-        title: "Succussfully Product Created!",
-        description: message
-      })
-      // navigate("/")
+      toast.success(message)
 
     }
   })

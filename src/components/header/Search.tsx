@@ -92,10 +92,9 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
         placeholder={placeholder ? placeholder : "Search ..."}
         onChange={handelOnChange}
       />
-      <div className="text-center absolute right-4 md:right-4 size-6 cursor-pointer hover:bg-gray-300" onClick={handleClearInput} >
+     {debouncedValue &&  <div className="text-center absolute right-4 md:right-4 size-6 cursor-pointer hover:bg-gray-300" onClick={handleClearInput} >
         <span >X</span>
-
-      </div>
+      </div>}
    
     </div>
   )
