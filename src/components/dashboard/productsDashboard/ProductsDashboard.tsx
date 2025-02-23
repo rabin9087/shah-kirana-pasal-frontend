@@ -123,7 +123,7 @@ const ProductsDashboard = () => {
                         {products.map(({ _id, status, name, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail }, i) => (
                             <TableRow key={_id}>
                                 <TableCell className="font-medium">{i + 1}.</TableCell>
-                                <TableCell className="font-medium"><img src={thumbnail} width={"100px"} height={"100px"} /></TableCell>
+                                <TableCell className="font-medium"><img src={thumbnail} width={"30px"} height={"30px"} /></TableCell>
                                 <TableCell className={status === 'ACTIVE' ? "text-green-500" : "text-red-500"}>
                                     <React.Fragment>
                                         <div className="flex justify-start items-center gap-2 text-sm">
@@ -142,7 +142,7 @@ const ProductsDashboard = () => {
 
                                     </React.Fragment>
                                 </TableCell>
-                                <TableCell>{name}</TableCell>
+                                <TableCell className="whitespace-nowrap">{name}</TableCell>
                                 <TableCell className=""><div>
                                     ${price}
                                 </div>{salesPrice && <span className="flex text-yellow-500 min-w-fit"> Sale:$ {salesPrice}</span>}</TableCell>

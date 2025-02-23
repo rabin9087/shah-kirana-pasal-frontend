@@ -47,14 +47,9 @@ const CreateProduct = () => {
       createProduct(data),
     onError: (error) => {
       toast.success(error.message)
-      // toast({
-      //   title: "Error Creating Product!",
-      //   description: error.message
-      // })
     },
     onSuccess: (message) => {
       toast.success(message)
-
     }
   })
 
@@ -138,14 +133,17 @@ const CreateProduct = () => {
     }
 
     mutation.mutate(formData, {
-      onSuccess: () => {
-        reset(); // Reset the form only if mutation is successful
-        setImages([]);
-        setThumbnail([]);
-        setImage(null);
-        setSku('');
-        setBarcode('');
-        setIsBarcode(false);
+      onSuccess: (message) => {
+        if (message === "success") {
+          reset(); // Reset the form only if mutation is successful
+          setImages([]);
+          setThumbnail([]);
+          setImage(null);
+          setSku('');
+          setBarcode('');
+          setIsBarcode(false);
+        }
+        return
       }
     });
   };
@@ -275,8 +273,8 @@ const CreateProduct = () => {
               <Input type='file' className='hidden' {...register('images')}
                 id='file'
                 onChange={handleOnImageChange}
-                
                 multiple
+                accept="image/*"
               />
 
               <Button type='button' size={'icon'} variant={'default'}>

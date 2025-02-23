@@ -36,7 +36,9 @@ function Home(): JSX.Element {
     enabled: !!electronicsId, // Prevents query from running if `electronicsId` is undefined
   });
 
+
   const productsOnSale = products?.filter((item) => item.salesPrice > 0);
+  const allProductsNotOnSale = products?.filter((item) => !item.salesPrice);
   const productsNotOnSale = products?.filter((item) => !item.salesPrice && item.status === "ACTIVE" && item.parentCategoryID !== electronicsId?._id).slice(0, 10);
   const chocolates = products?.filter((item) => !item.salesPrice && item.status === "ACTIVE" && item.parentCategoryID === chocolatesId?._id).slice(0, 10);
   // const chocolates = products?.filter((item) => !item.salesPrice && item.status === "ACTIVE" && item.parentCategoryID !== chocolates?._id).slice(0, 10);
@@ -97,6 +99,15 @@ function Home(): JSX.Element {
         <h1 className="text-center md:text-start font-normal py-2 ps-4">More Products</h1>
         <div className="grid justify-center gap-1 py-4 grid-cols-2 sm:grid-col-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {productsNotOnSale.map((product: IProductTypes) => (
+            <ProductCard key={product._id} item={product} />
+          ))}
+        </div>
+      </div>
+
+      <div className="border-2 shadow-md mt-20">
+        <h1 className="text-center md:text-start font-normal py-2 ps-4">All Products</h1>
+        <div className="grid justify-center gap-1 py-4 grid-cols-2 sm:grid-col-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {allProductsNotOnSale.map((product: IProductTypes) => (
             <ProductCard key={product._id} item={product} />
           ))}
         </div>

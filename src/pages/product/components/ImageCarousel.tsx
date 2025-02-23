@@ -52,7 +52,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = [], thumbnail, s
                 <img
                     src={images[currentIndex]?.url || thumbnail}
                     alt={images[currentIndex]?.alt}
-                    className="w-full h-auto rounded-md shadow-md"
+                    className="w-80 h-auto md:h-96  rounded-md shadow-md"
                 />
             </div>
             <div className="flex justify-center mt-2">

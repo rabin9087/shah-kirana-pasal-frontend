@@ -47,7 +47,7 @@ export const updateProductSchema = z.object({
  description: z.string().optional(),
  images: z.string().array().optional()
 //  addImages: z.any().refine(file => file.length > 0).optional(),
-});
+}).partial();
 
 export type UpdateProductSchema = z.infer<typeof updateProductSchema>;
 
