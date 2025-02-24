@@ -10,6 +10,7 @@ const ScanProduct = () => {
 
     const [barcode, setBarcode] = useState<string>('');
     const [search, setSearch] = useState<string>('');
+    const [sku, setSKU] = useState<string>('');
     const navigate = useNavigate()
 
     const handelOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,7 +20,12 @@ const ScanProduct = () => {
 
     const handelOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        return navigate(`/product/update/${search}`)
+        if (search !== "") {
+            return navigate(`/product/update/${search}`)
+        }
+        if (sku !== "") {
+            return navigate(`/search/product/sku_value/${sku}`)
+        }
     }
 
     useEffect(() => {
@@ -53,6 +59,22 @@ const ScanProduct = () => {
                     <form onSubmit={handelOnSubmit}>
                         <div className='flex justify-center items-center gap-2'>
                             <Input onChange={handelOnChange} />
+                            <Button type="submit" >Search</Button>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div className='flex justify-start items-center gap-4 mt-2 mb-6 ps-2'>
+                    <Label
+                        htmlFor="image"
+                        className="block  text-md font-medium leading-6 text-gray-900"
+                    >
+                        Enter Product SKU Value
+                    </Label>
+                    <form onSubmit={handelOnSubmit}>
+                        <div className='flex justify-center items-center gap-2'>
+                            <Input onChange={(e) => setSKU(e.target.value)} />
                             <Button type="submit" >Search</Button>
                         </div>
                     </form>

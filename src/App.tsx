@@ -34,6 +34,8 @@ import UserProfileEdit from "./components/dashboard/userDashboard/UserProfile";
 import NotFoundPage from "./components/notFound/NotFound";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import ShowProductDetails from "./pages/product/components/showProduct/ShowProductDetails";
+import UpdateProductForm from "./pages/product/components/showProduct/UpdateProductDetails";
 
 // Set the app element
 Modal.setAppElement('#root');
@@ -160,6 +162,26 @@ function App() {
         />
 
         <Route
+          path="/search/product/sku_value/:sku"
+          element={
+            <AdminPrivateRouter>
+              <ShowProductDetails />
+            </AdminPrivateRouter>
+          }
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/update/product/sku_value/:sku"
+          element={
+            <AdminPrivateRouter>
+              <UpdateProductForm />
+            </AdminPrivateRouter>
+          }
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
           path="/product/:_id"
           element={<ProductLanding />}
           errorElement={<ErrorPage />}
@@ -206,6 +228,9 @@ function App() {
           }
           errorElement={<ErrorPage />}
         />
+
+       
+
 
         <Route
           path="/my-profile"

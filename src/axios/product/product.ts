@@ -31,6 +31,20 @@ export const updateProduct = async(data: FormData, _id: string) => {
   }
 };
 
+export const updateAProductBySKU = async(data: object, sku: string) => {
+  try {
+     const response = await axiosProcessor({
+    method: "put",
+    url: `${productApi}/${sku}`,
+    isPrivate: false,
+    obj: data,
+     });
+    return response 
+  } catch (error) {
+    throw new Error("Failed to update product");
+  }
+};
+
 export const updateAProductStatus= (_id: string, data: object) => {
   return axiosProcessor({
     method: "patch",
@@ -102,4 +116,21 @@ export const getAProduct = async({ ...data }: { [key: string]: any }) => {
   }
 };
 
+export const getAProductBySKU = async(sku: string) => {
+  try {
+    const response = await axiosProcessor({
+      method: "get",
+      url: `${productApi}` + `/sku_value/${sku}`,
+      isPrivate: true,
+    });
+    return response.product as IProductTypes
+    // if (response.status === "success") { return response.product as IProductTypes }
+    // if (response.message === "Product Not Found!") {
+    //   return response.message as string
+    // }
 
+    // throw new Error("Unexpected response status");
+  } catch (error) {
+      throw new Error("Failed to fetch products");
+  }
+};

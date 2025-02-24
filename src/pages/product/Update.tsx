@@ -131,8 +131,6 @@ const UpdateProduct = () => {
         }
     });
 
-
-
     const onSubmit = async (data: UpdateProductSchema) => {
         const formData = new FormData();
         formData.append("_id", product._id as string);

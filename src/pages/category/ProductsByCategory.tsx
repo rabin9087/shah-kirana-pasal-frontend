@@ -52,11 +52,15 @@ const ProductCardByCategory: React.FC = () => {
         {data.length < 1 ? <ProductNotFound /> :
             
             <>
-            <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-20">
-                    {saleOnProducts.map((product: IProductTypes) =>
-                    <ProductCard key={product._id} item={product} />
-                )}
-            </div>
+                <div className=" shadow-md mt-6 md:mt-24">
+                    <h1 className="text-center md:text-start font-normal py-2 ps-4">Sales Products</h1>
+                    <div className="mx-auto flex gap-4 items-center overflow-x-auto py-4 px-2 w-full">
+                        {saleOnProducts.map((product: IProductTypes) => (
+                            <ProductCard key={product._id} item={product} addClass="min-w-[200px] max-w-[250px]" />
+                        ))}
+                    </div>
+                </div>
+                
                 <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {NotsaleOnProducts.map((product: IProductTypes) =>
                     <ProductCard key={product._id} item={product} />
