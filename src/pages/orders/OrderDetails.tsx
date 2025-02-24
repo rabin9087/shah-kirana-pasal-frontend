@@ -155,8 +155,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                     <td className="p-1 underline">{item?.productId?.sku}</td>
                                     <td className="p-1">
                                         <img
-                                            src={item?.productId?.thumbnail as string || item?.productId.images?.[0] as string}
-                                            alt={item.productId.name}
+                                            src={item?.productId?.thumbnail as string || item?.productId?.images?.[0] as string}
+                                            alt={item?.productId?.name}
                                             className="w-16 h-16 object-cover rounded-md"
                                         />
                                     </td>

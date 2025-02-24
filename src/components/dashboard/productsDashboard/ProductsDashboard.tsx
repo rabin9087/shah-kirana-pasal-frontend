@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 
 const ProductsDashboard = () => {
-
     const { products } = useAppSelector(state => state.productInfo)
     const { categories } = useAppSelector(state => state.categoryInfo)
     const dispatch = useAppDispatch()
@@ -33,7 +32,9 @@ const ProductsDashboard = () => {
     });
 
     useEffect(() => {
-        if (data.length) { dispatch(setProducts(data)) }
+        if (data.length) {
+            dispatch(setProducts(data))
+         }
     }, [dispatch, data])
 
     const handelOnChecked = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +124,7 @@ const ProductsDashboard = () => {
                         {products.map(({ _id, status, name, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail }, i) => (
                             <TableRow key={_id}>
                                 <TableCell className="font-medium">{i + 1}.</TableCell>
-                                <TableCell className="font-medium"><img src={thumbnail} width={"30px"} height={"30px"} /></TableCell>
+                                <TableCell className="font-medium w-24 h-32"><img className="w-24 h-32 object-cover"  src={thumbnail}/></TableCell>
                                 <TableCell className={status === 'ACTIVE' ? "text-green-500" : "text-red-500"}>
                                     <React.Fragment>
                                         <div className="flex justify-start items-center gap-2 text-sm">

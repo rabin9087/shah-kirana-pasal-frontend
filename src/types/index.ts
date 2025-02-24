@@ -1,4 +1,5 @@
 import { IOrder } from "@/axios/order/types";
+import { ISalesProps } from "@/components/dashboard/sales/Sales";
 import { IAddToCartTypes } from "@/pages/addToCart";
 import { ImageType } from "@/pages/product/formValidation";
 
@@ -84,6 +85,8 @@ export type serverReturnDataType = {
   clientSecret?: string
   order: IOrder
   orders: IOrder[]
+  sales: ISalesProps
+  amount: []
 };
 
 export type LocationState = {

@@ -5,9 +5,10 @@ import ProductsDashboard from './productsDashboard/ProductsDashboard';
 import CategoriesDashboard from './categoryDashboard/CategoriesDashboard';
 import OrdersDashboard from './ordersDashboard/OrdersDashboard';
 import { useNavigate, useParams } from 'react-router';
+import Sales from './sales/Sales';
 
 const DashboardLayout = () => {
-    const menuItems = ['users', 'products', 'categories', 'orders'];
+    const menuItems = ['users', 'products', 'categories', 'orders', 'sales'];
     const { menu } = useParams();
     const navigate = useNavigate();
     const [activeMenu, setActiveMenu] = useState(menuItems.includes(menu as string) ? menu : menuItems[0]);
@@ -33,6 +34,8 @@ const DashboardLayout = () => {
                 return <CategoriesDashboard />;
             case 'orders':
                 return <OrdersDashboard />;
+            case 'sales':
+                return <Sales />;
             default:
                 return <div>Select a menu item to view details</div>;
         }

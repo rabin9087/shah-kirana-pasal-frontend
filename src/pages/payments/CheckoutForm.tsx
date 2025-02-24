@@ -19,7 +19,7 @@ const CheckoutForm = () => {
     const navigate = useNavigate()
     const [isAddressComplete, setIsAddressComplete] = useState(false);
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
-    const [paymentType, setPaymentType] = useState<"cash" | "card">("card");
+    const [paymentType, setPaymentType] = useState<"cash" | "card">("cash");
     // const [deliveryDate, setDeliveryDate] = useState<{
     //     date: string,
     //     time: string,

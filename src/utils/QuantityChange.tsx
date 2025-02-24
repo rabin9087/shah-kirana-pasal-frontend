@@ -8,7 +8,6 @@ export const AddToCartButton = ({ item }: { item: IAddToCartTypes }) => {
     const dispatch = useAppDispatch()
     const handleOnAddToCart = () => {
         dispatch(setAddToCart({ ...item, orderQuantity: 1 }))
-        
     }
     return (<Button variant={'default'} onClick={handleOnAddToCart} className="w-full">Add To Cart</Button>)
 }
