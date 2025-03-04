@@ -25,26 +25,24 @@ const AddToCart = () => {
                         <CartCard key={product._id} item={product} />)}
                 </div> : <EmptyCart />}
 
-            <div className="w-full md:w-[400px] p-2 flex flex-col justify-between  border-t-2 mx-auto ">
-                {cart.length &&
-                    <div className="flex flex-col">
-                        <div className="flex justify-between w-full md:w-[400px] text-xl font-bold pt-4 px-2 ">
-                            <span className="text-gray-600">Subtotal </span>
-                            <span> ${toatl.toFixed(2)}</span>
-                                
-                        </div>
-                        {(actualToatl - toatl) > 0 && <div className="w-full text-sm md:w-[400px] flex justify-end p-2 font-bold px-2">
-                            <span className="w-fit bg-yellow-400 rounded-md px-2 py-1 text-end"> SAVING ${(actualToatl - toatl).toFixed(2)}</span>
-                        </div>}
-                    </div>
+            {cart.length > 0 && <div className="w-full md:w-[400px] p-2 flex flex-col justify-between  border-t-2 mx-auto ">
 
-                }
-                {cart.length && <div className="w-full md:w-[400px]  py-2 flex justify-center">
+                <div className="flex flex-col">
+                    <div className="flex justify-between w-full md:w-[400px] text-xl font-bold pt-4 px-2 ">
+                        <span className="text-gray-600">Subtotal </span>
+                        <span> ${toatl.toFixed(2)}</span>
+                    </div>
+                    {(actualToatl - toatl) > 0 && <div className="w-full text-sm md:w-[400px] flex justify-end p-2 font-bold px-2">
+                        <span className="w-fit bg-yellow-400 rounded-md px-2 py-1 text-end"> SAVING ${(actualToatl - toatl).toFixed(2)}</span>
+                    </div>}
+                </div>
+                <div className="w-full md:w-[400px]  py-2 flex justify-center">
                     <Link to={"/payment"}>
                         <Button className="w-full md:w-[250px]">Checkout</Button>
                     </Link>
-                </div>}
-            </div>
+                </div>
+
+            </div>}
 
         </div>
         // </Layout>

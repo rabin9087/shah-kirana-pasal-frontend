@@ -67,6 +67,7 @@ export interface ICartHistory {
   items: IAddToCartTypes[];
   amount: number;// Store previous cart data
   purchasedAt: Date; // Store timestamp of purchase
+  orderNumber: number
 }
 
 

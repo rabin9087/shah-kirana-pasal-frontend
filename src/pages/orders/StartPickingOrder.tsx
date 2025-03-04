@@ -133,9 +133,7 @@ const StartPickingOrder = () => {
         <>
             {<div className="w-full h-screen max-w-md mx-auto flex flex-col">
                 <Card className="flex flex-col flex-1 p-4 border rounded-lg shadow-lg bg-white">
-
                     <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
-
                     <div>
                         <Button className="bg-primary text-white p-2 rounded-md ms-2"
                             onClick={() => updateDeliveryStatus("Picking")}
@@ -144,8 +142,6 @@ const StartPickingOrder = () => {
                         </Button>
                         <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
                     </div>
-
-
                     <div className="flex flex-col items-start justify-start p-2">
                         <p>Name: {order?.name}</p>
                         <p>Phone: {order?.phone}</p>
@@ -197,7 +193,7 @@ const StartPickingOrder = () => {
 
                                 <Button
                                     className="w-1/2"
-                                    disabled= {packing}
+                                    disabled={packing}
                                     onClick={updateSuppliedQuintity} >
                                     WSCAN
                                 </Button>

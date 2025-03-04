@@ -109,13 +109,13 @@ export const updateCartInUser = (phone: string, cart: IUpdateCartToUserTypes[]) 
   });
 };
 
-export const updateCartHistoryInUser = (phone: string, items: IUpdateCartToUserTypes[], amount: number) => {
+export const updateCartHistoryInUser = (phone: string, items: IUpdateCartToUserTypes[], amount: number, orderNumber: number) => {
   return axiosProcessor({
     method: "patch",
     url: userApi + "/cartHistory",
     isPrivate: true,
     refreshToken: true,
-    obj: {cartHistory: {items}, phone, amount: amount.toFixed(2)},
+    obj: {cartHistory: {items}, phone, amount: amount.toFixed(2), orderNumber},
   });
 };
 

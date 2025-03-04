@@ -36,12 +36,23 @@ const About = () => {
                             <div className=" w-48 h-48 rounded-full overflow-hidden bg-gray-200">
                                 <img src="https://cricket-gear-images.s3.us-east-1.amazonaws.com/1739105429436-image.jpg"
                                     alt="Team Member 1" className="w-full h-full object-cover" />
-                                
+
                             </div>
                             <p className="mt-2">Rabin Shah (CEO)</p>
                         </div>
+
+                        <div className="flex flex-col items-center">
+                            <div className=" w-48 h-48 rounded-full overflow-hidden bg-gray-200">
+                                <img src="https://cricket-gear-images.s3.us-east-1.amazonaws.com/1739551830448-IMG_8841.jpeg"
+                                    alt="Team Member 1" className="w-full h-full object-cover" />
+
+                            </div>
+                            <p className="mt-2">Mohan Shah (Owner)</p>
+                        </div>
                     </div>
                 </div>
+
+
 
                 {/* Core Values Section */}
                 <div className="mt-12">

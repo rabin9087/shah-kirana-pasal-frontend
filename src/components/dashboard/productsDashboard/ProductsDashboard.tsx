@@ -34,7 +34,7 @@ const ProductsDashboard = () => {
     useEffect(() => {
         if (data.length) {
             dispatch(setProducts(data))
-         }
+        }
     }, [dispatch, data])
 
     const handelOnChecked = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,13 +101,13 @@ const ProductsDashboard = () => {
             </div>
 
             <div className="mt-4 border w-full px-2 overflow-x-scroll">
-                {products.length < 1 ? <div className="flex justify-center py-4">
+                {products.length < 1 ? <div className="flex justify-center">
 
                 </div> : <Table>
                     <TableCaption>All list of products.</TableCaption>
                     <TableHeader>
                         <TableRow className="">
-                            <TableHead className="w-[60px]">S.N.</TableHead>
+                            <TableHead>S.N.</TableHead>
                             <TableHead>Image</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Name</TableHead>
@@ -121,10 +121,10 @@ const ProductsDashboard = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {products.map(({ _id, status, name, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail }, i) => (
+                        {products.map(({ _id, status, name, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku }, i) => (
                             <TableRow key={_id}>
                                 <TableCell className="font-medium">{i + 1}.</TableCell>
-                                <TableCell className="font-medium w-24 h-32"><img className="w-24 h-32 object-cover"  src={thumbnail}/></TableCell>
+                                <TableCell className="font-medium w-20 h-20"><img className="w-16 h-12 rounded-sm object-fill border-4 border-gray-300" src={thumbnail} /></TableCell>
                                 <TableCell className={status === 'ACTIVE' ? "text-green-500" : "text-red-500"}>
                                     <React.Fragment>
                                         <div className="flex justify-start items-center gap-2 text-sm">
@@ -154,16 +154,16 @@ const ProductsDashboard = () => {
 
                                 <TableCell className="text-right text-yellow-500">
                                     <Link
-                                        to={`/product/update/${qrCodeNumber}`}>
+                                        to={`/update/product/sku_value/${sku}`}>
                                         <IoCreateOutline size={25} />
                                     </Link></TableCell>
                                 <TableCell className="text-right text-red-500 hover:text-red-400">
                                     <MdDeleteOutline size={25} onClick={() => handelOnDelete(_id)} />
                                 </TableCell>
-
                             </TableRow>
                         ))}
                     </TableBody>
+
                 </Table>}
 
             </div>

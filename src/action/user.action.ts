@@ -13,7 +13,7 @@ import {
   newPasswordParams,
   otp_PasswordParams,
 } from "@/types";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 export const createNewUser =
   (user: createUserParams) => async (dispatch: AppDispatch) => {
@@ -86,8 +86,8 @@ export const updateCartInUserAxios = (phone: string, cart: IUpdateCartToUserType
 }
 
 
-export const updateCartHistoryInUserAxios = (phone: string, cartHistory: IUpdateCartToUserTypes[] | [], amount: number) => async (dispatch: AppDispatch) => {
-  const pending =  updateCartHistoryInUser(phone, cartHistory, amount);
+export const updateCartHistoryInUserAxios = (phone: string, cartHistory: IUpdateCartToUserTypes[] | [], amount: number, orderNumber: number) => async (dispatch: AppDispatch) => {
+  const pending =  updateCartHistoryInUser(phone, cartHistory, amount, orderNumber);
   const { status } = await pending;
   if (status === "success") {
     dispatch(getUserAction())

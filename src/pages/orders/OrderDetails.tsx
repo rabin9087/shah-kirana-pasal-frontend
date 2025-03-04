@@ -112,13 +112,21 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                     value={status}
                                     onChange={handleChange}
                                 >
-                                    <option value="Not Yet Delivered">Not Yet Delivered</option>
-                                    <option value="Out for Delivery">Out for Delivery</option>
-                                    <option value="Picking">Picking</option>
-                                    <option value="Packed">Packed</option>
-                                    <option value="On the way">On the way</option>
-                                    <option value="Delivered">Delivered</option>
-                                    <option value="Cancelled">Cancelled</option>
+                                    {order?.orderType === "pickup" ? <>
+                                        <option value="Picking">Picking</option>
+                                        <option value="Packed">Packed</option>
+                                        <option value="Collected">Collected</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </> : <>
+                                        <option value="Not Yet Delivered">Not Yet Delivered</option>
+                                        <option value="Out for Delivery">Out for Delivery</option>
+                                        <option value="Picking">Picking</option>
+                                        <option value="Packed">Packed</option>
+                                        <option value="On the way">On the way</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </>}
+
                                 </select>
                             </td>
                         </tr>

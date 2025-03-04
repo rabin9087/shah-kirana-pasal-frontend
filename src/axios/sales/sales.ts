@@ -19,7 +19,7 @@ export const getAllSales = async() => {
     try {
         const resp = await axiosProcessor({
     method: "get",
-    url: `${salesApi}/all`,
+    url: `${salesApi}/allSales`,
     isPrivate: false,
         });
         return resp.sales

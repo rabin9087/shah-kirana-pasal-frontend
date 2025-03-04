@@ -4,7 +4,7 @@ import OrderHistory from "./OrderHistory";
 
 export const OrderPlaced: React.FC = () => {
     const { user } = useAppSelector((s) => s.userInfo);
-    const {cartHistory} = user
+    const { cartHistory } = user
 
     // Get the most recent order (cartHistory[0])
     const latestOrder = cartHistory?.[0];
@@ -12,7 +12,7 @@ export const OrderPlaced: React.FC = () => {
     return (
         <Layout title={cartHistory.length > 0 ? "" : "Order Placed"}>
 
-            {cartHistory.length < 0 ? 
+            {cartHistory.length < 0 ?
                 <div className="flex flex-col items-center justify-center h-[80vh]">
                     <img
                         src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png"
@@ -30,7 +30,7 @@ export const OrderPlaced: React.FC = () => {
                         Start Shopping
                     </a>
                 </div>
-                : 
+                :
                 <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
                     <h1 className="text-3xl font-bold text-blue-700">Order Placed Successfully!</h1>
                     <p className="mt-4 text-gray-600">
@@ -39,9 +39,12 @@ export const OrderPlaced: React.FC = () => {
 
                     {latestOrder ? (
                         <div className="mt-6 w-full max-w-3xl bg-white shadow-md rounded-lg p-6">
+                            <p className="text-center text-xl"><strong >Order Number: {latestOrder?.orderNumber} </strong>
+                            </p>
                             <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
                             <p className="text-gray-700"><strong>Amount:</strong> ${latestOrder?.amount?.toFixed(2)}</p>
                             <p className="text-gray-700"><strong>Purchased At:</strong> {new Date(latestOrder.purchasedAt).toLocaleString()}</p>
+                            <p className="text-gray-700"><strong>Order Number:</strong> {latestOrder?.orderNumber}</p>
 
                             <h3 className="text-lg font-semibold text-gray-800 mt-4">Items Ordered:</h3>
                             <ul className="mt-2 space-y-4">
@@ -78,7 +81,7 @@ export const OrderPlaced: React.FC = () => {
                 </div>
             }
 
-           
+
         </Layout>
     );
 };

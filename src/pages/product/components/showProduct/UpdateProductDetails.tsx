@@ -2,15 +2,19 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { IProductTypes } from '@/types';
-import { getAProductBySKU, updateAProductBySKU } from '@/axios/product/product';
+import { getAProductBySKU, updateAProductBySKU, updateAProductThumbnail } from '@/axios/product/product';
 import { useNavigate, useParams } from 'react-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { toast } from 'react-toastify';
+import { RiImageEditFill } from 'react-icons/ri';
 
 const UpdateProductForm = () => {
     const { sku } = useParams();
     const navigate = useNavigate();
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false)
     const { data = {} as IProductTypes } = useQuery<IProductTypes>({
         queryKey: ['product', sku],
         queryFn: () => getAProductBySKU(sku as string),
@@ -23,7 +27,6 @@ const UpdateProductForm = () => {
 
     const mutation = useMutation({
         mutationFn: async (updatedProduct: Partial<IProductTypes>) => {
-            console.log(updatedProduct)
             return await updateAProductBySKU(updatedProduct, sku as string);
         },
         onError: () => {
@@ -45,6 +48,36 @@ const UpdateProductForm = () => {
         mutation.mutate(updatedProduct);
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImageFile(file);
+            setSelectedImage(URL.createObjectURL(file)); // Preview the selected image
+        }
+    };
+
+    const handleSaveImage = async () => {
+        setLoading(true)
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append("thumbnail", imageFile); // Must match the key in the backend
+            // Required to identify the user
+
+            try {
+                const res = await updateAProductThumbnail(data._id ,formData); // API call to update profile
+                if (res.status === "success") {
+                   toast.success("Product Image has been Updated Successfully")
+
+                } else {
+                    toast.error(res.message)
+                }
+            } catch (error) {
+                toast.error
+            }
+        }
+        setLoading(false)
+    }
+
     useEffect(() => {
         if (data._id) {
             // Update form values with fetched data
@@ -57,6 +90,38 @@ const UpdateProductForm = () => {
 
     return (
         <Layout title="Product Form">
+            <Button
+                className='ms-4'
+                onClick={() => navigate(-1)}>
+                {"< BACK"}
+            </Button>
+            <div className="relative flex justify-center mb-6">
+                <img
+                   
+                    src={selectedImage || data.thumbnail || "/default-profile.png"} // Default profile image fallback
+                    alt="Profile"
+                    className="w-44 h-44 rounded-sm object-fill border-4 border-gray-300"
+                />
+                {/* Edit Icon */}
+                <label
+                    htmlFor="profileImage"
+                    className="absolute bottom-0 right-16 bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-600"
+                >
+                    <RiImageEditFill />
+                </label>
+                <input
+                    type="file"
+                    id="profileImage"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                    multiple
+                />
+            </div>
+            <div className='w-full flex justify-center'>
+                <Button className='text-center' onClick={handleSaveImage}>{loading ? "Updating..." : "Update Image"}</Button>
+
+            </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4">
                 {/* Product Name */}
                 <div>
@@ -67,6 +132,16 @@ const UpdateProductForm = () => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                     {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>}
+                </div>
+
+                <div>
+                    <label htmlFor="alternateName" className="block text-sm font-medium text-gray-700">Alternative Name</label>
+                    <input
+                        id="alternateName"
+                        {...register('alternateName')}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                    {errors.alternateName && <p className="mt-2 text-sm text-red-600">{errors.alternateName.message}</p>}
                 </div>
 
                 {/* Price and Sale Price */}

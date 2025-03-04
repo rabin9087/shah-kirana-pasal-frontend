@@ -54,6 +54,15 @@ export const updateAProductStatus= (_id: string, data: object) => {
   });
 };
 
+export const updateAProductThumbnail= (_id: string, data: object) => {
+  return axiosProcessor({
+    method: "patch",
+    url: `${productApi}/thumbnail/${_id}`,
+    isPrivate: false,
+    obj: data,
+  });
+};
+
 export const getAllProducts = async () => {
   try {
     const response = await axiosProcessor({

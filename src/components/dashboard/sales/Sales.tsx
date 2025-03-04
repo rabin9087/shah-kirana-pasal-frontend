@@ -54,7 +54,8 @@ const Sales = () => {
 
     return (
         <>
-            <div className="mb-8 font-bold">Total sales: {totalAmount}</div>
+            <div className="overflow-auto">
+            <div className="mb-8 font-bold ">Total sales: {totalAmount.toFixed(2)}</div>
             <LineChart height={300} width={500}
                 data={sales}
                 margin={{
@@ -109,10 +110,9 @@ const Sales = () => {
                 <YAxis dataKey="totalAmount" />
                 <Tooltip />
                 <Area type="monotone" dataKey="totalAmount" stroke="#82ca9d" fill="#82ca9d" />
-            </AreaChart>
-
+                </AreaChart>
+            </div>
         </>
-
     )
 }
 export default Sales

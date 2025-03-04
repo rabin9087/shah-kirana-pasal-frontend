@@ -11,20 +11,20 @@ import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } fro
 import { useAppSelector } from "@/hooks"
 import { IAddToCartTypes } from "../addToCart"
 
-const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: string }> = ({ item, addClass }) => {
+const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: string}> = ({ item, addClass }) => {
   const { cart } = useAppSelector((state) => state.addToCartInfo)
   const orderQty = getOrderNumberQuantity(item._id, cart)
 
+
   return (
     <>
-
       <Card className={`w-full h-full sm:w-[190px] md:w-[250px] bg-white shadow-lg rounded-lg overflow-hidden ${addClass}`}>
         {/* Sale Price*/}
         {
           item.salesPrice && (
-            <div className="border-2 h-32 rounded-md bg-yellow-300 flex items-center">
-              <div className="ml-4 w-24 h-24 flex items-center justify-center rounded-full border-8 border-primary bg-white">
-                <p className="font-bold text-xl">SALE</p>
+            <div className="border-2 h-24 rounded-md bg-yellow-300 flex items-center">
+              <div className="ml-4 w-16 h-16 flex items-center justify-center rounded-full border-8 border-primary bg-white">
+                <p className="font-bold text-sm">SALE</p>
               </div>
             </div>
           )
@@ -35,7 +35,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
             <img
               src={item.thumbnail}
               alt={item.name}
-              className="p-4 w-52 h-64 object-cover transition-transform duration-300 ease-in-out"
+              className="p-4 w-4/5 h-44 object-cover transition-transform duration-300 ease-in-out"
               loading="lazy"
             />
           </div>
@@ -44,7 +44,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
 
         {/* Product Details */}
         <CardHeader className="p-4 pb-2 pt-4">
-          <CardTitle className="text-lg font-semibold text-gray-800 h-24 overflow-hidden text-ellipsis line-clamp-3">
+          <CardTitle className="text-lg font-semibold text-gray-800 h-20 overflow-hidden text-ellipsis line-clamp-3">
             <Link to={`/product/${item.qrCodeNumber}`} className="hover:underline">
               {item.name}
             </Link>
@@ -61,18 +61,31 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
         <div className="">
           <CardContent className="px-4 pb-4">
             {item.salesPrice ? (
-              <div className="flex items-baseline space-x-2">
-                <span className="text-2xl font-bold">
-                  ${item.salesPrice.toFixed(2)}
-                </span>
-                <span className="text-sm text-gray-500 line-through">
-                  ${item.price.toFixed(2)}
+              <div className="flex justify-between items-start font-bold">
+                <div className="flex justify-start items-start">
+                  <span className="font-medium">
+                    Rs. {Math.floor(item.salesPrice)}
+                  </span>
+                  <span className="text-sm">
+                    {((item.price) % 1 * 100).toFixed(0).padStart(2, '0')}
+                  </span>
+                </div>
+                <span className="text-sm text-gray-500 line-through ms-2 my-auto">
+                  Rs. {item.price.toFixed(2)}
                 </span>
               </div>
             ) : (
-              <span className="text-2xl font-bold text-gray-800">
-                ${item.price.toFixed(2)}
-              </span>
+                <div className="flex justify-start items-start font-bold">
+                  {/* <span className={`text-xl mt-1 text-gray-600 ${item.salesPrice > 0 ? "mb-1" : "mb-4"}`}>
+                    Rs.
+                  </span> */}
+                  <span className="font-medium">
+                    Rs. {Math.floor(item.salesPrice > 0 ? item.salesPrice : item.price)}
+                  </span>
+                  <span className="text-sm">
+                    {((item.salesPrice > 0 ? item.salesPrice : item.price) % 1 * 100).toFixed(0).padStart(2, '0')}
+                  </span>
+                </div>
             )}
             <p className="min-h-5">
               {item.quantity <= 5 && (
@@ -83,7 +96,6 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
             </p>
 
           </CardContent>
-
           {/* Action Buttons */}
           <CardFooter className="p-4 pt-0 flex items-center justify-between">
             {itemExist(item._id, cart).length ? (

@@ -74,10 +74,10 @@ const CheckoutForm = () => {
         }));
     };
 
-    const updateCartAndUserCart = () => {
+    const updateCartAndUserCart = (orderNumber: number) => {
         dispatch(resetCart())
         dispatch(updateCartInUserAxios(user.phone, []));
-        dispatch(updateCartHistoryInUserAxios(user.phone, items, cartAmount));
+        dispatch(updateCartHistoryInUserAxios(user.phone, items, cartAmount, orderNumber));
     }
 
     const handleSubmit = async (event: FormEvent) => {
@@ -132,14 +132,14 @@ const CheckoutForm = () => {
 
                     const { line1, line2, city, postal_code, state, country, phone, name } = contactInfo.shipping
                     // if (!line1 || !line2 || !city || !state || ! country || !postal_code) {
-                        
+
                     // }
                     const full_address = `${line2 !== "" ? "UNIT " + line2 + " " : ""} ${line1}, ${city}, ${state}, ${postal_code}, ${country}`
 
                     const customer_details = {
                         name: name,
                         phone: phone,
-                        address:full_address,
+                        address: full_address,
                         email: contactInfo.email,
                         items: orderItems as any,
                         deliveryStatus: "Not Yet Delivered",
@@ -153,8 +153,8 @@ const CheckoutForm = () => {
                         orderType: orderType,
                         paymentStatus: "Paid",
                     }
-                    await createOrder(customer_details)
-                    updateCartAndUserCart()
+                    const orderNumber = await createOrder(customer_details)
+                    updateCartAndUserCart(orderNumber.orderNumber as number)
                     setPlaceOrderStatus("Payment Completed")
                     return navigate("/payment/success")
 
@@ -179,8 +179,8 @@ const CheckoutForm = () => {
                     paymentStatus: "Not Yet Paid",
 
                 }
-                await createOrder(customer_details)
-                updateCartAndUserCart()
+                const orderNumber = await createOrder(customer_details)
+                updateCartAndUserCart(orderNumber.orderNumber as number)
                 setPlaceOrderStatus("Payment Completed")
                 return navigate("/payment/success")
             } else {
@@ -258,21 +258,21 @@ const CheckoutForm = () => {
                                     onChange={(event) => handleEmailChange(event?.value?.email)} />
                                 {/* If collecting shipping */}
                                 {orderType === "pickup" &&
-                                    
+
                                     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-                                    <div className='flex justify-between'>
-                                        <h2 className="text-xl font-semibold text-gray-800 mb-4">User Details</h2>
-                                        <Button type='button'><FaRegEdit size={20}/></Button>
+                                        <div className='flex justify-between'>
+                                            <h2 className="text-xl font-semibold text-gray-800 mb-4">User Details</h2>
+                                            <Button type='button'><FaRegEdit size={20} /></Button>
                                         </div>
-                                    
-                                    <div className="space-y-2">
-                                        <p><span className="font-medium">First Name:</span> {user.fName || "N/A"}</p>
-                                        <p><span className="font-medium">Last Name:</span> {user.lName || "N/A"}</p>
-                                        <p><span className="font-medium">Phone:</span> {user.phone || "N/A"}</p>
-                                        <p><span className="font-medium">Email:</span> {user.email || "N/A"}</p>
-                                        <p><span className="font-medium">Address:</span> {user.address || "N/A"}</p>
-                                    </div>
-                                </div>}
+
+                                        <div className="space-y-2">
+                                            <p><span className="font-medium">First Name:</span> {user.fName || "N/A"}</p>
+                                            <p><span className="font-medium">Last Name:</span> {user.lName || "N/A"}</p>
+                                            <p><span className="font-medium">Phone:</span> {user.phone || "N/A"}</p>
+                                            <p><span className="font-medium">Email:</span> {user.email || "N/A"}</p>
+                                            <p><span className="font-medium">Address:</span> {user.address || "N/A"}</p>
+                                        </div>
+                                    </div>}
                             </div>
 
                             {orderType === "delivery" && <div className='shadow-md bg-slate-100 rounded-md ps-2'>

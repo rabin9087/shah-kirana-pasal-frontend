@@ -67,8 +67,9 @@ const MyProfile = () => {
             <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2">
                     {/* Profile Image Section */}
-                    <div className="relative flex justify-center mb-6" onClick={openModal}>
+                    <div className="relative flex justify-center mb-6">
                         <img
+                            onClick={openModal}
                             src={selectedImage || user?.profile || "/default-profile.png"} // Default profile image fallback
                             alt="Profile"
                             className="w-32 h-32 rounded-full object-fill border-4 border-gray-300"

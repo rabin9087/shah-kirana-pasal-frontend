@@ -16,7 +16,6 @@ export const ChangeItemQty = ({ item }: { item: IAddToCartTypes }) => {
     const dispatch = useAppDispatch()
     return (
         <div className="flex w-full items-center">
-
             <Button variant={'default'}
                 className="rounded-none rounded-l-md w-1/4"
                 onClick={() => { dispatch(setAddToCart({ ...item, orderQuantity: item.orderQuantity - 1 })) }}>

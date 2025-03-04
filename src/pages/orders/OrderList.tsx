@@ -97,9 +97,10 @@ const OrdersList = () => {
                                             <td className="p-2 whitespace-nowrap overflow-hidden text-ellipsis">{order?.name}</td>
                                             <td className="p-2 whitespace-nowrap">${order?.amount?.toFixed(2)}</td>
                                             <td className={`p-2 whitespace-nowrap 
-                                                ${order?.deliveryStatus === "Packed" && "text-green-500"}
+                                                ${order?.deliveryStatus === "Packed" && "text-green-300"}
                                                 ${order?.deliveryStatus === "Picking" && "text-yellow-700"}
                                                 ${order?.deliveryStatus === "Cancelled" && "text-red-500"}
+                                                ${order?.deliveryStatus === "Collected" && "text-green-500"}
                                             `}>
                                                 {order?.deliveryStatus}
                                             </td>

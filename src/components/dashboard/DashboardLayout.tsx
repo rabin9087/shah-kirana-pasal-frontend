@@ -42,7 +42,7 @@ const DashboardLayout = () => {
     };
 
     return (
-        <div>
+        <div className="overflow-x-auto">
             <div className="flex justify-center gap-2">
                 {menuItems.map((item) => (
                     <Button
