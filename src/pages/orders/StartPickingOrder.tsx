@@ -164,13 +164,13 @@ const StartPickingOrder = () => {
                                 </div>
 
                                 <div className="flex justify-around gap-4 py-2">
-                                    <p className="text-xs border p-2">Ordered: <span className="text-xl"> {currentItem?.quantity}</span> </p>
-                                    <p className="text-xs border p-2">Supplied:  <span className="text-xl"> {currentItem?.supplied ? currentItem?.supplied : 0} </span></p>
+                                    <p className="text-xs border p-2">Ordered: <strong className="text-xl"> {currentItem?.quantity}</strong> </p>
+                                    <p className="text-xs border p-2">Supplied:  <strong className="text-xl"> {currentItem?.supplied ? currentItem?.supplied : 0} </strong></p>
                                 </div>
 
                                 <div className="flex justify-between gap-2 text-left w-full">
                                     <div className="ms-2 py-2">
-                                        <p className="text-xs">SKU: | {currentItem?.productId.sku} | {barcode}</p>
+                                        <p className="text-xs">SKU: <strong className="text-xl"> {currentItem?.productId.sku}</strong> {barcode}</p>
                                         <p className="text-xs">Price: ${currentItem?.productId.price}</p>
                                         <p className="text-xs">SOH: {currentItem?.productId.quantity}</p>
                                     </div>
@@ -241,7 +241,7 @@ const StartPickingOrder = () => {
                             <img
                                 src={modalImage || ""}
                                 alt="Product"
-                                className="w-full h-screen/2 object-cover rounded-md"
+                                className="p-2 w-56 h-64 object-fill rounded-md"
                             />
                             <div className="flex justify-center items-center mt-2">
                                 <Button variant="outline" onClick={closeModal} className="mt-2">

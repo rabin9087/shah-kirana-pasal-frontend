@@ -31,15 +31,14 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
         }
         {/* Product Image */}
         <Link to={`/product/${item.qrCodeNumber}`} >
-          <div className="flex justify-center items-center mt-2 pt-2 bg-gray-200">
+          <div className="flex justify-center items-center pt-2 bg-gray-200">
             <img
               src={item.thumbnail}
               alt={item.name}
-              className="p-4 w-4/5 h-44 object-cover transition-transform duration-300 ease-in-out"
+              className="p-2 w-full h-44 object-fill transition-transform duration-300 ease-in-out"
               loading="lazy"
             />
           </div>
-
         </Link>
 
         {/* Product Details */}
