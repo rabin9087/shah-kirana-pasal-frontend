@@ -49,8 +49,8 @@ const CheckoutForm = () => {
     const orderItems = cart.map(item => ({ productId: item?._id, quantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
     const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note }));
 
-    const cartAmount = cart.reduce((acc, { orderQuantity, price }) => {
-        return acc + (orderQuantity * price)
+    const cartAmount = cart.reduce((acc, { orderQuantity, price, salesPrice }) => {
+        return acc + (orderQuantity *  (salesPrice > 0 ? salesPrice : price));
     }, 0)
 
     const handelOnAddressChange = (event: any) => {
@@ -142,7 +142,7 @@ const CheckoutForm = () => {
                         address: full_address,
                         email: contactInfo.email,
                         items: orderItems as any,
-                        deliveryStatus: "Not Yet Delivered",
+                        deliveryStatus: "Order placed",
                         deliveryDate: {
                             date: "NY",
                             time: "NY"
@@ -167,7 +167,7 @@ const CheckoutForm = () => {
                     address: user.address,
                     email: user.email,
                     items: orderItems as any,
-                    deliveryStatus: "Not Yet Delivered",
+                    deliveryStatus: "Order placed",
                     deliveryDate: {
                         date: "NY",
                         time: "NY"

@@ -32,13 +32,14 @@ const Sales = () => {
             getTotalSales()
     });
 
+    console.log(data)
+
     const { data: sales = [] } = useQuery({
         queryKey: ['sales'],
         queryFn: () =>
             getAllSales()
     });
 
-    console.log(products)
     const { allProducts} = getProductSalesData(sales)
 
     const nameOfProduct = mapProductNames(allProducts, products)
@@ -60,16 +61,23 @@ const Sales = () => {
     };
 
     const aggregatedSales = aggregateSalesByDate(sales);
-
+    const paidOrders = data.filter(({paymentStatus}) => (paymentStatus === "Paid")).reduce((acc, { amount }) => {
+        return acc + amount
+    }, 0)
     const totalAmount = data.reduce((acc, { amount }) => {
         return acc + amount
     }, 0)
 
     return (
         <>
-            <div className="overflow-auto">
-                <div className="mb-8 font-bold ">Total sales: {totalAmount.toFixed(2)}</div>
-                <LineChart height={300} width={500}
+            <div className="overflow-auto text-center">
+                <div className="flex flex-col text-center mb-8">
+                    <div className="font-bold ">Total sales: {totalAmount.toFixed(2)}</div>
+                    <div className="font-bold ">Total Paid: {paidOrders.toFixed(2)}</div>
+                    <div className="font-bold ">Not Paid: {(totalAmount -paidOrders).toFixed(2)}</div>
+                </div>
+                
+                <LineChart height={500} width={500}
                     data={sales}
                     margin={{
                         top: 5,
@@ -88,7 +96,7 @@ const Sales = () => {
                 <BarChart
                     className="mt-4"
                     width={500}
-                    height={300}
+                    height={400}
                     data={aggregatedSales}
                     margin={{
                         top: 5,

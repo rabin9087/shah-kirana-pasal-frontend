@@ -113,17 +113,17 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                     onChange={handleChange}
                                 >
                                     {order?.orderType === "pickup" ? <>
+                                        <option value="Order placed">Order placed</option>
+
                                         <option value="Picking">Picking</option>
                                         <option value="Packed">Packed</option>
                                         <option value="Collected">Collected</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </> : <>
-                                        <option value="Not Yet Delivered">Not Yet Delivered</option>
-                                        <option value="Out for Delivery">Out for Delivery</option>
+                                        <option value="Order placed">Order placed</option>
                                         <option value="Picking">Picking</option>
                                         <option value="Packed">Packed</option>
-                                        <option value="On the way">On the way</option>
-                                        <option value="Delivered">Delivered</option>
+                                        <option value="Out for Delivery">Out for Delivery</option>                                        <option value="Delivered">Delivered</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </>}
 
@@ -151,9 +151,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                 <th className="p-1 text-xs sm:text-sm">Article</th>
                                 <th className="p-1 text-xs sm:text-sm">Thumbnail</th>
                                 <th className="p-1 text-xs sm:text-sm">Name</th>
+                                <th className="p-1 text-xs sm:text-sm">Price</th>
                                 <th className="p-1 text-xs sm:text-sm">Ordered</th>
                                 <th className="p-1 text-xs sm:text-sm">Supplied</th>
-                                <th className="p-1 text-xs sm:text-sm">Amount</th>
+                                <th className="p-1 text-xs sm:text-sm me-2">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -169,9 +170,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                         />
                                     </td>
                                     <td className="p-1">{item?.productId?.name}</td>
+                                    <td className="p-1">${item?.price?.toFixed(2)}</td>
                                     <td className="p-1">{item?.quantity}</td>
                                     <td className="p-1">{item?.supplied ? item?.supplied : 0}</td>
-                                    <td className="p-1">${item?.price?.toFixed(2)}</td>
+                                    <td className="p-1 me-2">${(item?.price * item?.quantity).toFixed(2)}</td>
                                 </tr>
                             ))}
                         </tbody>

@@ -114,12 +114,6 @@ export const getAProduct = async({ ...data }: { [key: string]: any }) => {
       params: {...data}
     });
     return response.product as IProductTypes
-    // if (response.status === "success") { return response.product as IProductTypes }
-    // if (response.message === "Product Not Found!") {
-    //   return response.message as string
-    // }
-
-    // throw new Error("Unexpected response status");
   } catch (error) {
       throw new Error("Failed to fetch products");
   }

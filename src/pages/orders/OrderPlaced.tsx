@@ -1,13 +1,32 @@
 import Layout from "@/components/layout/Layout";
 import { useAppSelector } from "@/hooks";
 import OrderHistory from "./OrderHistory";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getAOrder } from "@/axios/order/order";
+import { IOrder } from "@/axios/order/types";
 
 export const OrderPlaced: React.FC = () => {
     const { user } = useAppSelector((s) => s.userInfo);
     const { cartHistory } = user
 
+    const [orderNumber, setOrderNumber] = useState<number | string | null>(null);
+
     // Get the most recent order (cartHistory[0])
     const latestOrder = cartHistory?.[0];
+   
+
+    useEffect(() => {
+        if (cartHistory.length && latestOrder?.orderNumber) {
+            setOrderNumber(latestOrder.orderNumber);
+        }
+    }, [cartHistory]); // Removed `orderNumber` from dependencies to avoid infinite loop
+
+    const { data = {} as IOrder } = useQuery<IOrder>({
+        queryKey: [orderNumber],
+        queryFn: () => getAOrder(orderNumber as string),
+        enabled: !!orderNumber, // This prevents the API call when orderNumber is null
+    });
 
     return (
         <Layout title={cartHistory.length > 0 ? "" : "Order Placed"}>
@@ -44,7 +63,7 @@ export const OrderPlaced: React.FC = () => {
                             <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
                             <p className="text-gray-700"><strong>Amount:</strong> ${latestOrder?.amount?.toFixed(2)}</p>
                             <p className="text-gray-700"><strong>Purchased At:</strong> {new Date(latestOrder.purchasedAt).toLocaleString()}</p>
-                            <p className="text-gray-700"><strong>Order Number:</strong> {latestOrder?.orderNumber}</p>
+                            <p className="text-gray-700"><strong>Order status:</strong> {data.deliveryStatus}</p>
 
                             <h3 className="text-lg font-semibold text-gray-800 mt-4">Items Ordered:</h3>
                             <ul className="mt-2 space-y-4">
@@ -70,7 +89,7 @@ export const OrderPlaced: React.FC = () => {
                     )}
                     <div>
                         {/* <h3 className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600">Your Order History </h3> */}
-                        <OrderHistory />
+                        <OrderHistory setOrderNumber={setOrderNumber} data={ data} />
                     </div>
                     <button
                         className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600"

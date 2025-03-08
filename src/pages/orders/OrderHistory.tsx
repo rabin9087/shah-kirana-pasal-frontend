@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAppSelector } from "@/hooks";
+import { IOrder } from "@/axios/order/types";
 
-const OrderHistory: React.FC = () => {
+interface IOrderNumber {
+    setOrderNumber: (orderNumber: string) => void;
+    data: IOrder;
+}
+
+const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
     const { cartHistory } = useAppSelector((s) => s.userInfo.user);
     const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
 
@@ -16,7 +22,7 @@ const OrderHistory: React.FC = () => {
             {cartHistory?.length > 0 ? (
                 <div className="mt-6 space-y-6">
                     {cartHistory.map((order: any, index: number) => (
-                        <div key={index} className="bg-white shadow-md rounded-lg p-6">
+                        <div key={index} className="bg-white shadow-md rounded-lg p-6" onClick={() => setOrderNumber(order.orderNumber as string)}>
                             <button
                                 className="flex justify-between items-center w-full text-left text-xl font-semibold text-gray-800 hover:text-blue-600"
                                 onClick={() => toggleOrderDetails(index)}
@@ -36,6 +42,8 @@ const OrderHistory: React.FC = () => {
                                         <strong>Purchased At:</strong>{" "}
                                         {new Date(order.purchasedAt).toLocaleString()}
                                     </p>
+                                    <p>Order number : {data?.orderNumber}</p>
+                                    <p>Order status : {data?.deliveryStatus}</p>
 
                                     <h3 className="text-lg font-semibold text-gray-800 mt-4">Items Ordered:</h3>
                                     <ul className="mt-2 space-y-4">

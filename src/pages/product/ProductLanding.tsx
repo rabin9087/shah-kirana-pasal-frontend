@@ -41,7 +41,6 @@ const ProductLanding = () => {
             dispatch(setAProduct(data));
         }
     }, [dispatch, data._id]);
-    console.log(selectedImage)
 
     if (error) return <Error />;
 

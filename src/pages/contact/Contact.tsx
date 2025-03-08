@@ -25,8 +25,12 @@ const ContactUs = () => {
         {/* Phone */}
         <div className="flex items-center space-x-3">
           <Phone className="text-green-600" />
-          <a href="tel:+61481452920" className="text-gray-700 hover:text-blue-600">
+          <a href="tel:+9779806047265" className="text-gray-700 hover:text-blue-600">
             +977 9806047265
+          </a>
+          <span>/</span>
+          <a href="tel:+9779701844268" className="text-gray-700 hover:text-blue-600">
+            +977 9701844268
           </a>
         </div>
 

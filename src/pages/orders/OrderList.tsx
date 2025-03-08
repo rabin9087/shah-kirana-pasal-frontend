@@ -4,29 +4,31 @@ import { useEffect, useState } from "react";
 import OrderDetails from "./OrderDetails";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { format, addDays, subDays } from "date-fns";
-import { useQuery } from "@tanstack/react-query";
-import { getAOrdersByDate } from "@/axios/order/order";
+
 import { initialState, setOrders } from "@/redux/allOrders.slice";
 
-const OrdersList = () => {
+interface IOrderList {
+    data: IOrder[];
+    date: Date;
+    setDate: (date: Date) => void;
+}
+
+const OrdersList = ({data, date, setDate}: IOrderList) => {
 
     const dispatch = useAppDispatch()
     const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
     const { orders } = useAppSelector(s => s.ordersInfo)
-    const [date, setDate] = useState(new Date());
+  
     const changeDate = async (newDate: Date) => {
         setDate(newDate);
     };
-
-    const { data = [] } = useQuery<IOrder[]>({
-        queryKey: ['orders', date?.toISOString().split("T")[0]],
-        queryFn: () => getAOrdersByDate(date?.toISOString().split("T")[0])
-    })
 
     const totalAmount = data.reduce((acc, { amount }) => {
         return acc + amount
     }, 0)
 
+    // const itemsToPick = data.filter(({ deliveryStatus }) => (deliveryStatus !== "packed"))
+    // console.log(itemsToPick)
 
     useEffect(() => {
         if (data?.length && JSON.stringify(data) !== JSON.stringify(orders)) {
@@ -35,7 +37,6 @@ const OrdersList = () => {
             dispatch(setOrders(initialState.orders));
         }
     }, [dispatch, data, orders]);
-
     return (
         <div className="container mx-auto p-4">
             {/* <h2 className="text-2xl font-semibold mb-4">Orders</h2>  */}
@@ -68,7 +69,6 @@ const OrdersList = () => {
                 </button>
                 {/* </div> */}
             </div>
-
             {orders?.length ? (
                     <div className="bg-white shadow-md rounded-lg overflow-hidden">
                         {/* Responsive Table Wrapper */}
@@ -98,7 +98,7 @@ const OrdersList = () => {
                                             <td className="p-2 whitespace-nowrap">${order?.amount?.toFixed(2)}</td>
                                             <td className={`p-2 whitespace-nowrap 
                                                 ${order?.deliveryStatus === "Packed" && "text-green-300"}
-                                                ${order?.deliveryStatus === "Picking" && "text-yellow-700"}
+                                                ${order?.deliveryStatus === "Picking" && "text-yellow-500"}
                                                 ${order?.deliveryStatus === "Cancelled" && "text-red-500"}
                                                 ${order?.deliveryStatus === "Collected" && "text-green-500"}
                                             `}>

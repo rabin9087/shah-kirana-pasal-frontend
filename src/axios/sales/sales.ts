@@ -7,7 +7,8 @@ export const getTotalSales = async() => {
         const resp = await axiosProcessor({
     method: "get",
     url: `${salesApi}`,
-    isPrivate: false,
+    isPrivate: true,
+    refreshToken: true
         });
         return resp.amount
     } catch (error) {
@@ -20,7 +21,8 @@ export const getAllSales = async() => {
         const resp = await axiosProcessor({
     method: "get",
     url: `${salesApi}/allSales`,
-    isPrivate: false,
+    isPrivate: true,
+    refreshToken: true
         });
         return resp.sales
     } catch (error) {

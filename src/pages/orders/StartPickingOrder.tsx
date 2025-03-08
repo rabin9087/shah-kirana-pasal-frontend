@@ -61,10 +61,6 @@ const StartPickingOrder = () => {
         }
     }, [dispatch, data]);
 
-    // useEffect(() => {
-    //     dispatch(getAOrderAction(orderNumber as string));
-    // }, [dispatch, orderNumber]);
-
     const handleNext = () => {
         if (currentIndex < sortedItems.length - 1) {
             setCurrentIndex(currentIndex + 1);
