@@ -51,7 +51,7 @@ export interface IUser {
   lName: string;
   phone: string;
   password?: string;
-  role: "ADMIN" | "USER" | "";
+  role: 'ADMIN'| 'USER' | 'MODERATOR' | 'SUPERADMIN' | 'PICKER' | "";
   email: string;
   isVerified: boolean;
   verificationCode: string | null;

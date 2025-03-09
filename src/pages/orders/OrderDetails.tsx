@@ -1,5 +1,6 @@
 import { updateAOrder } from "@/axios/order/order";
 import { IOrder } from "@/axios/order/types";
+import { useAppSelector } from "@/hooks";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -9,6 +10,7 @@ interface OrderDetailsProps {
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
+    const { user } = useAppSelector(s => s.userInfo)
     const [status, setStatus] = useState(order?.deliveryStatus);
     const [paymentStatus, setPaymentStatus] = useState(order?.paymentStatus);
 
@@ -18,6 +20,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
         setStatus(newStatus);
         if (order?._id) {
             await updateAOrder(order._id, { deliveryStatus: newStatus });
+            // await updateAOrder(order._id, { deliveryStatus: status, picker: { userId: user._id, name: user.fName + " " + user.lName } });
         }
         return;
     };
@@ -33,7 +36,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
 
     const updateDeliveryStatus = async (status: string) => {
         if (order?._id && order.deliveryStatus !== "Picking") {
-            await updateAOrder(order._id, { deliveryStatus: status })
+            await updateAOrder(order._id, { deliveryStatus: status, picker: { userId: user._id, name: user.fName + " " + user.lName } });
         }
         return;
     }
@@ -46,10 +49,21 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                 <div className="flex justify-end mb-4">
                     <Link
                         to={`/order/orderNumber=/${order?.orderNumber}`}
-                        className="text-white text-right p-2 shadow-md bg-primary rounded-md"
+                        className={`text-white text-right p-2 shadow-md rounded-md 
+                            ${status === "Collected" && "bg-green-500"}
+                            ${status === "Order placed" && "bg-primary"}
+                            ${status === "Picking" && "bg-primary"}
+                            ${status === "Packed" && "bg-green-500"}
+                            ${status === "Cancelled" && "bg-red-500"}
+                            `}
                         onClick={() => updateDeliveryStatus("Picking")}
+
                     >
-                        Start Picking
+                        {status === "Order placed" && "Start Picking"}
+                        {status === "Picking" && "Continue Picking"}
+                        {(status === "Packed") && "Packed"}
+                        {status === "Collected" && "Collected"}
+                        {status === "Cancelled" && "Cancelled"}
                     </Link>
                 </div>
 

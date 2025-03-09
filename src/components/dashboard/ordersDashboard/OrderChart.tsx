@@ -6,15 +6,16 @@ interface IOrderChart {
 }
 const OrderChart = ({ data }: IOrderChart) => {
     const totalArticles = data.map((items) => items.items.length).reduce((acc, item) => { return acc + item }, 0)
-    const articlePacked = data.filter(({ deliveryStatus }) => (deliveryStatus === "Packed")).reduce((acc, { items }) => { return acc + items.length }, 0);
+    const articlePacked = data.filter(({ deliveryStatus }) => (deliveryStatus === "Packed") || (deliveryStatus === "Collected") ).reduce((acc, { items }) => { return acc + items.length }, 0);
     const picking = data.filter(({ deliveryStatus }) => (deliveryStatus === "Picking")).reduce((acc, { items }) => { return acc + items.length }, 0);
+    const awaitingPicking = data.filter(({ deliveryStatus }) => (deliveryStatus === "Order placed")).reduce((acc, { items }) => { return acc + items.length }, 0);
    
     const total = [{
         name: "Order Status",
         "Total Articles": totalArticles,
         "Picking": picking,
         "Completed": articlePacked,
-        "Awaiting Pick": totalArticles - articlePacked - picking
+        "Awaiting Pick": awaitingPicking
     }];
 
     // const chartData = data.map((order) => ({

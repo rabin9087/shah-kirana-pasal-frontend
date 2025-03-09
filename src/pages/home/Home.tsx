@@ -104,6 +104,7 @@ function Home(): JSX.Element {
         title="Sales Products"
         productList={filteredProducts.productsOnSale}
       />
+
       <ProductSection
         title="Snacks"
         productList={filteredProducts.snacks}
@@ -128,7 +129,7 @@ function Home(): JSX.Element {
         title="Our Products"
         productList={filteredProducts.allProducts}
       />
-    </Layout>
+    </Layout >
   );
 }
 export default Home;

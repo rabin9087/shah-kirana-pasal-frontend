@@ -32,8 +32,6 @@ const Sales = () => {
             getTotalSales()
     });
 
-    console.log(data)
-
     const { data: sales = [] } = useQuery({
         queryKey: ['sales'],
         queryFn: () =>

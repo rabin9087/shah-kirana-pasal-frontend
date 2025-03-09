@@ -27,6 +27,7 @@ export interface IOrder  {
     paymentType: string,
     paymentStatus: string,
     amount: number,
+    picker?: {userId: string, name: string},
     createdAt?: Date | string,
     updatedAt?: Date,
 }

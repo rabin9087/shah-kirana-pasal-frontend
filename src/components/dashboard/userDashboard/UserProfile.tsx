@@ -5,6 +5,7 @@ import { getAUser, updateAUser } from '@/axios/user/user.axios';
 import { useParams } from 'react-router';
 import Layout from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const UserProfileEdit = () => {
     const { userPhone } = useParams();
@@ -68,11 +69,11 @@ const UserProfileEdit = () => {
         },
         onSuccess: () => {
             // Handle success (e.g., show success message, refetch data, etc.)
-            alert('User information updated successfully!');
+            toast.success('User information updated successfully!')
         },
         onError: (err: any) => {
             // Handle error
-            alert(`Error: ${err.message || 'Something went wrong!'}`);
+            toast.error(`Error: ${err.message || 'Something went wrong!'}`);
         },
     });
 
@@ -111,6 +112,9 @@ const UserProfileEdit = () => {
                         >
                             <option value="ADMIN">ADMIN</option>
                             <option value="USER">USER</option>
+                            <option value="MODERATOR">MODERATOR</option>
+                            <option value="SUPERADMIN">SUPERADMIN</option>
+                            <option value="PICKER">PICKER</option>
                         </select>
                     </div>
 

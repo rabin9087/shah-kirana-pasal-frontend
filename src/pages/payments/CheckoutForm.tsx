@@ -10,6 +10,8 @@ import { resetCart } from '@/redux/addToCart.slice';
 import { updateCartHistoryInUserAxios, updateCartInUserAxios } from '@/action/user.action';
 import { useNavigate } from 'react-router';
 import { FaRegEdit } from "react-icons/fa";
+import { UserDetailsModal } from './UserDetailsModal';
+import LocationComponent from '../home/GeoLocation';
 
 const CheckoutForm = () => {
     const { user } = useAppSelector((state) => state.userInfo);
@@ -20,6 +22,20 @@ const CheckoutForm = () => {
     const [isAddressComplete, setIsAddressComplete] = useState(false);
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
     const [paymentType, setPaymentType] = useState<"cash" | "card">("cash");
+    const [changeDetails, setChangeDetails] = useState(false);
+    const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+    console.log(location)
+    const [userDetails, setUserDetails] = useState(
+        {
+            fName: user.fName,
+            lName: user.lName,
+            email: user.email,
+            phone: user.phone,
+            address: user.address !=="" ? user.address + ", (" + location?.lat.toString() + ", " + location?.lng.toString() + ")" : location?.lat.toString() + ", " + location?.lng.toString(),
+        })
+    
+    console.log(user.address)
+
     // const [deliveryDate, setDeliveryDate] = useState<{
     //     date: string,
     //     time: string,
@@ -50,7 +66,7 @@ const CheckoutForm = () => {
     const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note }));
 
     const cartAmount = cart.reduce((acc, { orderQuantity, price, salesPrice }) => {
-        return acc + (orderQuantity *  (salesPrice > 0 ? salesPrice : price));
+        return acc + (orderQuantity * (salesPrice > 0 ? salesPrice : price));
     }, 0)
 
     const handelOnAddressChange = (event: any) => {
@@ -130,17 +146,17 @@ const CheckoutForm = () => {
                     // methods like iDEAL, your customer will be redirected to an intermediate
                     // site first to authorize the payment, then redirected to the `return_url`.
 
-                    const { line1, line2, city, postal_code, state, country, phone, name } = contactInfo.shipping
+                    // const { line1, line2, city, postal_code, state, country} = contactInfo.shipping
                     // if (!line1 || !line2 || !city || !state || ! country || !postal_code) {
 
                     // }
-                    const full_address = `${line2 !== "" ? "UNIT " + line2 + " " : ""} ${line1}, ${city}, ${state}, ${postal_code}, ${country}`
+                    // const full_address = `${line2 !== "" ? "UNIT " + line2 + " " : ""} ${line1}, ${city}, ${state}, ${postal_code}, ${country}`
 
                     const customer_details = {
-                        name: name,
-                        phone: phone,
-                        address: full_address,
-                        email: contactInfo.email,
+                        name: userDetails.fName + " " + userDetails.lName,
+                        phone: userDetails.phone,
+                        address: userDetails.address,
+                        email: userDetails.email,
                         items: orderItems as any,
                         deliveryStatus: "Order placed",
                         deliveryDate: {
@@ -162,10 +178,10 @@ const CheckoutForm = () => {
             }
             else if (paymentType === "cash") {
                 const customer_details = {
-                    name: user.fName + " " + user.lName,
-                    phone: user.phone,
-                    address: user.address,
-                    email: user.email,
+                    name: userDetails.fName + " " + userDetails.lName,
+                    phone: userDetails.phone,
+                    address: userDetails.address,
+                    email: userDetails.email,
                     items: orderItems as any,
                     deliveryStatus: "Order placed",
                     deliveryDate: {
@@ -193,6 +209,12 @@ const CheckoutForm = () => {
 
         return setIspending(false)
     };
+
+    useEffect(() => {
+        if (location?.lat && location?.lng) {
+            setUserDetails((prev) => ({ ...prev, address: user.address !== "" ? user.address + ", (" + location?.lat.toString() + ", " + location?.lng.toString() + ")" : location?.lat.toString() + ", " + location?.lng.toString(), }));
+        }
+    }, [location?.lat, location?.lng]);
 
     useEffect(() => {
         if (!user) {
@@ -262,21 +284,28 @@ const CheckoutForm = () => {
                                     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
                                         <div className='flex justify-between'>
                                             <h2 className="text-xl font-semibold text-gray-800 mb-4">User Details</h2>
-                                            <Button type='button'><FaRegEdit size={20} /></Button>
+                                            <Button type='button' onClick={() => setChangeDetails(true)}><FaRegEdit size={20} /></Button>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <p><span className="font-medium">First Name:</span> {user.fName || "N/A"}</p>
-                                            <p><span className="font-medium">Last Name:</span> {user.lName || "N/A"}</p>
-                                            <p><span className="font-medium">Phone:</span> {user.phone || "N/A"}</p>
-                                            <p><span className="font-medium">Email:</span> {user.email || "N/A"}</p>
-                                            <p><span className="font-medium">Address:</span> {user.address || "N/A"}</p>
+                                            <p><span className="font-medium" >First Name:</span> {userDetails.fName || "N/A"}</p>
+                                            <p><span className="font-medium">Last Name:</span> {userDetails.lName || "N/A"}</p>
+                                            <p><span className="font-medium">Phone:</span> {userDetails.phone || "N/A"}</p>
+                                            <p><span className="font-medium">Email:</span> {userDetails.email || "N/A"}</p>
+                                            <p><span className="font-medium">Address:</span> {userDetails.address || "N/A"}</p>
                                         </div>
                                     </div>}
                             </div>
-
+                            <UserDetailsModal
+                                isOpen={changeDetails}
+                                onClose={() => setChangeDetails(false)}
+                                setUserDetails={setUserDetails}
+                                userDetails={userDetails}
+                            />
+                            <LocationComponent setLocation={setLocation} />
                             {orderType === "delivery" && <div className='shadow-md bg-slate-100 rounded-md ps-2'>
                                 <h3 className='p-2 font-bold text-xl'>Shipping Details</h3>
+
                                 <AddressElement
                                     className="p-4"
                                     options={{
@@ -371,7 +400,6 @@ const CheckoutForm = () => {
                                 placeOrderStatus}
                         </Button>
                     </div>
-
                 </>
             )}
         </form>
