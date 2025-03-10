@@ -10,6 +10,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
         queryFn: () => getAOrder(barcode as string)
     })
     const [paymentStatus, setPaymentStatus] = useState(data?.paymentStatus);
+    const [paymentMethod, setPaymentMethod] = useState(data?.paymentType);
     const [status, setStatus] = useState("Order Placed");
     const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
@@ -29,22 +30,20 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
         return;
     };
 
+    const handleChangePaymentMethod = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newStatus = event.target.value;
+        setPaymentMethod(newStatus);
+        if (data?._id) {
+            await updateAOrder(data._id, { paymentType: newStatus });
+        }
+        return;
+    };
+
     useEffect(() => {
         if (data?.deliveryStatus) {
             setStatus(data.deliveryStatus);
         }
-        if (data?.paymentStatus) {
-            setPaymentStatus(data.paymentStatus);
-        }
-    }, [data?.deliveryStatus, data, paymentStatus, data?.paymentStatus])
-    // useEffect(() => {
-    //     if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
-    //         dispatch(setAOrder(data as IOrder));
-    //     } else if (data?._id === "") {
-    //         dispatch(setAOrder(initialState.order as IOrder));
-    //     }
-    // }, [dispatch, data]);
-
+    }, [data?.deliveryStatus, data])
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
@@ -60,8 +59,6 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                             ${status === "Packed" && "bg-green-500"}
                             ${status === "Cancelled" && "bg-red-500"}
                             `}
-
-
                     >
                         {status}
                     </div>
@@ -71,7 +68,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                 <table className="w-full mb-4">
                     <tbody>
                         <tr>
-                            <td className="font-semibold p-1">Order Number:</td>
+                            <td className="font-semibold p-1 whitespace-nowrap">Order Number:</td>
                             <td className="p-1">{data?.orderNumber}</td>
                         </tr>
                         <tr>
@@ -95,15 +92,18 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                             <td className="p-1">{data?.email}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-1">Payment By:</td>
-                            <td className="p-1">{data?.paymentType}</td>
+                            <td className="font-semibold p-1 whitespace-nowrap">Payment By:</td>
+                            <select
+                                className="border p-1 rounded-md bg-white text-gray-700 w-full"
+                                value={paymentMethod}
+                                onChange={handleChangePaymentMethod}
+                            >
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                            </select>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-1">Payment Status:</td>
-                            <td className="font-semibold p-1">{data?.paymentStatus}</td>
-                        </tr>
-                        <tr>
-                            <td className="font-semibold p-1">Change Payment Status:</td>
+                            <td className="font-semibold whitespace-nowrap p-1">Change Payment Status:</td>
                             <td className="p-1">
                                 <select
                                     className="border p-1 rounded-md bg-white text-gray-700 w-full"
@@ -118,15 +118,15 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
 
                         {data?.deliveryDate?.date !== "NY" && (
                             <tr>
-                                <td className="font-semibold p-1">Delivery Date:</td>
+                                <td className="font-semibold p-1 whitespace-nowrap">Delivery Date:</td>
                                 <td className="p-1">{data?.deliveryDate?.date || "Not Specified"}</td>
                             </tr>
                         )}
                         <tr>
-                            <td className="font-semibold p-1">Status:</td>
+                            <td className="font-semibold p-1 whitespace-nowrap">Status:</td>
                             <td className="p-1">
                                 <select
-                                    className="border p-1 rounded-md bg-white text-gray-700 w-full"
+                                    className="border p-1 rounded-md bg-white text-gray-700 w-full whitespace-nowrap"
                                     value={status}
                                     onChange={handleChange}
                                 >
@@ -150,12 +150,12 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                             </td>
                         </tr>
                         <tr >
-                            <td className="font-semibold p-1">Created Date:</td>
-                            <td className="p-1">{data?.createdAt?.toLocaleString().split("T")[0]}</td>
+                            <td className="font-semibold p-1 whitespace-nowrap">Created Date:</td>
+                            <td className="p-1 whitespace-nowrap" >{data?.createdAt?.toLocaleString().split("T")[0]}</td>
                         </tr>
                         <tr>
-                            <td className="font-semibold p-1">Delivery Date:</td>
-                            <td className="p-1">{data?.requestDeliveryDate}</td>
+                            <td className="font-semibold p-1 whitespace-nowrap">Delivery Date:</td>
+                            <td className="p-1 whitespace-nowrap">{data?.requestDeliveryDate}</td>
                         </tr>
                     </tbody>
                 </table>

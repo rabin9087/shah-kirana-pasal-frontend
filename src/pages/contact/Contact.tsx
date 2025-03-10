@@ -1,3 +1,4 @@
+import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 
 const ContactUs = () => {
@@ -56,6 +57,10 @@ const ContactUs = () => {
           >
             www.shahkiranapasal.shop
           </a>
+        </div>
+
+        <div className="flex flex-col items-center space-x-3">
+          <QRCodeGenerator value="https://www.shahkiranapasal.shop"/>
         </div>
       </div>
 

@@ -37,8 +37,7 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                 <div className="mt-4 transition-all duration-300">
                                     <div className="md:flex justify-between">
                                         <div>
-
-
+                                            <p className="text-center text-xl underline"><strong > {order?.orderNumber} </strong></p>
                                             <p className="text-gray-700">
                                                 <strong>Amount:</strong> ${order?.amount?.toFixed(2)}
                                             </p>
@@ -46,8 +45,6 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                                 <strong>Purchased At:</strong>{" "}
                                                 {new Date(order?.purchasedAt)?.toLocaleString()}
                                             </p>
-
-                                            <p className="text-gray-700"><strong>Order number :</strong> {data.orderNumber}</p>
                                             <p className="text-gray-700"><strong>Order status :</strong> {data.deliveryStatus}</p>
                                             <p className="text-gray-700"><strong>Payment status:</strong> {data.paymentStatus}</p>
                                         </div>
