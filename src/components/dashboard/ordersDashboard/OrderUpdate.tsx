@@ -2,23 +2,20 @@ import { IOrder } from "@/axios/order/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAOrder, updateAOrder } from "@/axios/order/order";
 import { useEffect, useState } from "react";
-import { useAppSelector } from "@/hooks";
 import { initialState } from "@/redux/allOrders.slice";
 
 export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarcode: (barcode: string) => void }) => {
-    const { order } = useAppSelector((s) => s.ordersInfo);
-    const [paymentStatus, setPaymentStatus] = useState(order?.paymentStatus);
-
     const { data = initialState.order } = useQuery<IOrder>({
         queryKey: ['order', barcode],
         queryFn: () => getAOrder(barcode as string)
     })
+    const [paymentStatus, setPaymentStatus] = useState(data?.paymentStatus);
     const [status, setStatus] = useState("Order Placed");
     const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
-        if (order?._id) {
-            await updateAOrder(order._id, { deliveryStatus: newStatus });
+        if (data?._id) {
+            await updateAOrder(data._id, { deliveryStatus: newStatus });
             // await updateAOrder(order._id, { deliveryStatus: status, picker: { userId: user._id, name: user.fName + " " + user.lName } });
         }
         return;
@@ -26,8 +23,8 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
     const handleChangePaymentStatus = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setPaymentStatus(newStatus);
-        if (order?._id) {
-            await updateAOrder(order._id, { paymentStatus: newStatus });
+        if (data?._id) {
+            await updateAOrder(data._id, { paymentStatus: newStatus });
         }
         return;
     };
@@ -36,7 +33,10 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
         if (data?.deliveryStatus) {
             setStatus(data.deliveryStatus);
         }
-    }, [data?.deliveryStatus, data])
+        if (data?.paymentStatus) {
+            setPaymentStatus(data.paymentStatus);
+        }
+    }, [data?.deliveryStatus, data, paymentStatus, data?.paymentStatus])
     // useEffect(() => {
     //     if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
     //         dispatch(setAOrder(data as IOrder));
@@ -100,6 +100,10 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                         </tr>
                         <tr>
                             <td className="font-semibold p-1">Payment Status:</td>
+                            <td className="font-semibold p-1">{data?.paymentStatus}</td>
+                        </tr>
+                        <tr>
+                            <td className="font-semibold p-1">Change Payment Status:</td>
                             <td className="p-1">
                                 <select
                                     className="border p-1 rounded-md bg-white text-gray-700 w-full"
@@ -175,7 +179,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                         <tbody>
                             {data?.items?.map((item, index) => (
                                 <tr key={index} className="border-b">
-                                    <td className="p-1 ps-2">{index + 1}</td>
+                                    <td className="p-1 ps-2">{index + 1}.</td>
                                     <td className="p-1 underline">{item?.productId?.sku}</td>
                                     <td className="p-1">
                                         <img
@@ -186,8 +190,8 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                                     </td>
                                     <td className="p-1">{item?.productId?.name}</td>
                                     <td className="p-1">${item?.price?.toFixed(2)}</td>
-                                    <td className="p-1">{item?.quantity}</td>
-                                    <td className="p-1">{item?.supplied ? item?.supplied : 0}</td>
+                                    <td className="p-1 text-center">{item?.quantity}</td>
+                                    <td className="p-1 text-center">{item?.supplied ? item?.supplied : 0}</td>
                                     <td className="p-1 me-2">${(item?.price * item?.quantity).toFixed(2)}</td>
                                 </tr>
                             ))}

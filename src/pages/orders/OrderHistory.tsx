@@ -21,8 +21,8 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
             <h1 className="w-full text-3xl font-bold text-blue-700 text-center">Order History</h1>
             {user?.cartHistory?.length > 0 ? (
                 <div className="mt-6 space-y-6">
-                    {user?.cartHistory.slice(1).map((order: any, index: number) => (
-                        <div key={index} className="bg-white shadow-md rounded-lg py-2 px-1" onClick={() => setOrderNumber(order.orderNumber as string)}>
+                    {user?.cartHistory?.slice(1).map((order: any, index: number) => (
+                        <div key={index} className="bg-white shadow-md rounded-lg py-2 px-1" onClick={() => setOrderNumber(order?.orderNumber as string)}>
                             <button
                                 className="flex justify-between items-center w-full text-left text-xl font-semibold text-gray-800 hover:text-blue-600"
                                 onClick={() => toggleOrderDetails(index)}
@@ -37,37 +37,40 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                 <div className="mt-4 transition-all duration-300">
                                     <div className="md:flex justify-between">
                                         <div>
-                                            <p className="text-center text-xl"><strong > {order?.orderNumber} </strong></p>
+
 
                                             <p className="text-gray-700">
-                                                <strong>Amount:</strong> ${order.amount.toFixed(2)}
+                                                <strong>Amount:</strong> ${order?.amount?.toFixed(2)}
                                             </p>
                                             <p className="text-gray-700">
                                                 <strong>Purchased At:</strong>{" "}
-                                                {new Date(order.purchasedAt).toLocaleString()}
+                                                {new Date(order?.purchasedAt)?.toLocaleString()}
                                             </p>
-                                            <p>Order number : {data?.orderNumber}</p>
-                                            <p>Order status : {data?.deliveryStatus}</p>
+
+                                            <p className="text-gray-700"><strong>Order number :</strong> {data.orderNumber}</p>
+                                            <p className="text-gray-700"><strong>Order status :</strong> {data.deliveryStatus}</p>
+                                            <p className="text-gray-700"><strong>Payment status:</strong> {data.paymentStatus}</p>
                                         </div>
-                                        <div className="flex justify-center items-center mt-4 md:mt-0">
-                                            <QRCodeGenerator value={(order?.orderNumber).toString()} />
-                                        </div>
+                                        {order?.orderNumber && <div className="flex flex-col justify-center items-center mt-4 md:mt-0">
+                                            <QRCodeGenerator value={(order?.orderNumber)?.toString()} />
+                                            <p className="text-center text-xl"><strong > {order?.orderNumber} </strong></p>
+                                        </div>}
                                     </div>
 
                                     <h3 className="text-lg font-semibold text-gray-800 mt-4">Items Ordered:</h3>
                                     <ul className="mt-2 space-y-4">
-                                        {order.items.map((item: any) => (
+                                        {order?.items?.map((item: any) => (
                                             <li key={item._id} className="flex items-center space-x-4 p-4 border rounded-lg">
                                                 <img
-                                                    src={item.productId?.thumbnail}
-                                                    alt={item.productId?.name}
+                                                    src={item?.productId?.thumbnail}
+                                                    alt={item?.productId?.name}
                                                     className="w-16 h-16 object-cover rounded-lg"
                                                 />
                                                 <div>
-                                                    <p className="font-semibold text-gray-900">{item.productId?.name}</p>
-                                                    <p className="text-gray-700">Quantity: {item.orderQuantity}</p>
-                                                    <p className="text-gray-700">Price: ${item.price}</p>
-                                                    {item.note && <p className="text-sm text-gray-500">Note: {item.note}</p>}
+                                                    <p className="font-semibold text-gray-900">{item?.productId?.name}</p>
+                                                    <p className="text-gray-700">Quantity: {item?.orderQuantity}</p>
+                                                    <p className="text-gray-700">Price: ${item?.price}</p>
+                                                    {item?.note && <p className="text-sm text-gray-500">Note: {item?.note}</p>}
                                                 </div>
                                             </li>
                                         ))}

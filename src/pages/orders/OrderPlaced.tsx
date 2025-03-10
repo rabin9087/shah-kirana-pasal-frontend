@@ -18,8 +18,8 @@ export const OrderPlaced: React.FC = () => {
 
 
     useEffect(() => {
-        if (cartHistory.length && latestOrder?.orderNumber) {
-            setOrderNumber(latestOrder.orderNumber);
+        if (cartHistory?.length && latestOrder?.orderNumber) {
+            setOrderNumber(latestOrder?.orderNumber);
         }
     }, [cartHistory]); // Removed `orderNumber` from dependencies to avoid infinite loop
 
@@ -67,6 +67,7 @@ export const OrderPlaced: React.FC = () => {
                                     <p className="text-gray-700"><strong>Amount:</strong> ${latestOrder?.amount?.toFixed(2)}</p>
                                     <p className="text-gray-700"><strong>Purchased At:</strong> {new Date(latestOrder.purchasedAt).toLocaleString()}</p>
                                     <p className="text-gray-700"><strong>Order status:</strong> {data.deliveryStatus}</p>
+                                    <p className="text-gray-700"><strong>Payment status:</strong> {data.paymentStatus}</p>
                                 </div>
                                 <div className="flex justify-center items-center mt-4 md:mt-0">
                                     <QRCodeGenerator value={(latestOrder?.orderNumber).toString()} />
