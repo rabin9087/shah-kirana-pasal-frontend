@@ -1,14 +1,14 @@
 import { IOrder } from "@/axios/order/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAOrder, updateAOrder } from "@/axios/order/order";
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks";
-import { initialState, setAOrder } from "@/redux/allOrders.slice";
+import { useState } from "react";
+import { useAppSelector } from "@/hooks";
+import { initialState } from "@/redux/allOrders.slice";
 
 export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarcode: (barcode: string) => void }) => {
     const { order } = useAppSelector((s) => s.ordersInfo);
     const [paymentStatus, setPaymentStatus] = useState(order?.paymentStatus);
-    const dispatch = useAppDispatch();
+
     const { data = initialState.order } = useQuery<IOrder>({
         queryKey: ['order', barcode],
         queryFn: () => getAOrder(barcode as string)
@@ -32,13 +32,13 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
         return;
     };
 
-    useEffect(() => {
-        if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
-            dispatch(setAOrder(data as IOrder));
-        } else if (data?._id === "") {
-            dispatch(setAOrder(initialState.order as IOrder));
-        }
-    }, [dispatch, data]);
+    // useEffect(() => {
+    //     if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
+    //         dispatch(setAOrder(data as IOrder));
+    //     } else if (data?._id === "") {
+    //         dispatch(setAOrder(initialState.order as IOrder));
+    //     }
+    // }, [dispatch, data]);
 
 
     return (
@@ -71,31 +71,31 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                     <tbody>
                         <tr>
                             <td className="font-semibold p-1">Order Number:</td>
-                            <td className="p-1">{order?.orderNumber}</td>
+                            <td className="p-1">{data?.orderNumber}</td>
                         </tr>
                         <tr>
                             <td className="font-semibold p-1">Order Type:</td>
-                            <td className="p-1">{order?.orderType}</td>
+                            <td className="p-1">{data?.orderType}</td>
                         </tr>
                         <tr>
                             <td className="font-semibold p-1">Name:</td>
-                            <td className="p-1">{order?.name}</td>
+                            <td className="p-1">{data?.name}</td>
                         </tr>
-                        {order?.address !== "" && <tr>
+                        {data?.address !== "" && <tr>
                             <td className="font-semibold p-1">Address:</td>
-                            <td className="p-1">{order?.address}</td>
+                            <td className="p-1">{data?.address}</td>
                         </tr>}
                         <tr>
                             <td className="font-semibold p-1">Phone:</td>
-                            <td className="p-1">{order?.phone}</td>
+                            <td className="p-1">{data?.phone}</td>
                         </tr>
                         <tr>
                             <td className="font-semibold p-1">Email:</td>
-                            <td className="p-1">{order?.email}</td>
+                            <td className="p-1">{data?.email}</td>
                         </tr>
                         <tr>
                             <td className="font-semibold p-1">Payment By:</td>
-                            <td className="p-1">{order?.paymentType}</td>
+                            <td className="p-1">{data?.paymentType}</td>
                         </tr>
                         <tr>
                             <td className="font-semibold p-1">Payment Status:</td>
@@ -111,10 +111,10 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                             </td>
                         </tr>
 
-                        {order?.deliveryDate?.date !== "NY" && (
+                        {data?.deliveryDate?.date !== "NY" && (
                             <tr>
                                 <td className="font-semibold p-1">Delivery Date:</td>
-                                <td className="p-1">{order?.deliveryDate?.date || "Not Specified"}</td>
+                                <td className="p-1">{data?.deliveryDate?.date || "Not Specified"}</td>
                             </tr>
                         )}
                         <tr>
@@ -125,7 +125,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                                     value={status}
                                     onChange={handleChange}
                                 >
-                                    {order?.orderType === "pickup" ? <>
+                                    {data?.orderType === "pickup" ? <>
                                         <option value="Order placed">Order placed</option>
 
                                         <option value="Picking">Picking</option>
@@ -136,7 +136,8 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                                         <option value="Order placed">Order placed</option>
                                         <option value="Picking">Picking</option>
                                         <option value="Packed">Packed</option>
-                                        <option value="Out for Delivery">Out for Delivery</option>                                        <option value="Delivered">Delivered</option>
+                                        <option value="Out for Delivery">Out for Delivery</option>
+                                        <option value="Delivered">Delivered</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </>}
 
@@ -145,11 +146,11 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                         </tr>
                         <tr >
                             <td className="font-semibold p-1">Created Date:</td>
-                            <td className="p-1">{order?.createdAt?.toLocaleString().split("T")[0]}</td>
+                            <td className="p-1">{data?.createdAt?.toLocaleString().split("T")[0]}</td>
                         </tr>
                         <tr>
                             <td className="font-semibold p-1">Delivery Date:</td>
-                            <td className="p-1">{order?.requestDeliveryDate}</td>
+                            <td className="p-1">{data?.requestDeliveryDate}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -171,7 +172,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                             </tr>
                         </thead>
                         <tbody>
-                            {order?.items?.map((item, index) => (
+                            {data?.items?.map((item, index) => (
                                 <tr key={index} className="border-b">
                                     <td className="p-1 ps-2">{index + 1}</td>
                                     <td className="p-1 underline">{item?.productId?.sku}</td>
@@ -196,7 +197,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
 
                 {/* Total Amount */}
                 <div className="flex justify-end mt-4">
-                    <strong>Total Amount: ${order?.amount?.toFixed(2)}</strong>
+                    <strong>Total Amount: ${data?.amount?.toFixed(2)}</strong>
                 </div>
 
                 {/* Close Button */}
