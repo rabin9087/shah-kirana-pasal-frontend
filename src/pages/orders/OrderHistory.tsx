@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppSelector } from "@/hooks";
 import { IOrder } from "@/axios/order/types";
+import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 
 interface IOrderNumber {
     setOrderNumber: (orderNumber: string) => void;
@@ -8,7 +9,7 @@ interface IOrderNumber {
 }
 
 const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
-    const { cartHistory } = useAppSelector((s) => s.userInfo.user);
+    const { user } = useAppSelector((s) => s.userInfo);
     const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
 
     const toggleOrderDetails = (index: number) => {
@@ -16,13 +17,12 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
     };
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold text-blue-700 text-center">Order History</h1>
-
-            {cartHistory?.length > 0 ? (
+        <div className="w-full mx-auto p-6">
+            <h1 className="w-full text-3xl font-bold text-blue-700 text-center">Order History</h1>
+            {user?.cartHistory?.length > 0 ? (
                 <div className="mt-6 space-y-6">
-                    {cartHistory.map((order: any, index: number) => (
-                        <div key={index} className="bg-white shadow-md rounded-lg p-6" onClick={() => setOrderNumber(order.orderNumber as string)}>
+                    {user?.cartHistory.slice(1).map((order: any, index: number) => (
+                        <div key={index} className="bg-white shadow-md rounded-lg py-2 px-1" onClick={() => setOrderNumber(order.orderNumber as string)}>
                             <button
                                 className="flex justify-between items-center w-full text-left text-xl font-semibold text-gray-800 hover:text-blue-600"
                                 onClick={() => toggleOrderDetails(index)}
@@ -35,15 +35,24 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
 
                             {expandedOrder === index && (
                                 <div className="mt-4 transition-all duration-300">
-                                    <p className="text-gray-700">
-                                        <strong>Amount:</strong> ${order.amount.toFixed(2)}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <strong>Purchased At:</strong>{" "}
-                                        {new Date(order.purchasedAt).toLocaleString()}
-                                    </p>
-                                    <p>Order number : {data?.orderNumber}</p>
-                                    <p>Order status : {data?.deliveryStatus}</p>
+                                    <div className="md:flex justify-between">
+                                        <div>
+                                            <p className="text-center text-xl"><strong > {order?.orderNumber} </strong></p>
+
+                                            <p className="text-gray-700">
+                                                <strong>Amount:</strong> ${order.amount.toFixed(2)}
+                                            </p>
+                                            <p className="text-gray-700">
+                                                <strong>Purchased At:</strong>{" "}
+                                                {new Date(order.purchasedAt).toLocaleString()}
+                                            </p>
+                                            <p>Order number : {data?.orderNumber}</p>
+                                            <p>Order status : {data?.deliveryStatus}</p>
+                                        </div>
+                                        <div className="flex justify-center items-center mt-4 md:mt-0">
+                                            <QRCodeGenerator value={(order?.orderNumber).toString()} />
+                                        </div>
+                                    </div>
 
                                     <h3 className="text-lg font-semibold text-gray-800 mt-4">Items Ordered:</h3>
                                     <ul className="mt-2 space-y-4">

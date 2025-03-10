@@ -1,20 +1,19 @@
-import { updateAOrder } from "@/axios/order/order";
 import { IOrder } from "@/axios/order/types";
-import { useAppSelector } from "@/hooks";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getAOrder, updateAOrder } from "@/axios/order/order";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { initialState, setAOrder } from "@/redux/allOrders.slice";
 
-interface OrderDetailsProps {
-    order: IOrder;
-    onClose: () => void;
-}
-
-const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
-    const { user } = useAppSelector(s => s.userInfo)
-    const [status, setStatus] = useState(order?.deliveryStatus);
+export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarcode: (barcode: string) => void }) => {
+    const { order } = useAppSelector((s) => s.ordersInfo);
     const [paymentStatus, setPaymentStatus] = useState(order?.paymentStatus);
-
-
+    const dispatch = useAppDispatch();
+    const { data = initialState.order } = useQuery<IOrder>({
+        queryKey: ['order', barcode],
+        queryFn: () => getAOrder(barcode as string)
+    })
+    const [status, setStatus] = useState(data?.deliveryStatus);
     const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
@@ -24,7 +23,6 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
         }
         return;
     };
-
     const handleChangePaymentStatus = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setPaymentStatus(newStatus);
@@ -34,12 +32,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
         return;
     };
 
-    const updateDeliveryStatus = async (status: string) => {
-        if (order?._id && order.deliveryStatus !== "Picking") {
-            await updateAOrder(order._id, { deliveryStatus: status, picker: { userId: user._id, name: user.fName + " " + user.lName } });
+    useEffect(() => {
+        if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
+            dispatch(setAOrder(data as IOrder));
+        } else if (data?._id === "") {
+            dispatch(setAOrder(initialState.order as IOrder));
         }
-        return;
-    }
+    }, [dispatch, data]);
+
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
@@ -47,8 +47,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                 <h3 className="text-lg sm:text-xl font-semibold mb-4">Order Details</h3>
 
                 <div className="flex justify-end mb-4">
-                    <Link
-                        to={`/order/orderNumber=/${order?.orderNumber}`}
+                    <div
                         className={`text-white text-right p-2 shadow-md rounded-md 
                             ${status === "Collected" && "bg-green-500"}
                             ${status === "Order placed" && "bg-primary"}
@@ -56,7 +55,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                             ${status === "Packed" && "bg-green-500"}
                             ${status === "Cancelled" && "bg-red-500"}
                             `}
-                        onClick={() => updateDeliveryStatus(status === "Order placed" ? "Picking" : status)}
+
 
                     >
                         {status === "Order placed" && "Start Picking"}
@@ -64,7 +63,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                         {(status === "Packed") && "Packed"}
                         {status === "Collected" && "Collected"}
                         {status === "Cancelled" && "Cancelled"}
-                    </Link>
+                    </div>
                 </div>
 
                 {/* Main Table for Order Details */}
@@ -82,7 +81,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                             <td className="font-semibold p-1">Name:</td>
                             <td className="p-1">{order?.name}</td>
                         </tr>
-                        {order.address !== "" && <tr>
+                        {order?.address !== "" && <tr>
                             <td className="font-semibold p-1">Address:</td>
                             <td className="p-1">{order?.address}</td>
                         </tr>}
@@ -203,7 +202,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                 {/* Close Button */}
                 <button
                     className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
-                    onClick={onClose}
+                    onClick={() => setBarcode("")}
                 >
                     Close
                 </button>
@@ -211,5 +210,3 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
         </div>
     );
 };
-
-export default OrderDetails;

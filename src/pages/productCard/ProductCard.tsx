@@ -100,7 +100,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
             {itemExist(item._id, cart).length ? (
               <ChangeItemQty item={{ ...item, orderQuantity: orderQty || 0 }} />
             ) : (
-              <AddToCartButton item={{ ...item, orderQuantity: orderQty || 0 }} />
+                 <AddToCartButton item={{ ...item, orderQuantity: orderQty || 0 }} />
             )}
           </CardFooter>
         </div>

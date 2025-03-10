@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAOrder } from "@/axios/order/order";
 import { IOrder } from "@/axios/order/types";
+import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 
 export const OrderPlaced: React.FC = () => {
     const { user } = useAppSelector((s) => s.userInfo);
@@ -14,7 +15,7 @@ export const OrderPlaced: React.FC = () => {
 
     // Get the most recent order (cartHistory[0])
     const latestOrder = cartHistory?.[0];
-   
+
 
     useEffect(() => {
         if (cartHistory.length && latestOrder?.orderNumber) {
@@ -30,7 +31,6 @@ export const OrderPlaced: React.FC = () => {
 
     return (
         <Layout title={cartHistory.length > 0 ? "" : "Order Placed"}>
-
             {cartHistory.length < 0 ?
                 <div className="flex flex-col items-center justify-center h-[80vh]">
                     <img
@@ -59,12 +59,19 @@ export const OrderPlaced: React.FC = () => {
                     {latestOrder ? (
                         <div className="mt-6 w-full max-w-3xl bg-white shadow-md rounded-lg p-6">
                             <p className="text-center text-xl"><strong >Order Number: {latestOrder?.orderNumber} </strong>
+                                {/* <QRCodeGenerator value="8767" / */}
+                                <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
                             </p>
-                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
-                            <p className="text-gray-700"><strong>Amount:</strong> ${latestOrder?.amount?.toFixed(2)}</p>
-                            <p className="text-gray-700"><strong>Purchased At:</strong> {new Date(latestOrder.purchasedAt).toLocaleString()}</p>
-                            <p className="text-gray-700"><strong>Order status:</strong> {data.deliveryStatus}</p>
-
+                            <div className="md:flex justify-between">
+                                <div>
+                                    <p className="text-gray-700"><strong>Amount:</strong> ${latestOrder?.amount?.toFixed(2)}</p>
+                                    <p className="text-gray-700"><strong>Purchased At:</strong> {new Date(latestOrder.purchasedAt).toLocaleString()}</p>
+                                    <p className="text-gray-700"><strong>Order status:</strong> {data.deliveryStatus}</p>
+                                </div>
+                                <div className="flex justify-center items-center mt-4 md:mt-0">
+                                    <QRCodeGenerator value={(latestOrder?.orderNumber).toString()} />
+                                </div>
+                            </div>
                             <h3 className="text-lg font-semibold text-gray-800 mt-4">Items Ordered:</h3>
                             <ul className="mt-2 space-y-4">
                                 {latestOrder.items.map((item: any) => (
@@ -87,9 +94,9 @@ export const OrderPlaced: React.FC = () => {
                     ) : (
                         <p className="text-gray-600 mt-6">No recent order found.</p>
                     )}
-                    <div>
+                    <div className="w-full md:max-w-3xl bg-white shadow-md rounded-lg">
                         {/* <h3 className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600">Your Order History </h3> */}
-                        <OrderHistory setOrderNumber={setOrderNumber} data={ data} />
+                        <OrderHistory setOrderNumber={setOrderNumber} data={data} />
                     </div>
                     <button
                         className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600"

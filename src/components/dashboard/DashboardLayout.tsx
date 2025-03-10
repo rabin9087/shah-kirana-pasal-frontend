@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router';
 import Sales from './sales/Sales';
 
 const DashboardLayout = () => {
-    const menuItems = ['users', 'products', 'categories', 'orders', 'sales'];
+    const menuItems = ['users', 'products', 'categories', 'orders', 'sales',];
     const { menu } = useParams();
     const navigate = useNavigate();
     const [activeMenu, setActiveMenu] = useState(menuItems.includes(menu as string) ? menu : menuItems[0]);

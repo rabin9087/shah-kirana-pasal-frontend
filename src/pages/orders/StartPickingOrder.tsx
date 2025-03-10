@@ -124,7 +124,7 @@ const StartPickingOrder = () => {
             setNotFound(true)
         }
     };
-
+ 
     return (
         <>
             {<div className="w-full h-screen max-w-md mx-auto flex flex-col">
@@ -132,7 +132,7 @@ const StartPickingOrder = () => {
                     <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
                     <div>
                         <Button className="bg-primary text-white p-2 rounded-md ms-2"
-                            onClick={() => updateDeliveryStatus("Picking")}
+                            onClick={() => updateDeliveryStatus(order?.deliveryStatus === "Picking" ? "Picking" : order?.deliveryStatus as string)}
                         >
                             {"<"} BACK
                         </Button>

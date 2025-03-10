@@ -7,14 +7,13 @@ type qrCodeValue = {
 
 export const QRCodeGenerator = ({ value }: qrCodeValue) => {
   return (
-    <div>
       <QRCode
+        className="w-28 h-28"
         size={2}
-        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+        style={{ height: "auto", maxWidth: "100%", width: "" }}
         value={value}
         viewBox={`0 0 256 256`}
       />
-    </div>
   )
 }
 
