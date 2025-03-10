@@ -35,7 +35,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
     };
 
     const updateDeliveryStatus = async (status: string) => {
-        if (order?._id && order.deliveryStatus !== "Picking") {
+        if (order?._id) {
             await updateAOrder(order._id, { deliveryStatus: status, picker: { userId: user._id, name: user.fName + " " + user.lName } });
         }
         return;

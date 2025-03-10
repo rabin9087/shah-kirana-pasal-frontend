@@ -25,7 +25,7 @@ import Payment from "./pages/payments/Payment";
 import SuccessfullPayment from "./pages/payments/SuccessfullPayment";
 import MyProfile from "./pages/my-profile/MyProfile";
 import Dashboard from "./components/dashboard/Dashboard";
-import PrivateRouter, { AdminPrivateRouter } from "./pages/users/PrivateRouter";
+import PrivateRouter, { AdminPrivateRouter, PickerPrivateRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
 import StartPickingOrder from "./pages/orders/StartPickingOrder";
@@ -37,7 +37,7 @@ import { ToastContainer } from "react-toastify";
 import ShowProductDetails from "./pages/product/components/showProduct/ShowProductDetails";
 import UpdateProductForm from "./pages/product/components/showProduct/UpdateProductDetails";
 
-// Set the app element
+// Set the app elementchec
 Modal.setAppElement('#root');
 
 function App() {
@@ -222,16 +222,14 @@ function App() {
         <Route
           path="/order/orderNumber=/:orderNumber"
           element={
-            <AdminPrivateRouter>
+            <PickerPrivateRouter>
               <StartPickingOrder />
-            </AdminPrivateRouter>
+            </PickerPrivateRouter>
           }
           errorElement={<ErrorPage />}
         />
 
-       
-
-
+      
         <Route
           path="/my-profile"
           element={<PrivateRouter><MyProfile /></PrivateRouter>}
@@ -246,13 +244,13 @@ function App() {
 
         <Route
           path="/dashboard"
-          element={<AdminPrivateRouter><Dashboard /></AdminPrivateRouter>}
+          element={<PickerPrivateRouter><Dashboard /></PickerPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/dashboard/:menu"
-          element={<AdminPrivateRouter><Dashboard /></AdminPrivateRouter>}
+          element={<PickerPrivateRouter><Dashboard /></PickerPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 
@@ -260,7 +258,7 @@ function App() {
 
         <Route
           path="/dashboard/user/:userPhone"
-          element={<AdminPrivateRouter><UserDetails /></AdminPrivateRouter>}
+          element={<PickerPrivateRouter><UserDetails /></PickerPrivateRouter>}
           errorElement={<ErrorPage />}
         />
 

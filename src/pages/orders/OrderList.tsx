@@ -105,7 +105,7 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
                                             `}>
                                             {order?.deliveryStatus}
                                         </td>
-                                        <td className="p-2 whitespace-nowrap">{order?.paymentStatus}</td>
+                                        <td className={`p-2 whitespace-nowrap ${order?.paymentStatus === "Paid" ? "text-green-500" : "text-red-500"}`}>{order?.paymentStatus}</td>
                                         <td className="p-2 whitespace-nowrap">{order?.createdAt?.toLocaleString().split("T")[0]}</td>
                                         <td className="p-2 whitespace-nowrap">{order?.requestDeliveryDate}</td>
                                         <td className="p-2 whitespace-nowrap text-center">{order?.items?.reduce((acc, { supplied }) => {

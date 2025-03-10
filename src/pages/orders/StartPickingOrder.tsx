@@ -27,8 +27,8 @@ const parseLocation = (location: string): ProductLocation => {
 
 const sortItems = (items: any) => {
     return [...items].sort((a, b) => {
-        const locA = parseLocation(a.productId.productLocation);
-        const locB = parseLocation(b.productId.productLocation);
+        const locA = parseLocation(a.productId?.productLocation);
+        const locB = parseLocation(b.productId?.productLocation);
         return locA.A - locB.A || locA.B - locB.B || locA.S - locB.S;
     });
 };
@@ -124,7 +124,7 @@ const StartPickingOrder = () => {
             setNotFound(true)
         }
     };
- 
+
     return (
         <>
             {<div className="w-full h-screen max-w-md mx-auto flex flex-col">
@@ -132,7 +132,7 @@ const StartPickingOrder = () => {
                     <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
                     <div>
                         <Button className="bg-primary text-white p-2 rounded-md ms-2"
-                            onClick={() => updateDeliveryStatus(order?.deliveryStatus === "Picking" ? "Picking" : order?.deliveryStatus as string)}
+                            onClick={() => updateDeliveryStatus(order?.deliveryStatus === "Order placed" ? "Picking" : order?.deliveryStatus as string)}
                         >
                             {"<"} BACK
                         </Button>
@@ -155,7 +155,7 @@ const StartPickingOrder = () => {
                                 </div>
                                 <div className="min-h-[4rem]">
                                     <h3 className="text-base my-2 text-start font-bold ms-2">
-                                        {currentItem?.productId.name}
+                                        {currentItem?.productId?.name}
                                     </h3>
                                 </div>
 
@@ -166,9 +166,9 @@ const StartPickingOrder = () => {
 
                                 <div className="flex justify-between gap-2 text-left w-full">
                                     <div className="ms-2 py-2">
-                                        <p className="text-xs">SKU: <strong className="text-xl"> {currentItem?.productId.sku}</strong> {barcode}</p>
-                                        <p className="text-xs">Price: ${currentItem?.productId.price}</p>
-                                        <p className="text-xs">SOH: {currentItem?.productId.quantity}</p>
+                                        <p className="text-xs">SKU: <strong className="text-xl"> {currentItem?.productId?.sku}</strong> {barcode}</p>
+                                        <p className="text-xs">Price: ${currentItem?.productId?.price}</p>
+                                        <p className="text-xs">SOH: {currentItem?.productId?.quantity}</p>
                                     </div>
                                     <img
                                         src={currentItem?.productId?.thumbnail}

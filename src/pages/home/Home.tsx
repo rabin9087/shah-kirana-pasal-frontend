@@ -19,7 +19,7 @@ function Home(): JSX.Element {
   });
 
   useEffect(() => {
-    if (data.length) {
+    if (data?.length) {
       dispatch(setProducts(data));
     }
   }, [dispatch, data]);

@@ -307,7 +307,6 @@ export const NotFoundModel = ({ closeModal }: OpenNotFoundModelProps) => {
     const dispatch = useAppDispatch()
 
     const closeNotFoundModal = () => {
-        console.log('first')
         dispatch(setAProductFoundStatus({ status: false, openNotFoundModal: false }))
         return closeModal()
     }

@@ -7,47 +7,41 @@ import { initialState } from "@/redux/allOrders.slice";
 export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarcode: (barcode: string) => void }) => {
     const { data = initialState.order } = useQuery<IOrder>({
         queryKey: ['order', barcode],
-        queryFn: () => getAOrder(barcode as string)
-    })
+        queryFn: () => getAOrder(barcode as string),
+    });
+
     const [paymentStatus, setPaymentStatus] = useState(data?.paymentStatus);
     const [paymentMethod, setPaymentMethod] = useState(data?.paymentType);
     const [status, setStatus] = useState("Order Placed");
-    const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newStatus = event.target.value;
-        setStatus(newStatus);
-        if (data?._id) {
-            await updateAOrder(data._id, { deliveryStatus: newStatus });
-            // await updateAOrder(order._id, { deliveryStatus: status, picker: { userId: user._id, name: user.fName + " " + user.lName } });
-        }
-        return;
-    };
-    const handleChangePaymentStatus = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newStatus = event.target.value;
-        setPaymentStatus(newStatus);
-        if (data?._id) {
-            await updateAOrder(data._id, { paymentStatus: newStatus });
-        }
-        return;
-    };
 
-    const handleChangePaymentMethod = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newStatus = event.target.value;
-        setPaymentMethod(newStatus);
-        if (data?._id) {
-            await updateAOrder(data._id, { paymentType: newStatus });
-        }
-        return;
-    };
-
+    // Update state when new order data is fetched
     useEffect(() => {
-        if (data?.deliveryStatus) {
+        if (data?._id) {
             setStatus(data.deliveryStatus);
+            setPaymentMethod(data.paymentType);
+            setPaymentStatus(data.paymentStatus);
         }
-    }, [data?.deliveryStatus, data])
+    }, [data]);
+
+    // Debounced API update function
+    useEffect(() => {
+        if (!data?._id) return;
+
+        const updateOrder = async () => {
+            await updateAOrder(data?._id as string, {
+                deliveryStatus: status,
+                paymentStatus,
+                paymentType: paymentMethod
+            });
+        };
+
+        const timer = setTimeout(updateOrder, 500); // Debounce API call by 500ms
+        return () => clearTimeout(timer);
+    }, [status, paymentStatus, paymentMethod, data?._id]);
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
-            <div className="bg-white p-4 sm:p-6 rounded-lg w-full sm:w-3/5 shadow-lg max-h-[90vh] overflow-auto">
+            {data?._id ? <div className="bg-white p-4 sm:p-6 rounded-lg w-full sm:w-3/5 shadow-lg max-h-[90vh] overflow-auto">
                 <h3 className="text-lg sm:text-xl font-semibold mb-4">Order Details</h3>
 
                 <div className="flex justify-end mb-4">
@@ -92,11 +86,15 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                             <td className="p-1">{data?.email}</td>
                         </tr>
                         <tr>
+                            <td className="font-semibold p-1">Payment Status:</td>
+                            <td className={`p-1 ${data?.paymentStatus === "Paid" ? "text-green-500" : "text-red-500"}`}>{data?.paymentStatus}</td>
+                        </tr>
+                        <tr>
                             <td className="font-semibold p-1 whitespace-nowrap">Payment By:</td>
                             <select
                                 className="border p-1 rounded-md bg-white text-gray-700 w-full"
                                 value={paymentMethod}
-                                onChange={handleChangePaymentMethod}
+                                onChange={(e) => setPaymentMethod(e.target.value)}
                             >
                                 <option value="Cash">Cash</option>
                                 <option value="Card">Card</option>
@@ -108,7 +106,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                                 <select
                                     className="border p-1 rounded-md bg-white text-gray-700 w-full"
                                     value={paymentStatus}
-                                    onChange={handleChangePaymentStatus}
+                                    onChange={(e) => setPaymentStatus(e.target.value)}
                                 >
                                     <option value="Paid">Paid</option>
                                     <option value="Not Yet Paid">Not Yet Paid</option>
@@ -128,7 +126,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                                 <select
                                     className="border p-1 rounded-md bg-white text-gray-700 w-full whitespace-nowrap"
                                     value={status}
-                                    onChange={handleChange}
+                                    onChange={(e) => setStatus(e.target.value)}
                                 >
                                     {data?.orderType === "pickup" ? <>
                                         <option value="Order placed">Order placed</option>
@@ -212,7 +210,15 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                 >
                     Close
                 </button>
-            </div>
+            </div> : <div className="bg-white p-4 sm:p-6 rounded-lg w-full sm:w-3/5 shadow-lg max-h-[90vh] overflow-auto">
+                <h3 className="text-red-500 text-center">Order not found!</h3>
+                <button
+                    className="text-center mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
+                    onClick={() => setBarcode("")}
+                >
+                    Close
+                </button>
+            </div>}
         </div>
     );
 };

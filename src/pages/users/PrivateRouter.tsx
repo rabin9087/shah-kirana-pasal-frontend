@@ -32,3 +32,15 @@ export const AdminPrivateRouter = ({ children }: { children: JSX.Element }) => {
             <Unauthorized/>
     );
 };
+
+export const PickerPrivateRouter = ({ children }: { children: JSX.Element }) => {
+    // const location = useLocation();
+    // console.log(location)
+    // const fromLocation = location?.state?.from?.location?.pathname
+    const { user } = useAppSelector((state) => state.userInfo);
+    return user?.role === "ADMIN" || user?.role === "PICKER" ? (
+        children
+    ) : (
+        <Unauthorized />
+    );
+};
