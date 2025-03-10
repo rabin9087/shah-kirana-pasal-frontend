@@ -19,7 +19,7 @@ const OrdersDashboard = () => {
                 return <OrderUpdate barcode={barcode} setBarcode={setBarcode} />
         }
         return (<>
-                <div className="flex justify-end items-center">
+                <div className="flex justify-end items-center me-6">
                         <ScanOrderProduct setBarcode={setBarcode} />
                 </div>
                 <OrderChart data={data} />

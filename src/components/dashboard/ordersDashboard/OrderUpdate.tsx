@@ -1,7 +1,7 @@
 import { IOrder } from "@/axios/order/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAOrder, updateAOrder } from "@/axios/order/order";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "@/hooks";
 import { initialState } from "@/redux/allOrders.slice";
 
@@ -13,7 +13,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
         queryKey: ['order', barcode],
         queryFn: () => getAOrder(barcode as string)
     })
-    const [status, setStatus] = useState(data?.deliveryStatus);
+    const [status, setStatus] = useState("Order Placed");
     const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
@@ -32,6 +32,11 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
         return;
     };
 
+    useEffect(() => {
+        if (data?.deliveryStatus) {
+            setStatus(data.deliveryStatus);
+        }
+    }, [data?.deliveryStatus, data])
     // useEffect(() => {
     //     if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
     //         dispatch(setAOrder(data as IOrder));
@@ -58,11 +63,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
 
 
                     >
-                        {status === "Order placed" && "Start Picking"}
-                        {status === "Picking" && "Continue Picking"}
-                        {(status === "Packed") && "Packed"}
-                        {status === "Collected" && "Collected"}
-                        {status === "Cancelled" && "Cancelled"}
+                        {status}
                     </div>
                 </div>
 
