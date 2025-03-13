@@ -76,6 +76,7 @@ export type serverReturnDataType = {
   message?: string;
   result?: [];
   user?: IUser;
+  accessJWT?: string;
   users?: IUser[];
   userEmail_Phone?: string;
   tokens?: { accessJWT: string; refreshJWT: string };

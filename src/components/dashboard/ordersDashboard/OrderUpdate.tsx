@@ -44,7 +44,11 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
             {data?._id ? <div className="bg-white p-4 sm:p-6 rounded-lg w-full sm:w-3/5 shadow-lg max-h-[90vh] overflow-auto">
                 <h3 className="text-lg sm:text-xl font-semibold mb-4">Order Details</h3>
 
-                <div className="flex justify-end mb-4">
+                <div className="flex justify-between items-center mb-4">
+                    <div >
+                        <strong className="font-semibold p-1 whitespace-nowrap">Picker:</strong>
+                        <span className="p-1 whitespace-nowrap" >{data?.picker?.name}</span>
+                    </div>
                     <div
                         className={`text-white text-right p-2 shadow-md rounded-md 
                             ${status === "Collected" && "bg-green-500"}
@@ -147,6 +151,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                                 </select>
                             </td>
                         </tr>
+                        
                         <tr >
                             <td className="font-semibold p-1 whitespace-nowrap">Created Date:</td>
                             <td className="p-1 whitespace-nowrap" >{data?.createdAt?.toLocaleString().split("T")[0]}</td>

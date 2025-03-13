@@ -68,8 +68,10 @@ function App() {
       }
     };
 
-    autoLogin();
-  }, [dispatch, fromLocation]);
+    if (!user._id) {  // Only run autoLogin if the user is not logged in
+      autoLogin();
+    }
+  }, [dispatch, fromLocation, user._id]);
 
   useEffect(() => {
     if (user?._id) {
@@ -202,14 +204,14 @@ function App() {
         <Route
           path="/payment"
           element={<PrivateRouter><Payment /></PrivateRouter >
-}
+          }
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/payment/success"
           element={<PrivateRouter><SuccessfullPayment /></PrivateRouter >
-}
+          }
           errorElement={<ErrorPage />}
         />
 
@@ -229,7 +231,7 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
-      
+
         <Route
           path="/my-profile"
           element={<PrivateRouter><MyProfile /></PrivateRouter>}
@@ -273,7 +275,7 @@ function App() {
           element={<NotFoundPage />}
           errorElement={<ErrorPage />}
         />
-      
+
       </Routes>
       <Loader />
       <ToastContainer

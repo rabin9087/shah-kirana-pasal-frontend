@@ -179,48 +179,13 @@ export const getUserAction = () => async (dispatch: AppDispatch) => {
 }; 
   
 export const autoLoginUserAction = () => async (dispatch: AppDispatch) => {
-  const { user, status } = await getNewAccessJWT();
+  const { user, status, accessJWT } = await getNewAccessJWT();
   if (status === "success") { 
+    sessionStorage.setItem("accessJWT", accessJWT as string)
     dispatch(setUser(user as IUser));
-    //  if (user?.cart) {
-    //    const cartItems = user.cart.filter((item) => item.productId?._id !== "")
-    //      .map(({ productId, orderQuantity, note }) => ({
-    //     _id: productId?._id,
-    //     status: productId?.status,
-    //     name: productId?.name,
-    //     alternateName: productId?.alternateName,
-    //     parentCategoryID: productId?.parentCategoryID,
-    //     sku: productId?.sku,
-    //     slug: productId?.slug,
-    //     description: productId?.description,
-    //     images: productId?.images,
-    //     brand: productId?.brand,
-    //     price: productId?.price,
-    //     quantity: productId?.quantity,
-    //     imageToDelete: productId?.imageToDelete,
-    //     productWeight: productId?.productWeight,
-    //     storedAt: productId?.storedAt,
-    //     aggrateRating: productId?.aggrateRating,
-    //     thumbnail: productId?.thumbnail,
-    //     qrCode: productId?.qrCodeNumber, 
-    //     salesPrice: productId?.salesPrice,
-    //     salesStartDate: productId?.salesStartDate,
-    //     salesEndDate: productId?.salesEndDate,
-    //     productReviews: productId?.productReviews,
-    //     productLocation: productId?.productLocation,
-    //     orderQuantity,
-    //     note,
-    //   }));
-
-    //   cartItems.forEach((item) => dispatch(setAddToCart(item as IAddToCartTypes))); 
-    //   return true; // Return true after dispatching all cart items
-    // }
-    // return true
   }
   return false
 }
-
-
   
 export const getAllUserAction = () => async (dispatch: AppDispatch) => {
     const { users, status } = await getAllUsers();

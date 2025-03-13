@@ -26,7 +26,6 @@ export function Profile() {
     };
 
     const handleOnLogin = () => navigate("/sign-in");
-    console.log(role)
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -1,20 +1,17 @@
 import { IAxiosProcessParams, TAxiosProcessor } from "@/types";
 import axios from "axios";
+
 export const rootApi = import.meta.env.PROD
   ? import.meta.env.VITE_PROD_API
   : import.meta.env.VITE_DEV_API;
 
-export const getAccessJWt = () => {
-  return sessionStorage.getItem("accessJWT");
-};
-export const getRefreshJWT = () => { 
-  return localStorage.getItem("refreshJWT");
-};
+export const getAccessJWT = () => sessionStorage.getItem("accessJWT");
+export const getRefreshJWT = () => localStorage.getItem("refreshJWT");
 
 export const axiosInstance = axios.create({
-    baseURL: rootApi,
-    headers: { "Content-type": "application/json; charset = UTF-8" }
-})
+  baseURL: rootApi,
+  headers: { "Content-Type": "application/json; charset=UTF-8" },
+});
 
 export const axiosProcessor = async ({
   method,
@@ -23,23 +20,27 @@ export const axiosProcessor = async ({
   isPrivate,
   refreshToken,
   params,
-}: IAxiosProcessParams): TAxiosProcessor => {
-  const token = refreshToken ? getRefreshJWT() : getAccessJWt();
-  const headers = {
-    Authorization: isPrivate ? token : null,
-  };
+}: IAxiosProcessParams): Promise<TAxiosProcessor> => {
   try {
-    const { data } = await axios({
+    // Get the appropriate token
+    const token = refreshToken ? getRefreshJWT() : getAccessJWT();
+    const headers: Record<string, string> = {};
+
+    if (isPrivate && token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    // Make API request using axiosInstance
+    const { data } = await axiosInstance({
       method,
       url,
       data: obj,
       headers,
-      params
+      params,
     });
-    return data
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+    return data;
   } catch (error: any) {
-    return error.response.data;
+    return error.response?.data || { status: "error", message: "Something went wrong!" };
   }
 };
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjA0ODE0NTI5MjAiLCJpYXQiOjE3Mzg3Mzg1MDksImV4cCI6MTc0MDAzNDUwOX0.jYV9wiM43-DZEJVf-PUEjqMH8QE-XWkohzEvrzXUsZM"

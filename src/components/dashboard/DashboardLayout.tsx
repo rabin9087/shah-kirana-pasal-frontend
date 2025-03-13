@@ -1,23 +1,39 @@
-import { useEffect, useState } from 'react';
-import UsersDashboard from './userDashboard/UserDashboard';
-import { Button } from '../ui/button';
-import ProductsDashboard from './productsDashboard/ProductsDashboard';
-import CategoriesDashboard from './categoryDashboard/CategoriesDashboard';
-import OrdersDashboard from './ordersDashboard/OrdersDashboard';
-import { useNavigate, useParams } from 'react-router';
-import Sales from './sales/Sales';
+import { useEffect, useState } from "react";
+import UsersDashboard from "./userDashboard/UserDashboard";
+import { Button } from "../ui/button";
+import ProductsDashboard from "./productsDashboard/ProductsDashboard";
+import CategoriesDashboard from "./categoryDashboard/CategoriesDashboard";
+import OrdersDashboard from "./ordersDashboard/OrdersDashboard";
+import { useNavigate, useParams } from "react-router";
+import Sales from "./sales/Sales";
+import { useAppSelector } from "@/hooks";
 
 const DashboardLayout = () => {
-    const menuItems = ['users', 'products', 'categories', 'orders', 'sales',];
+    const menuItems = ["users", "products", "categories", "orders", "sales"];
+    const pickerMenu = ["orders"]; // Menu for PICKER role
+    const { user } = useAppSelector((state) => state.userInfo);
     const { menu } = useParams();
     const navigate = useNavigate();
-    const [activeMenu, setActiveMenu] = useState(menuItems.includes(menu as string) ? menu : menuItems[0]);
+
+    // Get allowed menu items based on role
+    const getMenuItems = () => {
+        if (user.role === "ADMIN") return menuItems;
+        if (user.role === "PICKER") return pickerMenu;
+        return [];
+    };
+
+    const allowedMenus = getMenuItems();
+
+    // Set initial menu based on user's role
+    const [activeMenu, setActiveMenu] = useState<string>(
+        allowedMenus.includes(menu as string) ? (menu as string) : allowedMenus[0]
+    );
 
     useEffect(() => {
-        if (menuItems.includes(menu as string)) {
+        if (menu && allowedMenus.includes(menu)) {
             setActiveMenu(menu);
         }
-    }, [menu]);
+    }, [menu, allowedMenus]);
 
     const handleMenuClick = (item: string) => {
         setActiveMenu(item);
@@ -26,15 +42,15 @@ const DashboardLayout = () => {
 
     const renderContent = () => {
         switch (activeMenu) {
-            case 'users':
+            case "users":
                 return <UsersDashboard />;
-            case 'products':
+            case "products":
                 return <ProductsDashboard />;
-            case 'categories':
+            case "categories":
                 return <CategoriesDashboard />;
-            case 'orders':
+            case "orders":
                 return <OrdersDashboard />;
-            case 'sales':
+            case "sales":
                 return <Sales />;
             default:
                 return <div>Select a menu item to view details</div>;
@@ -44,11 +60,11 @@ const DashboardLayout = () => {
     return (
         <div className="overflow-x-auto">
             <div className="flex justify-center gap-2">
-                {menuItems.map((item) => (
+                {allowedMenus.map((item) => (
                     <Button
                         key={item}
                         onClick={() => handleMenuClick(item)}
-                        className={`px-4 py-2 rounded-md focus:outline-none ${activeMenu === item ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'
+                        className={`px-4 py-2 rounded-md focus:outline-none ${activeMenu === item ? "bg-primary text-white" : "bg-gray-200 text-gray-700"
                             }`}
                     >
                         {item.charAt(0).toUpperCase() + item.slice(1)}

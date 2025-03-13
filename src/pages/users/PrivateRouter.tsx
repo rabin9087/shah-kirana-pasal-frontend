@@ -7,7 +7,7 @@ import { Navigate, useLocation } from "react-router-dom";
     // console.log(location)
     // const fromLocation = location?.state?.from?.location?.pathname
     const {  user} = useAppSelector((state) => state.userInfo);
-     return user?.role === "USER" || user?.role === "ADMIN" ? (
+     return user?.role !== "" ? (
         children
     ) : (
         <Navigate

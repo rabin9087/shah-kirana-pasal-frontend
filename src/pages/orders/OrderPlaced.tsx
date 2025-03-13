@@ -84,8 +84,11 @@ export const OrderPlaced: React.FC = () => {
                                         />
                                         <div>
                                             <p className="font-semibold text-gray-900">{item.productId?.name}</p>
-                                            <p className="text-gray-700">Quantity: {item.orderQuantity}</p>
-                                            <p className="text-gray-700">Price: ${item.price}</p>
+                                            <p className="text-gray-700">Quantity: {item?.orderQuantity}</p>
+                                            <p className="text-gray-700">Price: Rs. {item?.productId?.salesPrice ? item?.productId?.salesPrice : item?.price}
+                                                <p className="line-through">{item?.productId?.salesPrice && "Rs." + item?.price } </p>
+                                            </p>
+                                            
                                             {item.note && <p className="text-sm text-gray-500">Note: {item.note}</p>}
                                         </div>
                                     </li>
