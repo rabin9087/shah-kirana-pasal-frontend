@@ -53,7 +53,6 @@ export const getAOrder = async(orderNumber: string) => {
     url: `${orderApi}` + "/orderNumber=" + orderNumber,
     isPrivate: true,
     });
-    
     return response.order
   } catch (error) {
     throw new Error("Failed to update product");

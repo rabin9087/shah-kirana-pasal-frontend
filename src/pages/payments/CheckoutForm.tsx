@@ -20,11 +20,12 @@ const CheckoutForm = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [isAddressComplete, setIsAddressComplete] = useState(false);
+    const { language } = useAppSelector((state) => state.settings)
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
     const [paymentType, setPaymentType] = useState<"cash" | "card">("cash");
     const [changeDetails, setChangeDetails] = useState(false);
     const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-    console.log(location)
+
     const [userDetails, setUserDetails] = useState(
         {
             fName: user.fName,
@@ -34,15 +35,6 @@ const CheckoutForm = () => {
             address: user.address !=="" ? user.address + ", (" + location?.lat.toString() + ", " + location?.lng.toString() + ")" : location?.lat.toString() + ", " + location?.lng.toString(),
         })
     
-    console.log(user.address)
-
-    // const [deliveryDate, setDeliveryDate] = useState<{
-    //     date: string,
-    //     time: string,
-    // }>({
-    //     date: "",
-    //     time: "",
-    // });
     const [requestDeliveryDate, setRequestDeliveryDate] = useState<string>("")
     const [contactInfo, setContactInfo] = useState({
         email: user.email,
@@ -241,11 +233,11 @@ const CheckoutForm = () => {
                 {isAddressComplete && <Button
                     type="button"
                     onClick={() => setIsAddressComplete(false)} className='w-fit my-4'>
-                    &lt;  {" "}Previous
+                    &lt;  {" "}{language === "en" ? "Previous" : "अघिल्लो"}
                 </Button>}
                 <div className='flex flex-col gap-2'>
                     <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                        <h3 className='p-2 font-bold text-xl' >Order Type</h3>
+                        <h3 className='p-2 font-bold text-xl' >{language=== "en" ? "Order Type" : "अर्डर प्रकार"}</h3>
                         <div className="flex items-center space-x-4">
                             <Button
                                 type='button'
@@ -255,7 +247,7 @@ const CheckoutForm = () => {
                                     }`}
                                 onClick={() => setOrderType("pickup")}
                             >
-                                Pick Up
+                                {language === "en" ? "Pick up" : "`पसलबाट उठाउनुहोस्`"}
                             </Button>
 
                             <Button
@@ -266,7 +258,7 @@ const CheckoutForm = () => {
                                     }`}
                                 onClick={() => setOrderType("delivery")}
                             >
-                                Delivery
+                                {language === "en" ? "Delivery" : "डिलीवरी"}
                             </Button>
                         </div>
                     </div>
@@ -283,16 +275,17 @@ const CheckoutForm = () => {
 
                                     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
                                         <div className='flex justify-between'>
-                                            <h2 className="text-xl font-semibold text-gray-800 mb-4">User Details</h2>
+                                            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                                                {language === "en" ? "User's Details" : "प्रयोगकर्ताको विवरण"}</h2>
                                             <Button type='button' onClick={() => setChangeDetails(true)}><FaRegEdit size={20} /></Button>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <p><span className="font-medium" >First Name:</span> {userDetails.fName || "N/A"}</p>
-                                            <p><span className="font-medium">Last Name:</span> {userDetails.lName || "N/A"}</p>
-                                            <p><span className="font-medium">Phone:</span> {userDetails.phone || "N/A"}</p>
-                                            <p><span className="font-medium">Email:</span> {userDetails.email || "N/A"}</p>
-                                            <p><span className="font-medium">Address:</span> {userDetails.address || "N/A"}</p>
+                                            <p><span className="font-medium" >{language === "en" ? "First Name" : "पहिलो नाम"}:</span> {userDetails.fName || "N/A"}</p>
+                                            <p><span className="font-medium">{language === "en" ? "Last Name" : "अन्तिम नाम"}:</span> {userDetails.lName || "N/A"}</p>
+                                            <p><span className="font-medium">{language === "en" ? "Phone" : "फोन"}:</span> {userDetails.phone || "N/A"}</p>
+                                            <p><span className="font-medium">{language === "en" ? "Email" : "इमेल"}:</span> {userDetails.email || "N/A"}</p>
+                                            <p><span className="font-medium">{language === "en" ? "Address" : "ठेगाना"}:</span> {userDetails.address || "N/A"}</p>
                                         </div>
                                     </div>}
                             </div>
@@ -325,23 +318,12 @@ const CheckoutForm = () => {
                                 />
                             </div>}
 
-                            {<DeliveryDateSelector orderType={orderType} requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />}                        </div>
-                        {/* <label htmlFor='deliveryDate'>Delivery Date: </label>
-                                <input id='deliveryDate' type="date" name="deliveryDate" required onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    const date = (e.target.value);
-                                    setRequestDeliveryDate(date);
-                                }} /> <br /> */}
-                        {/* <label htmlFor='deliveryTime'>Delivery Time: </label>
-                                <input id='deliveryTime' type="time" name="deliveryTime" onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    const time = e.target.value;
-                                    setDeliveryDate((prev) => ({...prev, time}));
-                                }} /> */}
-
-
+                            {<DeliveryDateSelector orderType={orderType} requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />}
+                        </div>
 
                         <div className='flex justify-center text-center m-4'>
                             <Button type="button" onClick={() => setIsAddressComplete(true)} className='w-[200px]'>
-                                Next
+                                {language === "en" ? "Next" : "अर्को पेज"}
                             </Button>
                         </div>
                     </>
@@ -349,7 +331,7 @@ const CheckoutForm = () => {
                     <>
                         <div className='flex flex-col gap-2'>
                             <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                <h3 className='p-2 font-bold text-xl' >Payment Type</h3>
+                                    <h3 className='p-2 font-bold text-xl' >{language === "en" ? "Payment Type": "भुक्तान प्रकार"}</h3>
                                 <div className="flex items-center space-x-4">
                                     <Button type='button'
                                         className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "cash"
@@ -358,7 +340,7 @@ const CheckoutForm = () => {
                                             }`}
                                         onClick={() => setPaymentType("cash")}
                                     >
-                                        Cash
+                                            {language === "en" ? "Cash" : "कैश"}
                                     </Button>
 
                                     <Button
@@ -369,16 +351,15 @@ const CheckoutForm = () => {
                                             }`}
                                         onClick={() => setPaymentType("card")}
                                     >
-                                        Card
+                                            {language === "en" ? "Card" : " कार्ड"}
                                     </Button>
                                 </div>
                             </div>
                         </div>
                         <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                            <h3 className='p-2 font-bold text-xl text-center' >Amount to be paid: {cartAmount?.toFixed(2)}</h3></div>
+                                <h3 className='p-2 font-bold text-xl text-center' > {language === "en" ? "Amount to be paid  Rs.:" : "तिर्नुपर्ने रकम:  रु."} {cartAmount?.toFixed(2)}</h3></div>
                         {paymentType === "card" && <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />}
                     </>
-
                 )}
             </div>
 
@@ -397,7 +378,7 @@ const CheckoutForm = () => {
                                 </div>
                                 <span className="ms-2">Processing payment...</span>
                             </div> :
-                                placeOrderStatus}
+                                language === "en" ? placeOrderStatus : "अर्डर गर्नुहोस"}
                         </Button>
                     </div>
                 </>

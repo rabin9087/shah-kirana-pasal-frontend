@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { initialState } from "@/redux/allOrders.slice";
 
 export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarcode: (barcode: string) => void }) => {
+    
     const { data = initialState.order } = useQuery<IOrder>({
         queryKey: ['order', barcode],
         queryFn: () => getAOrder(barcode as string),

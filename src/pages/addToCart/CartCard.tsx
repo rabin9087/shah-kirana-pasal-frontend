@@ -14,7 +14,7 @@ import { useState } from "react"
 
 const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
     const { cart } = useAppSelector((state) => state.addToCartInfo)
-    
+    const { language } = useAppSelector((state) => state.settings)
     const [opennNote, setOpenNote] = useState(false);
     const [note, setNote] = useState(item.note || "");
     const orderQty = getOrderNumberQuantity(item._id, cart)
@@ -26,7 +26,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
     }
 
     const handleOnResetCart = () => {
-        dispatch(setAddToCart({...item, orderQuantity: 0}))
+        dispatch(setAddToCart({ ...item, orderQuantity: 0 }))
     }
 
     const handelOnChangeNote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -49,7 +49,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                 </Link>
 
                 <CardTitle className="w-full text-sm hover:underline "><Link to={`/product/${item.qrCodeNumber}`}>
-                    {item.name}
+                    {language === "en" ? item.name : item.alternateName ? item.alternateName : item.name}
                 </Link></CardTitle>
             </div>
             <div className="flex items-center justify-between w-full px-2">
@@ -70,8 +70,8 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                     </div>
                 </div>
                 <div className="text-xl w-fit text-start items-center my-auto">
-                    <p> ${((item.salesPrice > 0 ? item.salesPrice : item.price) * item.orderQuantity).toFixed(2)} </p>
-                    {item.salesPrice > 0 && <p className="text-sm text-end  text-gray-500">was ${(item.price * item.orderQuantity).toFixed(2)}</p>}
+                    <p> {language === "en" ? "Rs." : "रु."}{((item.salesPrice > 0 ? item.salesPrice : item.price) * item.orderQuantity).toFixed(2)} </p>
+                    {item.salesPrice > 0 && <p className="text-sm text-end  text-gray-500 line-through">{language === "en" ? "was Rs." : "पहिले रु."}{(item.price * item.orderQuantity).toFixed(2)}</p>}
                 </div>
 
             </div>
@@ -80,8 +80,8 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                     className="underline cursor-pointer ps-2 pb-2"
                     onClick={() => setOpenNote(!opennNote)}
                 >
-                   
-                    Add note
+
+                   {language === "en" ? "Add note" : "नोट लेख्नुहोस्"}
                 </p>
                 {opennNote && (
                     <>

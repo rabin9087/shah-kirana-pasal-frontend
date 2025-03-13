@@ -36,6 +36,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import ShowProductDetails from "./pages/product/components/showProduct/ShowProductDetails";
 import UpdateProductForm from "./pages/product/components/showProduct/UpdateProductDetails";
+import Settings from "./components/setting/Settings";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -198,6 +199,12 @@ function App() {
         <Route
           path="/cart"
           element={<AddToCart />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/setting"
+          element={<Settings />}
           errorElement={<ErrorPage />}
         />
 

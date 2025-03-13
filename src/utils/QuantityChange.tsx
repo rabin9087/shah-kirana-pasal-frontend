@@ -1,16 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { IAddToCartTypes } from "@/pages/addToCart";
 import { setAddToCart } from "@/redux/addToCart.slice";
 
 export const AddToCartButton = ({ item }: { item: IAddToCartTypes }) => {
+    const { language } = useAppSelector((state) => state.settings)
+
     const dispatch = useAppDispatch();
     const handleOnAddToCart = () => {
         dispatch(setAddToCart({ ...item, orderQuantity: 1 }));
     };
     return (
         <Button variant={"default"} onClick={handleOnAddToCart} className="w-full">
-            Add To Cart
+            {language === "en" ? "Add To Cart": "कार्टमा थप्नुहोस्"}
         </Button>
     );
 };

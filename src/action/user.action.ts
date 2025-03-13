@@ -1,9 +1,8 @@
 
-import { createAdmin, createUser, forgetPassword, getAllUsers, getNewAccessJWT, getUser, loginUser, logoutUser, otp_PasswordVerify, updateCartHistoryInUser, updateCartInUser, update_Forget_Password } from "@/axios/user/user.axios";
+import { createAdmin, createUser, forgetPassword, getNewAccessJWT, getUser, loginUser, logoutUser, otp_PasswordVerify, updateCartHistoryInUser, updateCartInUser, update_Forget_Password } from "@/axios/user/user.axios";
 import { IAddToCartTypes, IUpdateCartToUserTypes } from "@/pages/addToCart";
 import { setLoading } from "@/redux/Loading.slice";
 import { setAddToCart } from "@/redux/addToCart.slice";
-import { setUsers } from "@/redux/dashboard.slice";
 import { logOut, setEmail_Phone, setUser } from "@/redux/user.slice";
 import { AppDispatch } from "@/store";
 import {
@@ -187,9 +186,3 @@ export const autoLoginUserAction = () => async (dispatch: AppDispatch) => {
   return false
 }
   
-export const getAllUserAction = () => async (dispatch: AppDispatch) => {
-    const { users, status } = await getAllUsers();
-  if (status === "success") {
-      dispatch(setUsers(users as IUser[]));
-    }
-    };

@@ -121,14 +121,17 @@ export const updateCartHistoryInUser = (phone: string, items: IUpdateCartToUserT
 
 // cartHistory
 
-export const getAllUsers = async() => {
-  const res = await axiosProcessor({
+export const getAllUsers = async () => {
+  try {
+    const res = await axiosProcessor({
     method: "get",
     url: userApi + "/all",
     isPrivate: true,
-    // refreshToken: true
   });
-  return res
+  return res.users ?? []
+  } catch (error) {
+     throw new Error("Failed to update product");
+  }
 };
 
 export const updateUserProfile = (data: FormData) => {
@@ -137,7 +140,6 @@ export const updateUserProfile = (data: FormData) => {
     url: userApi+ "/profile",
     isPrivate: true,
     obj: data,
-    // refreshToken: true
   });
 };
 
@@ -148,6 +150,5 @@ export const updateAUser = (phone: string, data: object) => {
     isPrivate: true,
     refreshToken: true,
     obj: data,
-    // refreshToken: true
   });
 };

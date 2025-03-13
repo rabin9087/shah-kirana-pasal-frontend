@@ -111,6 +111,7 @@ const ProductsDashboard = () => {
                             <TableHead>Image</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Name</TableHead>
+                            <TableHead>Alt Name</TableHead>
                             <TableHead>Price</TableHead>
                             <TableHead>Quantity</TableHead>
                             <TableHead>BarCodeNumber</TableHead>
@@ -121,7 +122,7 @@ const ProductsDashboard = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {products.map(({ _id, status, name, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku }, i) => (
+                        {products.map(({ _id, status, name, alternateName, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku }, i) => (
                             <TableRow key={_id}>
                                 <TableCell className="font-medium">{i + 1}.</TableCell>
                                 <TableCell className="font-medium w-20 h-20"><img className="w-16 h-12 rounded-sm object-fill border-4 border-gray-300" src={thumbnail} /></TableCell>
@@ -144,6 +145,7 @@ const ProductsDashboard = () => {
                                     </React.Fragment>
                                 </TableCell>
                                 <TableCell className="whitespace-nowrap">{name}</TableCell>
+                                <TableCell className="whitespace-nowrap">{alternateName}</TableCell>
                                 <TableCell className=""><div>
                                     ${price}
                                 </div>{salesPrice && <span className="flex text-yellow-500 min-w-fit"> Sale:$ {salesPrice}</span>}</TableCell>

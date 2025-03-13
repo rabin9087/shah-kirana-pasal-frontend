@@ -11,6 +11,7 @@ import { useAppSelector } from "@/hooks";
 const STRIPE_SECRET_KEY =  import.meta.env.VITE_STRIPE_PROMISE
 const Payment = () => {
     const { cart } = useAppSelector(s => s.addToCartInfo)
+    const { language } = useAppSelector(s => s.settings)
     const total = cart.reduce((acc, { orderQuantity, price }) => {
         return acc + orderQuantity * price
     }, 0)
@@ -31,7 +32,7 @@ const Payment = () => {
     }
     return (
 
-        <Layout title="Payment Details">
+        <Layout title={language === "en" ? "Payment Details" : "भुक्तानी विवरणहरू"}>
             <Elements stripe={stripePromise} options={{ clientSecret: data?.clientSecret }} >
                 <CheckoutForm />
             </Elements>

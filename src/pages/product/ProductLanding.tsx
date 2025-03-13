@@ -18,6 +18,7 @@ const ProductLanding = () => {
     const navigate = useNavigate();
     const { product } = useAppSelector((s) => s.productInfo);
     const { cart } = useAppSelector((state) => state.addToCartInfo);
+    const { language } = useAppSelector((state) => state.settings)
     const orderQty = getOrderNumberQuantity(product._id, cart);
     const index = cart.find((item) => item._id === product._id);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -85,11 +86,14 @@ const ProductLanding = () => {
 
                     {/* Product Details */}
                     <div className="border-4 border-primary md:mx-16 ps-6 p-2 ">
-                        <h3 className="text-sm md:text-xl font-semibold text-gray-800 mb-4">{product.name}</h3>
+                        <h3 className="text-sm md:text-xl font-semibold text-gray-800 mb-4">
+                            {language === "en" ? product.name : product.alternateName ? product.alternateName : product.name}
+
+                        </h3>
                         <div className="flex justify-between items-center font-bold">
                             <div className="flex justify-start items-start font-bold">
                                 <span className={`text-xl mt-1 text-gray-600 ${product.salesPrice > 0 ? "mb-1" : "mb-4"}`}>
-                                    Rs.
+                                    {language === "en" ? "Rs.": "रु."}
                                 </span>
                                 <span className="text-3xl">
                                     {Math.floor(product.salesPrice > 0 ? product.salesPrice : product.price)}
@@ -99,12 +103,12 @@ const ProductLanding = () => {
                                 </span>
                             </div>
                             <div className="flex justify-center items-center me-4">
-                                <p className="text-sm text-gray-400">${product.salesPrice > 0 ? product.salesPrice : product.price }/item</p>
+                                <p className="text-sm text-gray-400">{language === "en" ? "Rs." : "रु."}{product.salesPrice > 0 ? product.salesPrice : product.price }/item</p>
                             </div>
                            
                         </div>
 
-                        {product.salesPrice > 0 && <p className="text-sm rounded-sm bg-yellow-400 w-fit px-2 text-gray-600 mb-4">save ${(product.price - product.salesPrice).toFixed(2)}</p>}
+                        {product.salesPrice > 0 && <p className="text-sm rounded-sm bg-yellow-400 w-fit px-2 text-gray-600 mb-4">save {language === "en" ? "Rs." : "रु."}{(product.price - product.salesPrice).toFixed(2)}</p>}
                         {/* Quantity and Add to Cart */}
                         <div className="flex items-center gap-4 mb-4 mt-4 w-full md:w-48">
                             {!itemExist(product._id, cart).length ? (

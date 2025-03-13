@@ -12,17 +12,21 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Link, useNavigate } from "react-router-dom";
 import { logOutUserAction } from "@/action/user.action";
 import { resetCart } from "@/redux/addToCart.slice";
-
+import { IoSettingsOutline } from "react-icons/io5";
 export function Profile() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { user } = useAppSelector((state) => state.userInfo);
+    const { language } = useAppSelector((state) => state.settings);
     const { _id, profile, fName, lName, role } = user || {};
     const handleOnSignout = async () => {
+
         if (await dispatch(logOutUserAction())) {
             dispatch(resetCart());
             navigate("/sign-in");
         }
+        localStorage.removeItem("refreshJWT")
+        sessionStorage.removeItem("accessJWT")
     };
 
     const handleOnLogin = () => navigate("/sign-in");
@@ -35,14 +39,14 @@ export function Profile() {
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>{language === "en" ? "My Account" : "मेरो खाता"}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                    <Link to="/my-profile">My Profile</Link>
+                    <Link to="/my-profile">{language === "en" ? "My Profile" : "मेरो प्रोफाइल"}</Link>
                 </DropdownMenuItem>
                 {
                     (role === "ADMIN" || role === "PICKER") && (<DropdownMenuItem>
-                        <Link to="/dashboard">Dashboard</Link>
+                        <Link to="/dashboard">{language === "en" ?  "Dashboard" : "ड्यासबोर्ड"}</Link>
                     </DropdownMenuItem>)
                 }
 
@@ -59,7 +63,10 @@ export function Profile() {
                     </>
                 )}
                 <DropdownMenuItem>
-                    <Link to="/order-placed">Purchased History</Link>
+                    <Link to="/order-placed">{language === "en" ?  "Purchased History": "खरिद गरिएको इतिहास"}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex">
+                    <Link to="/setting" className="flex items-center gap-2"><IoSettingsOutline /><span> {language === "en" ? "Setting" : "सेटिङ"} </span> </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                     {_id ? (
@@ -67,14 +74,14 @@ export function Profile() {
                             onClick={handleOnSignout}
                             className="w-full bg-red-500 text-white hover:bg-red-600 transition-colors"
                         >
-                            Log Out
+                            {language === "en" ? "Log Out" : "लग आउट"}
                         </Button>
                     ) : (
                         <Button
                             onClick={handleOnLogin}
                             className="w-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
                         >
-                            Log In
+                                {language === "en" ?  "Log In" : "लग इन"}
                         </Button>
                     )}
 

@@ -26,11 +26,6 @@ const OrdersDashboard = () => {
                 queryFn: () => getAOrdersByDate(formattedDate),
         });
 
-        // If barcode is scanned, show OrderUpdate component
-        if (barcode) {
-                return <OrderUpdate barcode={barcode} setBarcode={setBarcode} />;
-        }
-
         // Filter orders based on status and user role
         const ordersToPick = useMemo(
                 () => data.filter((order) => order.deliveryStatus === "Order placed"),
@@ -56,31 +51,34 @@ const OrdersDashboard = () => {
                         navigate(`/order/orderNumber=/${ordersToPick[0].orderNumber}`);
                         return;
                 }
-                
+
                 setIsModalOpen(true);
         };
 
         return (
                 <>
-                        {adminRoles.includes(user.role) && (
-                                <div className="flex justify-between items-center">
-                                        <Button type="button" onClick={handleOnOrderPick}>Start Picking</Button>
-                                        <ScanOrderProduct setBarcode={setBarcode} />
-                                </div>
-                        )}
-
-                        <OrderChart data={data} />
-                        {user.role === "ADMIN" && <OrdersList data={data} date={date} setDate={setDate} />}
-                        {isModalOpen && (
-                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                        <div className="bg-white p-4 mx-10 rounded-md shadow-md max-w-md w-full flex flex-col justify-center items-center">
-                                                <h3 className="text-red-500">No more orders to pick</h3>
-                                                <Button variant="outline" onClick={() => setIsModalOpen(false)} className="mt-2">
-                                                        Close
-                                                </Button>
+                        <>
+                                {adminRoles.includes(user.role) && (
+                                        <div className="flex justify-between items-center">
+                                                <Button type="button" onClick={handleOnOrderPick}>Start Picking</Button>
+                                                <ScanOrderProduct setBarcode={setBarcode} />
                                         </div>
-                                </div>
-                        )}
+                                )}
+
+                                <OrderChart data={data} />
+                                {user.role === "ADMIN" && <OrdersList data={data} date={date} setDate={setDate} />}
+                                {isModalOpen && (
+                                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                                <div className="bg-white p-4 mx-10 rounded-md shadow-md max-w-md w-full flex flex-col justify-center items-center">
+                                                        <h3 className="text-red-500">No more orders to pick</h3>
+                                                        <Button variant="outline" onClick={() => setIsModalOpen(false)} className="mt-2">
+                                                                Close
+                                                        </Button>
+                                                </div>
+                                        </div>
+                                )}
+                        </>
+                        {barcode && <OrderUpdate barcode={barcode} setBarcode={setBarcode} />}
                 </>
         );
 };

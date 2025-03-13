@@ -13,8 +13,8 @@ import { IAddToCartTypes } from "../addToCart"
 
 const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: string}> = ({ item, addClass }) => {
   const { cart } = useAppSelector((state) => state.addToCartInfo)
+  const { language } = useAppSelector((state) => state.settings)
   const orderQty = getOrderNumberQuantity(item._id, cart)
-
 
   return (
     <>
@@ -45,12 +45,12 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
         <CardHeader className="p-4 pb-2 pt-4">
           <CardTitle className="text-lg font-semibold text-gray-800 h-20 overflow-hidden text-ellipsis line-clamp-3">
             <Link to={`/product/${item.qrCodeNumber}`} className="hover:underline">
-              {item.name}
+              {language === "en" ? item.name : item.alternateName ? item.alternateName : item.name}
             </Link>
           </CardTitle>
           {item.salesPrice && (
             <div className="w-fit mt-2 bg-yellow-300 text-sm font-bold px-2 py-1 inline-block rounded">
-              SAVE ${(item.price - item.salesPrice).toFixed(2)}
+              SAVE {language === "en" ? "Rs." : "रु."}{(item.price - item.salesPrice).toFixed(2)}
             </div>
           )}
         </CardHeader>
@@ -63,14 +63,14 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
               <div className="flex justify-between items-start font-bold">
                 <div className="flex justify-start items-start">
                   <span className="font-medium">
-                    Rs. {Math.floor(item.salesPrice)}
+                    {language === "en" ? "Rs." : "रु."}{Math.floor(item.salesPrice)}
                   </span>
                   <span className="text-sm">
                     {((item.price) % 1 * 100).toFixed(0).padStart(2, '0')}
                   </span>
                 </div>
                 <span className="text-sm text-gray-500 line-through ms-2 my-auto">
-                  Rs. {item.price.toFixed(2)}
+                  {language === "en" ? "Rs." : "रु."}{item.price.toFixed(2)}
                 </span>
               </div>
             ) : (
@@ -79,7 +79,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
                     Rs.
                   </span> */}
                   <span className="font-medium">
-                    Rs. {Math.floor(item.salesPrice > 0 ? item.salesPrice : item.price)}
+                    {language === "en" ? "Rs." : "रु."}{Math.floor(item.salesPrice > 0 ? item.salesPrice : item.price)}
                   </span>
                   <span className="text-sm">
                     {((item.salesPrice > 0 ? item.salesPrice : item.price) % 1 * 100).toFixed(0).padStart(2, '0')}
@@ -89,7 +89,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
             <p className="min-h-5">
               {item.quantity <= 5 && (
                 <p className="text-sm text-red-500">
-                  Only {item.quantity} left in stock!
+                  {language === "en" ? `Only ${item.quantity} left in stock!` : `स्टकमा केवल ${item.quantity} ओटा मात्र बाँकी छ!`}
                 </p>
               )}
             </p>

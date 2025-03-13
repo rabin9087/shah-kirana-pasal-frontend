@@ -1,5 +1,5 @@
-import { configureStore} from "@reduxjs/toolkit";
-import loadingreducer from "./redux/Loading.slice";
+import { configureStore } from "@reduxjs/toolkit";
+import loadingReducer from "./redux/Loading.slice";
 import userReducer from "./redux/user.slice";
 import sidebarReducer from "./redux/sidebar.slice";
 import categoryReducer from "./redux/category.slice";
@@ -7,36 +7,54 @@ import productReducer from "./redux/product.slice";
 import addToCartReducer from "./redux/addToCart.slice";
 import dashboardDataSlice from "./redux/dashboard.slice";
 import ordersSlice from "./redux/allOrders.slice";
-import storage from 'redux-persist/lib/storage'
-import {persistStore,persistReducer} from 'redux-persist'
+import settingsReducer from "./redux/setting.slice";
 
-const persistStorage = {
-  key: 'cart',
-  storage
-}
+import storage from "redux-persist/lib/storage";
+import { persistStore, persistReducer } from "redux-persist";
+import { combineReducers } from "redux";
 
-const persistedReducer = persistReducer(persistStorage, addToCartReducer)
+// Define persist configurations
+const cartPersistConfig = {
+  key: "cart",
+  storage,
+};
+
+const settingsPersistConfig = {
+  key: "settings",
+  storage,
+};
+
+// Wrap reducers with persistReducer
+const persistedCartReducer = persistReducer(cartPersistConfig, addToCartReducer);
+const persistedSettingsReducer = persistReducer(settingsPersistConfig, settingsReducer);
+
+// Combine all reducers
+const rootReducer = combineReducers({
+  loader: loadingReducer,
+  sidebar: sidebarReducer,
+  userInfo: userReducer,
+  categoryInfo: categoryReducer,
+  productInfo: productReducer,
+  addToCartInfo: persistedCartReducer,
+  dashboardData: dashboardDataSlice,
+  ordersInfo: ordersSlice,
+  settings: persistedSettingsReducer, // Persist settings slice
+});
+
+// Create the Redux store
 export const store = configureStore({
-  reducer: {
-    loader: loadingreducer,
-    sidebar: sidebarReducer,
-    userInfo: userReducer,
-    categoryInfo: categoryReducer,
-    productInfo: productReducer,
-    addToCartInfo: persistedReducer,
-    dashboardData: dashboardDataSlice,
-    ordersInfo: ordersSlice,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
     }),
-})
-export const persistedStore=persistStore(store)
+});
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+// Persist the store
+export const persistedStore = persistStore(store);
+
+// Infer the `RootState` and `AppDispatch` types from the store
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
