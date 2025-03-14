@@ -97,7 +97,6 @@ const UpdateProduct = () => {
         const { name, value } = e.target
         setValue(name as keyof UpdateProductSchema, value);
 
-        console.log(name as keyof UpdateProductSchema, value)
         // setUpdateForm((prevForm) => ({ ...prevForm, [name as keyof ProductSchema]: value }))
     }
 

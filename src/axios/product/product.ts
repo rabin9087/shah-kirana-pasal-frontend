@@ -4,6 +4,8 @@ const productApi = rootApi + "/api/v1/product";
 
 export const createProduct = async(data: FormData) => {
   try {
+
+    console.log(typeof(data))
     const response = await axiosProcessor({
     method: "post",
     url: `${productApi}`,

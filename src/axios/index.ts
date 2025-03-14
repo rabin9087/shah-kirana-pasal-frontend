@@ -10,7 +10,6 @@ export const getRefreshJWT = () => localStorage.getItem("refreshJWT");
 
 export const axiosInstance = axios.create({
   baseURL: rootApi,
-  headers: { "Content-Type": "application/json; charset=UTF-8" },
 });
 
 export const axiosProcessor = async ({
@@ -24,7 +23,9 @@ export const axiosProcessor = async ({
   try {
     // Get the appropriate token
     const token = refreshToken ? getRefreshJWT() : getAccessJWT();
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = {
+      "Content-Type": obj instanceof FormData ? "multipart/form-data" : "application/json; charset=UTF-8",
+    };
 
     if (isPrivate && token) {
       headers.Authorization = `Bearer ${token}`;

@@ -135,12 +135,14 @@ export const getAllUsers = async () => {
 };
 
 export const updateUserProfile = (data: FormData) => {
-  return axiosProcessor({
+
+     return axiosProcessor({
     method: "patch",
     url: userApi+ "/profile",
     isPrivate: true,
-    obj: data,
-  });
+       obj: data,
+      });
+
 };
 
 export const updateAUser = (phone: string, data: object) => {

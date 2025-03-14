@@ -7,6 +7,7 @@ import { RiImageEditFill } from "react-icons/ri";
 import { updateUserProfile } from "@/axios/user/user.axios";
 import { FaSpinner } from "react-icons/fa";
 import { updateProfileAction } from "@/action/user.action";
+import { toast } from "react-toastify";
 // import { useLocation, useNavigate } from "react-router";
 
 const MyProfile = () => {
@@ -39,24 +40,37 @@ const MyProfile = () => {
     };
 
     const handleSaveImage = async () => {
+        console.log(imageFile)
         setLoading(true)
         if (imageFile) {
-            const formData = new FormData();
+            console.log(imageFile)
+            let formData = new FormData();
             formData.append("profile", imageFile); // Must match the key in the backend
             formData.append("phone", user?.phone); // Required to identify the user
 
+            formData.forEach((value, key) => {
+                console.log(key, value);
+            });
+
+            formData.forEach((value, key) => {
+                if (value instanceof File) {
+                    console.log(`${key}: ${value.name}, size: ${value.size}, type: ${value.type}`);
+                } else {
+                    console.log(`${key}: ${value}`);
+                }
+            });
+
+
             try {
                 const res = await updateUserProfile(formData); // API call to update profile
-                console.log(res.message);
                 if (res.status === "success") {
                     dispatch(updateProfileAction())
-
                 } else {
-                    alert(res.message);
+                    toast(res.message);
                 }
             } catch (error) {
                 console.error("Error updating profile image", error);
-                alert("Failed to update profile image.");
+                toast("Failed to update profile image.");
             }
         }
         setLoading(false)

@@ -391,7 +391,7 @@ const CreateProduct = () => {
                           id="storedAt"
                           {...register('storedAt')}
                         >
-                          <option value="">--Select a Stored AT--</option>
+                            <option value="" defaultValue={IStoredAt.AMBIENT}>--Select a Stored AT--</option>
                           <option value={IStoredAt.AMBIENT}>--{IStoredAt.AMBIENT}--</option>
                           <option value={IStoredAt.CHILLED}>--{IStoredAt.CHILLED}--</option>
                           <option value={IStoredAt['FRUTES AND VEG']}>--{IStoredAt['FRUTES AND VEG']}--</option>
