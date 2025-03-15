@@ -1,9 +1,10 @@
 import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 
+const GOOGLE_API_KEY = import.meta.env.GOOGLE_API
 const ContactUs = () => {
 
-  const googleAPI = import.meta.env.GOOGLE_API
+  // const GOOGLE_API_KEY = import.meta.env.GOOGLE_API
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-2xl">
       <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
@@ -64,18 +65,20 @@ const ContactUs = () => {
         </div>
       </div>
 
-      {/* Map or Additional Info */}
+      {/* <GoogleMap/> */}
       <div className="mt-6">
         <h3 className="text-lg font-semibold text-gray-800">Visit Our Store</h3>
         <p className="text-gray-600">
           We offer a variety of quality products at the best prices. Visit our online store or our physical location for great deals!
         </p>
+
         <iframe
           className="w-full h-64 mt-4 rounded-lg"
-          src={`https://www.google.com/maps/embed/v1/place?key=${googleAPI}&q=26.568254015988057,87.68418811261654`}
+          src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_API_KEY}&q=26.568254015988057,87.68418811261654`}
           allowFullScreen
           loading="lazy"
         ></iframe>
+
       </div>
     </div>
   );
