@@ -102,7 +102,6 @@ const Sales = () => {
     }, 0);
     const monthlySales = aggregateSalesByMonth(sales);
     const dailySales = aggregateSalesByDay(sales);
-    console.log(dailySales)
 
     return (
         <>

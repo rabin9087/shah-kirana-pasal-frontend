@@ -1,5 +1,5 @@
 import React from "react";
-interface IUser { 
+interface IUser {
     fName: string,
     lName: string,
     email: string,
@@ -14,7 +14,7 @@ interface IUpdateUserDetails {
 }
 
 export const UserDetailsModel = ({ isOpen, onClose, userDetails, setUserDetails }: IUpdateUserDetails) => {
-   
+
     const handleOnUserDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
     };

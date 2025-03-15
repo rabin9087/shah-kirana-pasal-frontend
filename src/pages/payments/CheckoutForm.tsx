@@ -10,8 +10,8 @@ import { resetCart } from '@/redux/addToCart.slice';
 import { updateCartHistoryInUserAxios, updateCartInUserAxios } from '@/action/user.action';
 import { useNavigate } from 'react-router';
 import { FaRegEdit } from "react-icons/fa";
-import { UserDetailsModel } from './UserDetailsModel';
 import LocationComponent from '../home/GeoLocation';
+import { UserDetailsModel } from './UserDetailsModel';
 
 const CheckoutForm = () => {
     const { user } = useAppSelector((state) => state.userInfo);
