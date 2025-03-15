@@ -1,7 +1,5 @@
 /// <reference types="vite/client" />
-
 import { Stripe } from "@stripe/stripe-js";
-
 
 interface ImportMetaEnv {
   readonly VITE_DEV_API: string;
