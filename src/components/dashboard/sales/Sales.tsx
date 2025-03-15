@@ -113,7 +113,7 @@ const Sales = () => {
                     <div className="font-bold ">Not Paid: {(totalAmount - paidOrders).toFixed(2)}</div>
                 </div>
                 <h2 className="font-bold mt-4">Monthly Sales</h2>
-                <ResponsiveContainer width="100%" height={400}>
+                <ResponsiveContainer width="100%" height= {400}>
                     <LineChart
                         data={aggregatedSales} // Use aggregated sales by month
                         margin={{
@@ -177,7 +177,7 @@ const Sales = () => {
                 
                 <hr />
                 <h2 className="font-bold mt-4">Most Sale Product</h2>
-                <ResponsiveContainer width="100%" height={500}>
+                <ResponsiveContainer width="100%" height={"75%"}>
                     <PieChart
                         className="mt-4">
                         <Pie

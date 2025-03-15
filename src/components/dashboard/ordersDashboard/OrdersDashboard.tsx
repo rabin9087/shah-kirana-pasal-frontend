@@ -61,6 +61,11 @@ const OrdersDashboard = () => {
                                 {adminRoles.includes(user.role) && (
                                         <div className="flex justify-between items-center">
                                                 <Button type="button" onClick={handleOnOrderPick}>Start Picking</Button>
+                                                <div>
+                                                        <p>Orders to pick: {ordersToPick.length}</p>
+                                                        {ordersPicking.length > 0 && <p>You are picking: {ordersPicking.length}</p>}
+
+                                                </div>
                                                 <ScanOrderProduct setBarcode={setBarcode} />
                                         </div>
                                 )}

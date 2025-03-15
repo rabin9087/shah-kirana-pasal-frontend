@@ -39,7 +39,7 @@ const Cart: React.FC = () => {
 
         // if (user.phone && cart.filter((item) => item.productId?._id !== '' && item.orderQuantity !< 1 && item.price !== 0).length > 0) {
         // }
-      }, 1000); // 1000ms delay
+      }, 3000); // 1000ms delay
       debouncedUpdate();
 
       return () => debouncedUpdate.cancel(); // Cleanup function to prevent unnecessary calls

@@ -50,7 +50,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
           </CardTitle>
           {item.salesPrice && (
             <div className="w-fit mt-2 bg-yellow-300 text-sm font-bold px-2 py-1 inline-block rounded">
-              SAVE {language === "en" ? "Rs." : "रु."}{(item.price - item.salesPrice).toFixed(2)}
+              {language === "en" ? "SAVE Rs." : "बचत रु."}{(item.price - item.salesPrice).toFixed(2)}
             </div>
           )}
         </CardHeader>

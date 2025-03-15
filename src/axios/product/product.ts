@@ -4,12 +4,10 @@ const productApi = rootApi + "/api/v1/product";
 
 export const createProduct = async(data: FormData) => {
   try {
-
-    console.log(typeof(data))
     const response = await axiosProcessor({
     method: "post",
     url: `${productApi}`,
-    isPrivate: false,
+    isPrivate: true,
     obj: data,
     });
     
@@ -24,7 +22,7 @@ export const updateProduct = async(data: FormData, _id: string) => {
      const response = await axiosProcessor({
     method: "put",
     url: `${productApi}/${_id}`,
-    isPrivate: false,
+    isPrivate: true,
     obj: data,
      });
     return response 
@@ -38,7 +36,7 @@ export const updateAProductBySKU = async(data: object, sku: string) => {
      const response = await axiosProcessor({
     method: "put",
     url: `${productApi}/${sku}`,
-    isPrivate: false,
+    isPrivate: true,
     obj: data,
      });
     return response 
@@ -51,7 +49,7 @@ export const updateAProductStatus= (_id: string, data: object) => {
   return axiosProcessor({
     method: "patch",
     url: `${productApi}/${_id}`,
-    isPrivate: false,
+    isPrivate: true,
     obj: data,
   });
 };
@@ -60,7 +58,7 @@ export const updateAProductThumbnail= (_id: string, data: object) => {
   return axiosProcessor({
     method: "patch",
     url: `${productApi}/thumbnail/${_id}`,
-    isPrivate: false,
+    isPrivate: true,
     obj: data,
   });
 };
@@ -98,7 +96,7 @@ export const deleteAProduct = async(_id: string) => {
      const response = await axiosProcessor({
     method: "delete",
     url: `${productApi}/${_id}`,
-    isPrivate: false,
+    isPrivate: true,
      });
     return response.status
   } catch (error) {
@@ -129,12 +127,6 @@ export const getAProductBySKU = async(sku: string) => {
       isPrivate: true,
     });
     return response.product as IProductTypes
-    // if (response.status === "success") { return response.product as IProductTypes }
-    // if (response.message === "Product Not Found!") {
-    //   return response.message as string
-    // }
-
-    // throw new Error("Unexpected response status");
   } catch (error) {
       throw new Error("Failed to fetch products");
   }

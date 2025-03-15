@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 
 const MyProfile = () => {
     const { user } = useAppSelector((state) => state.userInfo);
+    const { language } = useAppSelector((state) => state.settings);
     const [loading, setLoading] = useState(false)
     const dispatch = useAppDispatch()
 
@@ -47,19 +48,6 @@ const MyProfile = () => {
             let formData = new FormData();
             formData.append("profile", imageFile); // Must match the key in the backend
             formData.append("phone", user?.phone); // Required to identify the user
-
-            formData.forEach((value, key) => {
-                console.log(key, value);
-            });
-
-            formData.forEach((value, key) => {
-                if (value instanceof File) {
-                    console.log(`${key}: ${value.name}, size: ${value.size}, type: ${value.type}`);
-                } else {
-                    console.log(`${key}: ${value}`);
-                }
-            });
-
 
             try {
                 const res = await updateUserProfile(formData); // API call to update profile
@@ -109,32 +97,33 @@ const MyProfile = () => {
                         <h2 className="text-2xl font-semibold mb-2">
                             {user?.fName} {user?.lName}
                         </h2>
-                        <p className="text-sm text-gray-500 mb-4">{user?.role}</p>
+                        <p className="text-sm text-gray-500 mb-4">{language === "en" ? user?.role : user?.role === "USER" ? "प्रयोगकर्ता" : user?.role}</p>
                     </div>
 
                     <div className="space-y-4">
                         <div className="flex justify-between">
-                            <span className="font-medium text-gray-700">Email:</span>
+                            <span className="font-medium text-gray-700">{language === "en" ? "Email" : "इमेल"}:</span>
                             <span className="text-gray-500">{user?.email}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="font-medium text-gray-700">Phone:</span>
+                            <span className="font-medium text-gray-700">{language === "en" ? "Phone" : "फोन"}:</span>
                             <span className="text-gray-500">{user?.phone}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="font-medium text-gray-700">Status:</span>
-                            <span className="text-gray-500">{user?.status}</span>
+                            <span className="font-medium text-gray-700">{language === "en" ? "Status" : "प्रोफाइल स्थिति"}:</span>
+                            <span className="text-gray-500">
+                                {language === "en" ? user?.status : user?.status ? "सक्रिय" : "निष्क्रिय"}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="font-medium text-gray-700">Address: </span>
+                            <span className="font-medium text-gray-700">{language === "en" ? "Address" : "ठेगाना"}: </span>
                             <span className="text-gray-500 text-end">
                                 {user?.address || "No address provided"}
                             </span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="font-medium text-gray-700">Verified:</span>
+                            <span className="font-medium text-gray-700">{language === "en" ? "Verified" : "प्रमाणित"}:</span>
                             <span className="text-gray-500">
-                                {user?.isVerified ? "Yes" : "No"}
+                                {language === "en" ? user?.isVerified ? "Yes" : "No" : user?.isVerified ? "छ" : "छैन"}
                             </span>
                         </div>
                     </div>
@@ -168,7 +157,7 @@ const MyProfile = () => {
                             />
                             <div className="flex justify-center items-center mt-2">
                                 <Button variant="outline" onClick={closeModal} className="mt-2">
-                                    Close
+                                    {language === "en" ? "Close" : ""}
                                 </Button>
                             </div>
                         </div>

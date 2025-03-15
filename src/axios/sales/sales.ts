@@ -8,7 +8,6 @@ export const getTotalSales = async() => {
     method: "get",
     url: `${salesApi}`,
     isPrivate: true,
-    refreshToken: true
         });
         return resp.amount
     } catch (error) {
@@ -22,7 +21,6 @@ export const getAllSales = async() => {
     method: "get",
     url: `${salesApi}/allSales`,
     isPrivate: true,
-    refreshToken: true
         });
         return resp.sales
     } catch (error) {

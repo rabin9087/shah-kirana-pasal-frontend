@@ -81,7 +81,6 @@ export const getUser = () => {
     method: "get",
     url: userApi,
     isPrivate: true,
-    refreshToken: true
   });
 };
 
@@ -104,7 +103,6 @@ export const updateCartInUser = (phone: string, cart: IUpdateCartToUserTypes[]) 
     method: "patch",
     url: userApi + "/cart",
     isPrivate: true,
-    refreshToken: true,
     obj: {cart, phone},
   });
 };
@@ -114,7 +112,6 @@ export const updateCartHistoryInUser = (phone: string, items: IUpdateCartToUserT
     method: "patch",
     url: userApi + "/cartHistory",
     isPrivate: true,
-    refreshToken: true,
     obj: {cartHistory: {items}, phone, amount: amount.toFixed(2), orderNumber},
   });
 };
@@ -142,7 +139,6 @@ export const updateUserProfile = (data: FormData) => {
     isPrivate: true,
        obj: data,
       });
-
 };
 
 export const updateAUser = (phone: string, data: object) => {
@@ -150,7 +146,6 @@ export const updateAUser = (phone: string, data: object) => {
     method: "put",
     url: userApi+ `/${phone}`,
     isPrivate: true,
-    refreshToken: true,
     obj: data,
   });
 };

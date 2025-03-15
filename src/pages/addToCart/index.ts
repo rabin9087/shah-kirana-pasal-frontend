@@ -7,9 +7,6 @@ export interface IAddToCartTypes extends IProductTypes {
     productId?: IProductTypes,
 }
 
-
-
-
 export interface IUpdateCartToUserTypes {
     productId: string,
     orderQuantity: number,

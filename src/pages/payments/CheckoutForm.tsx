@@ -10,7 +10,7 @@ import { resetCart } from '@/redux/addToCart.slice';
 import { updateCartHistoryInUserAxios, updateCartInUserAxios } from '@/action/user.action';
 import { useNavigate } from 'react-router';
 import { FaRegEdit } from "react-icons/fa";
-import { UserDetailsModal } from './UserDetailsModal';
+import { UserDetailsModal } from './UserDetailsModel';
 import LocationComponent from '../home/GeoLocation';
 
 const CheckoutForm = () => {
