@@ -223,7 +223,8 @@ export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModa
 
     return (
         <div>
-            <video ref={ref} />
+            <video ref={ref as React.LegacyRef<HTMLVideoElement>} />
+
             <div className="flex justify-end items-center gap-2">
                 <Button className="bg-yellow-500 hover:bg-yellow-400 mt-2" onClick={toggleFlashlight}>
                     {isFlashOn ? <MdFlashlightOff size={20} /> : <MdFlashlightOn size={20} />}
