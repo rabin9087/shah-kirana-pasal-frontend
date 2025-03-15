@@ -13,7 +13,7 @@ interface IUpdateUserDetails {
     setUserDetails: (userDetails: IUser) => void;
 }
 
-export const UserDetailsModal = ({ isOpen, onClose, userDetails, setUserDetails }: IUpdateUserDetails) => {
+export const UserDetailsModel = ({ isOpen, onClose, userDetails, setUserDetails }: IUpdateUserDetails) => {
    
     const handleOnUserDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserDetails({ ...userDetails, [e.target.name]: e.target.value });

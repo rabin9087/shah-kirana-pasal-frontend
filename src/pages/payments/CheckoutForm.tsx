@@ -10,7 +10,7 @@ import { resetCart } from '@/redux/addToCart.slice';
 import { updateCartHistoryInUserAxios, updateCartInUserAxios } from '@/action/user.action';
 import { useNavigate } from 'react-router';
 import { FaRegEdit } from "react-icons/fa";
-import { UserDetailsModal } from './UserDetailsModel';
+import { UserDetailsModel } from './UserDetailsModel';
 import LocationComponent from '../home/GeoLocation';
 
 const CheckoutForm = () => {
@@ -289,7 +289,7 @@ const CheckoutForm = () => {
                                         </div>
                                     </div>}
                             </div>
-                            <UserDetailsModal
+                            <UserDetailsModel
                                 isOpen={changeDetails}
                                 onClose={() => setChangeDetails(false)}
                                 setUserDetails={setUserDetails}
