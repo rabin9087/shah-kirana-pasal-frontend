@@ -30,6 +30,7 @@ const CategoriesDashboard = () => {
 
     return (
         <>
+            <p>Total Categories: {categories?.length}</p>
             <div className="flex justify-end items-center mb-4 me-4">
                 <CustomModal create={"createCategory"} />             
             </div>
@@ -42,12 +43,13 @@ const CategoriesDashboard = () => {
                         <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-600">S.N.</TableHead>
                         <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-600">Status</TableHead>
                         <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-600">Name</TableHead>
+                        <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-600">Alternative Name</TableHead>
                         <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-600">Description</TableHead>
                         <TableHead className="px-4 py-2 text-left text-sm font-medium text-gray-600">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {categories.map(({ _id, name, description, status }, i) => (
+                    {categories.map(({ _id, name, alternativeName, description, status }, i) => (
                         <TableRow key={_id} className="border-t">
                             <TableCell className="px-4 py-2 text-sm text-gray-700">{i + 1}.</TableCell>
                             <TableCell className="px-4 py-2 text-sm">
@@ -66,6 +68,7 @@ const CategoriesDashboard = () => {
                                 </div>
                             </TableCell>
                             <TableCell className="px-4 py-2 text-sm text-gray-700">{name}</TableCell>
+                            <TableCell className="px-4 py-2 text-sm text-gray-700">{alternativeName}</TableCell>
                             <TableCell className="px-4 py-2 text-sm text-gray-700">{description}</TableCell>
                             <TableCell className="px-4 py-2 text-sm text-gray-700">
                                 <div className="flex gap-2">

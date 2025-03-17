@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 const SideBar = () => {
   const drawerRef = useRef<HTMLDivElement>(null);
   const { open } = useAppSelector((store) => store.sidebar);
+  const { language } = useAppSelector((store) => store.settings);
   const { categories } = useAppSelector((state) => state.categoryInfo);
   const dispatch = useAppDispatch();
 
@@ -50,7 +51,7 @@ const SideBar = () => {
 
           {/* Category List */}
           <ul className="mt-4 px-4 space-y-2 overflow-y-auto max-h-[600px] sm:max-h-[500px] pb-8 mb-8">
-            {categories.map(({ _id, name, slug }) => (
+            {categories.map(({ _id, name, alternativeName, slug }) => (
               <Link
                 to={`/category/${slug}`}
                 key={_id}
@@ -60,7 +61,8 @@ const SideBar = () => {
               >
                 <li className="flex items-center justify-between px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-all duration-150">
                   <span className="text-gray-700 dark:text-gray-200 font-medium">
-                    {name.toLocaleUpperCase()}
+                    {language === "en" ? name.toLocaleUpperCase() :
+                      alternativeName ? alternativeName?.toLocaleUpperCase() : name.toLocaleUpperCase()}
                   </span>
                   <IoIosArrowForward className="text-gray-500 dark:text-gray-400" />
                 </li>

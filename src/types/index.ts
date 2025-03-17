@@ -101,6 +101,7 @@ export type ICategoryTypes = {
     _id?: string,
     status?: string,
     name: string,
+    alternativeName?: string,
     slug?: string,
     description: string,
 }

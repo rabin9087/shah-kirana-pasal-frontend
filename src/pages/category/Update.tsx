@@ -92,6 +92,22 @@ const UpdateCategory = () => {
                             {errors.name && <span className="text-red-600">{errors?.name?.message}</span>}
                         </div>
                     </div>
+                    <div className="col-span-full">
+                        <Label htmlFor="alternativeName" className="block text-md font-medium leading-6 text-gray-900">
+                            Alternative Name
+                        </Label>
+                        <div className="mt-2">
+                            <Input
+                                id="alternativeName"
+                                {...register('alternativeName')}
+                                defaultValue={form.alternativeName}
+                                onChange={handelOnChange}
+                                className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                placeholder='Enter Category name'
+                            />
+                            {errors.name && <span className="text-red-600">{errors?.alternativeName?.message}</span>}
+                        </div>
+                    </div>
 
                     <div className="col-span-full">
                         <Label htmlFor="description" className="block text-md font-medium leading-6 text-gray-900">
@@ -111,8 +127,6 @@ const UpdateCategory = () => {
                         </div>
                     </div>
                     <hr />
-
-
 
                     <div className="mt-2 flex items-center justify-center w-full gap-2">
                         <Button

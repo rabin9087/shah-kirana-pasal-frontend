@@ -10,6 +10,7 @@ interface IOrderNumber {
 
 const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
     const { user } = useAppSelector((s) => s.userInfo);
+    const { language } = useAppSelector((s) => s.settings);
     const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
 
     const toggleOrderDetails = (index: number) => {
@@ -39,7 +40,7 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                         <div>
                                             <p className="text-center text-xl underline"><strong > {order?.orderNumber} </strong></p>
                                             <p className="text-gray-700">
-                                                <strong>Amount:</strong> ${order?.amount?.toFixed(2)}
+                                                <strong>Amount:</strong> {language === "en" ? "Rs. " : "रु."}{order?.amount?.toFixed(2)}
                                             </p>
                                             <p className="text-gray-700">
                                                 <strong>Purchased At:</strong>{" "}

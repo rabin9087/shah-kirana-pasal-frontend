@@ -26,6 +26,7 @@ const UsersDashboard = () => {
 
                     {!isLoading && !isError && users.length > 0 && (
                         <div className="overflow-auto w-full">
+                            <p>Total Users: { users?.length}</p>
                             <Table className="min-w-full">
                                 <TableHeader>
                                     <TableRow className="bg-gray-200">

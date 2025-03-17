@@ -79,7 +79,9 @@ const ProductsDashboard = () => {
     if (error) return <Error />
     return (
         <div>
+            <p>Total Products: {data?.length}</p>
             <div className="flex justify-between me-4 px-2">
+                
                 <div className="w-full me-4">
                     <Select onValueChange={handelOnChange} >
                         <SelectTrigger className="w-full">
@@ -104,6 +106,7 @@ const ProductsDashboard = () => {
                 {products.length < 1 ? <div className="flex justify-center">
 
                 </div> : <Table>
+                        
                     <TableCaption>All list of products.</TableCaption>
                     <TableHeader>
                         <TableRow className="">

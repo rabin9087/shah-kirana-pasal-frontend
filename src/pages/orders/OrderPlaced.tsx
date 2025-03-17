@@ -67,7 +67,7 @@ export const OrderPlaced: React.FC = () => {
                             </p>
                             <div className="md:flex justify-between">
                                 <div>
-                                    <p className="text-gray-700"><strong>{language === "en" ? "Amount" : "रकम"}:</strong> ${latestOrder?.amount?.toFixed(2)}</p>
+                                    <p className="text-gray-700"><strong>{language === "en" ? "Amount" : "रकम"}:</strong> {language === "en" ? "Rs. " : "रु."} {latestOrder?.amount?.toFixed(2)}</p>
                                     <p className="text-gray-700"><strong>{language === "en" ? "Purchased At" : "किनेको दिन"}:</strong> {new Date(latestOrder.purchasedAt).toLocaleString()}</p>
                                     <p className="text-gray-700"><strong>{language === "en" ? "Order status" : "अर्डर स्थिति"}:</strong> {data.deliveryStatus}</p>
                                     <p className="text-gray-700"><strong>{language === "en" ? "Payment status" : "भुक्तानी स्थिति"}:</strong> {data.paymentStatus}</p>

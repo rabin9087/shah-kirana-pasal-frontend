@@ -10,6 +10,7 @@ interface InititalState {
 const categoryInitialState = {
     _id: "",
     name: '',
+    alternativeName:  "",
     slug: "",
     status: "",
     description: "",

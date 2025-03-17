@@ -8,6 +8,7 @@ import TogglePasswordVisibility from "./TogglePassword";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { updateForgetPassword } from '@/action/user.action';
+import { toast } from 'react-toastify';
 
 const NewPasswordForm = () => {
   const dispatch = useAppDispatch();
@@ -47,11 +48,11 @@ const NewPasswordForm = () => {
 
     const { confirmPassword, password, email_phone } = values;
     if (confirmPassword !== password) {
-      window.alert("Password do not match //todo create a new window");
+      toast.error("Password do not match");
       return;
     }
     await dispatch(updateForgetPassword({ email_phone, password })) && navigate('/sign-in')
-
+    toast.success("New password has been successfully set,\nYou can now login with your new password")
   }
 
   return (
