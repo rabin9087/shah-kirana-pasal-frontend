@@ -1,6 +1,7 @@
 import { createUserParams, forgetPasswordParams, newPasswordParams, otp_PasswordParams } from "@/types";
 import { axiosProcessor, rootApi } from "..";
 import { IUpdateCartToUserTypes } from "@/pages/addToCart";
+import { ICartHistoryInUser } from "./types";
 const userApi = rootApi + "/api/v1/user";
 
 export const createUser = (data: createUserParams) => {
@@ -107,12 +108,12 @@ export const updateCartInUser = (phone: string, cart: IUpdateCartToUserTypes[]) 
   });
 };
 
-export const updateCartHistoryInUser = (phone: string, items: IUpdateCartToUserTypes[], amount: number, orderNumber: number) => {
+export const updateCartHistoryInUser = ({ phone, items, cartAmount, deliveryStatus, orderNumber, paymentStatus}: ICartHistoryInUser) => {
   return axiosProcessor({
     method: "patch",
     url: userApi + "/cartHistory",
     isPrivate: true,
-    obj: {cartHistory: {items}, phone, amount: amount.toFixed(2), orderNumber},
+    obj: {cartHistory: {items}, phone, amount: cartAmount.toFixed(2), orderNumber, deliveryStatus, paymentStatus},
   });
 };
 

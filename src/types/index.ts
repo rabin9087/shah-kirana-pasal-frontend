@@ -66,8 +66,10 @@ export interface IUser {
 export interface ICartHistory {
   items: IAddToCartTypes[];
   amount: number;// Store previous cart data
-  purchasedAt: Date; // Store timestamp of purchase
+  deliveryStatus: string;
+  paymentStatus: string;
   orderNumber: number
+  purchasedAt: Date; // Store timestamp of purchase
 }
 
 

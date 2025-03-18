@@ -32,9 +32,9 @@ const CheckoutForm = () => {
             lName: user.lName,
             email: user.email,
             phone: user.phone,
-            address: user.address !=="" ? user.address + ", (" + location?.lat.toString() + ", " + location?.lng.toString() + ")" : location?.lat.toString() + ", " + location?.lng.toString(),
+            address: user.address !== "" ? user.address + ", (" + location?.lat.toString() + ", " + location?.lng.toString() + ")" : location?.lat.toString() + ", " + location?.lng.toString(),
         })
-    
+
     const [requestDeliveryDate, setRequestDeliveryDate] = useState<string>("")
     const [contactInfo, setContactInfo] = useState({
         email: user.email,
@@ -85,7 +85,7 @@ const CheckoutForm = () => {
     const updateCartAndUserCart = (orderNumber: number) => {
         dispatch(resetCart())
         dispatch(updateCartInUserAxios(user.phone, []));
-        dispatch(updateCartHistoryInUserAxios(user.phone, items, cartAmount, orderNumber));
+        dispatch(updateCartHistoryInUserAxios({ phone: user.phone, items, cartAmount, orderNumber, deliveryStatus: "Order Placed", paymentStatus: paymentType === "card" ? "Paid" : "Not Yet Paid" }));
     }
 
     const handleSubmit = async (event: FormEvent) => {
@@ -237,7 +237,7 @@ const CheckoutForm = () => {
                 </Button>}
                 <div className='flex flex-col gap-2'>
                     <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                        <h3 className='p-2 font-bold text-xl' >{language=== "en" ? "Order Type" : "अर्डर प्रकार"}</h3>
+                        <h3 className='p-2 font-bold text-xl' >{language === "en" ? "Order Type" : "अर्डर प्रकार"}</h3>
                         <div className="flex items-center space-x-4">
                             <Button
                                 type='button'
@@ -256,6 +256,7 @@ const CheckoutForm = () => {
                                     ? "bg-blue-500 text-white"
                                     : "bg-gray-200 text-gray-700"
                                     }`}
+                                disabled
                                 onClick={() => setOrderType("delivery")}
                             >
                                 {language === "en" ? "Delivery" : "डिलीवरी"}
@@ -331,7 +332,7 @@ const CheckoutForm = () => {
                     <>
                         <div className='flex flex-col gap-2'>
                             <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                    <h3 className='p-2 font-bold text-xl' >{language === "en" ? "Payment Type": "भुक्तान प्रकार"}</h3>
+                                <h3 className='p-2 font-bold text-xl' >{language === "en" ? "Payment Type" : "भुक्तान प्रकार"}</h3>
                                 <div className="flex items-center space-x-4">
                                     <Button type='button'
                                         className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "cash"
@@ -340,7 +341,7 @@ const CheckoutForm = () => {
                                             }`}
                                         onClick={() => setPaymentType("cash")}
                                     >
-                                            {language === "en" ? "Cash" : "कैश"}
+                                        {language === "en" ? "Cash" : "कैश"}
                                     </Button>
 
                                     <Button
@@ -351,13 +352,13 @@ const CheckoutForm = () => {
                                             }`}
                                         onClick={() => setPaymentType("card")}
                                     >
-                                            {language === "en" ? "Card" : " कार्ड"}
+                                        {language === "en" ? "Card" : " कार्ड"}
                                     </Button>
                                 </div>
                             </div>
                         </div>
                         <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                <h3 className='p-2 font-bold text-xl text-center' > {language === "en" ? "Amount to be paid  Rs.:" : "तिर्नुपर्ने रकम:  रु."} {cartAmount?.toFixed(2)}</h3></div>
+                            <h3 className='p-2 font-bold text-xl text-center' > {language === "en" ? "Amount to be paid  Rs.:" : "तिर्नुपर्ने रकम:  रु."} {cartAmount?.toFixed(2)}</h3></div>
                         {paymentType === "card" && <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />}
                     </>
                 )}

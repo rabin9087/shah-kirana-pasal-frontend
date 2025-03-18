@@ -9,6 +9,11 @@ export interface IItemTypes {
     _id?: string,
 }
 
+//  <option value="Picking">Picking</option>
+//                                         <option value="Packed">Packed</option>
+//                                         <option value="Collected">Collected</option>
+//                                         <option value="Cancelled">Cancelled</option>
+
 export interface IOrder  {
     _id?: string,
     name: string,

@@ -19,7 +19,7 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
 
     return (
         <div className="w-full mx-auto p-6">
-            <h1 className="w-full text-3xl font-bold text-blue-700 text-center">Order History</h1>
+            <h1 className="w-full text-3xl font-bold text-blue-700 text-center">{language === "en" ? "Order History" : "पुरानो अर्डरहरू"}</h1>
             {user?.cartHistory?.length > 0 ? (
                 <div className="mt-6 space-y-6">
                     {user?.cartHistory?.slice(1).map((order: any, index: number) => (
@@ -40,14 +40,19 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                         <div>
                                             <p className="text-center text-xl underline"><strong > {order?.orderNumber} </strong></p>
                                             <p className="text-gray-700">
-                                                <strong>Amount:</strong> {language === "en" ? "Rs. " : "रु."}{order?.amount?.toFixed(2)}
+                                                <p className="text-gray-700"><strong>{language === "en" ? "Amount" : "रकम"}:</strong> {language === "en" ? "Rs. " : "रु."} {order?.amount?.toFixed(2)}</p>
                                             </p>
-                                            <p className="text-gray-700">
-                                                <strong>Purchased At:</strong>{" "}
-                                                {new Date(order?.purchasedAt)?.toLocaleString()}
-                                            </p>
-                                            <p className="text-gray-700"><strong>Order status :</strong> {data.deliveryStatus}</p>
-                                            <p className="text-gray-700"><strong>Payment status:</strong> {data.paymentStatus}</p>
+                                            <div>
+                                                <p className="text-gray-700"><strong>{language === "en" ? "Purchased At" : "किनेको दिन"}:</strong> {new Date(order.purchasedAt).toLocaleString()}</p>
+                                                <p className="text-gray-700"><strong>{language === "en" ? "Order status" : "अर्डर स्थिति"}: </strong>
+                                                    {language === "en" ? data.deliveryStatus :
+                                                        (data.deliveryStatus === "Order placed" && "अर्डर भयो") ||
+                                                        (data.deliveryStatus === "Packed" && "प्याक गरिएको छ") ||
+                                                        (data.deliveryStatus === "Collected" && "सङ्कलन भयो") ||
+                                                        (data.deliveryStatus === "Picking" && "अर्डर प्याक हुडाइछ") ||
+                                                        (data.deliveryStatus === "Cancelled" && "रद्द गरियो")}</p>                                                <p className="text-gray-700"><strong>{language === "en" ? "Payment status" : "भुक्तानी स्थिति"}:</strong>
+                                                    {language === "en" ? data.paymentStatus : data.paymentStatus === "Paid" ? " भुक्तानी गरिएको छ" : " भुक्तानी गरिएको छैन"}</p>
+                                            </div>
                                         </div>
                                         {order?.orderNumber && <div className="flex flex-col justify-center items-center mt-4 md:mt-0">
                                             <QRCodeGenerator value={(order?.orderNumber)?.toString()} />

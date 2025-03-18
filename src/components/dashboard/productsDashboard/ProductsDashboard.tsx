@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks"
 import { setProducts } from "@/redux/product.slice";
 import { IProductTypes } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { IoCreateOutline } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -20,11 +20,13 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import SearchInput from "@/components/search/SearchInput";
 
 const ProductsDashboard = () => {
     const { products } = useAppSelector(state => state.productInfo)
     const { categories } = useAppSelector(state => state.categoryInfo)
     const dispatch = useAppDispatch()
+    const [searchData, setSearchData] = useState(products)
     const { data = [], error } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
         queryFn: () =>
@@ -81,7 +83,7 @@ const ProductsDashboard = () => {
         <div>
             <p>Total Products: {data?.length}</p>
             <div className="flex justify-between me-4 px-2">
-                
+
                 <div className="w-full me-4">
                     <Select onValueChange={handelOnChange} >
                         <SelectTrigger className="w-full">
@@ -102,11 +104,18 @@ const ProductsDashboard = () => {
                 </Link>
             </div>
 
+            <SearchInput
+                placeholder="Search the product"
+                data={products}
+                searchKey="name"
+                setFilteredData={setSearchData}
+            />
+
             <div className="mt-4 border w-full px-2 overflow-x-scroll">
                 {products.length < 1 ? <div className="flex justify-center">
 
                 </div> : <Table>
-                        
+
                     <TableCaption>All list of products.</TableCaption>
                     <TableHeader>
                         <TableRow className="">
@@ -125,7 +134,7 @@ const ProductsDashboard = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {products.map(({ _id, status, name, alternateName, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku }, i) => (
+                        {searchData.map(({ _id, status, name, alternateName, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku }, i) => (
                             <TableRow key={_id}>
                                 <TableCell className="font-medium">{i + 1}.</TableCell>
                                 <TableCell className="font-medium w-20 h-20"><img className="w-16 h-12 rounded-sm object-fill border-4 border-gray-300" src={thumbnail} /></TableCell>

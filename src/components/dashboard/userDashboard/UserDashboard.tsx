@@ -4,12 +4,26 @@ import { getAllUsers } from "@/axios/user/user.axios";
 import { IUser } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";// Assuming you have an Alert component
+import SearchInput from "@/components/search/SearchInput";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setUsers } from "@/redux/dashboard.slice";
 
 const UsersDashboard = () => {
-    const { data: users = [], isLoading, isError } = useQuery<IUser[]>({
+    const dispatch = useAppDispatch()
+    const { users } = useAppSelector(s => s.dashboardData)
+    const { data= [], isLoading, isError } = useQuery<IUser[]>({
         queryKey: ["allUsers"],
         queryFn: getAllUsers,
     });
+    const [usersData, setUsersData] = useState<IUser[]>(users);
+
+    // Sync usersData whenever `users` changes
+    useEffect(() => {
+        if (data.length) {
+            dispatch(setUsers(data));
+        }
+    }, [dispatch, data]);
 
     return (
         <div className="overflow-x-auto w-full">
@@ -20,13 +34,21 @@ const UsersDashboard = () => {
                 <CardContent>
                     {/* {isError && <Alert type="error" message="Failed to fetch users" />} */}
 
-                    {!isLoading && !isError && users.length === 0 && (
+                    {!isLoading && !isError && data.length === 0 && (
                         <p className="text-center text-gray-500">No users found.</p>
                     )}
 
-                    {!isLoading && !isError && users.length > 0 && (
+                    {!isLoading && !isError && data.length > 0 && (
                         <div className="overflow-auto w-full">
-                            <p>Total Users: { users?.length}</p>
+                            <p>Total Users: {data?.length}</p>
+                            <SearchInput
+                                placeholder="Search the user"
+                                data={users}
+                                searchKey={"fName"}
+                                setFilteredData={(filtered) => {
+                                    setUsersData(filtered.length > 0 || filtered === data ? filtered : data);
+                                }}
+                            />
                             <Table className="min-w-full">
                                 <TableHeader>
                                     <TableRow className="bg-gray-200">
@@ -42,7 +64,7 @@ const UsersDashboard = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {users.map((user, index) => (
+                                    {usersData.map((user, index) => (
                                         <TableRow key={user._id}>
                                             <TableCell className="whitespace-nowrap">{index + 1}</TableCell>
                                             <TableCell className="whitespace-nowrap">{`${user.fName} ${user.lName}`}</TableCell>

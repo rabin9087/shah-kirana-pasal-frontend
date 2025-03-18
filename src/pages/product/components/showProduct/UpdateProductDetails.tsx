@@ -8,10 +8,12 @@ import { useEffect, useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { toast } from 'react-toastify';
 import { RiImageEditFill } from 'react-icons/ri';
+import { useAppSelector } from '@/hooks';
 
 const UpdateProductForm = () => {
     const { sku } = useParams();
     const navigate = useNavigate();
+    const {categories} = useAppSelector(s => s.categoryInfo)
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false)
@@ -24,6 +26,8 @@ const UpdateProductForm = () => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         defaultValues: data,
     });
+
+
 
     const mutation = useMutation({
         mutationFn: async (updatedProduct: Partial<IProductTypes>) => {
@@ -89,7 +93,7 @@ const UpdateProductForm = () => {
 
 
     return (
-        <Layout title="Product Form">
+        <Layout title="Update Product Form">
             <Button
                 className='ms-4'
                 onClick={() => navigate(-1)}>
@@ -143,6 +147,29 @@ const UpdateProductForm = () => {
                     />
                     {errors.alternateName && <p className="mt-2 text-sm text-red-600">{errors.alternateName.message}</p>}
                 </div>
+
+                <div>
+                    <label htmlFor="parentCategoryID" className="block text-sm font-medium text-gray-700">
+                        Category Types
+                    </label>
+                    <select
+                        id="parentCategoryID"
+                        {...register('parentCategoryID')}
+                        defaultValue={data?.parentCategoryID || ""}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                        <option value="">--Select a Category--</option>
+                        {categories.map((category) => (
+                            <option key={category._id} value={category._id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.parentCategoryID && (
+                        <p className="mt-2 text-sm text-red-600">{errors.parentCategoryID.message}</p>
+                    )}
+                </div>
+
 
                 {/* Price and Sale Price */}
                 <div className="grid grid-cols-2 gap-4">

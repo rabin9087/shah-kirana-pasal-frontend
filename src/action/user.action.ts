@@ -1,4 +1,5 @@
 
+import { ICartHistoryInUser } from "@/axios/user/types";
 import { createAdmin, createUser, forgetPassword, getNewAccessJWT, getUser, loginUser, logoutUser, otp_PasswordVerify, updateCartHistoryInUser, updateCartInUser, update_Forget_Password } from "@/axios/user/user.axios";
 import { IAddToCartTypes, IUpdateCartToUserTypes } from "@/pages/addToCart";
 import { setLoading } from "@/redux/Loading.slice";
@@ -85,8 +86,8 @@ export const updateCartInUserAxios = (phone: string, cart: IUpdateCartToUserType
 }
 
 
-export const updateCartHistoryInUserAxios = (phone: string, cartHistory: IUpdateCartToUserTypes[] | [], amount: number, orderNumber: number) => async (dispatch: AppDispatch) => {
-  const pending =  updateCartHistoryInUser(phone, cartHistory, amount, orderNumber);
+export const updateCartHistoryInUserAxios = ({ phone, items, cartAmount, deliveryStatus, orderNumber, paymentStatus}: ICartHistoryInUser ) => async (dispatch: AppDispatch) => {
+  const pending =  updateCartHistoryInUser({phone, items, cartAmount, orderNumber, deliveryStatus, paymentStatus});
   const { status } = await pending;
   if (status === "success") {
     dispatch(getUserAction())
