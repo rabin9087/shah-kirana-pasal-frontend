@@ -55,12 +55,6 @@ export type UpdateProductSchema = z.infer<typeof updateProductSchema>;
 export type ImageType = { url: string; alt: string };
 // export type ThumbnailType = { url: string };
 
-export enum IStoredAt {
-  AMBIENT = "AMBIENT",
-  CHILLED = "CHILLED",
-  "FRUTES AND VEG" = "FRUTES AND VEG"
-}
-
 export enum Status {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE"

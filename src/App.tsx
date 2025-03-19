@@ -37,6 +37,8 @@ import { ToastContainer } from "react-toastify";
 import ShowProductDetails from "./pages/product/components/showProduct/ShowProductDetails";
 import UpdateProductForm from "./pages/product/components/showProduct/UpdateProductDetails";
 import Settings from "./components/setting/Settings";
+import PrintProductsQRCodeNameSku from "./pages/product/components/showProduct/PrintProductsBarcodeNameSku";
+import PrintSingleProductBarcodeNameSku from "./pages/product/components/showProduct/PrintSingleProductBarcodeNameSku";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -278,11 +280,23 @@ function App() {
         />
 
         <Route
+          path="/printProductsQRCodeNameSku"
+          element={<PrintProductsQRCodeNameSku />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
           path="/*"
           element={<NotFoundPage />}
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/printSingleProductBarcodeNameSku/:qrCodeNumber" 
+          element={<PrintSingleProductBarcodeNameSku />}
+          errorElement={<ErrorPage />}
+        />
+        
       </Routes>
       <Loader />
       <ToastContainer

@@ -11,6 +11,7 @@ export interface IReviews{
 
 export enum IStoredAt {
   AMBIENT = "AMBIENT",
+  BULK = "BULK",
   CHILLED = "CHILLED",
   "FRUTES AND VEG" = "FRUTES AND VEG"
 }

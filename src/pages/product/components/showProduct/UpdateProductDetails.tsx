@@ -9,11 +9,12 @@ import Layout from '@/components/layout/Layout';
 import { toast } from 'react-toastify';
 import { RiImageEditFill } from 'react-icons/ri';
 import { useAppSelector } from '@/hooks';
+import { IStoredAt } from '@/axios/product/types';
 
 const UpdateProductForm = () => {
     const { sku } = useParams();
     const navigate = useNavigate();
-    const {categories} = useAppSelector(s => s.categoryInfo)
+    const { categories } = useAppSelector(s => s.categoryInfo)
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false)
@@ -68,9 +69,9 @@ const UpdateProductForm = () => {
             // Required to identify the user
 
             try {
-                const res = await updateAProductThumbnail(data._id ,formData); // API call to update profile
+                const res = await updateAProductThumbnail(data._id, formData); // API call to update profile
                 if (res.status === "success") {
-                   toast.success("Product Image has been Updated Successfully")
+                    toast.success("Product Image has been Updated Successfully")
 
                 } else {
                     toast.error(res.message)
@@ -101,7 +102,7 @@ const UpdateProductForm = () => {
             </Button>
             <div className="relative flex justify-center mb-6">
                 <img
-                   
+
                     src={selectedImage || data.thumbnail || "/default-profile.png"} // Default profile image fallback
                     alt="Profile"
                     className="w-44 h-44 rounded-sm object-fill border-4 border-gray-300"
@@ -148,28 +149,52 @@ const UpdateProductForm = () => {
                     {errors.alternateName && <p className="mt-2 text-sm text-red-600">{errors.alternateName.message}</p>}
                 </div>
 
-                <div>
-                    <label htmlFor="parentCategoryID" className="block text-sm font-medium text-gray-700">
-                        Category Types
-                    </label>
-                    <select
-                        id="parentCategoryID"
-                        {...register('parentCategoryID')}
-                        defaultValue={data?.parentCategoryID || ""}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    >
-                        <option value="">--Select a Category--</option>
-                        {categories.map((category) => (
-                            <option key={category._id} value={category._id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.parentCategoryID && (
-                        <p className="mt-2 text-sm text-red-600">{errors.parentCategoryID.message}</p>
-                    )}
-                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="parentCategoryID" className="block text-sm font-medium text-gray-700">
+                            Category Types
+                        </label>
+                        <select
+                            id="parentCategoryID"
+                            {...register('parentCategoryID')}
+                            defaultValue={data?.parentCategoryID || ""}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        >
+                            <option value="">--Select a Category--</option>
+                            {categories.map((category) => (
+                                <option key={category._id} value={category._id}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.parentCategoryID && (
+                            <p className="mt-2 text-sm text-red-600">{errors.parentCategoryID.message}</p>
+                        )}
+                    </div>
 
+                    <div>
+                        <label htmlFor="storedAt" className="block text-sm font-medium text-gray-700">
+                            Stored Types
+                        </label>
+                        <select
+                            className="w-full p-2 border-2 rounded-md text-start"
+                            id="storedAt"
+                            {...register('storedAt')}
+                        >
+                            <option value="">--Select a Stored At--</option>
+                            {Object.values(IStoredAt).map((value) => (
+                                <option key={value} value={value}>
+                                    --{value}--
+                                </option>
+                            ))}
+                        </select>
+
+
+                        {errors.storedAt && (
+                            <p className="mt-2 text-sm text-red-600">{errors.storedAt.message}</p>
+                        )}
+                    </div>
+                </div>
 
                 {/* Price and Sale Price */}
                 <div className="grid grid-cols-2 gap-4">

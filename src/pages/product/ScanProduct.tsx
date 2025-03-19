@@ -78,8 +78,18 @@ const ScanProduct = () => {
                             <Button type="submit" >Search</Button>
                         </div>
                     </form>
-
                 </div>
+
+                <div className='flex justify-start items-center gap-4 mt-2 mb-6 ps-2'>
+                    <Label
+                        htmlFor="productsQRCodeNameSku"
+                        className="block  text-md font-medium leading-6 text-gray-900"
+                    >
+                        Products QRCode NameS ku
+                    </Label>
+                    <Button type="submit" onClick={() => navigate("/printProductsQRCodeNameSku")}>Products QRCode Name Sku</Button>
+                </div>
+
             </div>
         </Layout>
 

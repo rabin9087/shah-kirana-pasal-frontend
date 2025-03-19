@@ -158,13 +158,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                 {/* Items Table */}
                 <h3 className="text-lg sm:text-xl font-semibold mt-4 mb-2">Items</h3>
                 <div className="overflow-auto">
-                    <table className="w-full min-w-[600px] border rounded-lg">
+                    <table className="w-full min-w-[600px] border rounded-lg border-collapse">
                         <thead>
-                            <tr className="bg-gray-100">
+                            <tr className="bg-gray-200">
                                 <th className="p-1 ms-1 text-xs sm:text-sm">#</th>
                                 <th className="p-1 text-xs sm:text-sm">Article</th>
                                 <th className="p-1 text-xs sm:text-sm">Thumbnail</th>
-                                <th className="p-1 text-xs sm:text-sm">Name</th>
+                                <th className="p-1 text-xs sm:text-sm ps-4 text-start">Name</th>
                                 <th className="p-1 text-xs sm:text-sm">Price</th>
                                 <th className="p-1 text-xs sm:text-sm">Ordered</th>
                                 <th className="p-1 text-xs sm:text-sm">Supplied</th>
@@ -176,14 +176,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                 <tr key={index} className="border-b">
                                     <td className="p-1 ps-2">{index + 1}</td>
                                     <td className="p-1 underline">{item?.productId?.sku}</td>
-                                    <td className="p-1">
+                                    <td className="p-1 shadow-md border border-gray-300">
                                         <img
                                             src={item?.productId?.thumbnail as string || item?.productId?.images?.[0] as string}
                                             alt={item?.productId?.name}
                                             className="w-16 h-16 object-cover rounded-md"
                                         />
                                     </td>
-                                    <td className="p-1">{item?.productId?.name}</td>
+                                    <td className="p-1 ps-4">{item?.productId?.name}</td>
                                     <td className="p-1">${item?.price?.toFixed(2)}</td>
                                     <td className="p-1">{item?.quantity}</td>
                                     <td className="p-1">{item?.supplied ? item?.supplied : 0}</td>

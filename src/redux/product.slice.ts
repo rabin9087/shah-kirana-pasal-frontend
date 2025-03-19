@@ -1,5 +1,6 @@
 
-import { IProductTypes, IStoredAt, Status } from "@/types";
+import { IStoredAt } from "@/axios/product/types";
+import { IProductTypes, Status } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export const productInitialState = {

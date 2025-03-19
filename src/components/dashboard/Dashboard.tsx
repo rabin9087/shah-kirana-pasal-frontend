@@ -14,34 +14,9 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
-
-    // const {users} = useAppSelector(s => s.dashboardData)
-
-    // const userChartData = {
-    //     labels: ["User1", "User2", "User3"],
-    //     datasets: [
-    //         {
-    //             label: "Number of Users",
-    //             data: [users.length, 10, 13],
-    //             backgroundColor: "rgba(54, 162, 235, 0.6)",
-    //             borderColor: "rgba(54, 162, 235, 1)",
-    //             borderWidth: 1,
-    //         },
-    //     ],
-    // };
-
     return (
         <Layout title="DASHBOARD">
             <DashboardLayout />
-            {/* Responsive Grid */}
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-                <Card className="shadow-lg">
-                    <CardContent>
-                        <h2 className="text-lg font-bold mb-4">User Analysis</h2>
-                        <Bar data={userChartData} options={{ responsive: true, maintainAspectRatio: false }} />
-                    </CardContent>
-                </Card>
-            </div> */}
         </Layout>
     );
 };

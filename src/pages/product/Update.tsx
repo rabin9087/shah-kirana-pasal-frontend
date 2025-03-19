@@ -2,7 +2,7 @@ import Layout from '@/components/layout/Layout'
 import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { InputField, IStoredAt, updateProductSchema, UpdateProductSchema } from './formValidation';
+import { InputField, updateProductSchema, UpdateProductSchema } from './formValidation';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import CustomModal from '@/components/CustomModal';
 import { IProductTypes } from '@/types';
@@ -18,6 +18,7 @@ import { setAProduct } from '@/redux/product.slice';
 import Error from '@/components/ui/Error';
 import { RxCross1 } from "react-icons/rx";
 import ProductNotFound from './components/ProductNotFound';
+import { IStoredAt } from '@/axios/product/types';
 
 const UpdateProduct = () => {
     const [image, setImage] = useState<string | null>("");
@@ -414,19 +415,19 @@ const UpdateProduct = () => {
                                                 {
                                                     inputeType &&
                                                     <select
-                                                        className="w-full p-2 border-2 rounded-md"
+                                                        className="w-full p-2 border-2 rounded-md text-center"
                                                         id="storedAt"
                                                         defaultValue={product.storedAt}
                                                         {...register('storedAt')}
                                                         onChange={handelOnChange}
                                                     >
                                                         <option value="">--Select a Stored At--</option>
-                                                        <option value={IStoredAt.AMBIENT}>--{IStoredAt.AMBIENT}--</option>
-                                                        <option value={IStoredAt.CHILLED}>--{IStoredAt.CHILLED}--</option>
-                                                        <option value={IStoredAt['FRUTES AND VEG']}>--{IStoredAt['FRUTES AND VEG']}--</option>
-
+                                                        {Object.values(IStoredAt).map((value) => (
+                                                            <option key={value} value={value}>
+                                                                --{value}--
+                                                            </option>
+                                                        ))}
                                                     </select>
-
                                                 }
                                             </div>
                                             {errors.name && <span className="text-red-600">{`${errors.name.message}`}</span>}

@@ -17,13 +17,20 @@ export const QRCodeGenerator = ({ value }: qrCodeValue) => {
   )
 }
 
-export const BarCodeGenerator = ({ value }: qrCodeValue) => {
+type BarCodeGeneratorProps = {
+  value: string;
+  width?: number;
+  height?: number;
+};
+
+export const BarCodeGenerator = ({ value, width = 2, height = 40 }: BarCodeGeneratorProps) => {
   return (
-    <div className="absolute">
-      <Barcode value={value}
-        width={2}
-        height={50}
-        displayValue={true}
-      /></div>
-  )
-}
+    <Barcode
+      value={value}
+      width={width}   // barcode line width
+      height={height} // barcode height
+      displayValue={false} // remove text below barcode if desired
+      margin={0}
+    />
+  );
+};

@@ -7,6 +7,7 @@ import { setProducts } from "@/redux/product.slice";
 import { getAllProducts } from "@/axios/product/product";
 import { useEffect, useMemo } from "react";
 import NetworkError from "@/components/network Error/NetworkError";
+import CarouselWithAutoplay from "./Carousel";
 
 function Home(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -100,6 +101,10 @@ function Home(): JSX.Element {
 
   return (
     <Layout types="products" title="">
+      <div className="w-full">
+        <CarouselWithAutoplay />
+
+      </div>
       <ProductSection
         title="Sales Products"
         productList={filteredProducts.productsOnSale}

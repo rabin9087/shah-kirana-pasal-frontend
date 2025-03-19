@@ -3,7 +3,7 @@ import { generateRandomCode, generateRandomBarcode } from '../../../src/utils/ge
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ImageType, InputField, IStoredAt, productSchema, ProductSchema } from './formValidation';
+import { ImageType, InputField, productSchema, ProductSchema } from './formValidation';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import CustomModal from '@/components/CustomModal';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ import { setCategory } from '@/redux/category.slice';
 import { RxCross1 } from "react-icons/rx";
 import { base64ToFile } from '@/utils/convertToBase64';
 import { toast } from 'react-toastify';
+import { IStoredAt } from '@/axios/product/types';
 
 const CreateProduct = () => {
   const [sku, setSku] = useState<string>('');
@@ -391,12 +392,13 @@ const CreateProduct = () => {
                           id="storedAt"
                           {...register('storedAt')}
                         >
-                            <option value="" defaultValue={IStoredAt.AMBIENT}>--Select a Stored AT--</option>
-                          <option value={IStoredAt.AMBIENT}>--{IStoredAt.AMBIENT}--</option>
-                          <option value={IStoredAt.CHILLED}>--{IStoredAt.CHILLED}--</option>
-                          <option value={IStoredAt['FRUTES AND VEG']}>--{IStoredAt['FRUTES AND VEG']}--</option>
-
+                          {Object.values(IStoredAt).map((value) => (
+                            <option key={value} value={value}>
+                              --{value}--
+                            </option>
+                          ))}
                         </select>
+
 
                       }
                     </div>

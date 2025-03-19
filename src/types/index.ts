@@ -1,4 +1,5 @@
 import { IOrder } from "@/axios/order/types";
+import { IStoredAt } from "@/axios/product/types";
 import { ISalesProps } from "@/components/dashboard/sales/Sales";
 import { IAddToCartTypes } from "@/pages/addToCart";
 import { ImageType } from "@/pages/product/formValidation";
@@ -114,11 +115,6 @@ export enum Status {
   INACTIVE = "INACTIVE",
 }
 
-export enum IStoredAt {
-  AMBIENT = "AMBIENT",
-  CHILLED = "CHILLED",
-  "FRUTES AND VEG" = "FRUTES AND VEG"
-}
 
 export interface IReviews{
   userId: string,
