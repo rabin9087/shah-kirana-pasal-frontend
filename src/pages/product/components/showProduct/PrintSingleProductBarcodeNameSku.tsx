@@ -23,15 +23,17 @@ const PrintSingleProductBarcodeNameSku = () => {
     }, [location]);
 
     return (
-        <div className="p-4 print:p-0 w-[794px] mx-auto">
-            <Button onClick={() => navigate(-1)}>{"<"} BACK</Button>
+        <div className="p-4 print:p-0 max-w-screen-md mx-auto">
+            <Button onClick={() => navigate(-1)} className="mb-4">
+                {"<"} BACK
+            </Button>
             <h2 className="text-center text-xl font-bold mb-4">Product Name: {name}</h2>
 
-            <div className="flex gap-4 items-center mb-4">
-                <label htmlFor="count">Select Quantity to print Barcode: </label>
+            <div className="flex flex-col sm:flex-row gap-4 sm:items-center mb-4">
+                <label htmlFor="count" className="flex-1">Select Quantity to print Barcode: </label>
                 <select
                     id="count"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded flex-1"
                     value={count}
                     onChange={(e) => setCount(Number(e.target.value))}
                 >
@@ -47,28 +49,32 @@ const PrintSingleProductBarcodeNameSku = () => {
                 </select>
             </div>
 
-            <div className="flex gap-4 items-center mb-4">
-                <label htmlFor="width">Select Barcode Width: </label>
-                <input
-                    id="width"
-                    type="number"
-                    className="border p-2 rounded"
-                    value={width}
-                    onChange={(e) => setWidth(Number(e.target.value))}
-                    min="1"
-                />
-                <label htmlFor="height">Select Barcode Height: </label>
-                <input
-                    id="height"
-                    type="number"
-                    className="border p-2 rounded"
-                    value={height}
-                    onChange={(e) => setHeight(Number(e.target.value))}
-                    min="1"
-                />
+            <div className="flex flex-col sm:flex-row gap-4 sm:items-center mb-4">
+                <div className="flex-1">
+                    <label htmlFor="width" className="block">Select Barcode Width: </label>
+                    <input
+                        id="width"
+                        type="number"
+                        className="border p-2 rounded w-full"
+                        value={width}
+                        onChange={(e) => setWidth(Number(e.target.value))}
+                        min="1"
+                    />
+                </div>
+                <div className="flex-1">
+                    <label htmlFor="height" className="block">Select Barcode Height: </label>
+                    <input
+                        id="height"
+                        type="number"
+                        className="border p-2 rounded w-full"
+                        value={height}
+                        onChange={(e) => setHeight(Number(e.target.value))}
+                        min="1"
+                    />
+                </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2" style={{ pageBreakInside: "avoid" }}>
+            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4" style={{ pageBreakInside: "avoid" }}>
                 {generatedArray.map((_, index) => {
                     return (
                         <div
