@@ -11,6 +11,7 @@ import { setAProduct } from "@/redux/product.slice";
 import { IProductTypes } from "@/types";
 import ImageCarousel from "./components/ImageCarousel";
 import { Button } from "@/components/ui/button";
+import YouMayLike from "./components/youMayLike/YouMayLikeProducts";
 
 const ProductLanding = () => {
     const params = useParams();
@@ -25,7 +26,7 @@ const ProductLanding = () => {
     // State for the selected image
 
     const { data = {} as IProductTypes, error } = useQuery<IProductTypes>({
-        queryKey: ['products', params?.qrCodeNumber],
+        queryKey: ['products', params?._id],
         queryFn: async () => getAProduct({ qrCodeNumber: params })
     });
 
@@ -36,7 +37,7 @@ const ProductLanding = () => {
             alt: `${product.name}`,
         }))
         : [];
-
+        
     useEffect(() => {
         if (data._id !== "") {
             dispatch(setAProduct(data));
@@ -52,7 +53,6 @@ const ProductLanding = () => {
     return (
         <Layout title={""}>
             <Button onClick={() => navigate(-1)} className="p-2 ms-8 mb-4 bg-primary text-white rounded-md">{"<"} Back</Button>
-
             <div className="container mx-auto p-4 mt-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Product Image Carousel */}
@@ -77,7 +77,7 @@ const ProductLanding = () => {
                                         ))}
                                     </div>
                                     <div className="w-4/5">
-                                        <ImageCarousel images={images || []} thumbnail={selectedImage || product.thumbnail} selectedImage={selectedImage} />
+                                        <ImageCarousel thumbnail={selectedImage || product.thumbnail} selectedImage={selectedImage} />
                                     </div>
                                 </div>
                             </CardDescription>
@@ -127,11 +127,9 @@ const ProductLanding = () => {
                     </div>
                 </div>
                 <div className="mt-8">
-                    <h2>Product Details</h2>
-                    <div>
-
-                    </div>
-                    <p className="text-md text-gray-500 mb-4">{product.description}</p>
+                    <h2>You may also Like</h2>
+                    <YouMayLike parentCategoryId={product.parentCategoryID} qrCodeNumber = {product?.qrCodeNumber as string} />
+                    {/* <p className="text-md text-gray-500 mb-4">{product.description}</p> */}
                 </div>
             </div>
         </Layout>

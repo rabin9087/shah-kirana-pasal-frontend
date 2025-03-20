@@ -350,7 +350,8 @@ const CheckoutForm = () => {
                                             ? "bg-blue-500 text-white"
                                             : "bg-gray-200 text-gray-700"
                                             }`}
-                                        onClick={() => setPaymentType("card")}
+                                            onClick={() => setPaymentType("card")}
+                                            disabled
                                     >
                                         {language === "en" ? "Card" : " कार्ड"}
                                     </Button>

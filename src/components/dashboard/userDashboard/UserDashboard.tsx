@@ -15,6 +15,7 @@ const UsersDashboard = () => {
     const { data= [], isLoading, isError } = useQuery<IUser[]>({
         queryKey: ["allUsers"],
         queryFn: getAllUsers,
+        enabled: users.length === 0
     });
     const [usersData, setUsersData] = useState<IUser[]>(users);
 

@@ -18,6 +18,7 @@ type IResults = {
   name: string,
   alternateName?: string,
   parentCategoryID: string,
+  qrCodeNumber?: string
 }
 
 const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placeholder, setResults }) => {
@@ -121,15 +122,9 @@ export const useDebounce = (value: any, delay: number) => {
 };
 
 export const ResultsComponent = ({ results, setResults }: { results: IResults[] | [], setResults: (result: []) => void }) => {
-  const { categories } = useAppSelector((s) => s.categoryInfo);
   const { language } = useAppSelector((state) => state.settings)
 
-  const getCategoryName = (parentCategoryID: string): string | undefined => {
-    const category = categories.find((cat) => cat._id === parentCategoryID);
-    return category?.slug; // Return the name if found, otherwise undefined
-  };
   const resultsRef = useRef<HTMLDivElement | null>(null);
-  console.log(results)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (resultsRef.current && !resultsRef.current.contains(event.target as Node)) {
@@ -152,10 +147,9 @@ export const ResultsComponent = ({ results, setResults }: { results: IResults[] 
           >
             <Link
               onClick={() => setResults([])}
-              to={`/products/search?searchTerm=${getCategoryName(item.parentCategoryID)}`}
+              to={`/product/${item.qrCodeNumber}`}
             >
               <p className="text-black text-sm"> {language === "en" ? item.name : item.alternateName !== "" ? item.alternateName : item.name}
-
               </p>
             </Link>
           </div>

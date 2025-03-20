@@ -29,8 +29,8 @@ const ProductsDashboard = () => {
     const [searchData, setSearchData] = useState(products)
     const { data = [], error } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
-        queryFn: () =>
-            getAllProducts()
+        queryFn: () => getAllProducts(),
+        // enabled: products.length === 0 && categories.length === 0
     });
 
     useEffect(() => {
@@ -45,7 +45,6 @@ const ProductsDashboard = () => {
     }
 
     const handelOnChange = async (value: string) => {
-        console.log(value)
         if (value === "allProducts") {
             return dispatch(setProducts(data))
         }
@@ -81,7 +80,7 @@ const ProductsDashboard = () => {
     if (error) return <Error />
     return (
         <div>
-            <p>Total Products: {data?.length}</p>
+            <p>Total Products: {products?.length}</p>
             <div className="flex justify-between me-4 px-2">
 
                 <div className="w-full me-4">

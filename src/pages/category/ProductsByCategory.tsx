@@ -5,15 +5,11 @@ import { IProductTypes } from "@/types";
 import Layout from "@/components/layout/Layout";
 import ProductNotFound from "../product/components/ProductNotFound";
 import { useQuery } from "@tanstack/react-query";
-import { setProducts } from "@/redux/product.slice";
+import { setSelectedProducts } from "@/redux/product.slice";
 import { getAllProductsByCategory } from "@/axios/product/product";
 import Error from "@/components/ui/Error";
 import ProductCard from "../productCard/ProductCard";
 
-// interface IProductCardProps {
-//     data: IProductTypes[],
-//     setData: (data: IProductTypes[]) => void
-// }
 
 const ProductCardByCategory: React.FC = () => {
 
@@ -21,12 +17,10 @@ const ProductCardByCategory: React.FC = () => {
     const [searchParams] = useSearchParams();
     const { slug } = useParams()
     const searchTerm = searchParams.get('searchTerm') || ''
-    const { products } = useAppSelector(state => state.productInfo)
-    // const [data, setData] = useState<IProductTypes[]>(products)
-
-    const saleOnProducts = products.filter((item) => item.salesPrice > 0)
-    const NotsaleOnProducts = products.filter((item) => !item.salesPrice)
-    
+    const { selectedProducts } = useAppSelector(state => state.productInfo)
+    const saleOnProducts = selectedProducts.filter((item) => item.salesPrice > 0)
+    const NotsaleOnProducts = selectedProducts.filter((item) => !item.salesPrice)
+  
     const { data = [] as IProductTypes[], error } = useQuery<IProductTypes[]>({
         queryKey: ["categories", slug, searchTerm],
         queryFn: async () => {
@@ -37,10 +31,12 @@ const ProductCardByCategory: React.FC = () => {
                 return await getAllProductsByCategory(slug as string);
             }
             return [];
-        }
+        },
+        // enabled: products.length === 0 && categories.length === 0
     });
+
     useEffect(() => {
-        if (data?.length) { dispatch(setProducts(data)) }
+        if (data?.length) { dispatch(setSelectedProducts(data)) }
         // dispatch(toggleSideBar());
     }, [dispatch, slug, data.length, searchTerm])
 
@@ -50,7 +46,7 @@ const ProductCardByCategory: React.FC = () => {
 
     return (<Layout title={`${(slug || searchTerm).toUpperCase()} PRODUCTS`} types="category">
         {data.length < 1 ? <ProductNotFound /> :
-            
+
             <>
                 <div className=" shadow-md mt-6 md:mt-24">
                     <h1 className="text-center md:text-start font-normal py-2 ps-4">Sales Products</h1>
@@ -60,12 +56,12 @@ const ProductCardByCategory: React.FC = () => {
                         ))}
                     </div>
                 </div>
-                
+
                 <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {NotsaleOnProducts.map((product: IProductTypes) =>
-                    <ProductCard key={product._id} item={product} />
-                )}
-            </div>
+                        <ProductCard key={product._id} item={product} />
+                    )}
+                </div>
             </>
         }
     </Layout>

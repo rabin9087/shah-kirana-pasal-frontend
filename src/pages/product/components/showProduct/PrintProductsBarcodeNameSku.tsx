@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 const PrintProductsQRCodeNameSku = () => {
     const { products } = useAppSelector((s) => s.productInfo);
     const navigate = useNavigate();
+    const [barcodeDisplayValue, setBarcodeDisplayValue] = useState(false);
     const [width, setWidth] = useState(2); // State for width
     const [height, setHeight] = useState(40);
 
@@ -44,6 +45,24 @@ const PrintProductsQRCodeNameSku = () => {
                 </div>
             </div>
 
+            <div className="flex items-center justify-center gap-4 my-6">
+                <span className="text-lg font-semibold">Display Barcode Value:</span>
+                <button
+                    onClick={() => setBarcodeDisplayValue((prev) => !prev)}
+                    className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 ${barcodeDisplayValue ? "bg-green-500" : "bg-gray-300"
+                        }`}
+                >
+                    <span
+                        className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform duration-300 ${barcodeDisplayValue ? "translate-x-8" : "translate-x-1"
+                            }`}
+                    />
+                </button>
+                <span className="text-base font-medium">
+                    {barcodeDisplayValue ? "Showing" : "Hidden"}
+                </span>
+            </div>
+
+
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
                 {products.map(({ qrCodeNumber, sku, name }) => (
                     <div
@@ -54,7 +73,7 @@ const PrintProductsQRCodeNameSku = () => {
                             to={`/printSingleProductBarcodeNameSku/${qrCodeNumber}`}
                             state={{ name }}
                         >
-                            <BarCodeGenerator value={qrCodeNumber as string} height={height} width={width} />
+                            <BarCodeGenerator value={qrCodeNumber as string} height={height} width={width} displayValue={barcodeDisplayValue} />
                         </Link>
                         <strong className="text-md mt-2">{sku}</strong>
                         <p className="text-xs">{name}</p>

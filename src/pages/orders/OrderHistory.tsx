@@ -29,9 +29,13 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                 onClick={() => toggleOrderDetails(index)}
                             >
                                 Order #{index + 1}
-                                <span className="text-gray-500">
-                                    {expandedOrder === index ? "▲" : "▼"}
-                                </span>
+                                <div>
+                                    <span className="text-gray-500">
+                                        {expandedOrder === index ? "▲" : "▼"}
+                                    </span>
+                                    {/* <Button onClick={}>Bye again</Button> */}
+                                </div>
+                                
                             </button>
 
                             {expandedOrder === index && (
@@ -78,9 +82,13 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                             </li>
                                         ))}
                                     </ul>
+
                                 </div>
                             )}
+
+                            
                         </div>
+                        
                     ))}
                 </div>
             ) : (

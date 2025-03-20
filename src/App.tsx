@@ -10,7 +10,7 @@ import OPTVerification from "./pages/users/OPTVerification";
 import NewPassword from "./pages/users/NewPassword";
 import PrivatePage from "./pages/users/PrivatePage";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { autoLoginUserAction } from "./action/user.action";
 import About from "./pages/about/About";
 import CreateProduct from "../src/pages/product/Create";
@@ -54,6 +54,9 @@ function App() {
   const { user } = useAppSelector(state => state.userInfo);
 
   // Auto-login logic
+
+  const hasAutoLoginRun = useRef(false); // 👈 flag to run once
+
   useEffect(() => {
     const autoLogin = async () => {
       const refreshJWT = localStorage.getItem("refreshJWT");
@@ -61,9 +64,9 @@ function App() {
 
       if (!user._id && (refreshJWT || accessJWT)) {
         try {
-          const autologin = await dispatch(autoLoginUserAction());
-          if (autologin) {
-            navigate(fromLocation);
+          const result = await dispatch(autoLoginUserAction());
+          if (result) {
+            navigate(fromLocation, { replace: true });
           }
         } catch (error) {
           console.error("Auto-login failed:", error);
@@ -71,10 +74,11 @@ function App() {
       }
     };
 
-    if (!user._id) {  // Only run autoLogin if the user is not logged in
+    if (!hasAutoLoginRun.current) {
+      hasAutoLoginRun.current = true;
       autoLogin();
     }
-  }, [dispatch, fromLocation, user._id]);
+  }, [dispatch, fromLocation, user._id, navigate]);
 
   useEffect(() => {
     if (user?._id) {

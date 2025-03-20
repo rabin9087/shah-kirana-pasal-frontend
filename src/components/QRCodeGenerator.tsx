@@ -21,15 +21,16 @@ type BarCodeGeneratorProps = {
   value: string;
   width?: number;
   height?: number;
+  displayValue?: boolean;
 };
 
-export const BarCodeGenerator = ({ value, width = 2, height = 40 }: BarCodeGeneratorProps) => {
+export const BarCodeGenerator = ({ value, width = 2, height = 40, displayValue = false }: BarCodeGeneratorProps) => {
   return (
     <Barcode
       value={value}
       width={width}   // barcode line width
       height={height} // barcode height
-      displayValue={false} // remove text below barcode if desired
+      displayValue={displayValue} // remove text below barcode if desired
       margin={0}
     />
   );

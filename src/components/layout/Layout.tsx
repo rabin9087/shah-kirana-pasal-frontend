@@ -20,17 +20,18 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData, addClass }) => {
   const dispatch = useAppDispatch();
-  const { data: categories = [] } = useQuery<ICategoryTypes[]>({
+  const { categories } = useAppSelector(s => s.categoryInfo)
+  const { data: cats = [] as ICategoryTypes[] } = useQuery<ICategoryTypes[]>({
     queryKey: ['categories'],
-    queryFn: () => getAllCategories()
+    queryFn: () => getAllCategories(),
+    enabled: categories.length === 0
   });
-
   useEffect(() => {
-    if (categories.length) {
-      dispatch(setCategory(categories))
+    if (cats?.length) {
+      dispatch(setCategory(cats))
     }
-  }, [dispatch, categories.length])
-  
+  }, [dispatch, cats.length])
+
 
   const { open } = useAppSelector((Store => Store.sidebar))
   return (

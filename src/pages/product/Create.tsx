@@ -34,7 +34,8 @@ const CreateProduct = () => {
 
   const { data = [] } = useQuery<ICategoryTypes[]>({
     queryKey: ['categories'],
-    queryFn: () => getAllCategories()
+    queryFn: () => getAllCategories(),
+    enabled: categories.length === 0
   });
 
   useEffect(() => {

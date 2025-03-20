@@ -91,7 +91,13 @@ export type serverReturnDataType = {
   order: IOrder
   orders: IOrder[]
   sales: ISalesProps
-  amount: []
+  amount: [],
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 };
 
 export type LocationState = {

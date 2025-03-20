@@ -26,7 +26,7 @@ export const getAllCategories = async() => {
     isPrivate: false,
     });
     
-    return response.categoryList as ICategoryTypes[]
+    return response.categoryList as ICategoryTypes[] || []
   } catch (error) {
     throw new Error("Failed to fetch products");
   }

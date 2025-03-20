@@ -36,14 +36,16 @@ export type IProductStatus = {
 const productStatus = <IProductStatus>{status: false, openNotFoundModal: false}
 interface InititalState {
   products: IProductTypes[];
+  selectedProducts: IProductTypes[];
   product: IProductTypes,
   productFoundStatus: IProductStatus,
 };
 
 const initialState: InititalState = {
-    products: [],
-    product: productInitialState,
-    productFoundStatus: productStatus,
+  products: [],
+  selectedProducts: [],
+  product: productInitialState,
+  productFoundStatus: productStatus,
 };
 
 const userSlice = createSlice({
@@ -53,16 +55,26 @@ const userSlice = createSlice({
     setProducts: (state, { payload }: PayloadAction<IProductTypes[]>) => {
       state.products = payload;
     },
+    addProducts: (state, action) => {
+    const existingIds = new Set(state.products.map((product) => product._id));
+    const newProducts = action.payload.filter(
+      (product: IProductTypes) => !existingIds.has(product._id)
+    );
+    state.products = [...state.products, ...newProducts];
+  },
   setAProduct: (state, { payload }: PayloadAction<IProductTypes>) => {
       state.product = payload;
     },
   setAProductFoundStatus: (state, { payload }: PayloadAction<IProductStatus>) => {
       state.productFoundStatus = payload
     },
+  setSelectedProducts: (state, { payload }: PayloadAction<IProductTypes[]>) => {
+      state.selectedProducts = payload;
+    },
   },
 });
 
 const { reducer, actions } = userSlice;
-export const { setProducts, setAProduct, setAProductFoundStatus } = actions;
+export const { setProducts, setAProduct, setAProductFoundStatus, setSelectedProducts, addProducts } = actions;
 export default reducer;
 // export the action creator for other components to use it in dispatch() function of redux store

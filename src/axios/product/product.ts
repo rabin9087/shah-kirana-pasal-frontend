@@ -63,6 +63,17 @@ export const updateAProductThumbnail= (_id: string, data: object) => {
   });
 };
 
+export const fetchProductsPaginated = async ({ pageParam = 1 }) => {
+  const response = await axiosProcessor({
+    method: "get",
+    url: `${productApi}`,
+    params: { page: pageParam, limit: 20 },
+    isPrivate: false,
+  });
+  return response.products || [];
+};
+
+
 export const getAllProducts = async () => {
   try {
     const response = await axiosProcessor({
@@ -74,11 +85,45 @@ export const getAllProducts = async () => {
   } catch (error) {
     throw new Error("Failed to fetch products");
   }
-  
 };
 
-export const getAllProductsByCategory = async(slug: string) => {
+type GetProductsByLimitParams = {
+  page: number;
+  limit: number;
+};
 
+export const getAllProductsByLimit = async ({ page, limit }: GetProductsByLimitParams) => {
+  try {
+    const response = await axiosProcessor({
+      method: "get",
+      url: `${productApi}/limitProduct/?page=${page}&limit=${limit}`,
+      isPrivate: false,
+    });
+    return {
+      products: response.products || [], // Default to an empty array if products are undefined
+      pagination: response.pagination || { totalPages: 1, page: 1, limit, total: 0 }, // Default pagination
+    }; // assuming your backend returns { products, pagination }
+  } catch (error) {
+    throw new Error("Failed to fetch products");
+  }
+};
+
+// 
+
+// export const getAllProducts = async (page = 1, limit = 20) => {
+//   try {
+//     const response = await axiosProcessor({
+//       method: "get",
+//       url: `${productApi}?page=${page}&limit=${limit}`,
+//       isPrivate: false,
+//     });
+//     return response.products || [];
+//   } catch (error) {
+//     throw new Error("Failed to fetch products");
+//   }
+// };
+
+export const getAllProductsByCategory = async(slug: string) => {
   try {
     const response = await axiosProcessor({
     method: "get",
