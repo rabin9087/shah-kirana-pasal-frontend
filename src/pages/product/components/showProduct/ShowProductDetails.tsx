@@ -1,7 +1,7 @@
 import { getAProductBySKU } from "@/axios/product/product";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";

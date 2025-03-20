@@ -1,6 +1,6 @@
 import React from "react";
 import ProductCard from "@/pages/productCard/ProductCard";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 
 interface SimilarProductsProps {
     products: IProductTypes[];

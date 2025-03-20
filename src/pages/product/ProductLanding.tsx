@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAProduct } from "@/axios/product/product";
 import Error from "@/components/ui/Error";
 import { setAProduct } from "@/redux/product.slice";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 import ImageCarousel from "./components/ImageCarousel";
 import { Button } from "@/components/ui/button";
 import YouMayLike from "./components/youMayLike/YouMayLikeProducts";

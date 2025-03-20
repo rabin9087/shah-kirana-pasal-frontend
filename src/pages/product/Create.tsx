@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createProduct } from '@/axios/product/product';
 import { getAllCategories } from '@/axios/category/category';
-import { ICategoryTypes } from '@/types';
+import { ICategoryTypes } from '@/types/index';
 import { setCategory } from '@/redux/category.slice';
 import { RxCross1 } from "react-icons/rx";
 import { base64ToFile } from '@/utils/convertToBase64';
@@ -205,6 +205,20 @@ const CreateProduct = () => {
       type: "string",
       required: true,
       placeholder: "Enter Product Price",
+    },
+    {
+      label: "Cost Price (optional)",
+      name: "costPrice",
+      type: "string",
+      required: true,
+      placeholder: "Enter Product Cost Price",
+    },
+    {
+      label: "Retailer Price (optional)",
+      name: "retailerPrice",
+      type: "string",
+      required: true,
+      placeholder: "Enter Product Retailer Price",
     },
     {
       label: "Quantity",

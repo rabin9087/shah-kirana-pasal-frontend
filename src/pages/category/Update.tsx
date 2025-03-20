@@ -9,7 +9,7 @@ import { CategorySchema, UpdateCategorySchema, updateCategorySchema } from "./ca
 import { Input } from "@/components/ui/input"
 import { Status } from "../product/formValidation"
 import { getACategoryAction, updateACategoryAction } from "@/action/category.action"
-import { ICategoryTypes } from "@/types"
+import { ICategoryTypes } from "@/types/index"
 import { useParams } from "react-router"
 import { Link } from "react-router-dom"
 

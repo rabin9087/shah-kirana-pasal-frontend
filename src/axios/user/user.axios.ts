@@ -1,4 +1,4 @@
-import { createUserParams, forgetPasswordParams, newPasswordParams, otp_PasswordParams } from "@/types";
+import { createUserParams, forgetPasswordParams, newPasswordParams, otp_PasswordParams } from "@/types/index";
 import { axiosProcessor, rootApi } from "..";
 import { IUpdateCartToUserTypes } from "@/pages/addToCart";
 import { ICartHistoryInUser } from "./types";

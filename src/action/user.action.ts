@@ -12,7 +12,7 @@ import {
   forgetPasswordParams,
   newPasswordParams,
   otp_PasswordParams,
-} from "@/types";
+} from "@/types/index";
 import { toast } from "react-toastify";
 
 export const createNewUser =
@@ -21,7 +21,7 @@ export const createNewUser =
     const pending = createUser(user);
     const { status, message } = await pending;
     dispatch(setLoading(false));
-    toast[status](message);
+    toast(message);
     if (status === "success") {
       return true;
     }
@@ -32,7 +32,7 @@ export const createNewAdmin =
     const pending = createAdmin(user);
     const { status, message } = await pending;
     dispatch(setLoading(false));
-    toast[status](message);
+        toast(message);
     if (status === "success") {
       return true;
     }
@@ -44,7 +44,7 @@ export const forgetPasswordOTPRequest =
     const pending = forgetPassword(data);
     const { status, message, userEmail_Phone } = await pending;
     dispatch(setLoading(false));
-    toast[status](message);
+        toast(message);
     if (status === "success") {
       dispatch(setEmail_Phone(userEmail_Phone as string));
       return true;
@@ -57,7 +57,7 @@ export const OTPVerificationRequest =
     const pending = otp_PasswordVerify(data);
     const { status, message } = await pending;
     dispatch(setLoading(false));
-    toast[status](message);
+    toast(message);
     if (status === "success") {
       return true;
     }
@@ -69,7 +69,7 @@ export const updateForgetPassword =
     const pending = update_Forget_Password(data);
     const { status, message } = await pending;
     dispatch(setLoading(false));
-    toast[status](message);
+    toast(message);
     if (status === "success") {
       dispatch(setEmail_Phone(""))
       return true;
@@ -109,11 +109,11 @@ export const loginUserAction = (
     if (status === "success") {
       localStorage.setItem("refreshJWT", tokens?.refreshJWT as string);
       sessionStorage.setItem("accessJWT", tokens?.accessJWT as string);
-      toast[status](message);
+      toast(message);
       await dispatch(getUserAction())
       return true;
     }
-    toast[status](message);
+    toast(message);
     return false;
     };
 
@@ -139,8 +139,8 @@ export const getUserAction = () => async (dispatch: AppDispatch) => {
     dispatch(setUser(user as IUser));
 
     if (user?.cart) {
-      const cartItems = user.cart.filter((item) => item.productId?._id && item.productId?._id !== "" && item.orderQuantity > 0)
-        .map(({ productId, orderQuantity, note }) => ({
+      const cartItems = user.cart.filter((item: any) => item.productId?._id && item.productId?._id !== "" && item.orderQuantity > 0)
+        .map(({ productId, orderQuantity, note }: any) => ({
         _id: productId?._id,
         status: productId?.status,
         name: productId?.name,
@@ -168,7 +168,7 @@ export const getUserAction = () => async (dispatch: AppDispatch) => {
         note,
       }));
 
-      cartItems.forEach((item) => dispatch(setAddToCart(item as IAddToCartTypes))); 
+      cartItems.forEach((item: any) => dispatch(setAddToCart(item as IAddToCartTypes))); 
       return true; // Return true after dispatching all cart items
     }
 

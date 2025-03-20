@@ -15,7 +15,7 @@ import TogglePasswordVisibility from "./TogglePassword";
 import { useAppDispatch } from "@/hooks";
 import { createNewAdmin, createNewUser } from "@/action/user.action";
 import { useNavigate } from "react-router";
-import { createUserParams } from "@/types";
+import { createUserParams } from "@/types/index";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import countryCodes from '../../utils/countryCodes.json'

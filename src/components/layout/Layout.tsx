@@ -2,7 +2,7 @@ import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import SideBar from "../SideBar/SideBar";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { ICategoryTypes, IProductTypes } from "@/types";
+import { ICategoryTypes, IProductTypes } from "@/types/index";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategories } from "@/axios/category/category";
 import { useEffect } from "react";

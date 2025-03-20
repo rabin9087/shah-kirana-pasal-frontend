@@ -25,7 +25,7 @@ const Cart: React.FC = () => {
   const cartQuantity = cart.reduce((acc, { orderQuantity }) => acc + orderQuantity, 0);
 
   const updatedCart: IUpdateCartToUserTypes[] = cart.filter((item) => item.productId?._id !== '')
-    .map(({ _id, price, orderQuantity, note }) => ({
+    .map(({ _id, price, orderQuantity, note }: any) => ({
     productId: _id,
     orderQuantity,
     note,

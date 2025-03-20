@@ -1,5 +1,5 @@
 import { axiosProcessor, rootApi } from "..";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 const productApi = rootApi + "/api/v1/product";
 
 export const createProduct = async(data: FormData) => {

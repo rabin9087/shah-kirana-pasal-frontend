@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { InputField, updateProductSchema, UpdateProductSchema } from './formValidation';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import CustomModal from '@/components/CustomModal';
-import { IProductTypes } from '@/types';
+import { IProductTypes } from '@/types/index';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { AiFillPicture } from "react-icons/ai";

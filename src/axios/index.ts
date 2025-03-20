@@ -1,4 +1,4 @@
-import { IAxiosProcessParams, TAxiosProcessor } from "@/types";
+import { IAxiosProcessParams, TAxiosProcessor } from "@/types/index";
 import axios from "axios";
 
 export const rootApi = import.meta.env.PROD

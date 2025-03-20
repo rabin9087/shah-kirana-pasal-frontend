@@ -1,6 +1,6 @@
 import { searchItem } from "@/axios/search/search";
 import { useAppSelector } from "@/hooks";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -39,7 +39,7 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
           return setData(data)
         }
 
-        matchedFilter = products.filter(item => item.name.toLowerCase().includes(value.toLocaleLowerCase()) || item.description.toLowerCase().includes(value))
+        matchedFilter = products.filter(item => item.name.toLowerCase().includes(value.toLocaleLowerCase()) || item?.description?.toLowerCase().includes(value))
         setData(matchedFilter)
         break;
       case "category":
@@ -47,7 +47,7 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
           return setData(data)
         }
 
-        matchedFilter = products.filter(item => item.name.toLowerCase().includes(value.toLocaleLowerCase()) || item.description.toLowerCase().includes(value))
+        matchedFilter = products.filter(item => item.name.toLowerCase().includes(value.toLocaleLowerCase()) || item?.description?.toLowerCase().includes(value))
         setData(matchedFilter)
         break;
     }

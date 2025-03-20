@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { OTPVerificationRequest } from '@/action/user.action';
-import { otp_PasswordParams } from '@/types';
+import { otp_PasswordParams } from '@/types/index';
 import { toast } from 'react-toastify';
 
 const OPTVerificationForm = () => {

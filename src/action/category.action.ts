@@ -3,7 +3,7 @@ import { IGetACategoryParams } from "@/axios/category/types";
 import { UpdateCategorySchema } from "@/pages/category/categoryFormValidation";
 import { setACategory } from "@/redux/category.slice";
 import { AppDispatch } from "@/store";
-import {  serverReturnDataType } from "@/types";
+import {  serverReturnDataType } from "@/types/index";
 import { toast } from "react-toastify";
 
 // export const getAllCategoriesAction = () => async (dispatch: AppDispatch) => {

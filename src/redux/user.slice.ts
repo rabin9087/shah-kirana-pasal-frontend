@@ -1,4 +1,4 @@
-import { IUser } from "@/types";
+import { IUser } from "@/types/index";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type TinititalState = {

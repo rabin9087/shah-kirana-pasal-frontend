@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAppDispatch, useAppSelector } from "@/hooks"
 import { setProducts } from "@/redux/product.slice";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react"
 import { IoCreateOutline } from "react-icons/io5";
@@ -124,8 +124,11 @@ const ProductsDashboard = () => {
                             <TableHead>Name</TableHead>
                             <TableHead>Alt Name</TableHead>
                             <TableHead>Price</TableHead>
+                            <TableHead>Cost_Price</TableHead>
+                            <TableHead> Retailer_Price</TableHead>
                             <TableHead>Quantity</TableHead>
                             <TableHead>BarCodeNumber</TableHead>
+                            <TableHead>SKU</TableHead>
                             <TableHead>ProductLocation</TableHead>
 
                             <TableHead className="text-right">Edit</TableHead>
@@ -133,7 +136,7 @@ const ProductsDashboard = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {searchData.map(({ _id, status, name, alternateName, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku }, i) => (
+                        {searchData.map(({ _id, status, name, alternateName, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku, costPrice, retailerPrice }, i) => (
                             <TableRow key={_id}>
                                 <TableCell className="font-medium">{i + 1}.</TableCell>
                                 <TableCell className="font-medium w-20 h-20"><img className="w-16 h-12 rounded-sm object-fill border-4 border-gray-300" src={thumbnail} /></TableCell>
@@ -158,12 +161,14 @@ const ProductsDashboard = () => {
                                 <TableCell className="whitespace-nowrap">{name}</TableCell>
                                 <TableCell className="whitespace-nowrap">{alternateName}</TableCell>
                                 <TableCell className=""><div>
-                                    ${price}
-                                </div>{salesPrice && <span className="flex text-yellow-500 min-w-fit"> Sale:$ {salesPrice}</span>}</TableCell>
+                                    Rs. {price}
+                                </div>{salesPrice && <span className="flex text-yellow-500 min-w-fit"> Sale:Rs. {salesPrice}</span>}</TableCell>
+                                <TableCell>Rs. {costPrice}</TableCell>
+                                <TableCell>Rs. {retailerPrice}</TableCell>
                                 <TableCell>{quantity}</TableCell>
                                 <TableCell>{qrCodeNumber}</TableCell>
+                                <TableCell>{sku}</TableCell>
                                 <TableCell>{productLocation}</TableCell>
-
 
                                 <TableCell className="text-right text-yellow-500">
                                     <Link

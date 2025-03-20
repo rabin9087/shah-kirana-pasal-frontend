@@ -30,7 +30,7 @@ const ScanProduct = () => {
 
     useEffect(() => {
         if (barcode !== "") {
-            navigate(`/product/update/${barcode}`)
+            navigate(`/search/product/sku_value/${barcode}`)
         }
     }, [barcode])
 

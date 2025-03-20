@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 import Layout from "@/components/layout/Layout";
 import ProductNotFound from "../product/components/ProductNotFound";
 import { useQuery } from "@tanstack/react-query";

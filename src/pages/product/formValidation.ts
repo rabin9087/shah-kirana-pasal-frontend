@@ -10,6 +10,8 @@ export const productSchema = z.object({
   qrCodeNumber: z.string().nonempty({ message: "Barcode is required" }),
   storedAt: z.string().nonempty({ message: "StoredAt is required" }),
   price: z.string().min(0, { message: "Price must be a positive number" }),
+  retailerPrice: z.string().min(0, { message: "Retailer Price must be a positive number" }).optional(),
+  costPrice: z.string().min(0, { message: "Cost Price must be a positive number" }).optional(),
   quantity: z.string().min(0, { message: "Quantity must be a positive number" }),
   productLocation: z.string().optional(),
   productWeight: z.string().optional(),
@@ -19,8 +21,8 @@ export const productSchema = z.object({
   salesStartDate: z.string().optional(),
   salesEndDate: z.string().optional(),
   parentCategoryID: z.string().nonempty({ message: "Product Category is required" }),
- description: z.string().optional(),
- images: z.any().refine(file => file.length > 0).optional(),
+  description: z.string().optional(),
+  images: z.any().refine(file => file.length > 0).optional(),
 //  addImages: z.any().refine(file => file.length > 0).optional(),
 });
 
@@ -35,6 +37,8 @@ export const updateProductSchema = z.object({
   qrCodeNumber: z.string().optional(),
   storedAt: z.string().optional(),
   price: z.string().optional(),
+  retailerPrice: z.string().optional(),
+  costPrice: z.string().optional(),
   quantity: z.string().optional(),
   productLocation: z.string().optional(),
   productWeight: z.string().optional(),

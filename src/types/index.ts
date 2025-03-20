@@ -112,7 +112,7 @@ export type ICategoryTypes = {
     name: string,
     alternativeName?: string,
     slug?: string,
-    description: string,
+    description?: string,
 }
 
 
@@ -135,10 +135,12 @@ export type IProductTypes = {
   parentCategoryID: string,
   sku: string,
   slug: string,
-  description: string,
+  description?: string,
   images?: ImageType[] | Array<string>,
   brand?: string,
   price: number,
+  retailerPrice?: number,
+  costPrice?: number,
   quantity: number,
   imageToDelete?: Array<string>;
   productWeight?: string,
@@ -165,6 +167,8 @@ export type IProductUpdateTypes = {
   images?: ImageType[] | Array<string>,
   brand?: string,
   price?: number,
+  retailerPrice?: number,
+  costPrice?: number,
   quantity?: number,
   productWeight?: string,
   storedAt?: IStoredAt,

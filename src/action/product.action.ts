@@ -2,7 +2,7 @@ import { getAllProducts,  getAllProductsByCategory,  updateAProductStatus, } fro
 
 import {setProducts } from "@/redux/product.slice";
 import { AppDispatch } from "@/store";
-import { serverReturnDataType } from "@/types";
+import { serverReturnDataType } from "@/types/index";
 import { toast } from "react-toastify"
 
 // export const createProductAction = (data: ProductSchema) => async (dispatch: AppDispatch) => {

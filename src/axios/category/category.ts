@@ -1,4 +1,4 @@
-import { ICategoryTypes } from "@/types";
+import { ICategoryTypes } from "@/types/index";
 import { axiosProcessor, rootApi } from "..";
 import { IGetACategoryParams } from "./types";
 import { UpdateCategorySchema } from "@/pages/category/categoryFormValidation";

@@ -1,4 +1,4 @@
-import { IProductTypes } from "@/types";
+
 import Layout from "@/components/layout/Layout";
 import { useAppSelector } from "@/hooks";
 import ProductCard from "../productCard/ProductCard";
@@ -9,6 +9,7 @@ import NetworkError from "@/components/network Error/NetworkError";
 import CarouselWithAutoplay from "./Carousel";
 import { Sparkles, Tag, ShoppingCart, Gift, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IProductTypes } from "@/types/index";
 
 interface Pagination {
   total: number;
@@ -114,7 +115,7 @@ function Home(): JSX.Element {
   );
 
   return (
-    <Layout types="products" title="Home - Shop Smart">
+    <Layout types="products" title="Shop Smart">
       <div className="w-full mb-8">
         <CarouselWithAutoplay />
       </div>
@@ -187,8 +188,6 @@ function Home(): JSX.Element {
                   Next
                 </Button>
               </div>
-
-
           </>
         )}
       </div>

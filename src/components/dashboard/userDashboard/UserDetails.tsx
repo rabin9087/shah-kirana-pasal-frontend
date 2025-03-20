@@ -3,7 +3,7 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setAUserDetail } from "@/redux/dashboard.slice";
-import { IUser } from "@/types";
+import { IUser } from "@/types/index";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";

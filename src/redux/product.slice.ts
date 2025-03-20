@@ -1,6 +1,6 @@
 
 import { IStoredAt } from "@/axios/product/types";
-import { IProductTypes, Status } from "@/types";
+import { IProductTypes, Status } from "@/types/index";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export const productInitialState = {

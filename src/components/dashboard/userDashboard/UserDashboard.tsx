@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { getAllUsers } from "@/axios/user/user.axios";
-import { IUser } from "@/types";
+import { IUser } from "@/types/index";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";// Assuming you have an Alert component
 import SearchInput from "@/components/search/SearchInput";

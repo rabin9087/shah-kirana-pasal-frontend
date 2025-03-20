@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { IUser } from '@/types';
+import { IUser } from '@/types/index';
 import { getAUser, updateAUser } from '@/axios/user/user.axios';
 import { useParams } from 'react-router';
 import Layout from '@/components/layout/Layout';

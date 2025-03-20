@@ -1,4 +1,4 @@
-import { ICategoryTypes, IProductTypes, IUser } from "@/types";
+import { ICategoryTypes, IProductTypes, IUser } from "@/types/index";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 interface DashboardState {

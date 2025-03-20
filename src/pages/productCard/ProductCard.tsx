@@ -1,4 +1,4 @@
-import { IProductTypes } from "@/types"
+import { IProductTypes } from "@/types/index"
 import {
   Card,
   CardContent,

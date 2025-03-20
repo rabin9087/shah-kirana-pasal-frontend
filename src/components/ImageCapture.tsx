@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { categorySchema } from "@/pages/category/categoryFormValidation";
-import { ICategoryTypes } from "@/types";
+import { ICategoryTypes } from "@/types/index";
 import { setAProductFoundStatus } from "@/redux/product.slice";
 import { useMutation } from "@tanstack/react-query";
 import { createCategory } from "@/axios/category/category";
@@ -243,6 +243,7 @@ interface CreateCategoryComponentProps {
 
 export const CreateCategoryForm = ({ closeModal }: CreateCategoryComponentProps) => {
 
+    const [isPending, setIsPending] = useState(false);
     const { register, handleSubmit } = useForm<ICategoryTypes>({
         resolver: zodResolver(categorySchema),
     });
@@ -252,11 +253,16 @@ export const CreateCategoryForm = ({ closeModal }: CreateCategoryComponentProps)
     })
 
     const onSubmit = (data: ICategoryTypes) => {
+        setIsPending(true);
         mutation.mutate(data)
-        if (mutation.isSuccess) return closeModal()
+        if (mutation.isSuccess) {
+            
+            return closeModal()
+        }
+        setIsPending(false)
     };
 
-    return <form className="w-full md:w-[500px] p-2 rounded-md" onSubmit={handleSubmit(onSubmit)}>
+    return <form className="w-full md:w-[700px] p-2 rounded-md" onSubmit={handleSubmit(onSubmit)}>
         <div className=''>
             <div className="flex justify-center mb-2">
                 <h3 className="align-middle underline">Create New Category</h3>
@@ -290,15 +296,17 @@ export const CreateCategoryForm = ({ closeModal }: CreateCategoryComponentProps)
                     id="description"
                     {...register('description')}
                     rows={5}
-                    required
                     className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     placeholder='Enter Category description'
                 />
             </div>
         </div>
         <div className="mt-2 w-full flex justify-center gap-4 ">
-            <Button type='button' className="px-2 w-1/2" size={'icon'} variant={'default'} onClick={handleSubmit(onSubmit)} disabled={mutation.isPending}>
-                Save
+            <Button type='button'
+                className="px-2 w-1/2" size={'icon'} variant={'default'}
+                onClick={handleSubmit(onSubmit)}
+                disabled={mutation.isPending}>
+                {isPending ? "...Creating" : "Create"}
             </Button>
             <Button type='button' className="px-2 w-1/2" size={'icon'} variant={'outline'}
                 onClick={closeModal}

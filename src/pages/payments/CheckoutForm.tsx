@@ -2,7 +2,7 @@ import { createOrder } from '@/axios/order/order';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import {
-    AddressElement, PaymentElement, useElements, useStripe, LinkAuthenticationElement,
+    AddressElement, useElements, useStripe, LinkAuthenticationElement,
 } from '@stripe/react-stripe-js';
 import { FormEvent, useEffect, useState } from 'react';
 import DeliveryDateSelector from './DeliveryDate';
@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router';
 import { FaRegEdit } from "react-icons/fa";
 import LocationComponent from '../home/GeoLocation';
 import { UserDetailsModel } from './UserDetailsModel';
+import { PaymentButton } from './KhaltiWebPaymentMethod';
+// import { EsewaPaymentButton } from './PaymentWithESewa';
 
 const CheckoutForm = () => {
     const { user } = useAppSelector((state) => state.userInfo);
@@ -296,7 +298,9 @@ const CheckoutForm = () => {
                                 setUserDetails={setUserDetails}
                                 userDetails={userDetails}
                             />
+
                             <LocationComponent setLocation={setLocation} />
+
                             {orderType === "delivery" && <div className='shadow-md bg-slate-100 rounded-md ps-2'>
                                 <h3 className='p-2 font-bold text-xl'>Shipping Details</h3>
 
@@ -319,7 +323,7 @@ const CheckoutForm = () => {
                                 />
                             </div>}
 
-                            {<DeliveryDateSelector orderType={orderType} requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />}
+                            <DeliveryDateSelector orderType={orderType} requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />
                         </div>
 
                         <div className='flex justify-center text-center m-4'>
@@ -351,7 +355,7 @@ const CheckoutForm = () => {
                                             : "bg-gray-200 text-gray-700"
                                             }`}
                                             onClick={() => setPaymentType("card")}
-                                            disabled
+                                            
                                     >
                                         {language === "en" ? "Card" : " कार्ड"}
                                     </Button>
@@ -359,8 +363,13 @@ const CheckoutForm = () => {
                             </div>
                         </div>
                         <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                            <h3 className='p-2 font-bold text-xl text-center' > {language === "en" ? "Amount to be paid  Rs.:" : "तिर्नुपर्ने रकम:  रु."} {cartAmount?.toFixed(2)}</h3></div>
-                        {paymentType === "card" && <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />}
+                            <h3 className='p-2 font-bold text-xl text-center' > {language === "en" ? "Amount to be paid  Rs." : "तिर्नुपर्ने रकम:  रु."} {cartAmount?.toFixed(2)}</h3></div>
+                            {paymentType === "card" && <div>
+                                <PaymentButton amount={cartAmount} />
+                                {/* <EsewaPaymentButton amount={cartAmount} /> */}
+                            </div>  }
+                            
+                            {/* <PaymentElement id="payment-element" options={{ layout: 'tabs' }} /> */}
                     </>
                 )}
             </div>

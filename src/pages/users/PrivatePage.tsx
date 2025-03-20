@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/hooks"
-import { LocationState } from "@/types";
+import { LocationState } from "@/types/index";
 import { PropsWithChildren } from "react";
 import { Navigate, useLocation } from "react-router"
 

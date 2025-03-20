@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { IProductTypes } from '@/types';
+import { IProductTypes } from '@/types/index';
 import { getAProductBySKU, updateAProductBySKU, updateAProductThumbnail } from '@/axios/product/product';
 import { useNavigate, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
@@ -40,7 +40,8 @@ const UpdateProductForm = () => {
         onSuccess: (message) => {
             if (message.status === "success") {
                 toast.success("Product has been Updated Successfully")
-                return navigate(`/search/product/sku_value/${sku}`)
+                return
+                // navigate(`/search/product/sku_value/${sku}`)
             }
             else {
                 return toast.error("Failed to Update Product!")
@@ -202,7 +203,7 @@ const UpdateProductForm = () => {
                         <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
                         <input
                             id="price"
-                            type="number"
+                            type="text"
                             {...register('price', { required: 'Price is required' })}
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
@@ -213,11 +214,35 @@ const UpdateProductForm = () => {
                         <label htmlFor="salesPrice" className="block text-sm font-medium text-gray-700">Sale Price</label>
                         <input
                             id="salesPrice"
-                            type="number"
+                            type="text"
                             {...register('salesPrice')}
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                         {errors.salesPrice && <p className="mt-2 text-sm text-red-600">{errors.salesPrice.message}</p>}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="costPrice" className="block text-sm font-medium text-gray-700">Cost Price</label>
+                        <input
+                            id="costPrice"
+                            type="text"
+                            {...register('costPrice', )}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+                        {errors.costPrice && <p className="mt-2 text-sm text-red-600">{errors.costPrice.message}</p>}
+                    </div>
+
+                    <div>
+                        <label htmlFor="retailerPrice" className="block text-sm font-medium text-gray-700">Retailer Price</label>
+                        <input
+                            id="retailerPrice"
+                            type="text"
+                            {...register('retailerPrice')}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+                        {errors.retailerPrice && <p className="mt-2 text-sm text-red-600">{errors.retailerPrice.message}</p>}
                     </div>
                 </div>
 

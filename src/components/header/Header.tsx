@@ -7,7 +7,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import Cart from "./Cart";
 import { RxCross1 } from "react-icons/rx";
 import { Profile } from "../Profile";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 import { useState } from "react";
 
 const links = [

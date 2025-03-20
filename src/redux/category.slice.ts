@@ -1,5 +1,5 @@
 
-import { ICategoryTypes } from "@/types";
+import { ICategoryTypes } from "@/types/index";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface InititalState {

@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProductsByCategory } from "@/axios/product/product";
-import { IProductTypes } from "@/types";
+import { IProductTypes } from "@/types/index";
 import ProductCard from "@/pages/productCard/ProductCard";
 
 type Props = {
