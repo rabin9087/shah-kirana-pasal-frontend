@@ -25,7 +25,7 @@ import Payment from "./pages/payments/Payment";
 import SuccessfullPayment from "./pages/payments/SuccessfullPayment";
 import MyProfile from "./pages/my-profile/MyProfile";
 import Dashboard from "./components/dashboard/Dashboard";
-import PrivateRouter, { AdminPrivateRouter, PickerPrivateRouter } from "./pages/users/PrivateRouter";
+import PrivateRouter, { AdminPrivateRouter, PickerPrivateRouter, StroreRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
 import StartPickingOrder from "./pages/orders/StartPickingOrder";
@@ -39,6 +39,7 @@ import UpdateProductForm from "./pages/product/components/showProduct/UpdateProd
 import Settings from "./components/setting/Settings";
 import PrintProductsQRCodeNameSku from "./pages/product/components/showProduct/PrintProductsBarcodeNameSku";
 import PrintSingleProductBarcodeNameSku from "./pages/product/components/showProduct/PrintSingleProductBarcodeNameSku";
+import { Store } from "./pages/store/Store";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -145,6 +146,21 @@ function App() {
           element={<Layout title=""><ContactUs /></Layout>}
           errorElement={<ErrorPage />}
         />
+
+        <Route
+          path="/store"
+          element={
+            <Layout title="">
+              <StroreRouter>
+                <>
+                  <Store />
+                </>
+              </StroreRouter>
+            </Layout>
+          }
+          errorElement={<ErrorPage />}
+        />
+
 
         <Route
           path="/product/create"
@@ -296,11 +312,11 @@ function App() {
         />
 
         <Route
-          path="/printSingleProductBarcodeNameSku/:qrCodeNumber" 
+          path="/printSingleProductBarcodeNameSku/:qrCodeNumber"
           element={<PrintSingleProductBarcodeNameSku />}
           errorElement={<ErrorPage />}
         />
-        
+
       </Routes>
       <Loader />
       <ToastContainer

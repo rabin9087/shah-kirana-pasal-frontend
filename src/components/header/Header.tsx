@@ -23,6 +23,10 @@ const links = [
     name: "Contact",
     path: "/contact",
   },
+  {
+    name: "Store",
+    path: "/store",
+  },
 ];
 
 interface IHeaderProps {
@@ -40,6 +44,7 @@ type IResults = {
 const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((s) => s.userInfo);
   const { open } = useAppSelector((s) => s.sidebar);
   const [results, setResults] = useState<IResults[] | []>([]);
  
@@ -75,18 +80,35 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
         </div>
         <div className="hidden md:flex w-full justify-start gap-2">
           <div className="md:flex hidden gap-2 items-center justify-center">
-            {links.map((item) => (
-              <Link
-                to={item.path}
-                className={`${pathname === item.path ? " bg-secondary" : "text-primary-foreground"
-                  } font-semibold p-2 rounded-sm`}
-                key={item.name}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {links
+              .filter((item) => {
+                if (item.name === "Store") {
+                  return user?.role === "ADMIN" || user?.role === "SUPERADMIN";
+                }
+                return true;
+              })
+              .map((item) => (
+                <Link
+                  to={item.path}
+                  className={`${pathname === item.path
+                      ? " bg-secondary"
+                      : "text-primary-foreground"
+                    } font-semibold p-2 rounded-sm`}
+                  key={item.name}
+                >
+                  {item.name}
+                </Link>
+              ))}
           </div>
         </div>
+        {(user.role === "STOREUSER" || user.role === "ADMIN" || user.role === "SUPERADMIN") && 
+          <div className="flex md:hidden gap-2 items-center justify-center">
+            <Link to={"/store"}
+              className="bg-white px-3 py-1 rounded-md font-semibold "
+          >
+            Store
+            </Link>
+          </div>}
         <div className="flex w-full items-center justify-end gap-1">
           <Cart />
           <div className="w-fit">

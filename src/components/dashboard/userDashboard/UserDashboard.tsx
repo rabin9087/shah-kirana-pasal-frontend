@@ -8,11 +8,16 @@ import SearchInput from "@/components/search/SearchInput";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setUsers } from "@/redux/dashboard.slice";
+import { Button } from "@/components/ui/button";
+import Modal from 'react-modal';
+import AddUser from "./AddUser";
+
 
 const UsersDashboard = () => {
     const dispatch = useAppDispatch()
+    const [isOpen, setIsOpen] = useState(false);
     const { users } = useAppSelector(s => s.dashboardData)
-    const { data= [], isLoading, isError } = useQuery<IUser[]>({
+    const { data = [], isLoading, isError } = useQuery<IUser[]>({
         queryKey: ["allUsers"],
         queryFn: getAllUsers,
         enabled: users.length === 0
@@ -41,7 +46,11 @@ const UsersDashboard = () => {
 
                     {!isLoading && !isError && data.length > 0 && (
                         <div className="overflow-auto w-full">
-                            <p>Total Users: {data?.length}</p>
+                            <div className="flex justify-between items-center me-4">
+                                <p>Total Users: {data?.length}</p>
+                                <Button type="button" onClick={() => setIsOpen(true)}>+ Add user</Button>
+                            </div>
+
                             <SearchInput
                                 placeholder="Search the user"
                                 data={users}
@@ -101,10 +110,23 @@ const UsersDashboard = () => {
                                     ))}
                                 </TableBody>
                             </Table>
+                            <Modal
+                                isOpen={isOpen}
+                                onRequestClose={() => setIsOpen(false)}
+                                overlayClassName="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+                                className="bg-white p-6 rounded-xl shadow-xl max-h-screen overflow-y-auto w-full max-w-md"
+                            >
+                                <AddUser />
+                                <Button type="button" onClick={() => setIsOpen(false)} className="mt-4 w-full">
+                                    Close
+                                </Button>
+                            </Modal>
+
                         </div>
                     )}
                 </CardContent>
             </Card>
+  
         </div>
     );
 };

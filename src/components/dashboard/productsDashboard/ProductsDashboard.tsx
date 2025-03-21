@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react"
 import { IoCreateOutline } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Select,
     SelectContent,
@@ -26,6 +26,7 @@ const ProductsDashboard = () => {
     const { products } = useAppSelector(state => state.productInfo)
     const { categories } = useAppSelector(state => state.categoryInfo)
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
     const [searchData, setSearchData] = useState(products)
     const { data = [], error } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
@@ -158,7 +159,10 @@ const ProductsDashboard = () => {
 
                                     </React.Fragment>
                                 </TableCell>
-                                <TableCell className="whitespace-nowrap">{name}</TableCell>
+                                <TableCell
+                                        onClick={() => navigate(`/update/product/sku_value/${sku}`)}
+                                        className="whitespace-nowrap">{name}</TableCell>
+                                
                                 <TableCell className="whitespace-nowrap">{alternateName}</TableCell>
                                 <TableCell className=""><div>
                                     Rs. {price}

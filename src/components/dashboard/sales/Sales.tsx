@@ -1,17 +1,22 @@
 import { getAllSales, getTotalSales } from "@/axios/sales/sales";
 import { useQuery } from "@tanstack/react-query";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, BarChart, Bar, Tooltip, Legend, Rectangle, AreaChart, Area, ResponsiveContainer, PieChart, Pie } from 'recharts';
+import { CartesianGrid, XAxis, YAxis, BarChart, Bar, Tooltip,
+    Legend, Rectangle, ResponsiveContainer, PieChart, Pie
+} from 'recharts';
 import { getProductSalesData, mapProductNames } from "./MostSoldProduct";
 import { useAppSelector } from "@/hooks";
+import ProfitChart, { CalculateDailyAndMonthlyProfit, CurrentMonthDailyProfit } from "./Profit";
 
 export type ISalesProps = {
     _id: string;
     requestDeliveryDate: string;
     amount: number;
+    paymentStatus: string,
     items: {
         productId: string;
         quantity: number;
         price: number;
+        costPrice?: number,
         supplied: number;
         note: string;
         _id: string
@@ -24,6 +29,7 @@ interface AggregatedSales {
 }
 
 const Sales = () => {
+    const { user } = useAppSelector((state) => state.userInfo);
 
     const { products } = useAppSelector(s => s.productInfo)
     const { data = [] } = useQuery({
@@ -52,6 +58,8 @@ const Sales = () => {
         const year = d.getFullYear();
         return `${month} ${year}`;
     };
+
+
 
     const getFormattedDate = (dateString: string) => {
         return new Date(dateString).toISOString().split('T')[0]; // Returns YYYY-MM-DD
@@ -100,8 +108,12 @@ const Sales = () => {
     const totalAmount = data.reduce((acc, { amount }) => {
         return acc + amount;
     }, 0);
-    const monthlySales = aggregateSalesByMonth(sales);
+    // const monthlySales = aggregateSalesByMonth(sales);
     const dailySales = aggregateSalesByDay(sales);
+
+    const { dailyProfit, monthlyProfit } = CalculateDailyAndMonthlyProfit(sales);
+
+    const { currentMonthDailyProfit } = CurrentMonthDailyProfit(sales)
 
     return (
         <>
@@ -111,8 +123,8 @@ const Sales = () => {
                     <div className="font-bold ">Total Paid: {paidOrders.toFixed(2)}</div>
                     <div className="font-bold ">Not Paid: {(totalAmount - paidOrders).toFixed(2)}</div>
                 </div>
-                <h2 className="font-bold mt-4">Monthly Sales</h2>
-                <ResponsiveContainer width="100%" height= {400}>
+                {/* <h2 className="font-bold mt-4">Monthly Sales</h2>
+                <ResponsiveContainer width="100%" height={400}>
                     <LineChart
                         data={aggregatedSales} // Use aggregated sales by month
                         margin={{
@@ -128,8 +140,7 @@ const Sales = () => {
                         <Tooltip />
                         <Legend />
                     </LineChart>
-                </ResponsiveContainer>
-               
+                </ResponsiveContainer> */}
 
                 <hr />
                 <h2 className="font-bold mt-4">Monthly Sales</h2>
@@ -152,9 +163,9 @@ const Sales = () => {
                         <Bar dataKey="totalAmount" fill="#8884d8" activeBar={<Rectangle fill="gold" stroke="blue" />} />
                     </BarChart>
                 </ResponsiveContainer>
-                
+
                 <hr />
-                <h2 className="font-bold mt-4">Monthly Sales</h2>
+                {/* <h2 className="font-bold mt-4">Monthly Sales</h2>
                 <ResponsiveContainer width="100%" height={400}>
                     <AreaChart
                         data={aggregatedSales} // Use aggregated sales by month
@@ -172,8 +183,8 @@ const Sales = () => {
                         <Tooltip />
                         <Area type="monotone" dataKey="totalAmount" stroke="#82ca9d" fill="#82ca9d" />
                     </AreaChart>
-                </ResponsiveContainer>
-                
+                </ResponsiveContainer> */}
+
                 <hr />
                 <h2 className="font-bold mt-4">Most Sale Product</h2>
                 <ResponsiveContainer width="100%" height={"75%"}>
@@ -193,7 +204,7 @@ const Sales = () => {
                         <Tooltip />
                     </PieChart>
                 </ResponsiveContainer>
-                
+
 
                 {/* <div className="mt-6 flex flex-col items-center justify-center">
                     <h2>Most Sold Product</h2>
@@ -202,9 +213,8 @@ const Sales = () => {
                     </ResponsiveContainer>
 
                 </div> */}
-
+                <hr />
                 <div className="mt-6 flex flex-col items-center justify-center">
-                    <h2>Most Sold Product</h2>
                     <ResponsiveContainer width="100%" height="100%" aspect={500 / 300}>
                         <BarChart
                             className="mt-4"
@@ -230,8 +240,9 @@ const Sales = () => {
                     </ResponsiveContainer>
                 </div>
             </div>
+            <hr />
             <div className="overflow-auto text-center">
-                <h2 className="font-bold mt-4">Monthly Sales</h2>
+                {/* <h2 className="font-bold mt-4">Monthly Sales</h2>
                 <ResponsiveContainer width="100%" height={400}>
                     <BarChart data={monthlySales}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -241,9 +252,9 @@ const Sales = () => {
                         <Legend />
                         <Bar dataKey="totalAmount" fill="#8884d8" />
                     </BarChart>
-                </ResponsiveContainer>
+                </ResponsiveContainer> */}
 
-                <h2 className="font-bold mt-4">Daily Sales</h2>
+                {/* <h2 className="font-bold mt-4">Daily Sales</h2>
                 <ResponsiveContainer width="100%" height={400}>
                     <LineChart data={dailySales}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -253,13 +264,13 @@ const Sales = () => {
                         <Legend />
                         <Line type="monotone" dataKey="totalAmount" stroke="#82ca9d" />
                     </LineChart>
-                </ResponsiveContainer>
-
+                </ResponsiveContainer> */}
+                <hr />
                 <h2 className="font-bold mt-4">Daily Sales</h2>
                 <ResponsiveContainer width="100%" height={500}>
                     <BarChart
                         className="mt-4"
-                       
+
                         data={dailySales}
                         margin={{
                             top: 5,
@@ -269,7 +280,7 @@ const Sales = () => {
                         }}
                     >
                         <XAxis dataKey="date" />
-                        <YAxis dataKey="totalAmount"/>
+                        <YAxis dataKey="totalAmount" />
                         <Tooltip />
                         <Bar
                             dataKey="totalAmount"
@@ -278,6 +289,13 @@ const Sales = () => {
                         />
                     </BarChart>
                 </ResponsiveContainer>
+
+                <hr />
+                {user?.role === "SUPERADMIN" && <div className="p-6 space-y-6">
+                    <ProfitChart data={currentMonthDailyProfit} title="Current Month Daily Profit" />
+                    <ProfitChart data={dailyProfit} title="Daily Profit" />
+                    <ProfitChart data={monthlyProfit} title="Monthly Profit" />
+                </div>}
             </div>
         </>
     )

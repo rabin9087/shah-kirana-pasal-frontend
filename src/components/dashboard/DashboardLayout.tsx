@@ -17,7 +17,7 @@ const DashboardLayout = () => {
 
     // Get allowed menu items based on role
     const getMenuItems = () => {
-        if (user.role === "ADMIN") return menuItems;
+        if (user.role === "ADMIN" || user?.role === "SUPERADMIN") return menuItems;
         if (user.role === "PICKER") return pickerMenu;
         return [];
     };

@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import loadingReducer from "./redux/Loading.slice";
 import userReducer from "./redux/user.slice";
 import sidebarReducer from "./redux/sidebar.slice";
@@ -8,12 +8,12 @@ import addToCartReducer from "./redux/addToCart.slice";
 import dashboardDataSlice from "./redux/dashboard.slice";
 import ordersSlice from "./redux/allOrders.slice";
 import settingsReducer from "./redux/setting.slice";
+import storeCartReducer from "./redux/storeCart";
 
 import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
-import { combineReducers } from "redux";
 
-// Define persist configurations
+// Persist configurations
 const cartPersistConfig = {
   key: "cart",
   storage,
@@ -24,9 +24,15 @@ const settingsPersistConfig = {
   storage,
 };
 
-// Wrap reducers with persistReducer
+const storeCartPersistConfig = {
+  key: "storeCart",
+  storage,
+};
+
+// Wrap reducers with persist
 const persistedCartReducer = persistReducer(cartPersistConfig, addToCartReducer);
 const persistedSettingsReducer = persistReducer(settingsPersistConfig, settingsReducer);
+const persistedStoreCartReducer = persistReducer(storeCartPersistConfig, storeCartReducer);
 
 // Combine all reducers
 const rootReducer = combineReducers({
@@ -38,10 +44,11 @@ const rootReducer = combineReducers({
   addToCartInfo: persistedCartReducer,
   dashboardData: dashboardDataSlice,
   ordersInfo: ordersSlice,
-  settings: persistedSettingsReducer, // Persist settings slice
+  storeCart: persistedStoreCartReducer, // persisted storeCart
+  settings: persistedSettingsReducer,
 });
 
-// Create the Redux store
+// Create the store
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
@@ -52,9 +59,9 @@ export const store = configureStore({
     }),
 });
 
-// Persist the store
+// Persistor
 export const persistedStore = persistStore(store);
 
-// Infer the `RootState` and `AppDispatch` types from the store
+// Types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

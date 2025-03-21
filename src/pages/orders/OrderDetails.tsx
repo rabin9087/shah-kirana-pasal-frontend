@@ -146,7 +146,19 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                         </tr>
                         <tr >
                             <td className="font-semibold p-1">Created Date:</td>
-                            <td className="p-1">{order?.createdAt?.toLocaleString().split("T")[0]}</td>
+                            <td className="p-1">
+                                {order?.createdAt &&
+                                    new Date(order.createdAt).toLocaleString("en-US", {
+                                        timeZone: "Asia/Kathmandu",
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        second: "2-digit",
+                                        hour12: true,
+                                    })}
+                            </td>
                         </tr>
                         <tr>
                             <td className="font-semibold p-1">Delivery Date:</td>

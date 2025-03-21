@@ -45,12 +45,12 @@ export function Profile() {
                     <Link to="/my-profile">{language === "en" ? "My Profile" : "मेरो प्रोफाइल"}</Link>
                 </DropdownMenuItem>
                 {
-                    (role === "ADMIN" || role === "PICKER") && (<DropdownMenuItem>
+                    (role === "ADMIN" || role === "PICKER" || role === "SUPERADMIN") && (<DropdownMenuItem>
                         <Link to="/dashboard">{language === "en" ?  "Dashboard" : "ड्यासबोर्ड"}</Link>
                     </DropdownMenuItem>)
                 }
 
-                {role === "ADMIN" && (
+                {(role === "ADMIN" || role === "SUPERADMIN") && (
                     <>
 
                         <DropdownMenuItem>

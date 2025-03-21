@@ -3,6 +3,7 @@ import { IStoredAt } from "@/axios/product/types";
 import { ISalesProps } from "@/components/dashboard/sales/Sales";
 import { IAddToCartTypes } from "@/pages/addToCart";
 import { ImageType } from "@/pages/product/formValidation";
+import { IStoreSale } from "@/pages/store/types";
 
 export interface IAxiosProcessParams {
   method: string;
@@ -52,7 +53,7 @@ export interface IUser {
   lName: string;
   phone: string;
   password?: string;
-  role: 'ADMIN'| 'USER' | 'MODERATOR' | 'SUPERADMIN' | 'PICKER' | "";
+  role: 'ADMIN'| 'USER' | 'MODERATOR' | 'SUPERADMIN' | 'PICKER' | "STOREUSER" | "";
   email: string;
   isVerified: boolean;
   verificationCode: string | null;
@@ -98,6 +99,7 @@ export type serverReturnDataType = {
     limit: number;
     totalPages: number;
   };
+  storeSale: IStoreSale
 };
 
 export type LocationState = {

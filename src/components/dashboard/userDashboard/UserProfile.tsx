@@ -115,6 +115,7 @@ const UserProfileEdit = () => {
                             <option value="MODERATOR">MODERATOR</option>
                             <option value="SUPERADMIN">SUPERADMIN</option>
                             <option value="PICKER">PICKER</option>
+                            <option value="STOREUSER">STOREUSER</option>
                         </select>
                     </div>
 

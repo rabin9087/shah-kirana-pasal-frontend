@@ -9,10 +9,11 @@ import { OrderUpdate } from "./OrderUpdate";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
+import { DateNavigator } from "@/pages/orders/OrderTable";
 
 const OrdersDashboard = () => {
         const { user } = useAppSelector((state) => state.userInfo);
-        const adminRoles = ["ADMIN", "PICKER"];
+        const adminRoles = ["ADMIN", "PICKER", "SUPERADMIN"];
         const navigate = useNavigate();
 
         const [barcode, setBarcode] = useState("");
@@ -71,7 +72,10 @@ const OrdersDashboard = () => {
                                 )}
 
                                 <OrderChart data={data} />
-                                {user.role === "ADMIN" && <OrdersList data={data} date={date} setDate={setDate} />}
+
+                                {user.role === "PICKER" && <DateNavigator data={data} date={date} setDate={setDate} />}
+
+                                {(user.role === "ADMIN" || user.role === "SUPERADMIN") && <OrdersList data={data} date={date} setDate={setDate} />}
                                 {isModalOpen && (
                                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                                                 <div className="bg-white p-4 mx-10 rounded-md shadow-md max-w-md w-full flex flex-col justify-center items-center">

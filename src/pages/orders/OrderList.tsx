@@ -19,7 +19,7 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
     const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
     const { orders } = useAppSelector(s => s.ordersInfo)
 
-    const changeDate = async (newDate: Date) => {
+     const changeDate = async (newDate: Date) => {
         setDate(newDate);
     };
 

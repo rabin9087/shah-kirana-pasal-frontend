@@ -26,7 +26,7 @@ export const AdminPrivateRouter = ({ children }: { children: JSX.Element }) => {
     // console.log(location)
     // const fromLocation = location?.state?.from?.location?.pathname
     const { user } = useAppSelector((state) => state.userInfo);
-    return user?.role === "ADMIN" ? (
+    return user?.role === "ADMIN" || user?.role === "SUPERADMIN" ? (
         children
     ) : (
             <Unauthorized/>
@@ -38,7 +38,20 @@ export const PickerPrivateRouter = ({ children }: { children: JSX.Element }) => 
     // console.log(location)
     // const fromLocation = location?.state?.from?.location?.pathname
     const { user } = useAppSelector((state) => state.userInfo);
-    return user?.role === "ADMIN" || user?.role === "PICKER" ? (
+    return user?.role === "ADMIN" || user?.role === "PICKER" || user?.role === "SUPERADMIN" ? (
+        children
+    ) : (
+        <Unauthorized />
+    );
+};
+
+
+export const StroreRouter = ({ children }: { children: JSX.Element }) => {
+    // const location = useLocation();
+    // console.log(location)
+    // const fromLocation = location?.state?.from?.location?.pathname
+    const { user } = useAppSelector((state) => state.userInfo);
+    return user?.role === "ADMIN" || user?.role === "STOREUSER" || user?.role === "SUPERADMIN" ? (
         children
     ) : (
         <Unauthorized />

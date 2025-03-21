@@ -57,7 +57,7 @@ const CheckoutForm = () => {
 
     const { cart } = useAppSelector(state => state.addToCartInfo)
     const orderItems = cart.map(item => ({ productId: item?._id, quantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
-    const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note }));
+    const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
 
     const cartAmount = cart.reduce((acc, { orderQuantity, price, salesPrice }) => {
         return acc + (orderQuantity * (salesPrice > 0 ? salesPrice : price));
