@@ -4,6 +4,7 @@ export interface IItemTypes {
     productId: IProductTypes,
     quantity: number,
     supplied?: number,
+    costPrice?: number,
     price: number,
     note?: string,
     _id?: string,
