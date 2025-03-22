@@ -5,23 +5,27 @@ import { setProducts } from '@/redux/product.slice';
 import { Button } from '@/components/ui/button';
 import { IProductTypes } from '@/types/index';
 import { getAllProducts } from '@/axios/product/product';
-import { addProduct, decreaseQuantity, increaseQuantity, removeProduct, clearStoreCart } from '@/redux/storeCart';
+import { addProduct, clearStoreCart } from '@/redux/storeCart';
 import CustomModal from '@/components/CustomModal';
-import { Input } from '@/components/ui/input';
 import { toast } from 'react-toastify';
-import { resetCart } from '@/redux/addToCart.slice';
 import { StoreProductCard } from './StoreProductCard';
 import { createStoreSale } from '@/axios/storeSale/storeSale';
 import { IStoreSale, IStoreSaleItemTypes } from './types';
+import StoreCartSidebar from './StoreSidebar';
+import { resetCustomer } from '@/redux/user.slice';
 
 export const Store = () => {
     const [barcode, setBarcode] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+    const [isOpenQRCode, setIsOpenQRCode] = useState(false);
+    const [result, setResults] = useState([]);
     const [customerCash, setCustomerCash] = useState(0);
     const [changeAmount, setChangeAmount] = useState(0);
-    const [amountRecieve, setamountRecieve] = useState(0);
+    const [amountRecieve, setAmountRecieve] = useState(0);
+    const [showMobileSidebar, setShowMobileSidebar] = useState(false);
     const [isSidebarHovered, setIsSidebarHovered] = useState(false);
     const { products } = useAppSelector(state => state.productInfo);
-    const { user } = useAppSelector(state => state.userInfo);
+    const { user, customer } = useAppSelector(state => state.userInfo);
     const { items, totalAmount } = useAppSelector(state => state.storeCart);
     const dispatch = useAppDispatch();
 
@@ -50,47 +54,74 @@ export const Store = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    // Separate sale and non-sale products
     const saleProducts = filteredProducts.filter(p => p.salesPrice);
     const nonSaleProducts = filteredProducts.filter(p => !p.salesPrice);
 
     const storeSaleItems: IStoreSaleItemTypes[] = items.map((item) => ({
-        productId: item._id, price: item.salesPrice ? item.salesPrice : item.price, orderQuantity: item.orderQuantity
+        productId: item._id,
+        price: item.salesPrice ? item.salesPrice : item.price,
+        orderQuantity: item.orderQuantity,
     }));
 
     const handlePayment = async (paymentMethod: string) => {
-        if (customerCash >= totalAmount) {
-            setChangeAmount(customerCash - totalAmount);
-            setamountRecieve(customerCash)
-            toast.success("Payment Successful!");
-            const customeSale: IStoreSale = {
-                name: "",
-                address: "",
-                phone: "",
-                email: "",
-                items: storeSaleItems,
-                paymentMethod: paymentMethod,
-                paymentStatus: "Paid",
-                amount: totalAmount,
-                saler: { userId: user._id, name: user.fName + " " + user.lName },
+        if (items.length === 0) {
+            return toast.error("Cart is empty.");
+        }
+
+        if (paymentMethod === "Cash") {
+            if (customerCash < totalAmount) {
+                return toast.error("Customer cash is less than the total amount.");
             }
 
-            await createStoreSale(customeSale)
+            const customeSale: IStoreSale = {
+                name: `${customer.fName} ${customer.lName}`,
+                phone: customer.phone,
+                email: customer.email,
+                items: storeSaleItems,
+                paymentMethod,
+                paymentStatus: "Paid",
+                amount: totalAmount,
+                saler: { userId: user._id, name: `${user.fName} ${user.lName}` },
+            };
+
+            setChangeAmount(customerCash - totalAmount);
+            setAmountRecieve(customerCash);
+            await createStoreSale(customeSale);
+            toast.success("Cash payment successful!");
             dispatch(clearStoreCart());
-            dispatch(resetCart());
+            dispatch(resetCustomer());
             setCustomerCash(0);
-        } else {
-            toast.error("Customer cash is less than total amount");
+        } else if (paymentMethod === "Card") {
+            setIsOpenQRCode(true);
         }
     };
 
+    const handleCardConfirmation = async (method: string) => {
+        const customeSale: IStoreSale = {
+            name: `${customer.fName} ${customer.lName}`,
+            phone: customer.phone,
+            email: customer.email,
+            items: storeSaleItems,
+            paymentMethod: method,
+            paymentStatus: "Paid",
+            amount: totalAmount,
+            saler: { userId: user._id, name: `${user.fName} ${user.lName}` },
+        };
+
+        await createStoreSale(customeSale);
+        toast.success("Card payment successful!");
+        dispatch(clearStoreCart());
+        dispatch(resetCustomer());
+        setIsOpenQRCode(false);
+    };
+
+    const actualTotal = items.reduce((acc, { orderQuantity, price }) => acc + orderQuantity * price, 0);
+
     useEffect(() => {
         if (items.length > 0) {
-            setChangeAmount(0)
+            setChangeAmount(0);
         }
-    }, [items.length])
-
+    }, [items.length]);
 
     return (
         <div className="flex relative">
@@ -108,109 +139,83 @@ export const Store = () => {
                     </div>
                 </div>
 
-                {/* Sale Products */}
                 <div className="mb-8">
                     <h2 className="text-xl font-semibold mb-4">Sale Products</h2>
-                    <div className="grid gap-4 grid-cols-2 sm::grid-cols-4 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 mr-[400px]">
+                    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mr-0 lg:mr-[400px]">
                         {saleProducts.map((product: IProductTypes) => (
-                            <div key={product._id}>
-                                <StoreProductCard item={product} />
-                            </div>
+                            <StoreProductCard key={product._id} item={product} />
                         ))}
                     </div>
                 </div>
 
-                {/* Non-Sale Products */}
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Non-Sale Products</h2>
-                    <div className="grid gap-4 grid-cols-2 sm::grid-cols-4 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 mr-[400px]">
+                    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mr-0 lg:mr-[400px]">
                         {nonSaleProducts.map((product: IProductTypes) => (
-                            <div key={product._id}>
-                                <StoreProductCard item={product} />
-                            </div>
+                            <StoreProductCard key={product._id} item={product} />
                         ))}
                     </div>
                 </div>
             </div>
 
-            <div
-                className="fixed right-0 top-0 h-full w-[400px] shadow-2xl bg-white p-4 mt-[80px] rounded-l-2xl z-30 flex flex-col"
-                onMouseEnter={() => setIsSidebarHovered(true)}
-                onMouseLeave={() => setIsSidebarHovered(false)}
-            >
-                <h2 className="text-xl font-bold mb-4 text-center">Store Cart</h2>
-                <div
-                    className={`mt-4 px-4 space-y-2 ${isSidebarHovered ? 'overflow-y-auto' : 'overflow-hidden'} max-h-[600px] sm:max-h-[500px] pb-8 mb-8`}
-                >
-                    {items.map((item) => (
-                        <div key={item._id} className="flex gap-2 mb-4 border-b pb-2 shadow rounded p-2">
-                            <img
-                                src={item?.thumbnail}
-                                alt={item.name}
-                                className="w-14 h-14 object-cover rounded"
-                            />
-                            <div className="flex flex-col w-full">
-                                <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
-                                <div className='flex justify-between'>
-                                    <p className="text-sm text-gray-600">Rs. {item.price.toFixed(2)}</p>
-                                    <p className="text-sm text-gray-600">Subtotal: Rs. {(item.price * item.orderQuantity)?.toFixed(2)}</p>
-                                </div>
-
-                                <div className="flex justify-between items-center gap-2 mt-2 ">
-                                    <div className='flex justify-between items-center gap-3'>
-                                        <Button className='w-1/3'
-                                            size="sm"
-                                            onClick={() => dispatch(decreaseQuantity(item._id))}>
-                                            -
-                                        </Button>
-                                        <p className="w-1/2 font-medium">{item.orderQuantity}</p>
-                                        <Button className='w-1/3'
-                                            size="sm"
-                                            onClick={() => dispatch(increaseQuantity(item._id))}>
-                                            +
-                                        </Button>
-                                    </div>
-
-                                    <Button
-                                        size="sm"
-                                        variant="destructive"
-                                        onClick={() => dispatch(removeProduct(item._id))}
-                                    >
-                                        Remove
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="mt-4 border-t pt-4 mb-20">
-                    <h3 className="font-bold text-lg text-center">Total:  Rs. {totalAmount?.toFixed(2)}</h3>
-
-                    <div className="flex flex-col gap-2 mt-4">
-                        <Input
-                            type="number"
-                            placeholder="Cash received"
-                            value={customerCash}
-                            onChange={(e) => setCustomerCash(Number(e.target.value))}
-                        />
-                        <Button type='submit' onClick={() => handlePayment("Cash")}>Pay Cash</Button>
-                        {changeAmount > 0 && (
-                            <div>
-                                <p className="text-blue-600 text-2xl font-semibold mb-4">
-                                    You gave: Rs.{amountRecieve?.toFixed(2)}
-                                </p>
-                                <hr/>
-                                <p className="text-green-600 text-2xl font-semibold mb-4">
-                                    Change to return: Rs.{changeAmount?.toFixed(2)}
-                                </p>
-                            </div>
-                        )}
-
-                    </div>
-                </div>
+            {/* Sidebar for larger screens */}
+            <div className="hidden lg:block">
+                <StoreCartSidebar
+                    isSidebarHovered={isSidebarHovered}
+                    setIsSidebarHovered={setIsSidebarHovered}
+                    result={result}
+                    setResults={setResults}
+                    actualTotal={actualTotal}
+                    customerCash={customerCash}
+                    setCustomerCash={setCustomerCash}
+                    handlePayment={handlePayment}
+                    changeAmount={changeAmount}
+                    amountReceive={amountRecieve}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    isOpenQRCode={isOpenQRCode}
+                    setIsOpenQRCode={setIsOpenQRCode}
+                    handleCardConfirmation={handleCardConfirmation}
+                />
             </div>
 
+            {/* Mobile button */}
+            <div className="fixed bottom-4 right-4 xl:hidden z-10">
+                <Button onClick={() => setShowMobileSidebar(true)}>Open Cart</Button>
+            </div>
+
+            {/* Mobile Sidebar */}
+            {showMobileSidebar && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex items-end">
+                    <div className="bg-white w-full h-full overflow-y-auto rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-4">
+                        <div className="flex justify-end items-center mb-4">
+                            <button
+                                onClick={() => setShowMobileSidebar(false)}
+                                className="text-lg font-bold px-3 py-1 border rounded"
+                            >
+                                Close
+                            </button>
+                        </div>
+                        <StoreCartSidebar
+                            isSidebarHovered={isSidebarHovered}
+                            setIsSidebarHovered={setIsSidebarHovered}
+                            result={result}
+                            setResults={setResults}
+                            actualTotal={actualTotal}
+                            customerCash={customerCash}
+                            setCustomerCash={setCustomerCash}
+                            handlePayment={handlePayment}
+                            changeAmount={changeAmount}
+                            amountReceive={amountRecieve}
+                            isOpen={isOpen}
+                            setIsOpen={setIsOpen}
+                            isOpenQRCode={isOpenQRCode}
+                            setIsOpenQRCode={setIsOpenQRCode}
+                            handleCardConfirmation={handleCardConfirmation}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

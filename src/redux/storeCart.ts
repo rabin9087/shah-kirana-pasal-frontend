@@ -1,7 +1,7 @@
 import { IProductTypes } from '@/types/index';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface IStoreCartItem extends IProductTypes {
+export interface IStoreCartItem extends IProductTypes {
   orderQuantity: number;
 }
 
@@ -20,32 +20,31 @@ const storeCartSlice = createSlice({
   initialState,
   reducers: {
     addProduct: (state, action: PayloadAction<IProductTypes>) => {
-      
       const existing = state.items.find(item => item._id === action.payload._id);
       if (existing) {
         existing.orderQuantity += 1;
       } else {
         state.items.push({ ...action.payload, orderQuantity: 1 });
       }
-      state.totalAmount = state.items.reduce((acc, item) => acc + item.price * item.orderQuantity, 0);
+      state.totalAmount = state.items.reduce((acc, item) => acc + (item.salesPrice ? item.salesPrice : item.price) * item.orderQuantity, 0);
     },
    increaseQuantity: (state, action: PayloadAction<string>) => {
   const product = state.items.find(item => item._id === action.payload);
   if (product) {
     product.orderQuantity += 1;
   }
-  state.totalAmount = state.items.reduce((acc, item) => acc + item.price * item.orderQuantity, 0);
+  state.totalAmount = state.items.reduce((acc, item) => acc + (item.salesPrice ? item.salesPrice : item.price) * item.orderQuantity, 0);
 },
     decreaseQuantity: (state, action: PayloadAction<string>) => {
       const product = state.items.find(item => item._id === action.payload);
       if (product && product.orderQuantity > 1) {
         product.orderQuantity -= 1;
       }
-      state.totalAmount = state.items.reduce((acc, item) => acc + item.price * item.orderQuantity, 0);
+      state.totalAmount = state.items.reduce((acc, item) => acc + (item.salesPrice ? item.salesPrice : item.price) * item.orderQuantity, 0);
     },
     removeProduct: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter(item => item._id !== action.payload);
-      state.totalAmount = state.items.reduce((acc, item) => acc + item.price * item.orderQuantity, 0);
+      state.totalAmount = state.items.reduce((acc, item) => acc + (item.salesPrice ? item.salesPrice : item.price) * item.orderQuantity, 0);
     },
     clearStoreCart: (state) => {
       state.items = [];

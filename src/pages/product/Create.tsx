@@ -217,7 +217,6 @@ const CreateProduct = () => {
       label: "Retailer Price (optional)",
       name: "retailerPrice",
       type: "string",
-      required: true,
       placeholder: "Enter Product Retailer Price",
     },
     {

@@ -25,7 +25,6 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
   const { products } = useAppSelector(state => state.productInfo)
   const inputRef = useRef<HTMLInputElement>(null);
 
-
   const handelOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     setDebouncedValue(value)
@@ -39,10 +38,16 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
           return setData(data)
         }
 
-        matchedFilter = products.filter(item => item.name.toLowerCase().includes(value.toLocaleLowerCase()) || item?.description?.toLowerCase().includes(value))
+        matchedFilter = products.filter(item => item.name.toLowerCase().includes(value.toLocaleLowerCase()) || item?.alternateName || item?.description?.toLowerCase().includes(value))
         setData(matchedFilter)
         break;
       case "category":
+        if (value.trim() === "") {
+          return setData(data)
+        }
+        break;
+
+      case "user":
         if (value.trim() === "") {
           return setData(data)
         }
@@ -97,7 +102,6 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
       {debouncedValue && <div className="text-center absolute right-4 md:right-4 size-6 cursor-pointer hover:bg-gray-300" onClick={handleClearInput} >
         <span >X</span>
       </div>}
-
     </div>
   )
 }

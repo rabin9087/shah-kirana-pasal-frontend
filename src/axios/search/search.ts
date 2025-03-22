@@ -8,3 +8,11 @@ export const searchItem= (searchQuery: string) => {
     isPrivate: false,
   });
 };
+
+export const searchUser = (searchQuery: string) => {
+  return axiosProcessor({
+    method: "get",
+    url: `${searchApi}/user?searchTerm=${searchQuery}`,
+    isPrivate: false,
+  });
+};

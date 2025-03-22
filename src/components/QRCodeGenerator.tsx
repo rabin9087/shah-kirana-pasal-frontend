@@ -2,7 +2,7 @@ import QRCode from "react-qr-code";
 import Barcode from "react-barcode";
 
 type qrCodeValue = {
-  value: string
+  value: any
 }
 
 export const QRCodeGenerator = ({ value }: qrCodeValue) => {

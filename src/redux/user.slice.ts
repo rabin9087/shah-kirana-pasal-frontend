@@ -1,30 +1,49 @@
 import { IUser } from "@/types/index";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-type TinititalState = {
+// Reusable default user object
+const defaultUser: IUser = {
+  _id: "",
+  role: "",
+  email: "",
+  fName: "",
+  lName: "",
+  __v: 0,
+  address: "",
+  createdAt: "",
+  isVerified: false,
+  phone: "",
+  profile: "",
+  cart: [],
+  cartHistory: [],
+  status: "",
+  updatedAt: "",
+  verificationCode: "",
+} as const;
+
+export type ICustomer = {
+  _id: string,
+    email: string,
+  phone: string,
+  fName: string,
+  lName: string, 
+}
+
+type TInitialState = {
   user: IUser;
-  email_Phone: string | "";
+  email_Phone: string;
+  customer: ICustomer;
 };
-export const initialState: TinititalState = {
-  user: {
-    _id: "",
-    role: "",
+
+export const initialState: TInitialState = {
+  user: { ...defaultUser },
+  email_Phone: "",
+  customer: {
+  _id: "",
     email: "",
-    fName: "",
-    lName: "",
-    __v: 0,
-    address: "",
-    createdAt: "",
-    isVerified: false,
-    phone: "",
-    profile: "",
-    cart: [],
-    cartHistory: [],
-    status: "",
-    updatedAt: "",
-    verificationCode: "",
-  },
-  email_Phone: ""
+  phone: "",
+  fName: "",
+  lName: "", },
 };
 
 const userSlice = createSlice({
@@ -35,31 +54,22 @@ const userSlice = createSlice({
       state.user = payload;
     },
     logOut: (state) => {
-      localStorage.removeItem("cart")
+      localStorage.removeItem("cart");
       localStorage.removeItem("refreshJWT");
       sessionStorage.removeItem("accessJWT");
-      state.user = initialState.user;
+      state.user = { ...defaultUser };
     },
-    setEmail_Phone: (state, {payload}: PayloadAction<string>) => {
-      state.email_Phone = payload
+    setEmail_Phone: (state, { payload }: PayloadAction<string>) => {
+      state.email_Phone = payload;
     },
-//     setCart: (state, { payload }: PayloadAction<IAddToCartTypes>) => {
-//   const existingProductIndex = state.user.cart.findIndex(
-//     (item) => item?.product_id === payload?.product_id
-//   );
-
-//   if (existingProductIndex !== -1) {
-//     // If the product exists, update the quantity
-//     state.user.cart[existingProductIndex].orderQuantity += payload.orderQuantity;
-//   } else {
-//     // If the product does not exist, add it to the cart
-//     state.user.cart.push(payload);
-//   }
-// },
+    setCustomer: (state, { payload }: PayloadAction<ICustomer>) => { 
+      state.customer = payload;
+    },
+    resetCustomer:  (state) => { 
+      state.customer = initialState.customer
+    },
   },
 });
 
-const { reducer, actions } = userSlice;
-export const { setUser, logOut, setEmail_Phone } = actions;
-export default reducer;
-// export the action creator for other components to use it in dispatch() function of redux store
+export const { setUser, logOut, setEmail_Phone, setCustomer, resetCustomer } = userSlice.actions;
+export default userSlice.reducer;

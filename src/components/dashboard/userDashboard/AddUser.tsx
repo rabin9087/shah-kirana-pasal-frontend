@@ -18,9 +18,7 @@ const AddUser = () => {
           {/* Main container */}
           <div className="w-full max-w-md bg-white/90 p-6 rounded-lg shadow-lg">
               {/* <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2> */}
-
-              <SignUpForm token={token} />
-
+              <SignUpForm token={token} nevigateTo="store"/>
           </div>
       </div>
   )

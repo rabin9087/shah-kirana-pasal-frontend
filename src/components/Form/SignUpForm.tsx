@@ -47,7 +47,12 @@ const formSchema = z.object({
 
 type TForm = z.infer<typeof formSchema>;
 
-function SignUpForm({ token }: { token: string }) {
+export type ISignupType = {
+  token: string,
+  nevigateTo?: string
+}
+
+function SignUpForm({ token, nevigateTo }: ISignupType) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { ToggleVisibility: togglePassword, type: passwordType } =
@@ -91,6 +96,10 @@ function SignUpForm({ token }: { token: string }) {
         position: "top-right",
         autoClose: 3000,
       });
+      if (nevigateTo === "store") {
+        return
+      }
+      
       navigate("/sign-in");
     } else {
       toast.error("Account creation failed. Please try again.", {

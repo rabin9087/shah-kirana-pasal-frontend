@@ -121,7 +121,6 @@ const UsersDashboard = () => {
                                     Close
                                 </Button>
                             </Modal>
-
                         </div>
                     )}
                 </CardContent>
