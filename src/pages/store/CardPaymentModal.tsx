@@ -5,9 +5,9 @@ import { toast } from 'react-toastify';
 // If you're using toast notifications, otherwise you can use window.alert
 
 const qrOptions = [
-    { label: 'Esewa', image: '/public/assets/esewa.jpg' },
+    { label: 'Esewa', image: 'https://shahkiranapasal.s3.us-east-1.amazonaws.com/1742742880513_profile_IMG_9996.jpg' },
     // { label: 'FonePay', image: '/public/assets/banktransfer.jpg' },
-    { label: 'Bank Transfer', image: '/public/assets/banktransfer.jpg' },
+    { label: 'Bank Transfer', image: 'https://shahkiranapasal.s3.us-east-1.amazonaws.com/1742742986287_profile_IMG_0008.jpg' },
 ];
 
 interface QRCodeModalProps {

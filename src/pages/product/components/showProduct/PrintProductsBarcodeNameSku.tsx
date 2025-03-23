@@ -1,6 +1,8 @@
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
+import SearchInput from "@/components/search/SearchInput";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/hooks";
+import { IProductTypes } from "@/types/index";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -11,6 +13,7 @@ const PrintProductsQRCodeNameSku = () => {
     const [barcodeDisplayValue, setBarcodeDisplayValue] = useState(false);
     const [width, setWidth] = useState(2); // State for width
     const [height, setHeight] = useState(40);
+    const [productData, setProductData] = useState<IProductTypes[]>(products);
 
     return (
         <div className="p-4 print:p-0 max-w-screen-md mx-auto">
@@ -19,7 +22,14 @@ const PrintProductsQRCodeNameSku = () => {
             </Button>
             <h1 className="text-center text-xl font-bold mb-2">Product Details</h1>
             <p className="text-center text-md font-bold mb-4">Total Products: {products.length}</p>
-
+            <SearchInput
+                placeholder="Search product"
+                data={products}
+                searchKey={"name"}
+                setFilteredData={(filtered) => {
+                    setProductData(filtered.length > 0 || filtered === products ? filtered : products);
+                }}
+            />
             <div className="flex flex-col sm:flex-row gap-4 sm:items-center mb-4">
                 <div className="flex-1">
                     <label htmlFor="width" className="block">Select Barcode Width: </label>
@@ -64,7 +74,7 @@ const PrintProductsQRCodeNameSku = () => {
 
 
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
-                {products.map(({ qrCodeNumber, sku, name }) => (
+                {productData.map(({ qrCodeNumber, sku, name }) => (
                     <div
                         key={qrCodeNumber}
                         className="border p-2 rounded flex flex-col items-center text-center"

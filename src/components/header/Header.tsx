@@ -47,7 +47,6 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   const { user } = useAppSelector((s) => s.userInfo);
   const { open } = useAppSelector((s) => s.sidebar);
   const [results, setResults] = useState<IResults[] | []>([]);
- 
 
   return (
     <div className="p-4 shadow-sm sticky top-0 rounded-md z-10 flex flex-col justify-center mx-auto w-full bg-primary">
@@ -101,6 +100,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
               ))}
           </div>
         </div>
+
         {(user.role === "STOREUSER" || user.role === "ADMIN" || user.role === "SUPERADMIN") && 
           <div className="flex md:hidden gap-2 items-center justify-center">
             <Link to={"/store"}

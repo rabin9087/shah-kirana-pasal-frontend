@@ -20,11 +20,9 @@ export function Profile() {
     const { language } = useAppSelector((state) => state.settings);
     const { _id, profile, fName, lName, role } = user || {};
     const handleOnSignout = async () => {
-
-        if (await dispatch(logOutUserAction())) {
-            dispatch(resetCart());
-            navigate("/sign-in");
-        }
+        await dispatch(logOutUserAction())
+        dispatch(resetCart());
+        navigate("/sign-in");
         localStorage.removeItem("refreshJWT")
         sessionStorage.removeItem("accessJWT")
     };
@@ -46,7 +44,7 @@ export function Profile() {
                 </DropdownMenuItem>
                 {
                     (role === "ADMIN" || role === "PICKER" || role === "SUPERADMIN") && (<DropdownMenuItem>
-                        <Link to="/dashboard">{language === "en" ?  "Dashboard" : "ड्यासबोर्ड"}</Link>
+                        <Link to="/dashboard">{language === "en" ? "Dashboard" : "ड्यासबोर्ड"}</Link>
                     </DropdownMenuItem>)
                 }
 
@@ -63,7 +61,7 @@ export function Profile() {
                     </>
                 )}
                 <DropdownMenuItem>
-                    <Link to="/order-placed">{language === "en" ?  "Purchased History": "खरिद गरिएको इतिहास"}</Link>
+                    <Link to="/order-placed">{language === "en" ? "Purchased History" : "खरिद गरिएको इतिहास"}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex">
                     <Link to="/setting" className="flex items-center gap-2"><IoSettingsOutline /><span> {language === "en" ? "Setting" : "सेटिङ"} </span> </Link>
@@ -81,7 +79,7 @@ export function Profile() {
                             onClick={handleOnLogin}
                             className="w-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
                         >
-                                {language === "en" ?  "Log In" : "लग इन"}
+                            {language === "en" ? "Log In" : "लग इन"}
                         </Button>
                     )}
 

@@ -25,20 +25,17 @@ const Cart: React.FC = () => {
   const cartQuantity = cart.reduce((acc, { orderQuantity }) => acc + orderQuantity, 0);
 
   const updatedCart: IUpdateCartToUserTypes[] = cart.filter((item) => item.productId?._id !== '')
-    .map(({ _id, price, orderQuantity, note }: any) => ({
+    .map(({ _id, price, orderQuantity, note }) => ({
     productId: _id,
     orderQuantity,
     note,
     price,
     }));
-
+  
   useEffect(() => {
     if (user?._id && cartQuantity) {
       const debouncedUpdate = debounce(() => {
         dispatch(updateCartInUserAxios(user.phone, updatedCart));
-
-        // if (user.phone && cart.filter((item) => item.productId?._id !== '' && item.orderQuantity !< 1 && item.price !== 0).length > 0) {
-        // }
       }, 3000); // 1000ms delay
       debouncedUpdate();
 

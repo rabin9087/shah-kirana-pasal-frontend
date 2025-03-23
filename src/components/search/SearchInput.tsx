@@ -1,4 +1,3 @@
-import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type SearchInputProps<T> = {
@@ -40,9 +39,15 @@ const SearchInput = <T,>({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none text-gray-400">
-                    <Search />
-                </div>
+                {searchQuery && (
+                    <button
+                        type="button"
+                        className="absolute inset-y-0 right-2 z-10 flex text-base me-2 p-2 rounded-md hover:bg-slate-300 items-center text-gray-600 cursor-pointer"
+                        onClick={() => setSearchQuery("")}
+                    >
+                        ×
+                    </button>
+                )}
             </div>
         </div>
     );

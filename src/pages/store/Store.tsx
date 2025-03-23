@@ -13,6 +13,9 @@ import { createStoreSale } from '@/axios/storeSale/storeSale';
 import { IStoreSale, IStoreSaleItemTypes } from './types';
 import StoreCartSidebar from './StoreSidebar';
 import { resetCustomer } from '@/redux/user.slice';
+import Layout from '@/components/layout/Layout';
+
+
 
 export const Store = () => {
     const [barcode, setBarcode] = useState("");
@@ -124,98 +127,100 @@ export const Store = () => {
     }, [items.length]);
 
     return (
-        <div className="flex relative">
-            <div className="w-full p-4">
-                <div className="flex justify-between items-center mb-4">
-                    <input
-                        type="text"
-                        placeholder="Search products..."
-                        className="border rounded p-2 w-72 ml-auto"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <div className="text-center w-full">
-                        <CustomModal scanCode={setBarcode} scan={true} />
-                    </div>
-                </div>
-
-                <div className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">Sale Products</h2>
-                    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mr-0 lg:mr-[400px]">
-                        {saleProducts.map((product: IProductTypes) => (
-                            <StoreProductCard key={product._id} item={product} />
-                        ))}
-                    </div>
-                </div>
-
-                <div>
-                    <h2 className="text-xl font-semibold mb-4">Non-Sale Products</h2>
-                    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mr-0 lg:mr-[400px]">
-                        {nonSaleProducts.map((product: IProductTypes) => (
-                            <StoreProductCard key={product._id} item={product} />
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Sidebar for larger screens */}
-            <div className="hidden lg:block">
-                <StoreCartSidebar
-                    isSidebarHovered={isSidebarHovered}
-                    setIsSidebarHovered={setIsSidebarHovered}
-                    result={result}
-                    setResults={setResults}
-                    actualTotal={actualTotal}
-                    customerCash={customerCash}
-                    setCustomerCash={setCustomerCash}
-                    handlePayment={handlePayment}
-                    changeAmount={changeAmount}
-                    amountReceive={amountRecieve}
-                    isOpen={isOpen}
-                    setIsOpen={setIsOpen}
-                    isOpenQRCode={isOpenQRCode}
-                    setIsOpenQRCode={setIsOpenQRCode}
-                    handleCardConfirmation={handleCardConfirmation}
-                />
-            </div>
-
-            {/* Mobile button */}
-            <div className="fixed bottom-4 right-4 xl:hidden z-10">
-                <Button onClick={() => setShowMobileSidebar(true)}>Open Cart</Button>
-            </div>
-
-            {/* Mobile Sidebar */}
-            {showMobileSidebar && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex items-end">
-                    <div className="bg-white w-full h-full overflow-y-auto rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-4">
-                        <div className="flex justify-end items-center mb-4">
-                            <button
-                                onClick={() => setShowMobileSidebar(false)}
-                                className="text-lg font-bold px-3 py-1 border rounded"
-                            >
-                                Close
-                            </button>
-                        </div>
-                        <StoreCartSidebar
-                            isSidebarHovered={isSidebarHovered}
-                            setIsSidebarHovered={setIsSidebarHovered}
-                            result={result}
-                            setResults={setResults}
-                            actualTotal={actualTotal}
-                            customerCash={customerCash}
-                            setCustomerCash={setCustomerCash}
-                            handlePayment={handlePayment}
-                            changeAmount={changeAmount}
-                            amountReceive={amountRecieve}
-                            isOpen={isOpen}
-                            setIsOpen={setIsOpen}
-                            isOpenQRCode={isOpenQRCode}
-                            setIsOpenQRCode={setIsOpenQRCode}
-                            handleCardConfirmation={handleCardConfirmation}
+        <Layout title=''>
+            <div className="flex relative">
+                <div className="w-full p-4">
+                    <div className="flex justify-between items-center mb-4">
+                        <input
+                            type="text"
+                            placeholder="Search products..."
+                            className="border rounded p-2 w-72 ml-auto"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
+                        <div className="text-center ps-20 sm:ps-0 w-full">
+                            <CustomModal scanCode={setBarcode} scan={true} />
+                        </div>
+                    </div>
+
+                    <div className="mb-8">
+                        <h2 className="text-xl font-semibold mb-4">Sale Products</h2>
+                        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mr-0 lg:mr-[400px]">
+                            {saleProducts.map((product: IProductTypes) => (
+                                <StoreProductCard key={product._id} item={product} />
+                            ))}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 className="text-xl font-semibold mb-4">Non-Sale Products</h2>
+                        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mr-0 lg:mr-[400px]">
+                            {nonSaleProducts.map((product: IProductTypes) => (
+                                <StoreProductCard key={product._id} item={product} />
+                            ))}
+                        </div>
                     </div>
                 </div>
-            )}
-        </div>
+
+                {/* Sidebar for larger screens */}
+                <div className="hidden lg:block">
+                    <StoreCartSidebar
+                        isSidebarHovered={isSidebarHovered}
+                        setIsSidebarHovered={setIsSidebarHovered}
+                        result={result}
+                        setResults={setResults}
+                        actualTotal={actualTotal}
+                        customerCash={customerCash}
+                        setCustomerCash={setCustomerCash}
+                        handlePayment={handlePayment}
+                        changeAmount={changeAmount}
+                        amountReceive={amountRecieve}
+                        isOpen={isOpen}
+                        setIsOpen={setIsOpen}
+                        isOpenQRCode={isOpenQRCode}
+                        setIsOpenQRCode={setIsOpenQRCode}
+                        handleCardConfirmation={handleCardConfirmation}
+                    />
+                </div>
+
+                {/* Mobile button */}
+                <div className="fixed bottom-4 right-4 xl:hidden z-10">
+                    <Button onClick={() => setShowMobileSidebar(true)}>Open Cart</Button>
+                </div>
+
+                {/* Mobile Sidebar */}
+                {showMobileSidebar && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex items-end">
+                        <div className="bg-white w-full h-full overflow-y-auto rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-4">
+                            <div className="flex justify-end items-center mb-4">
+                                <button
+                                    onClick={() => setShowMobileSidebar(false)}
+                                    className="text-lg font-bold px-3 py-1 border rounded"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                            <StoreCartSidebar
+                                isSidebarHovered={isSidebarHovered}
+                                setIsSidebarHovered={setIsSidebarHovered}
+                                result={result}
+                                setResults={setResults}
+                                actualTotal={actualTotal}
+                                customerCash={customerCash}
+                                setCustomerCash={setCustomerCash}
+                                handlePayment={handlePayment}
+                                changeAmount={changeAmount}
+                                amountReceive={amountRecieve}
+                                isOpen={isOpen}
+                                setIsOpen={setIsOpen}
+                                isOpenQRCode={isOpenQRCode}
+                                setIsOpenQRCode={setIsOpenQRCode}
+                                handleCardConfirmation={handleCardConfirmation}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+        </Layout>
     );
 };

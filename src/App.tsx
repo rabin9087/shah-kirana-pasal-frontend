@@ -150,13 +150,9 @@ function App() {
         <Route
           path="/store"
           element={
-            <Layout title="">
               <StroreRouter>
-                <>
                   <Store />
-                </>
               </StroreRouter>
-            </Layout>
           }
           errorElement={<ErrorPage />}
         />
