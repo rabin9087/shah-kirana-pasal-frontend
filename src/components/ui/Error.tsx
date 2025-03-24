@@ -3,7 +3,7 @@ import Layout from "../layout/Layout"
 
 const Error = () => {
     return (
-        <Layout title=""><ProductNotFound/></Layout>
+        <Layout title=""><ProductNotFound open={true} onClose={() => { }} /></Layout>
     )
 }
 export default Error

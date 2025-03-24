@@ -22,6 +22,7 @@ const customStyles = {
 interface Images {
     setImage?: (image: string | null) => void;
     setBarcode?: (barcode: string) => void;
+    setProductLocation?: (productLocation: string) => void;
     scanCode?: (barcode: string) => void;
     scan?: boolean;
     create?: string;
@@ -29,7 +30,7 @@ interface Images {
     openNotFound?: boolean
 }
 
-const CustomModal = ({ location, scanCode, setImage, scan, setBarcode, create }: Images) => {
+const CustomModal = ({ location, scanCode, setImage, scan, setBarcode, create, setProductLocation }: Images) => {
     const [modalIsOpen, setIsOpen] = React.useState(false);
     function openModal() {
         setIsOpen(true);
@@ -70,7 +71,7 @@ const CustomModal = ({ location, scanCode, setImage, scan, setBarcode, create }:
                     style={customStyles}
                     contentLabel="Example Modal"
                 >
-                    {scan && modalIsOpen ? <ScanBarcodeComponent scanCode={scanCode} closeModal={closeModal} setBarcode={setBarcode} /> : <WebcamComponent setImage={setImage} closeModal={closeModal} />}
+                    {scan && modalIsOpen ? <ScanBarcodeComponent setProductLocation={setProductLocation} scanCode={scanCode} closeModal={closeModal} setBarcode={setBarcode} /> : <WebcamComponent setImage={setImage} closeModal={closeModal} />}
                 </Modal>}
 
         </>

@@ -59,7 +59,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
 
     return (
         <div
-            className="fixed right-0 top-0 h-full w-full md:w-[400px] shadow-2xl bg-white p-4 mt-[80px] rounded-l-2xl z-30 flex flex-col"
+            className="mb-8 fixed right-0 top-0 h-full w-full md:w-[400px] shadow-2xl bg-white p-4 mt-[80px] rounded-l-2xl z-30 flex flex-col"
             onMouseEnter={() => setIsSidebarHovered(true)}
             onMouseLeave={() => setIsSidebarHovered(false)}
         >
@@ -90,7 +90,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
 
            <div >
                 <div
-                    className={`border border-blue-400 mt-2 px-4 space-y-1 ${isSidebarHovered ? 'overflow-y-auto' : 'overflow-hidden'} max-h-[500px] sm:max-h-[400px] pb-2 mb-2`}
+                    className={`border border-blue-400 mt-2 px-4 space-y-1 ${isSidebarHovered ? 'overflow-y-auto' : 'overflow-hidden'} max-h-[400px] sm:max-h-[350px] pb-2 mb-2 z-30`}
                 >
                     {items.map((item) => (
                         <div key={item._id} className="flex gap-2 mb-4 border-b pb-2 shadow rounded p-2">
@@ -201,6 +201,9 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                         className="bg-white p-6 rounded-xl shadow-xl max-h-screen overflow-y-auto w-full max-w-md"
                     >
                         <AddUser />
+                        <div>
+                            
+                        </div>
                         <Button type="button" onClick={() => setIsOpen(false)} className="mt-4 w-full">
                             Close
                         </Button>

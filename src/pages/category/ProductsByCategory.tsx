@@ -45,7 +45,7 @@ const ProductCardByCategory: React.FC = () => {
     if (error) return <Error />
 
     return (<Layout title={`${(slug || searchTerm).toUpperCase()} PRODUCTS`} types="category">
-        {data.length < 1 ? <ProductNotFound /> :
+        {data.length < 1 ? <ProductNotFound open={true} onClose={() => { }} /> :
 
             <>
                 <div className=" shadow-md mt-6 md:mt-24">

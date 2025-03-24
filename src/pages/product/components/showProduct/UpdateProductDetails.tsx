@@ -28,8 +28,6 @@ const UpdateProductForm = () => {
         defaultValues: data,
     });
 
-
-
     const mutation = useMutation({
         mutationFn: async (updatedProduct: Partial<IProductTypes>) => {
             return await updateAProductBySKU(updatedProduct, sku as string);

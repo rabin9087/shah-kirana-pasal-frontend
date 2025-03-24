@@ -189,7 +189,7 @@ const UpdateProduct = () => {
 
     if (!data || notFound) return <Layout title='Update Product Details'><Link to={"/scan-product"} className='ms-4'>
         <Button>&lt; Back</Button>
-    </Link><ProductNotFound /> </Layout>
+    </Link><ProductNotFound open={true} onClose={() => { }} /> </Layout>
 
     if (error) return <Error />
 

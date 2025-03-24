@@ -40,6 +40,7 @@ import Settings from "./components/setting/Settings";
 import PrintProductsQRCodeNameSku from "./pages/product/components/showProduct/PrintProductsBarcodeNameSku";
 import PrintSingleProductBarcodeNameSku from "./pages/product/components/showProduct/PrintSingleProductBarcodeNameSku";
 import { Store } from "./pages/store/Store";
+import ShowFullProductDetails from "./pages/product/productLocation/ShowFullProductDetails";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -150,9 +151,9 @@ function App() {
         <Route
           path="/store"
           element={
-              <StroreRouter>
-                  <Store />
-              </StroreRouter>
+            <StroreRouter>
+              <Store />
+            </StroreRouter>
           }
           errorElement={<ErrorPage />}
         />
@@ -181,12 +182,20 @@ function App() {
           element={<AdminPrivateRouter><UpdateCategory /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
-
         <Route
-          path="/search/product/sku_value/:sku"
+          path="/search/product"
           element={
             <AdminPrivateRouter>
               <ShowProductDetails />
+            </AdminPrivateRouter>
+          }
+        />
+
+        <Route
+          path="/search/product/fullDetails/:_id"
+          element={
+            <AdminPrivateRouter>
+              <ShowFullProductDetails />
             </AdminPrivateRouter>
           }
           errorElement={<ErrorPage />}

@@ -31,3 +31,4 @@ declare module 'khalti-checkout-web' {
     show(options: ShowOptions): void;
   }
 }
+

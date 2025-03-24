@@ -1,19 +1,35 @@
+import { getAllProducts } from "@/axios/product/product";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import SearchInput from "@/components/search/SearchInput";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setProducts } from "@/redux/product.slice";
 import { IProductTypes } from "@/types/index";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
 const PrintProductsQRCodeNameSku = () => {
     const { products } = useAppSelector((s) => s.productInfo);
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const [barcodeDisplayValue, setBarcodeDisplayValue] = useState(false);
     const [width, setWidth] = useState(2); // State for width
     const [height, setHeight] = useState(40);
     const [productData, setProductData] = useState<IProductTypes[]>(products);
+
+    const { data = [] } = useQuery<IProductTypes[]>({
+        queryKey: ['products'],
+        queryFn: () => getAllProducts(),
+        // enabled: products.length === 0 && categories.length === 0
+    });
+
+    useEffect(() => {
+        if (data.length) {
+            dispatch(setProducts(data))
+        }
+    }, [dispatch, data])
 
     return (
         <div className="p-4 print:p-0 max-w-screen-md mx-auto">

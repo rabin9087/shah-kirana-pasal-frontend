@@ -2,7 +2,7 @@
 import { useAppDispatch } from "@/hooks";
 import React, { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
-import { useZxing } from "react-zxing";
+// import { useZxing } from "react-zxing";
 import { Button } from "./ui/button";
 import { PiCameraRotate } from "react-icons/pi";
 import { Label } from '@/components/ui/label';
@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createCategory } from "@/axios/category/category";
 import { MdFlashlightOn, MdFlashlightOff } from "react-icons/md";
 import { isMobile } from "react-device-detect";
-
+import BarcodeScannerComponent from "react-qr-barcode-scanner"
 const videoConstraints = {
     width: 1280,
     height: 720,
@@ -120,39 +120,59 @@ export const WebcamComponent: React.FC<WebcamComponentProps> = ({ setImage, clos
 interface ScanBarcodeComponentProps {
     setBarcode?: (barcode: string) => void;
     scanCode?: (barcode: string) => void;
+    setProductLocation?: (productLocation: string) => void;
     closeModal: () => void;
     location?: string;
 }
-
-export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModal }: ScanBarcodeComponentProps) => {
+export const ScanBarcodeComponent = ({ scanCode, setBarcode, closeModal, setProductLocation }: ScanBarcodeComponentProps) => {
     // const navigate = useNavigate()
     const [isFlashOn, setIsFlashOn] = useState(false);
     const [stream, setStream] = useState<MediaStream | null>(null);
-    const { ref } = useZxing({
-        onDecodeResult(result) {
-            if (result.getText() !== "") {
-                if (scanCode) {
-                    scanCode(result.getText())
-                    closeModal()
-                    return
-                    // return navigate(`/product/update/${result.getText()}`)
-                }
-                if (setBarcode) {
-                    setBarcode(result.getText())
-                    return closeModal()
-                    // return navigate(`/product/create/`)
-                }
-                if (location) {
-                    // scanCode(result.getText())
-                    // return closeModal()
-                }
+    const handleScan = (data: any) => {
+        if (data) {
+            console.log(data)
+            if (setProductLocation) {
+                setProductLocation(data);
             }
-        },
-        constraints: {
-            video: { facingMode: "environment" }
+            if (setBarcode) {
+                setBarcode(data);
+            }
+            if (scanCode) {
+                scanCode(data)
+            }
+            closeModal()
+            return
         }
-    }
-    );
+    };
+
+    const handleError = (err: any) => {
+        console.error(err);
+    };
+
+    // const { ref } = useZxing({
+    //     onDecodeResult(result) {
+    //         if (result.getText() !== "") {
+    //             if (scanCode) {
+    //                 scanCode(result.getText())
+    //                 closeModal()
+    //                 return
+    //                 // return navigate(`/product/update/${result.getText()}`)
+    //             }
+    //             if (setBarcode) {
+    //                 setBarcode(result.getText())
+    //                 return closeModal()
+    //                 // return navigate(`/product/create/`)
+    //             }
+    //             if (setProductLocation) {
+    //                 setProductLocation(result.getText())
+    //                 return closeModal()
+    //             }
+    //         }
+    //     },
+    //     constraints: {
+    //         video: { facingMode: "environment" }
+    //     }
+    // });
 
     const toggleFlashlight = async () => {
         if (!isMobile) {
@@ -223,8 +243,18 @@ export const ScanBarcodeComponent = ({ location, scanCode, setBarcode, closeModa
 
     return (
         <div>
-            <video ref={ref as React.LegacyRef<HTMLVideoElement>} />
-
+            {/* <video ref={ref as React.LegacyRef<HTMLVideoElement>} /> */}
+            <BarcodeScannerComponent
+                width={500}
+                height={500}
+                onUpdate={(err: any, result: any) => {
+                    if (result) {
+                        handleScan(result.getText()); // Extract the text from the result
+                    } else if (err) {
+                        handleError(err);
+                    }
+                }}
+            />
             <div className="flex justify-end items-center gap-2">
                 <Button className="bg-yellow-500 hover:bg-yellow-400 mt-2" onClick={toggleFlashlight}>
                     {isFlashOn ? <MdFlashlightOff size={20} /> : <MdFlashlightOn size={20} />}
@@ -256,7 +286,7 @@ export const CreateCategoryForm = ({ closeModal }: CreateCategoryComponentProps)
         setIsPending(true);
         mutation.mutate(data)
         if (mutation.isSuccess) {
-            
+
             return closeModal()
         }
         setIsPending(false)

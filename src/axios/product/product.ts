@@ -45,6 +45,20 @@ export const updateAProductBySKU = async(data: object, sku: string) => {
   }
 };
 
+export const updateAProduct = async(data: object, _id: string) => {
+  try {
+     const response = await axiosProcessor({
+    method: "patch",
+    url: `${productApi}/update/${_id}`,
+    isPrivate: true,
+    obj: data,
+     });
+    return response 
+  } catch (error) {
+    throw new Error("Failed to update product");
+  }
+};
+
 export const updateAProductStatus= (_id: string, data: object) => {
   return axiosProcessor({
     method: "patch",

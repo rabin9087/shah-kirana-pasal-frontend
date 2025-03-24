@@ -184,14 +184,20 @@ export const Store = () => {
                 </div>
 
                 {/* Mobile button */}
-                <div className="fixed bottom-4 right-4 xl:hidden z-10">
-                    <Button onClick={() => setShowMobileSidebar(true)}>Open Cart</Button>
+                <div className="fixed w-full text-center bottom-4 xl:hidden z-10">
+                    <Button
+                        className="w-full max-w-xs mx-auto"
+                        onClick={() => setShowMobileSidebar(true)}
+                    >
+                        Open Cart
+                    </Button>
                 </div>
+
 
                 {/* Mobile Sidebar */}
                 {showMobileSidebar && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex items-end">
-                        <div className="bg-white w-full h-full overflow-y-auto rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-4">
+                        <div className="bg-white w-full h-full rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-4">
                             <div className="flex justify-end items-center mb-4">
                                 <button
                                     onClick={() => setShowMobileSidebar(false)}
