@@ -1,6 +1,8 @@
 export interface IStoreSaleItemTypes {
+    itemName?: string;
     productId: string,
     price: number,
+    costPrice?: number,
     orderQuantity: number,
 }
 
@@ -13,5 +15,6 @@ export interface IStoreSale {
     paymentMethod: string,
     paymentStatus: string,
     amount: number,
-    saler: {userId: string, name: string},
+    saler: { userId: string, name: string },
+    createdAt?: Date
 }

@@ -41,6 +41,7 @@ import PrintProductsQRCodeNameSku from "./pages/product/components/showProduct/P
 import PrintSingleProductBarcodeNameSku from "./pages/product/components/showProduct/PrintSingleProductBarcodeNameSku";
 import { Store } from "./pages/store/Store";
 import ShowFullProductDetails from "./pages/product/productLocation/ShowFullProductDetails";
+import StoreSalesDashboard from "./components/dashboard/storeSales/StoreSalesDashboard";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -158,6 +159,17 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/storeSales"
+          element={
+            <StroreRouter>
+              <StoreSalesDashboard />
+            </StroreRouter>
+          }
+          errorElement={<ErrorPage />}
+        />
+
+        StoreSalesDashboard
 
         <Route
           path="/product/create"

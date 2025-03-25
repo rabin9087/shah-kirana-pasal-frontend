@@ -1,8 +1,8 @@
 import { IStoreSale } from "@/pages/store/types";
 import { axiosProcessor, rootApi } from "..";
-const storeSaleAPI = rootApi + "/api/v1/storeSale";
+const storeSaleAPI = rootApi + "/api/v1/storeSales";
 
-export const createStoreSale = async(data: IStoreSale) => {
+export const createStoreSales = async(data: IStoreSale) => {
   try {
     const response = await axiosProcessor({
     method: "post",
@@ -11,7 +11,35 @@ export const createStoreSale = async(data: IStoreSale) => {
     obj: data,
     });
     
-    return response.storeSale
+    return response.storeSales
+  } catch (error) {
+    throw new Error("Failed to update product");
+  }
+};
+
+export const allStoreSales = async() => {
+  try {
+    const response = await axiosProcessor({
+    method: "get",
+    url: `${storeSaleAPI}/allStoreSales`,
+    isPrivate: true,
+    });
+    
+    return response.storeSales || []
+  } catch (error) {
+    throw new Error("Failed to update product");
+  }
+};
+
+export const dailyStoreSales = async () => {
+  try {
+    const response = await axiosProcessor({
+    method: "get",
+    url: `${storeSaleAPI}/dailyStoreSales`,
+    isPrivate: true,
+    });
+    
+    return response.storeSales || []
   } catch (error) {
     throw new Error("Failed to update product");
   }

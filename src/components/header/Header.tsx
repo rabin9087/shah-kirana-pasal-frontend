@@ -27,6 +27,10 @@ const links = [
     name: "Store",
     path: "/store",
   },
+  {
+    name: "Store_Sales",
+    path: "/storeSales",
+  },
 ];
 
 interface IHeaderProps {
@@ -81,8 +85,8 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
           <div className="md:flex hidden gap-2 items-center justify-center">
             {links
               .filter((item) => {
-                if (item.name === "Store") {
-                  return user?.role === "ADMIN" || user?.role === "SUPERADMIN";
+                if (item.name === "Store" || item.name === "Store Sales") {
+                  return user?.role === "ADMIN" || user?.role === "SUPERADMIN" || user?.role === "STOREUSER";
                 }
                 return true;
               })
@@ -90,8 +94,8 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
                 <Link
                   to={item.path}
                   className={`${pathname === item.path
-                      ? " bg-secondary"
-                      : "text-primary-foreground"
+                    ? " bg-secondary"
+                    : "text-primary-foreground"
                     } font-semibold p-2 rounded-sm`}
                   key={item.name}
                 >
@@ -101,12 +105,17 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
           </div>
         </div>
 
-        {(user.role === "STOREUSER" || user.role === "ADMIN" || user.role === "SUPERADMIN") && 
+        {(user.role === "STOREUSER" || user.role === "ADMIN" || user.role === "SUPERADMIN") &&
           <div className="flex md:hidden gap-2 items-center justify-center">
             <Link to={"/store"}
               className="bg-white px-3 py-1 rounded-md font-semibold "
-          >
-            Store
+            >
+              Store
+            </Link>
+            <Link to={"/storeSales"}
+              className="bg-white px-3 py-1 rounded-md font-semibold "
+            >
+              Sales
             </Link>
           </div>}
         <div className="flex w-full items-center justify-end gap-1">
@@ -127,8 +136,8 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
           setResults={setResults}
         />
         {results.length > 0 && (
- 
-          <div  className="absolute rounded-tl-md mx-auto top-full left-0 w-full">
+
+          <div className="absolute rounded-tl-md mx-auto top-full left-0 w-full">
             <ResultsComponent results={results} setResults={setResults} />
           </div>
         )}

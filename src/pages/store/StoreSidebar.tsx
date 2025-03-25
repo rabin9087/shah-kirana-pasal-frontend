@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Modal from "react-modal";
@@ -17,11 +17,15 @@ interface StoreCartSidebarProps {
     setIsSidebarHovered: (value: boolean) => void;
     result: any;
     setResults: (results: any) => void;
-    actualTotal: number;
     customerCash: number;
+    onTotalChange: (amount: number) => void;
     setCustomerCash: (value: number) => void;
+    setDiscount: (discount: number) => void;
+    setAddVat: (addVat: number) => void;
     handlePayment: (method: string) => void;
     changeAmount: number;
+    addVat: number;
+    discount: number;
     amountReceive: number;
     isOpen: boolean;
     setIsOpen: (value: boolean) => void;
@@ -35,27 +39,55 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
     setIsSidebarHovered,
     result,
     setResults,
-    actualTotal,
     customerCash,
     setCustomerCash,
     handlePayment,
     changeAmount,
     amountReceive,
     isOpen,
+    onTotalChange,
     setIsOpen,
     isOpenQRCode,
     setIsOpenQRCode,
     handleCardConfirmation,
+    setDiscount,
+    setAddVat,
+    addVat,
+    discount,
 }) => {
     const dispatch = useAppDispatch();
-    const [discount, setDiscount] = useState(0)
+    const [newPrices, setNewPrices] = useState<{ [key: string]: number }>({});
     const { language } = useAppSelector(state => state.settings);
     const { customer } = useAppSelector(state => state.userInfo);
     const { totalAmount, items } = useAppSelector(state => state.storeCart);
+    const actualTotal = items.reduce((acc, { orderQuantity, price }) => acc + orderQuantity * price, 0);
+
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const handelOnClearCustomer = () => {
         dispatch(resetCustomer());
     }
+
+    const dynamicTotalAmount = items.reduce((acc, item) => {
+        const price = newPrices[item._id] ?? item.salesPrice ?? item.price;
+        return acc + price * item.orderQuantity;
+    }, 0);
+
+    useEffect(() => {
+        onTotalChange(dynamicTotalAmount);
+    }, [dynamicTotalAmount]);
+
+    const scrollToItem = (index: number) => {
+        if (scrollContainerRef.current) {
+            const itemElement = scrollContainerRef.current?.children[index];
+            itemElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    };
+
+
+    useEffect(() => {
+        if (items.length > 0) scrollToItem(items.length - 1);
+    }, [items.length]);
 
     return (
         <div
@@ -88,21 +120,38 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                 </div>
             </div>
 
-           <div >
+            <div >
                 <div
                     className={`border border-blue-400 mt-2 px-4 space-y-1 ${isSidebarHovered ? 'overflow-y-auto' : 'overflow-hidden'} max-h-[400px] sm:max-h-[350px] pb-2 mb-2 z-30`}
                 >
-                    {items.map((item) => (
-                        <div key={item._id} className="flex gap-2 mb-4 border-b pb-2 shadow rounded p-2">
+                    {items.map((item, index) => (
+                        <div key={item._id}
+                            onClick={() => scrollToItem(index)}
+                            className="flex gap-2 mb-4 border-b pb-2 shadow rounded p-2">
                             <img
                                 src={item?.thumbnail}
                                 alt={item.name}
                                 className="w-14 h-14 object-fill rounded text-center mt-3"
                             />
                             <div className="flex flex-col w-full">
-                                <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
+                                <div className="flex justify-between items-center">
+                                    <strong className="font-semibold text-sm line-clamp-2">{item.name}</strong>
+                                    <input
+                                        type="number"
+                                        className="w-16 border border-blue-500 rounded-md ps-2 text-sm"
+                                        placeholder="New Price"
+                                        value={newPrices[item._id] ?? item.salesPrice ?? item.price}
+                                        onChange={(e) =>
+                                            setNewPrices((prev) => ({
+                                                ...prev,
+                                                [item._id]: Number(e.target.value),
+                                            }))
+                                        }
+                                    />
+                                </div>
+
                                 <div className='flex justify-between'>
-                                    <p className="text-sm text-gray-600">Rs. {(item.salesPrice ?? item.price).toFixed(2)}</p>
+                                    <p className="text-sm text-gray-600">Rate: Rs. {(item.salesPrice ?? item.price).toFixed(2)}</p>
                                     <p className="text-sm text-gray-600">
                                         Subtotal: Rs. {((item.salesPrice ?? item.price) * item.orderQuantity).toFixed(2)}
                                     </p>
@@ -123,26 +172,48 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                 </div>
 
                 <div className="mt-2 border-t mb-20 ">
-                    
-                    <div>
-                        <div className="flex justify-between w-full md:w-[350px] text-sm font-bold pt-2 px-2">
-                            <p className="w-2/3 text-gray-600">{language === "en" ? "Apply Discount" : "छुट"}</p>
+
+                    <div className="flex justify-between items-center">
+                        <div className="flex justify-between border-r items-center w-full md:w-[350px] text-sm font-bold pt-2 px-2">
+                            <p className="w-1/2 text-gray-600">{language === "en" ? "Discount" : "छुट"}</p>
                             <input
-                                className="w-1/3 text-sm border py-1 ps-2 me-4 md:me-0"
+                                className="w-1/2 text-sm border py-1 ps-2 me-4 md:me-0"
                                 type="number"
                                 placeholder="Enter discount"
                                 value={discount}
                                 min={0}
                                 onChange={(e) => {
                                     const enteredDiscount = Number(e.target.value);
-                                    const maxDiscount = totalAmount * 0.1;
+                                    const maxDiscount = totalAmount * 0.3;
 
                                     if (enteredDiscount > maxDiscount) {
-                                        toast.error(`Discount can't exceed 10% (${maxDiscount.toFixed(2)}) of total (${totalAmount}).`);
+                                        toast.error(`Discount can't exceed 30% (${maxDiscount.toFixed(2)}) of total (${totalAmount}).`);
                                         setDiscount(0);
                                     } else {
                                         setDiscount(enteredDiscount);
                                     }
+                                }}
+                            />
+
+                        </div>
+                        <div className="flex justify-between items-center w-full md:w-[350px] text-sm font-bold pt-2 px-2">
+                            <p className="w-1/2 text-gray-600">{language === "en" ? "Add VAT" : ""}</p>
+                            <input
+                                className="w-1/2 text-sm border py-1 ps-2 me-4 md:me-0"
+                                type="number"
+                                placeholder="Enter VAT"
+                                value={addVat}
+                                min={0}
+                                onChange={(e) => {
+                                    const enteredDiscount = Number(e.target.value);
+                                    // const maxDiscount = totalAmount * 0.1;
+                                    setAddVat(enteredDiscount);
+                                    // if (enteredDiscount > maxDiscount) {
+                                    //     toast.error(`Discount can't exceed 10% (${maxDiscount.toFixed(2)}) of total (${totalAmount}).`);
+                                    //     setDiscount(0);
+                                    // } else {
+                                    //     setVat(enteredDiscount);
+                                    // }
                                 }}
                             />
 
@@ -156,19 +227,19 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                             </span>
                             <span>
                                 {language === "en" ? "Rs." : "रु."}
-                                {(totalAmount - discount).toFixed(2)}
+                                {(dynamicTotalAmount - discount + addVat).toFixed(2)}
                             </span>
                         </div>
-                        {(actualTotal - totalAmount) > 0 && (
+                        {(actualTotal - totalAmount + discount - addVat) > 0 && (
                             <div className="w-full text-sm md:w-[350px] flex justify-end font-bold px-2 mb-1">
                                 <span className="w-fit bg-yellow-400 rounded-md px-2 py-1 text-sm">
-                                    {language === "en" ? "SAVING Rs." : "बचत गर्दै रु."} {(actualTotal - totalAmount).toFixed(2)}
+                                    {language === "en" ? "SAVING Rs." : "बचत गर्दै रु."} {(actualTotal - dynamicTotalAmount + discount - addVat).toFixed(2)}
                                 </span>
                             </div>
                         )}
                     </div>
 
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 my-2">
                         <Input
                             type="number"
                             placeholder="Cash received"
@@ -176,12 +247,12 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                             onChange={(e) => setCustomerCash(Number(e.target.value))}
                         />
                         {totalAmount > 0 && (
-                            <div className='flex justify-between items-center m-auto gap-4'>
+                            <div className='flex justify-between items-center m-auto gap-4 mt-2'>
                                 <Button type='button' onClick={() => handlePayment("Cash")}><FcMoneyTransfer /> Pay Cash</Button>
                                 <Button type='button' onClick={() => handlePayment("Card")}><CiCreditCard1 /> Pay Card</Button>
                             </div>
                         )}
-                        {changeAmount > 0 && (
+                        {(
                             <div>
                                 <p className="text-blue-600 text-2xl font-semibold mb-4">
                                     Customer gave: Rs.{amountReceive?.toFixed(2)}
@@ -202,7 +273,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                     >
                         <AddUser />
                         <div>
-                            
+
                         </div>
                         <Button type="button" onClick={() => setIsOpen(false)} className="mt-4 w-full">
                             Close

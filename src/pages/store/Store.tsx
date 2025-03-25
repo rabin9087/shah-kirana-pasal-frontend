@@ -9,20 +9,21 @@ import { addProduct, clearStoreCart } from '@/redux/storeCart';
 import CustomModal from '@/components/CustomModal';
 import { toast } from 'react-toastify';
 import { StoreProductCard } from './StoreProductCard';
-import { createStoreSale } from '@/axios/storeSale/storeSale';
+import { createStoreSales } from '@/axios/storeSale/storeSale';
 import { IStoreSale, IStoreSaleItemTypes } from './types';
 import StoreCartSidebar from './StoreSidebar';
 import { resetCustomer } from '@/redux/user.slice';
 import Layout from '@/components/layout/Layout';
 
-
-
 export const Store = () => {
     const [barcode, setBarcode] = useState("");
+    const [dynamicTotalAmount, setDynamicTotalAmount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [isOpenQRCode, setIsOpenQRCode] = useState(false);
     const [result, setResults] = useState([]);
     const [customerCash, setCustomerCash] = useState(0);
+    const [discount, setDiscount] = useState(0);
+    const [addVat, setAddVat] = useState(0);
     const [changeAmount, setChangeAmount] = useState(0);
     const [amountRecieve, setAmountRecieve] = useState(0);
     const [showMobileSidebar, setShowMobileSidebar] = useState(false);
@@ -72,7 +73,7 @@ export const Store = () => {
         }
 
         if (paymentMethod === "Cash") {
-            if (customerCash < totalAmount) {
+            if (customerCash < (totalAmount - discount + addVat)) {
                 return toast.error("Customer cash is less than the total amount.");
             }
 
@@ -83,22 +84,24 @@ export const Store = () => {
                 items: storeSaleItems,
                 paymentMethod,
                 paymentStatus: "Paid",
-                amount: totalAmount,
+                amount: dynamicTotalAmount - discount + addVat,
                 saler: { userId: user._id, name: `${user.fName} ${user.lName}` },
             };
 
-            setChangeAmount(customerCash - totalAmount);
+            setChangeAmount(customerCash - dynamicTotalAmount + discount - addVat);
             setAmountRecieve(customerCash);
-            await createStoreSale(customeSale);
+            await createStoreSales(customeSale);
             toast.success("Cash payment successful!");
             dispatch(clearStoreCart());
             dispatch(resetCustomer());
             setCustomerCash(0);
+            setDiscount(0);
+            setAddVat(0);
         } else if (paymentMethod === "Card") {
             setIsOpenQRCode(true);
         }
     };
-
+    console.log("new amount",dynamicTotalAmount - discount + addVat)
     const handleCardConfirmation = async (method: string) => {
         const customeSale: IStoreSale = {
             name: `${customer.fName} ${customer.lName}`,
@@ -107,18 +110,18 @@ export const Store = () => {
             items: storeSaleItems,
             paymentMethod: method,
             paymentStatus: "Paid",
-            amount: totalAmount,
+            amount: dynamicTotalAmount - discount + addVat,
             saler: { userId: user._id, name: `${user.fName} ${user.lName}` },
         };
 
-        await createStoreSale(customeSale);
+        await createStoreSales(customeSale);
         toast.success("Card payment successful!");
         dispatch(clearStoreCart());
         dispatch(resetCustomer());
+        setDiscount(0);
+        setAddVat(0);
         setIsOpenQRCode(false);
     };
-
-    const actualTotal = items.reduce((acc, { orderQuantity, price }) => acc + orderQuantity * price, 0);
 
     useEffect(() => {
         if (items.length > 0) {
@@ -131,13 +134,31 @@ export const Store = () => {
             <div className="flex relative">
                 <div className="w-full p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <input
-                            type="text"
-                            placeholder="Search products..."
-                            className="border rounded p-2 w-72 ml-auto"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                        <div className="relative w-72 ml-auto">
+                            {/* <SearchBarComponent
+                                results={ }
+                                setResults={ }
+                                types=''
+                                
+                             /> */}
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                className="border rounded p-2 w-full pr-8" // Add right padding for the button
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            {searchTerm && (
+                                <button
+                                    onClick={() => setSearchTerm('')}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full p-1 transition-all"
+                                >
+                                    &#10005; {/* Or use an icon like <XIcon /> */}
+                                </button>
+                            )}
+                        </div>
+
+
                         <div className="text-center ps-20 sm:ps-0 w-full">
                             <CustomModal scanCode={setBarcode} scan={true} />
                         </div>
@@ -169,7 +190,7 @@ export const Store = () => {
                         setIsSidebarHovered={setIsSidebarHovered}
                         result={result}
                         setResults={setResults}
-                        actualTotal={actualTotal}
+                        onTotalChange={(amount: number) => setDynamicTotalAmount(amount)}
                         customerCash={customerCash}
                         setCustomerCash={setCustomerCash}
                         handlePayment={handlePayment}
@@ -180,6 +201,10 @@ export const Store = () => {
                         isOpenQRCode={isOpenQRCode}
                         setIsOpenQRCode={setIsOpenQRCode}
                         handleCardConfirmation={handleCardConfirmation}
+                        addVat={addVat}
+                        discount={discount}
+                        setDiscount={setDiscount}
+                        setAddVat={setAddVat}
                     />
                 </div>
 
@@ -211,8 +236,8 @@ export const Store = () => {
                                 setIsSidebarHovered={setIsSidebarHovered}
                                 result={result}
                                 setResults={setResults}
-                                actualTotal={actualTotal}
                                 customerCash={customerCash}
+                                onTotalChange={(amount: number) => setDynamicTotalAmount(amount)}
                                 setCustomerCash={setCustomerCash}
                                 handlePayment={handlePayment}
                                 changeAmount={changeAmount}
@@ -222,6 +247,10 @@ export const Store = () => {
                                 isOpenQRCode={isOpenQRCode}
                                 setIsOpenQRCode={setIsOpenQRCode}
                                 handleCardConfirmation={handleCardConfirmation}
+                                addVat={addVat}
+                                discount={discount}
+                                setDiscount={setDiscount}
+                                setAddVat={setAddVat}
                             />
                         </div>
                     </div>

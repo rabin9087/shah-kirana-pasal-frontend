@@ -99,7 +99,7 @@ export type serverReturnDataType = {
     limit: number;
     totalPages: number;
   };
-  storeSale: IStoreSale
+  storeSales: IStoreSale[] | []
 };
 
 export type LocationState = {

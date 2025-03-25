@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 
 const PrintProductsQRCodeNameSku = () => {
     const { products } = useAppSelector((s) => s.productInfo);
+    const { language } = useAppSelector((s) => s.settings);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [barcodeDisplayValue, setBarcodeDisplayValue] = useState(false);
@@ -90,19 +91,23 @@ const PrintProductsQRCodeNameSku = () => {
 
 
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
-                {productData.map(({ qrCodeNumber, sku, name }) => (
+                {productData.map(({ qrCodeNumber, sku, name, price, salesPrice }) => (
                     <div
                         key={qrCodeNumber}
-                        className="border p-2 rounded flex flex-col items-center text-center"
+                        className="border p-2 rounded flex flex-col items-center justify-center text-center"
                     >
                         <Link
                             to={`/printSingleProductBarcodeNameSku/${qrCodeNumber}`}
                             state={{ name }}
                         >
-                            <BarCodeGenerator value={qrCodeNumber as string} height={height} width={width} displayValue={barcodeDisplayValue} />
+                            <div className="flex justify-center">
+                                <BarCodeGenerator value={qrCodeNumber as string} height={height} width={width} displayValue={barcodeDisplayValue} />
+                            </div>
+                            <p className="text-base mt-2">{name}</p>
                         </Link>
                         <strong className="text-md mt-2">{sku}</strong>
-                        <p className="text-xs">{name}</p>
+                        <strong className="text-md mt-2">{language === "en" ? "Rs." : "रु"} {salesPrice ? salesPrice : price}</strong>
+                       
                     </div>
                 ))}
             </div>
