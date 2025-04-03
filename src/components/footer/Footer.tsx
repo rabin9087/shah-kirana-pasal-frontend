@@ -1,3 +1,5 @@
+import { storeName, storeSlogan } from "@/axios";
+
 const Footer = () => {
   return (
     <footer className="bg-[#0D66E4] text-white py-8">
@@ -5,10 +7,10 @@ const Footer = () => {
 
         {/* Store Logo & Info */}
         <div className="flex flex-col items-center md:items-start">
-          <img src="/public/assets/shahKiranaPasal.png" alt="Shah Kirana Pasal Logo" className="w-24 h-24 rounded-full" />
-          <h2 className="text-2xl font-bold mt-2">Shah Kirana Pasal</h2>
+          <img src="/public/assets/shahKiranaPasal.png" alt={`${storeName} Logo`} className="w-24 h-24 rounded-full" />
+          <h2 className="text-2xl font-bold mt-2">{ storeName}</h2>
           <p className="text-gray-200 mt-1 text-center md:text-left">
-            Your one-stop shop for groceries and essentials.
+            {storeSlogan}
           </p>
         </div>
 
@@ -49,7 +51,7 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="mt-8 text-center text-gray-300 text-sm">
-        © {new Date().getFullYear()} Shah Kirana Pasal. All rights reserved.
+        © {new Date().getFullYear()} {storeName}. All rights reserved.
       </div>
     </footer>
   );

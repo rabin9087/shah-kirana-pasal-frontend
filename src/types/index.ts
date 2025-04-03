@@ -1,5 +1,7 @@
+import { IDue } from "@/axios/due/types";
 import { IOrder } from "@/axios/order/types";
 import { IStoredAt } from "@/axios/product/types";
+import { IShop } from "@/axios/shop/types";
 import { ISalesProps } from "@/components/dashboard/sales/Sales";
 import { IAddToCartTypes } from "@/pages/addToCart";
 import { ImageType } from "@/pages/product/formValidation";
@@ -99,7 +101,10 @@ export type serverReturnDataType = {
     limit: number;
     totalPages: number;
   };
-  storeSales: IStoreSale[] | []
+  storeSales: IStoreSale | IStoreSale[] | [],
+  shop: IShop,
+  due: IDue,
+  dues: IDue[],
 };
 
 export type LocationState = {
@@ -151,6 +156,7 @@ export type IProductTypes = {
   thumbnail?: string,
   qrCodeNumber?: string,
   salesPrice: number,
+  expireDate?: string,
   salesStartDate?: Date,
   salesEndDate?: Date,
   productReviews?: Array<IReviews>,
@@ -176,6 +182,7 @@ export type IProductUpdateTypes = {
   storedAt?: IStoredAt,
   aggrateRating?: number,
   thumbnail?: string,
+  expireDate?: string,
   qrCodeNumber: string,
   salesPrice?: number,
   salesStartDate?: Date,

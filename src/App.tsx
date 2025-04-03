@@ -25,7 +25,7 @@ import Payment from "./pages/payments/Payment";
 import SuccessfullPayment from "./pages/payments/SuccessfullPayment";
 import MyProfile from "./pages/my-profile/MyProfile";
 import Dashboard from "./components/dashboard/Dashboard";
-import PrivateRouter, { AdminPrivateRouter, PickerPrivateRouter, StroreRouter } from "./pages/users/PrivateRouter";
+import PrivateRouter, { AdminPrivateRouter, PickerPrivateRouter, RoleRouter, StroreRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
 import StartPickingOrder from "./pages/orders/StartPickingOrder";
@@ -42,6 +42,7 @@ import PrintSingleProductBarcodeNameSku from "./pages/product/components/showPro
 import { Store } from "./pages/store/Store";
 import ShowFullProductDetails from "./pages/product/productLocation/ShowFullProductDetails";
 import StoreSalesDashboard from "./components/dashboard/storeSales/StoreSalesDashboard";
+import { CreateShop } from "./pages/shop/CreateShop";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -169,7 +170,11 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
-        StoreSalesDashboard
+        <Route
+          path="/shop"
+          element={<Layout title=""><RoleRouter><CreateShop /></RoleRouter></Layout>}
+          errorElement={<ErrorPage />}
+        />
 
         <Route
           path="/product/create"

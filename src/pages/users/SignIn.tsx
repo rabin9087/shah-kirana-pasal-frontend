@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import SignInForm from "@/components/Form/SignInForm";
 import { useAppSelector } from "@/hooks";
+import { storeName } from "@/axios";
 
 const SignIn = () => {
   const { user } = useAppSelector(s => s.userInfo)
@@ -27,7 +28,7 @@ const SignIn = () => {
 
           <div className="text-center mt-4">
             <p className="text-sm">
-              New to Shah Kirana Pasal Online?{" "}
+              New to {storeName} Online?{" "}
               <Link to="/sign-up" className="text-blue-500 font-semibold">
                 Sign up now
               </Link>

@@ -11,6 +11,9 @@ import { decreaseQuantity, increaseQuantity, removeProduct } from "@/redux/store
 import AddUser from "@/components/dashboard/userDashboard/AddUser";
 import { toast } from "react-toastify";
 import { resetCustomer } from "@/redux/user.slice";
+import { CalculatorIcon } from "lucide-react";
+import Calculator from "@/components/calculator/Calculator";
+import CustomerDue from "../customer/CustomerDue";
 
 interface StoreCartSidebarProps {
     isSidebarHovered: boolean;
@@ -32,6 +35,8 @@ interface StoreCartSidebarProps {
     isOpenQRCode: boolean;
     setIsOpenQRCode: (value: boolean) => void;
     handleCardConfirmation: (method: string) => void;
+    setNewPrices: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
+    newPrices: { [key: string]: number };
 }
 
 const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
@@ -54,14 +59,16 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
     setAddVat,
     addVat,
     discount,
+    setNewPrices,
+    newPrices
 }) => {
     const dispatch = useAppDispatch();
-    const [newPrices, setNewPrices] = useState<{ [key: string]: number }>({});
     const { language } = useAppSelector(state => state.settings);
     const { customer } = useAppSelector(state => state.userInfo);
     const { totalAmount, items } = useAppSelector(state => state.storeCart);
     const actualTotal = items.reduce((acc, { orderQuantity, price }) => acc + orderQuantity * price, 0);
-
+    const [calculator, setCalculator] = useState<boolean>(false)
+    const [showCustomerDue, setShowCustomerDue] = useState<boolean>(false)
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const handelOnClearCustomer = () => {
@@ -91,13 +98,15 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
 
     return (
         <div
-            className="mb-8 fixed right-0 top-0 h-full w-full md:w-[400px] shadow-2xl bg-white p-4 mt-[80px] rounded-l-2xl z-30 flex flex-col"
+            className="mb- fixed right-0 top-0 h-full w-full md:w-[400px] shadow-2xl bg-white p-4 mt-[80px] rounded-l-2xl z-30 flex flex-col"
             onMouseEnter={() => setIsSidebarHovered(true)}
             onMouseLeave={() => setIsSidebarHovered(false)}
         >
             <h2 className="text-xl font-bold mb-4 text-center">Store Cart</h2>
             <div className="flex justify-start gap-2 items-center">
-                <p className="w-1/3 ps-2">{customer?.fName + " " + customer?.lName}</p>
+                <p className="w-1/3 ps-2"
+                    onClick={() => setShowCustomerDue(true)}>
+                    {customer?.fName + " " + customer?.lName}</p>
 
                 <div className="flex flex-col gap-2 w-2/3">
                     <div className="flex justify-end items-center gap-2">
@@ -147,6 +156,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                                                 [item._id]: Number(e.target.value),
                                             }))
                                         }
+
                                     />
                                 </div>
 
@@ -233,38 +243,45 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                         {(actualTotal - totalAmount + discount - addVat) > 0 && (
                             <div className="w-full text-sm md:w-[350px] flex justify-end font-bold px-2 mb-1">
                                 <span className="w-fit bg-yellow-400 rounded-md px-2 py-1 text-sm">
-                                    {language === "en" ? "SAVING Rs." : "बचत गर्दै रु."} {(actualTotal - dynamicTotalAmount + discount - addVat).toFixed(2)}
+                                    {language === "en" ? "SAVING Rs." : "बचत गर्दै रु."}
+                                    {(actualTotal - dynamicTotalAmount + discount - addVat).toFixed(2)}
                                 </span>
                             </div>
                         )}
                     </div>
 
                     <div className="flex flex-col gap-1 my-2">
-                        <Input
-                            type="number"
-                            placeholder="Cash received"
-                            value={customerCash}
-                            onChange={(e) => setCustomerCash(Number(e.target.value))}
-                        />
+                        <div className="flex justify-between items-center gap-4">
+                            <Input
+                                type="number"
+                                placeholder="Cash received"
+                                value={customerCash}
+                                onChange={(e) => setCustomerCash(Number(e.target.value))}
+                            />
+                            <CalculatorIcon onClick={() => setCalculator(true)} />
+                        </div>
+
                         {totalAmount > 0 && (
                             <div className='flex justify-between items-center m-auto gap-4 mt-2'>
-                                <Button type='button' onClick={() => handlePayment("Cash")}><FcMoneyTransfer /> Pay Cash</Button>
-                                <Button type='button' onClick={() => handlePayment("Card")}><CiCreditCard1 /> Pay Card</Button>
+                                <Button type='button' onClick={() => handlePayment("Cash")}><FcMoneyTransfer />Cash</Button>
+                                <Button type='button' onClick={() => handlePayment("Card")}><CiCreditCard1 />Card</Button>
+                                <Button type='button' onClick={() => handlePayment("Due")}><CiCreditCard1 />Due</Button>
                             </div>
                         )}
                         {(
                             <div>
                                 <p className="text-blue-600 text-2xl font-semibold mb-4">
-                                    Customer gave: Rs.{amountReceive?.toFixed(2)}
+                                    Received: Rs.{amountReceive?.toFixed(2)}
                                 </p>
                                 <hr />
                                 <p className="text-green-600 text-2xl font-semibold mb-4">
-                                    Change return to customer: Rs.{changeAmount?.toFixed(2)}
+                                    Change: Rs.{changeAmount?.toFixed(2)}
                                 </p>
                             </div>
                         )}
                     </div>
 
+                    {/* show user signup form */}
                     <Modal
                         isOpen={isOpen}
                         onRequestClose={() => setIsOpen(false)}
@@ -276,6 +293,38 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
 
                         </div>
                         <Button type="button" onClick={() => setIsOpen(false)} className="mt-4 w-full">
+                            Close
+                        </Button>
+                    </Modal>
+
+                    {/* Show customer Due */}
+                    <Modal
+                        isOpen={showCustomerDue}
+                        onRequestClose={() => setShowCustomerDue(false)}
+                        overlayClassName="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+                        className="bg-white p-6 rounded-xl shadow-xl max-h-screen overflow-y-auto w-full max-w-md"
+                    >
+                        <CustomerDue />
+                        <div>
+
+                        </div>
+                        <Button type="button" onClick={() => setShowCustomerDue(false)} className="mt-4 w-full">
+                            Close
+                        </Button>
+                    </Modal>
+
+                    {/* Show calculator */}
+                    <Modal
+                        isOpen={calculator}
+                        onRequestClose={() => setCalculator(false)}
+                        overlayClassName="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+                        className="bg-white p-6 rounded-xl shadow-xl max-h-screen overflow-y-auto w-full max-w-md"
+                    >
+                        <Calculator />
+                        <div>
+
+                        </div>
+                        <Button type="button" onClick={() => setCalculator(false)} className="mt-4 w-full">
                             Close
                         </Button>
                     </Modal>

@@ -28,7 +28,7 @@ const links = [
     path: "/store",
   },
   {
-    name: "Store_Sales",
+    name: "Sales",
     path: "/storeSales",
   },
 ];
@@ -85,7 +85,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
           <div className="md:flex hidden gap-2 items-center justify-center">
             {links
               .filter((item) => {
-                if (item.name === "Store" || item.name === "Store Sales") {
+                if (item.name === "Store" || item.name === "Sales") {
                   return user?.role === "ADMIN" || user?.role === "SUPERADMIN" || user?.role === "STOREUSER";
                 }
                 return true;

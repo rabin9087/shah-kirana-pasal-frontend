@@ -62,6 +62,11 @@ const userSlice = createSlice({
     setEmail_Phone: (state, { payload }: PayloadAction<string>) => {
       state.email_Phone = payload;
     },
+    setRestUser: (state) => { 
+      state.user = initialState.user;
+      state.email_Phone = initialState.email_Phone;
+      state.customer = initialState.customer
+    },
     setCustomer: (state, { payload }: PayloadAction<ICustomer>) => { 
       state.customer = payload;
     },
@@ -71,5 +76,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, logOut, setEmail_Phone, setCustomer, resetCustomer } = userSlice.actions;
+export const { setUser, logOut, setEmail_Phone, setCustomer, resetCustomer, setRestUser } = userSlice.actions;
 export default userSlice.reducer;

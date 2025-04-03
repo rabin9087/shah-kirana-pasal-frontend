@@ -14,6 +14,9 @@ import { IStoreSale, IStoreSaleItemTypes } from './types';
 import StoreCartSidebar from './StoreSidebar';
 import { resetCustomer } from '@/redux/user.slice';
 import Layout from '@/components/layout/Layout';
+import SearchInput from '@/components/search/SearchInput';
+import { IDue } from '@/axios/due/types';
+import { createDue } from '@/axios/due/due';
 
 export const Store = () => {
     const [barcode, setBarcode] = useState("");
@@ -27,11 +30,13 @@ export const Store = () => {
     const [changeAmount, setChangeAmount] = useState(0);
     const [amountRecieve, setAmountRecieve] = useState(0);
     const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+    const [newPrices, setNewPrices] = useState<{ [key: string]: number }>({});
     const [isSidebarHovered, setIsSidebarHovered] = useState(false);
     const { products } = useAppSelector(state => state.productInfo);
     const { user, customer } = useAppSelector(state => state.userInfo);
-    const { items, totalAmount } = useAppSelector(state => state.storeCart);
+    const { items } = useAppSelector(state => state.storeCart);
     const dispatch = useAppDispatch();
+    const [productData, setProductData] = useState<IProductTypes[]>(products);
 
     const { data = [] } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
@@ -46,7 +51,7 @@ export const Store = () => {
 
     useEffect(() => {
         if (barcode) {
-            const foundProduct = products.find(p => p.qrCodeNumber === barcode);
+            const foundProduct = productData.find(p => p.qrCodeNumber === barcode);
             if (foundProduct) {
                 dispatch(addProduct(foundProduct));
             } else {
@@ -54,54 +59,81 @@ export const Store = () => {
             }
             setBarcode("");
         }
-    }, [barcode, products, dispatch]);
+    }, [barcode, productData, dispatch]);
 
     const [searchTerm, setSearchTerm] = useState('');
-    const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredProducts = productData.filter(p => p.name?.toLowerCase().includes(searchTerm?.toLowerCase()));
     const saleProducts = filteredProducts.filter(p => p.salesPrice);
     const nonSaleProducts = filteredProducts.filter(p => !p.salesPrice);
 
     const storeSaleItems: IStoreSaleItemTypes[] = items.map((item) => ({
         productId: item._id,
-        price: item.salesPrice ? item.salesPrice : item.price,
+        price: newPrices[item._id] ?? item.salesPrice ?? item.price,
         orderQuantity: item.orderQuantity,
     }));
 
     const handlePayment = async (paymentMethod: string) => {
+
+
+        const customeSale: IStoreSale = {
+            name: `${customer.fName} ${customer.lName}`,
+            phone: customer.phone,
+            email: customer.email,
+            items: storeSaleItems,
+            paymentMethod,
+            paymentStatus: paymentMethod === "Card" || paymentMethod === "Cash" ? "Paid": "Pending",
+            amount: dynamicTotalAmount - discount + addVat,
+            saler: { userId: user._id, name: `${user.fName} ${user.lName}` },
+        };
+
         if (items.length === 0) {
             return toast.error("Cart is empty.");
         }
 
         if (paymentMethod === "Cash") {
-            if (customerCash < (totalAmount - discount + addVat)) {
+            if (customerCash < (dynamicTotalAmount - discount + addVat)) {
                 return toast.error("Customer cash is less than the total amount.");
             }
-
-            const customeSale: IStoreSale = {
-                name: `${customer.fName} ${customer.lName}`,
-                phone: customer.phone,
-                email: customer.email,
-                items: storeSaleItems,
-                paymentMethod,
-                paymentStatus: "Paid",
-                amount: dynamicTotalAmount - discount + addVat,
-                saler: { userId: user._id, name: `${user.fName} ${user.lName}` },
-            };
 
             setChangeAmount(customerCash - dynamicTotalAmount + discount - addVat);
             setAmountRecieve(customerCash);
             await createStoreSales(customeSale);
             toast.success("Cash payment successful!");
             dispatch(clearStoreCart());
+            setSearchTerm('')
             dispatch(resetCustomer());
             setCustomerCash(0);
             setDiscount(0);
             setAddVat(0);
         } else if (paymentMethod === "Card") {
             setIsOpenQRCode(true);
+        } else if (paymentMethod === "Due") {
+            if (!customer._id) {
+                return toast.error("Please select the customer");
+            }
+            const storeSales = await createStoreSales(customeSale);
+            const customeDue: IDue = {
+                userId: `${customer._id}`,
+                totalAmout: dynamicTotalAmount - discount + addVat,
+                dueAmount: dynamicTotalAmount - discount + addVat - customerCash,
+                duePaymentStatus: "Not paid",
+                isActive: true,
+                salesId: storeSales?._id as string
+            };
+
+            await createDue(customeDue);
+            setChangeAmount(customerCash - dynamicTotalAmount + discount - addVat);
+            setAmountRecieve(customerCash);
+            toast.success("Customer Due created successful!");
+            dispatch(clearStoreCart());
+            setSearchTerm('')
+            dispatch(resetCustomer());
+            setCustomerCash(0);
+            setDiscount(0);
+            setAddVat(0);
         }
     };
-    console.log("new amount",dynamicTotalAmount - discount + addVat)
+
     const handleCardConfirmation = async (method: string) => {
         const customeSale: IStoreSale = {
             name: `${customer.fName} ${customer.lName}`,
@@ -119,6 +151,7 @@ export const Store = () => {
         dispatch(clearStoreCart());
         dispatch(resetCustomer());
         setDiscount(0);
+        setSearchTerm('')
         setAddVat(0);
         setIsOpenQRCode(false);
     };
@@ -135,29 +168,15 @@ export const Store = () => {
                 <div className="w-full p-4">
                     <div className="flex justify-between items-center mb-4">
                         <div className="relative w-72 ml-auto">
-                            {/* <SearchBarComponent
-                                results={ }
-                                setResults={ }
-                                types=''
-                                
-                             /> */}
-                            <input
-                                type="text"
-                                placeholder="Search products..."
-                                className="border rounded p-2 w-full pr-8" // Add right padding for the button
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                            <SearchInput
+                                placeholder="Search product"
+                                data={products}
+                                searchKey={`name`}
+                                setFilteredData={(filtered) => {
+                                    setProductData(filtered.length > 0 || filtered === products ? filtered : products);
+                                }}
                             />
-                            {searchTerm && (
-                                <button
-                                    onClick={() => setSearchTerm('')}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full p-1 transition-all"
-                                >
-                                    &#10005; {/* Or use an icon like <XIcon /> */}
-                                </button>
-                            )}
                         </div>
-
 
                         <div className="text-center ps-20 sm:ps-0 w-full">
                             <CustomModal scanCode={setBarcode} scan={true} />
@@ -205,13 +224,15 @@ export const Store = () => {
                         discount={discount}
                         setDiscount={setDiscount}
                         setAddVat={setAddVat}
+                        setNewPrices={setNewPrices}
+                        newPrices={newPrices}
                     />
                 </div>
 
                 {/* Mobile button */}
-                <div className="fixed w-full text-center bottom-4 xl:hidden z-10">
+                <div className="fixed  w-full text-center bottom-4 lg:hidden z-10">
                     <Button
-                        className="w-full max-w-xs mx-auto"
+                        className="w-full bg-green-600 max-w-xs mx-auto hover:bg-green-500"
                         onClick={() => setShowMobileSidebar(true)}
                     >
                         Open Cart
@@ -222,11 +243,11 @@ export const Store = () => {
                 {/* Mobile Sidebar */}
                 {showMobileSidebar && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex items-end">
-                        <div className="bg-white w-full h-full rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-4">
+                        <div className="bg-white w-full h-full rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-2 px-4">
                             <div className="flex justify-end items-center mb-4">
                                 <button
                                     onClick={() => setShowMobileSidebar(false)}
-                                    className="text-lg font-bold px-3 py-1 border rounded"
+                                    className="text-lg font-bold px-2 py-1 border rounded"
                                 >
                                     Close
                                 </button>
@@ -251,6 +272,8 @@ export const Store = () => {
                                 discount={discount}
                                 setDiscount={setDiscount}
                                 setAddVat={setAddVat}
+                                setNewPrices={setNewPrices}
+                                newPrices={newPrices}
                             />
                         </div>
                     </div>

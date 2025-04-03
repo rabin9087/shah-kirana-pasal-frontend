@@ -5,6 +5,9 @@ export const rootApi = import.meta.env.PROD
   ? import.meta.env.VITE_PROD_API
   : import.meta.env.VITE_DEV_API;
 
+  export const storeName = import.meta.env.VITE_STORE_NAME;
+  export const storeSlogan = import.meta.env.VITE_STORE_SLOGAN;
+
 export const getAccessJWT = () => sessionStorage.getItem("accessJWT");
 export const getRefreshJWT = () => localStorage.getItem("refreshJWT");
 

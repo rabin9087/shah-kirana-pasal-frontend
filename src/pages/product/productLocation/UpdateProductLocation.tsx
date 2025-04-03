@@ -26,33 +26,69 @@ const UpdateProductLocation = ({
         enabled: !!productLocation,
     });
 
-    const [newLocation, setNewLocation] = useState('');
-    const [newQuantity, setNewQuantity] = useState('');
+    const [updateFields, setUpdateFields] = useState({
+        productLocation: '',
+        quantity: '',
+        price: '',
+        costPrice: '',
+        expireDate: '',
+    });
 
     const handleOnClose = () => {
         setProductLocation('');
+        setUpdateFields({
+            productLocation: '',
+            quantity: '',
+            price: '',
+            costPrice: '',
+            expireDate: '',
+        });
         setIsOpen(false);
-        setNewLocation('');
-        setNewQuantity('');
     };
 
-    const handleUpdate = async (productId: string, field: 'productLocation' | 'quantity', value: string) => {
-        if (!value.trim()) return;
-        const payload = field === 'productLocation'
-            ? { productLocation: value }
-            : { quantity: value };
-        await updateAProduct(payload, productId);
-        await refetch(); // refresh product info after update
-        handleOnClose();
+    const handleUpdate = async (
+        productId: string,
+        field: keyof typeof updateFields,
+        value: string | number
+    ) => {
+        if (value === '' || value === null || value === undefined) return;
+
+        const payload: Partial<IProductTypes> = {
+            [field]:
+                field === 'quantity' || field === 'price' || field === 'costPrice'
+                    ? Number(value)
+                    : value,
+        };
+
+        try {
+            await updateAProduct(payload, productId);
+            await refetch();
+            handleOnClose();
+        } catch (error) {
+            console.error('Update failed', error);
+        }
     };
 
     useEffect(() => {
         if (!isOpen) {
             setProductLocation('');
-            setNewLocation('');
-            setNewQuantity('');
+            setUpdateFields({
+                productLocation: '',
+                quantity: '',
+                price: '',
+                costPrice: '',
+                expireDate: '',
+            });
         }
     }, [isOpen, setProductLocation]);
+
+    const fieldsConfig = [
+        { name: 'productLocation', placeholder: 'Enter new location (e.g., 5.6.7)', type: 'text' },
+        { name: 'quantity', placeholder: 'Enter new quantity', type: 'number' },
+        { name: 'price', placeholder: 'Enter new price', type: 'number' },
+        { name: 'costPrice', placeholder: 'Enter new cost price', type: 'number' },
+        { name: 'expireDate', placeholder: 'Enter new expire date', type: 'text' },
+    ] as const;
 
     return (
         <Modal
@@ -66,46 +102,47 @@ const UpdateProductLocation = ({
             {data && (
                 <div className="flex flex-col gap-4">
                     <div className="flex gap-4 items-start">
-                        <img src={data.thumbnail} height={60} width={60} alt={data.name} className="rounded shadow" />
+                        <img
+                            src={data.thumbnail}
+                            height={60}
+                            width={60}
+                            alt={data.name}
+                            className="rounded shadow"
+                        />
                         <div>
                             <p className="font-semibold text-lg">{data.name}</p>
                             <p className="text-gray-600 text-sm">
                                 Current Location: {formatLocation(data.productLocation ?? '')}
                             </p>
                             <p className="text-gray-600 text-sm">Current Quantity: {data.quantity}</p>
+                            <p className="text-gray-600 text-sm">Current Cost Price: {data.costPrice}</p>
+                            <p className="text-gray-600 text-sm">Current Expire Date: {data.expireDate}</p>
                         </div>
                     </div>
 
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleUpdate(data._id, 'productLocation', newLocation);
-                        }}
-                        className="flex gap-2 mt-4"
-                    >
-                        <Input
-                            placeholder="Enter new location (e.g., 5.6.7)"
-                            value={newLocation}
-                            onChange={(e) => setNewLocation(e.target.value)}
-                        />
-                        <Button type="submit">Update Location</Button>
-                    </form>
-
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleUpdate(data._id, 'quantity', newQuantity);
-                        }}
-                        className="flex gap-2 mt-3"
-                    >
-                        <Input
-                            type="number"
-                            placeholder="Enter new quantity"
-                            value={newQuantity}
-                            onChange={(e) => setNewQuantity(e.target.value)}
-                        />
-                        <Button type="submit">Update Quantity</Button>
-                    </form>
+                    {fieldsConfig.map((field) => (
+                        <form
+                            key={field.name}
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleUpdate(data._id, field.name, updateFields[field.name]);
+                            }}
+                            className="flex gap-2 mt-3"
+                        >
+                            <Input
+                                type={field.type}
+                                placeholder={field.placeholder}
+                                value={updateFields[field.name]}
+                                onChange={(e) =>
+                                    setUpdateFields((prev) => ({
+                                        ...prev,
+                                        [field.name]: e.target.value,
+                                    }))
+                                }
+                            />
+                            <Button type="submit">Update</Button>
+                        </form>
+                    ))}
                 </div>
             )}
 

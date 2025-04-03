@@ -162,7 +162,7 @@ function Home(): JSX.Element {
               {filteredProducts.allProducts.map((product: IProductTypes) => (
                 <ProductCard key={product._id} item={product} />
               ))}
-            </div>
+              </div>            
 
             {/* Pagination Buttons */}
               <div className="flex justify-center items-center gap-4 mt-8">

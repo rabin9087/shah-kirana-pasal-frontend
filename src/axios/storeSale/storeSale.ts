@@ -11,7 +11,7 @@ export const createStoreSales = async(data: IStoreSale) => {
     obj: data,
     });
     
-    return response.storeSales
+    return response.storeSales as IStoreSale;
   } catch (error) {
     throw new Error("Failed to update product");
   }
@@ -25,7 +25,7 @@ export const allStoreSales = async() => {
     isPrivate: true,
     });
     
-    return response.storeSales || []
+    return response.storeSales as IStoreSale[] 
   } catch (error) {
     throw new Error("Failed to update product");
   }
@@ -39,7 +39,7 @@ export const dailyStoreSales = async () => {
     isPrivate: true,
     });
     
-    return response.storeSales || []
+    return response.storeSales as IStoreSale[] 
   } catch (error) {
     throw new Error("Failed to update product");
   }
