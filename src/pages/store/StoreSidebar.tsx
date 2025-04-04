@@ -37,6 +37,7 @@ interface StoreCartSidebarProps {
     handleCardConfirmation: (method: string) => void;
     setNewPrices: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
     newPrices: { [key: string]: number };
+    storeData: boolean
 }
 
 const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
@@ -60,7 +61,8 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
     addVat,
     discount,
     setNewPrices,
-    newPrices
+    newPrices,
+    storeData,
 }) => {
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.settings);
@@ -104,7 +106,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
         >
             <h2 className="text-xl font-bold mb-4 text-center">Store Cart</h2>
             <div className="flex justify-start gap-2 items-center">
-                <p className="w-1/3 ps-2"
+                <p className="w-1/3 ps-2 hover:text-gray-500 hover:cursor-pointer"
                     onClick={() => setShowCustomerDue(true)}>
                     {customer?.fName + " " + customer?.lName}</p>
 
@@ -252,20 +254,33 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
 
                     <div className="flex flex-col gap-1 my-2">
                         <div className="flex justify-between items-center gap-4">
-                            <Input
-                                type="number"
-                                placeholder="Cash received"
-                                value={customerCash}
-                                onChange={(e) => setCustomerCash(Number(e.target.value))}
-                            />
-                            <CalculatorIcon onClick={() => setCalculator(true)} />
+                            <div className="flex-2">
+                                <Input
+                                    type="number"
+                                    placeholder="Cash received"
+                                    value={customerCash}
+                                    onChange={(e) => setCustomerCash(Number(e.target.value))}
+                                />
+                            </div>
+                            <div className="flex-1 items-center justify-center">
+                                <Button type='button' className="w-full" disabled={storeData} onClick={() => handlePayment("Exact")}>
+                                    Exact Amount
+                                </Button>
+                            </div>
+                            <div className="flex-1 flex justify-center">
+                                <CalculatorIcon
+                                    className="cursor-pointer w-8 h-8 text-muted-foreground hover:text-primary"
+                                    onClick={() => setCalculator(true)}
+                                />
+                            </div>
                         </div>
+
 
                         {totalAmount > 0 && (
                             <div className='flex justify-between items-center m-auto gap-4 mt-2'>
-                                <Button type='button' onClick={() => handlePayment("Cash")}><FcMoneyTransfer />Cash</Button>
-                                <Button type='button' onClick={() => handlePayment("Card")}><CiCreditCard1 />Card</Button>
-                                <Button type='button' onClick={() => handlePayment("Due")}><CiCreditCard1 />Due</Button>
+                                <Button type='button' disabled={storeData} onClick={() => handlePayment("Cash")}><FcMoneyTransfer />Cash</Button>
+                                <Button type='button' disabled={storeData} onClick={() => handlePayment("Card")}><CiCreditCard1 />Card</Button>
+                                <Button type='button' disabled={storeData} onClick={() => handlePayment("Due")}><CiCreditCard1 />Due</Button>
                             </div>
                         )}
                         {(

@@ -35,6 +35,8 @@ export const Store = () => {
     const { products } = useAppSelector(state => state.productInfo);
     const { user, customer } = useAppSelector(state => state.userInfo);
     const { items } = useAppSelector(state => state.storeCart);
+    const [storeData, setStoreData] = useState<boolean>(false)
+
     const dispatch = useAppDispatch();
     const [productData, setProductData] = useState<IProductTypes[]>(products);
 
@@ -73,68 +75,91 @@ export const Store = () => {
     }));
 
     const handlePayment = async (paymentMethod: string) => {
+        setStoreData(true);
 
+        const totalAmount = dynamicTotalAmount - discount + addVat;
+        const isCashPayment = paymentMethod === "Cash" || paymentMethod === "Exact";
+        const isPaid = paymentMethod === "Card" || isCashPayment;
 
         const customeSale: IStoreSale = {
             name: `${customer.fName} ${customer.lName}`,
             phone: customer.phone,
             email: customer.email,
             items: storeSaleItems,
-            paymentMethod,
-            paymentStatus: paymentMethod === "Card" || paymentMethod === "Cash" ? "Paid": "Pending",
-            amount: dynamicTotalAmount - discount + addVat,
+            paymentMethod: isCashPayment ? "Cash" : paymentMethod,
+            paymentStatus: isPaid ? "Paid" : "Pending",
+            amount: totalAmount,
             saler: { userId: user._id, name: `${user.fName} ${user.lName}` },
         };
 
         if (items.length === 0) {
+            setStoreData(false);
             return toast.error("Cart is empty.");
         }
 
-        if (paymentMethod === "Cash") {
-            if (customerCash < (dynamicTotalAmount - discount + addVat)) {
-                return toast.error("Customer cash is less than the total amount.");
-            }
-
-            setChangeAmount(customerCash - dynamicTotalAmount + discount - addVat);
-            setAmountRecieve(customerCash);
-            await createStoreSales(customeSale);
-            toast.success("Cash payment successful!");
+        const resetSaleState = () => {
             dispatch(clearStoreCart());
-            setSearchTerm('')
+            setSearchTerm('');
             dispatch(resetCustomer());
             setCustomerCash(0);
             setDiscount(0);
             setAddVat(0);
+        };
+
+        if (isCashPayment) {
+            if (paymentMethod === "Cash" && customerCash < totalAmount) {
+                setStoreData(false);
+                return toast.error("Customer cash is less than the total amount.");
+            }
+
+            setChangeAmount(paymentMethod === "Cash" ? (customerCash - totalAmount) : 0);
+            setAmountRecieve(paymentMethod === "Cash" ? customerCash : totalAmount);
+
+            await createStoreSales(customeSale);
+            toast.success("Cash payment successful!");
+            resetSaleState();
         } else if (paymentMethod === "Card") {
             setIsOpenQRCode(true);
         } else if (paymentMethod === "Due") {
             if (!customer._id) {
+                setStoreData(false);
                 return toast.error("Please select the customer");
             }
+
+            const dueAmount = totalAmount - customerCash;
+            const confirmDue = window.confirm(
+                `This customer will have a due amount of Rs. ${dueAmount}. Do you want to proceed?`
+            );
+
+            if (!confirmDue) {
+                setStoreData(false);
+                return toast.info("Due payment canceled.");
+            }
+
             const storeSales = await createStoreSales(customeSale);
+
             const customeDue: IDue = {
                 userId: `${customer._id}`,
-                totalAmout: dynamicTotalAmount - discount + addVat,
-                dueAmount: dynamicTotalAmount - discount + addVat - customerCash,
+                totalAmout: totalAmount,
+                dueAmount,
                 duePaymentStatus: "Not paid",
                 isActive: true,
-                salesId: storeSales?._id as string
+                salesId: storeSales?._id as string,
             };
 
             await createDue(customeDue);
-            setChangeAmount(customerCash - dynamicTotalAmount + discount - addVat);
+            setChangeAmount(dueAmount > 0 ? 0 : customerCash - totalAmount);
             setAmountRecieve(customerCash);
-            toast.success("Customer Due created successful!");
-            dispatch(clearStoreCart());
-            setSearchTerm('')
-            dispatch(resetCustomer());
-            setCustomerCash(0);
-            setDiscount(0);
-            setAddVat(0);
+
+            toast.success("Customer Due created successfully!");
+            resetSaleState();
         }
+
+        setStoreData(false);
     };
 
     const handleCardConfirmation = async (method: string) => {
+        setStoreData(true)
         const customeSale: IStoreSale = {
             name: `${customer.fName} ${customer.lName}`,
             phone: customer.phone,
@@ -154,6 +179,7 @@ export const Store = () => {
         setSearchTerm('')
         setAddVat(0);
         setIsOpenQRCode(false);
+        setStoreData(false)
     };
 
     useEffect(() => {
@@ -226,6 +252,7 @@ export const Store = () => {
                         setAddVat={setAddVat}
                         setNewPrices={setNewPrices}
                         newPrices={newPrices}
+                        storeData={storeData}
                     />
                 </div>
 
@@ -274,6 +301,7 @@ export const Store = () => {
                                 setAddVat={setAddVat}
                                 setNewPrices={setNewPrices}
                                 newPrices={newPrices}
+                                storeData={storeData}
                             />
                         </div>
                     </div>

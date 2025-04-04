@@ -13,7 +13,7 @@ export const createDue = async(data: IDue) => {
     
     return response.due
   } catch (error) {
-    throw new Error("Failed to update product");
+    throw new Error("Failed to create dues");
   }
 };
 
@@ -27,8 +27,21 @@ export const getDuesByUser = async(userId: string) => {
     
     return response.dues
   } catch (error) {
-    throw new Error("Failed to update product");
+    throw new Error("Failed to get dues");
   }
 };
 
-getDuesByUser('67ee6565ec137c574376aff7')
+export const updateUsersDuesById = async(userId: string, obj: object) => {
+  try {
+    const response = await axiosProcessor({
+    method: "patch",
+    url: `${dueApi}/${userId}`,
+    isPrivate: false,
+    obj: obj,
+    });
+    
+    return response.dues
+  } catch (error) {
+    throw new Error("Failed to update dues");
+  }
+};

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type SearchInputProps<T> = {
     placeholder?: string;
@@ -17,15 +17,25 @@ const SearchInput = <T,>({
 }: SearchInputProps<T>) => {
     const [searchQuery, setSearchQuery] = useState("");
 
+    // Avoid setting filtered data repeatedly
+    const prevFilteredRef = useRef<T[]>([]);
+
     useEffect(() => {
+        let filtered: T[];
+
         if (searchQuery.trim() === "") {
-            setFilteredData(data);
+            filtered = data;
         } else {
-            const filtered = data.filter((item) =>
+            filtered = data.filter((item) =>
                 (item[searchKey] as unknown as string)
                     .toLowerCase()
                     .includes(searchQuery.toLowerCase())
             );
+        }
+
+        // Compare previous filtered data with current
+        if (JSON.stringify(prevFilteredRef.current) !== JSON.stringify(filtered)) {
+            prevFilteredRef.current = filtered;
             setFilteredData(filtered);
         }
     }, [searchQuery, data, searchKey, setFilteredData]);

@@ -125,7 +125,6 @@ export const SearchResults: React.FC<{
 
     const handelOnSetCustomer = (item: ICustomer, e: React.MouseEvent<HTMLParagraphElement>) => {
         e.stopPropagation();
-        console.log("CLicked:", item.fName);
         dispatch(setCustomer(item));
         setResults([]);
     };
