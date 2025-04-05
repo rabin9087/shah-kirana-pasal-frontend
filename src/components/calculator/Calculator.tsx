@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { evaluate } from "mathjs";
 
 const Calculator: React.FC = () => {
     const [expression, setExpression] = useState<string>("");
@@ -20,7 +21,7 @@ const Calculator: React.FC = () => {
 
         if (value === "=") {
             try {
-                const evalResult = eval(expression);
+                const evalResult = evaluate(expression);
                 setResult(evalResult.toString());
             } catch {
                 setResult("Error");

@@ -43,6 +43,7 @@ import { Store } from "./pages/store/Store";
 import ShowFullProductDetails from "./pages/product/productLocation/ShowFullProductDetails";
 import StoreSalesDashboard from "./components/dashboard/storeSales/StoreSalesDashboard";
 import { CreateShop } from "./pages/shop/CreateShop";
+import ContractManagement from "./pages/contractManagement/ContractManagement";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -160,6 +161,11 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/jobs"
+          element={<Layout title=""><ContractManagement /></Layout>}
+          errorElement={<ErrorPage />}
+        />
         <Route
           path="/storeSales"
           element={

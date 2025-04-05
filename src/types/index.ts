@@ -1,4 +1,5 @@
 import { IDue } from "@/axios/due/types";
+import { IJobs } from "@/axios/jobs/jobs";
 import { IOrder } from "@/axios/order/types";
 import { IStoredAt } from "@/axios/product/types";
 import { IShop } from "@/axios/shop/types";
@@ -105,6 +106,7 @@ export type serverReturnDataType = {
   shop: IShop,
   due: IDue,
   dues: IDue[],
+  job: IJobs
 };
 
 export type LocationState = {

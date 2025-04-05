@@ -41,10 +41,10 @@ const SearchInput = <T,>({
     }, [searchQuery, data, searchKey, setFilteredData]);
 
     return (
-        <div className={`flex flex-wrap justify-end items-center gap-4 py-2 me-4 ${className}`}>
+        <div className={`flex flex-wrap justify-end items-center gap-4 py-2 me-1 ${className}`}>
             <div className="relative w-full max-w-xs">
                 <input
-                    className="p-2 w-full border rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="p-2 w-full border text-sm md:text-base rounded-md pr-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder={placeholder}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -52,7 +52,7 @@ const SearchInput = <T,>({
                 {searchQuery && (
                     <button
                         type="button"
-                        className="absolute inset-y-0 right-2 z-10 flex text-base me-2 p-2 rounded-md hover:bg-slate-300 items-center text-gray-600 cursor-pointer"
+                        className="absolute inset-y-0 right-1 z-10 flex text-sm md:text-base p-2 rounded-md hover:bg-slate-300 items-center text-gray-600 cursor-pointer"
                         onClick={() => setSearchQuery("")}
                     >
                         ×

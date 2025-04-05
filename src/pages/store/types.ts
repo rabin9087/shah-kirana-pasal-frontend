@@ -16,6 +16,7 @@ export interface IStoreSale {
     paymentMethod: string,
     paymentStatus: string,
     amount: number,
+    customerCash?: number;
     saler: { userId: string, name: string },
     createdAt?: Date
 }

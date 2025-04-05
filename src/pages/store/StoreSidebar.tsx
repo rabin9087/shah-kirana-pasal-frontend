@@ -263,9 +263,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                                 />
                             </div>
                             <div className="flex-1 items-center justify-center">
-                                <Button type='button' className="w-full" disabled={storeData} onClick={() => handlePayment("Exact")}>
-                                    Exact Amount
-                                </Button>
+                                <Button type='button' disabled={storeData} onClick={() => handlePayment("Cash")}><FcMoneyTransfer />Cash</Button>
                             </div>
                             <div className="flex-1 flex justify-center">
                                 <CalculatorIcon
@@ -278,7 +276,9 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
 
                         {totalAmount > 0 && (
                             <div className='flex justify-between items-center m-auto gap-4 mt-2'>
-                                <Button type='button' disabled={storeData} onClick={() => handlePayment("Cash")}><FcMoneyTransfer />Cash</Button>
+                                <Button type='button' className="w-full" disabled={storeData} onClick={() => handlePayment("Exact")}>
+                                    Exact Amount
+                                </Button>
                                 <Button type='button' disabled={storeData} onClick={() => handlePayment("Card")}><CiCreditCard1 />Card</Button>
                                 <Button type='button' disabled={storeData} onClick={() => handlePayment("Due")}><CiCreditCard1 />Due</Button>
                             </div>

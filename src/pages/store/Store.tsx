@@ -89,6 +89,7 @@ export const Store = () => {
             paymentMethod: isCashPayment ? "Cash" : paymentMethod,
             paymentStatus: isPaid ? "Paid" : "Pending",
             amount: totalAmount,
+            customerCash,
             saler: { userId: user._id, name: `${user.fName} ${user.lName}` },
         };
 

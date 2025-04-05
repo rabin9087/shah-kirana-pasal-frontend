@@ -19,6 +19,7 @@ import { CgProfile } from "react-icons/cg";
 import { MdOutlineDashboard } from "react-icons/md";
 import { IoCreateOutline } from "react-icons/io5";
 import { MdOutlineShoppingCart } from "react-icons/md";
+import { LuActivity } from "react-icons/lu";
 import { RxUpdate } from "react-icons/rx";
 import { storeName } from "@/axios";
 
@@ -62,16 +63,16 @@ export function Profile() {
                     <>
 
                         <DropdownMenuItem>
-                            <Link to="/product/create" className="flex items-center gap-2"><IoCreateOutline/> Create Product</Link>
+                            <Link to="/product/create" className="flex items-center gap-2"><IoCreateOutline /> Create Product</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Link to="/scan-product" className="flex items-center gap-2"><RxUpdate/> Update Product</Link>
+                            <Link to="/scan-product" className="flex items-center gap-2"><RxUpdate /> Update Product</Link>
                         </DropdownMenuItem>
 
                     </>
                 )}
                 <DropdownMenuItem>
-                    <Link to="/order-placed" className="flex items-center gap-2"><MdOutlineShoppingCart/> {language === "en" ? "Purchased History" : "खरिद गरिएको इतिहास"}</Link>
+                    <Link to="/order-placed" className="flex items-center gap-2"><MdOutlineShoppingCart /> {language === "en" ? "Purchased History" : "खरिद गरिएको इतिहास"}</Link>
                 </DropdownMenuItem>
                 {user.role !== "" && storeName === "Shah Kirana Pasal" &&
                     <DropdownMenuItem className="flex">
@@ -79,6 +80,9 @@ export function Profile() {
                     </DropdownMenuItem>}
                 <DropdownMenuItem className="flex">
                     <Link to="/setting" className="flex items-center gap-2"><IoSettingsOutline /><span> {language === "en" ? "Setting" : "सेटिङ"} </span> </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex">
+                    <Link to="/jobs" className="flex items-center gap-2"><LuActivity /><span> {language === "en" ? "Jobs" : "कामहरू"} </span> </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                     {_id ? (

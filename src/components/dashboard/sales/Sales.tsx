@@ -39,7 +39,7 @@ const Sales = () => {
     });
 
     const { data: sales = [] } = useQuery({
-        queryKey: ['sales'],
+        queryKey: ['sales', 'online'],
         queryFn: () =>
             getAllSales()
     });
@@ -112,6 +112,8 @@ const Sales = () => {
     const dailySales = aggregateSalesByDay(sales);
     const { dailyProfit, monthlyProfit } = CalculateDailyAndMonthlyProfit(sales);
     const { currentMonthDailyProfit } = CurrentMonthDailyProfit(sales)
+
+    console.log(dailyProfit, monthlyProfit, currentMonthDailyProfit)
 
     return (
         <>
