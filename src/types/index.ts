@@ -106,7 +106,8 @@ export type serverReturnDataType = {
   shop: IShop,
   due: IDue,
   dues: IDue[],
-  job: IJobs
+  job: IJobs;
+  jobs: IJobs[];
 };
 
 export type LocationState = {
