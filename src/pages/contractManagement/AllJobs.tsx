@@ -1,4 +1,4 @@
-import { IJobs, getAllJobs, updateAJob, updateAJobPayment } from "@/axios/jobs/jobs";
+import { IJobs, getAllJobsByID, updateAJob, updateAJobPayment } from "@/axios/jobs/jobs";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import { Button } from "@/components/ui/button"; // Adjust to your button path
 import { toast } from "react-toastify";
 import { MdOutlineEdit } from "react-icons/md";
+import { useParams } from "react-router";
 
 Modal.setAppElement("#root"); // replace with your app root id
 
@@ -14,10 +15,10 @@ const AllJobs = () => {
     const [selectedJob, setSelectedJob] = useState<IJobs | null>(null);
     const [additionalAmount, setAdditionalAmount] = useState("");
     const queryClient = useQueryClient();
-
+    const { _id } = useParams()
     const { data = [] } = useQuery<IJobs[]>({
-        queryKey: ["allJobs"],
-        queryFn: () => getAllJobs(),
+        queryKey: ["allJobs", _id],
+        queryFn: () => getAllJobsByID(_id as string),
     });
 
     const [formState, setFormState] = useState({

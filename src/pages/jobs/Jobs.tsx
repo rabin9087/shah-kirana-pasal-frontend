@@ -1,11 +1,14 @@
-import { useMutation} from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { IJobs, createJob } from "@/axios/jobs/jobs";
+import { useParams } from "react-router";
 
 const Jobs = () => {
+
+    const { _id } = useParams()
     const {
         register,
         handleSubmit,
@@ -32,6 +35,16 @@ const Jobs = () => {
         <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-md space-y-4">
             <h2 className="text-xl font-semibold text-gray-800">Create Job</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div>
+                    <Input
+                        type="text"
+                        placeholder="Job category"
+                        defaultValue={_id}
+                        disabled={true}
+                        {...register("jobCatergory", { required: "JobCatergory is required" })}
+                    />
+                    {errors.jobCatergory && <p className="text-red-500 text-sm">{errors.jobCatergory.message}</p>}
+                </div>
                 <div>
                     <Input
                         type="text"

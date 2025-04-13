@@ -3,6 +3,7 @@ import { axiosProcessor, rootApi } from "..";
 export interface IJobs {
     _id?: string,
     name: string,
+    jobCatergory: string
     jobTypes: string,
     advanceAmount?: Number
     contractAmount: Number,
@@ -31,11 +32,11 @@ export const createJob = async(data: IJobs) => {
   }
 };
 
-export const getAllJobs = async() => {
+export const getAllJobsByID = async(_id: string) => {
   try {
     const response = await axiosProcessor({
     method: "get",
-    url: `${jobApi}`,
+    url: `${jobApi}/${_id}`,
     isPrivate: false,
     });
     

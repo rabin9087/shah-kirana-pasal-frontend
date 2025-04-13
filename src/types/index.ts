@@ -1,4 +1,5 @@
 import { IDue } from "@/axios/due/types";
+import { IJobCategory } from "@/axios/jobCategory/jobCategory";
 import { IJobs } from "@/axios/jobs/jobs";
 import { IOrder } from "@/axios/order/types";
 import { IStoredAt } from "@/axios/product/types";
@@ -108,6 +109,8 @@ export type serverReturnDataType = {
   dues: IDue[],
   job: IJobs;
   jobs: IJobs[];
+  jobCategory: IJobCategory;
+  jobCategories: IJobCategory[];
 };
 
 export type LocationState = {

@@ -44,6 +44,7 @@ import ShowFullProductDetails from "./pages/product/productLocation/ShowFullProd
 import StoreSalesDashboard from "./components/dashboard/storeSales/StoreSalesDashboard";
 import { CreateShop } from "./pages/shop/CreateShop";
 import ContractManagement from "./pages/contractManagement/ContractManagement";
+import JobCategory from "./pages/jobCategory/JobCategory";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -162,10 +163,17 @@ function App() {
         />
 
         <Route
-          path="/jobs"
+          path="/jobs/:_id"
           element={<Layout title=""><ContractManagement /></Layout>}
           errorElement={<ErrorPage />}
         />
+
+        <Route
+          path="/jobs"
+          element={<Layout title=""><JobCategory /></Layout>}
+          errorElement={<ErrorPage />}
+        />
+        JobCategory
         <Route
           path="/storeSales"
           element={
