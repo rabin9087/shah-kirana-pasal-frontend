@@ -110,6 +110,8 @@ const AllJobs = () => {
         }
     };
 
+
+
     // Calculate totals
     const totals = data.reduce(
         (acc, job) => {
@@ -163,7 +165,7 @@ const AllJobs = () => {
                                     Rs. {remainingDue.toLocaleString("en-IN")}
                                 </TableCell>
                                 <TableCell className="whitespace-nowrap text-sm">
-                                    {new Date(job.createdAt as Date).toLocaleDateString("ne-NP")}
+                                    {new Date(job.createdAt as Date).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell>
                                     <Button onClick={() => handleEditClick(job)} className="bg-blue-500 hover:bg-blue-600 text-white">
@@ -296,7 +298,7 @@ const AllJobs = () => {
                             <div className="flex justify-between items-center bg-gray-100 p-2 rounded-lg shadow-sm">
                                 <p className="text-sm text-gray-700 font-medium">Advance Paid</p>
                                 <p className="text-sm text-gray-700 font-medium"> Rs. {(selectedJob.advanceAmount as number).toLocaleString("en-IN")} </p>
-                                <p className="text-sm font-semibold text-black">   {new Date(selectedJob.createdAt as Date).toLocaleString("ne-NP")}</p>
+                                <p className="text-sm font-semibold text-black">   {new Date(selectedJob.createdAt as Date).toLocaleString()}</p>
 
                             </div>
 
@@ -307,7 +309,7 @@ const AllJobs = () => {
 
                                             <p className="text-sm text-gray-700 font-medium">{subject}</p>
                                             <p className="text-sm font-semibold text-green-600">Rs. {(amount as number).toLocaleString("en-IN")}</p>
-                                            <p className="text-sm font-semibold text-black">   {new Date(createdAt as Date).toLocaleString("ne-NP")}</p>
+                                            <p className="text-sm font-semibold text-black">   {new Date(createdAt as Date).toLocaleString()}</p>
 
                                         </div>
                                     ))}
@@ -331,38 +333,52 @@ const AllJobs = () => {
                             </p>
                         </div>
 
-                        <div className="mt-4">
-                            <label htmlFor="subject" className="block text-sm font-medium mb-1">Subject</label>
-                            <input
-                                type="text"
-                                id="subject"
-                                value={subject}
-                                onChange={handleSubjectChange}
-                                placeholder="e.g., Site Material"
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
+                        <div className="mt-6 p-6 bg-white rounded-2xl shadow-md space-y-4 border border-gray-200 max-w-md mx-auto">
+                            <h3 className="text-lg font-semibold text-gray-800">Add Advance Payment</h3>
+
+                            <div>
+                                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                <input
+                                    type="text"
+                                    id="subject"
+                                    value={subject}
+                                    onChange={handleSubjectChange}
+                                    placeholder="e.g., Site Material"
+                                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="manualAmount" className="block text-sm font-medium text-gray-700 mb-1">Amount (Rs.)</label>
+                                <input
+                                    type="number"
+                                    id="manualAmount"
+                                    value={additionalAmount}
+                                    onChange={handleAmountChange}
+                                    placeholder="Enter amount"
+                                    className="w-full border border-gray-300 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <Button
+                                type="button"
+                                onClick={handleUpdate}
+                                disabled={!subject || !additionalAmount}
+                                className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-lg transition"
+                            >
+                                Update Payment
+                            </Button>
                         </div>
 
-                        <div className="mt-4">
-                            <label htmlFor="manualAmount" className="block text-sm font-medium mb-1">Add Amount (Rs.)</label>
-                            <input
-                                type="number"
-                                id="manualAmount"
-                                value={additionalAmount}
-                                onChange={handleAmountChange}
-                                placeholder="Enter amount"
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
 
                         <div className="mt-6 space-y-2">
-                            <Button
+                            {/* <Button
                                 type="button"
                                 onClick={handleUpdate}
                                 className="w-full bg-green-600 hover:bg-green-700 text-white"
                             >
                                 Update Payment
-                            </Button>
+                            </Button> */}
                             <Button
                                 type="button"
                                 onClick={handleClose}

@@ -4,7 +4,8 @@ export interface IJobs {
     _id?: string,
     name: string,
     jobCatergory: string
-    jobTypes: string,
+  jobTypes: string,
+  advancePaymenyBy?: string,
     advanceAmount?: Number
     contractAmount: Number,
     newPayment?: [{

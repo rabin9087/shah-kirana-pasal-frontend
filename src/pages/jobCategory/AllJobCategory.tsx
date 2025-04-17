@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "@/hooks";
 
 const AllJobCategory = () => {
 
+    const {user} = useAppSelector(s => s.userInfo)
     const { data = [] } = useQuery<IJobCategory[]>({
-        queryKey: ["jobCategory"],
-        queryFn: () => getAllJobCategories(),
+        queryKey: ["jobCategory", user._id],
+        queryFn: () => getAllJobCategories(user._id),
     });
 
     return (
@@ -33,7 +35,7 @@ const AllJobCategory = () => {
                                 </Link>
                             </TableCell>
                             <TableCell className="whitespace-nowrap text-sm">
-                                {new Date(job.createdAt as Date).toLocaleDateString("ne-NP")}
+                                {new Date(job.createdAt as Date).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
                                 <Link to={`/jobs/${job._id}`}>

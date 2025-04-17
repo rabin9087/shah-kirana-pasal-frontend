@@ -2,7 +2,8 @@ import { axiosProcessor, rootApi } from "..";
 
 export interface IJobCategory {
     _id?: string,
-    name: string,
+  name: string,
+  user: string,
     createdAt?: Date
 }
 
@@ -23,12 +24,12 @@ export const createJobCategory = async(data: IJobCategory) => {
   }
 };
 
-export const getAllJobCategories = async() => {
+export const getAllJobCategories = async(_id: string) => {
   try {
     const response = await axiosProcessor({
     method: "get",
-    url: `${jobCategoryApi}`,
-    isPrivate: false,
+    url: `${jobCategoryApi}/${_id}`,
+    isPrivate: true,
     });
     
     return response.jobCategories

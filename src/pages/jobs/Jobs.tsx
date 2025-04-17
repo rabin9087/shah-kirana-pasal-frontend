@@ -35,7 +35,7 @@ const Jobs = () => {
         <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-md space-y-4">
             <h2 className="text-xl font-semibold text-gray-800">Create Job</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div>
+                <div className="hidden">
                     <Input
                         type="text"
                         placeholder="Job category"
@@ -65,10 +65,18 @@ const Jobs = () => {
 
                 <div>
                     <Input
+                        type="text"
+                        placeholder="Advanced Payment By"
+                        {...register("advancePaymenyBy")}
+                    />
+                    {errors.advancePaymenyBy && <p className="text-red-500 text-sm">{errors.advancePaymenyBy.message}</p>}
+                </div>
+            
+                <div>
+                    <Input
                         type="number"
                         placeholder="Advanced Amount"
                         {...register("advanceAmount", {
-                            required: "Contract amount is required",
                             valueAsNumber: true
                         })}
                     />

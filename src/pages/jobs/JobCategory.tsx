@@ -1,15 +1,19 @@
 import { IJobCategory, createJobCategory } from "@/axios/jobCategory/jobCategory";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAppSelector } from "@/hooks";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const JobCategoryForm = () => {
+    const {user} = useAppSelector(s => s.userInfo)
     const {
         register,
         handleSubmit,
         reset,
+        setValue,
         formState: { errors },
     } = useForm<IJobCategory>();
 
@@ -23,6 +27,12 @@ const JobCategoryForm = () => {
             toast.error("Failed to create job category!");
         }
     });
+    
+    useEffect(() => {
+        if (user?._id) {
+            setValue("user", user._id); // Set user._id when component loads
+        }
+    }, [user, setValue]);
 
     const onSubmit = (data: IJobCategory) => {
         mutate(data);
