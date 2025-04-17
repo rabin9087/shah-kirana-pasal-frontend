@@ -11,7 +11,7 @@ const AllJobCategory = () => {
     const { data = [] } = useQuery<IJobCategory[]>({
         queryKey: ["jobCategory", user?._id],
         queryFn: () => getAllJobCategories(user._id),
-        enabled: !user._id
+        refetchOnWindowFocus: true,
     });
 
     return (

@@ -28,8 +28,8 @@ export const getAllJobCategories = async(_id: string) => {
   try {
     const response = await axiosProcessor({
     method: "get",
-    url: `${jobCategoryApi}/${_id}`,
-    isPrivate: true,
+    url: `${jobCategoryApi}/id/${_id}`,
+    isPrivate: false,
     });
     
     return response.jobCategories
