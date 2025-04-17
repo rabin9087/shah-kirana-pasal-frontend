@@ -28,7 +28,7 @@ export const getAllJobCategories = async(_id: string) => {
   try {
     const response = await axiosProcessor({
     method: "get",
-    url: `${jobCategoryApi}/id/${_id}`,
+    url: `${jobCategoryApi}/${_id}`,
     isPrivate: false,
     });
     
