@@ -7,10 +7,11 @@ import { useAppSelector } from "@/hooks";
 
 const AllJobCategory = () => {
 
-    const {user} = useAppSelector(s => s.userInfo)
+    const { user } = useAppSelector(s => s.userInfo)
     const { data = [] } = useQuery<IJobCategory[]>({
-        queryKey: ["jobCategory", user._id],
+        queryKey: ["jobCategory", user?._id],
         queryFn: () => getAllJobCategories(user._id),
+        enabled: !user._id
     });
 
     return (
