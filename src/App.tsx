@@ -25,7 +25,7 @@ import Payment from "./pages/payments/Payment";
 import SuccessfullPayment from "./pages/payments/SuccessfullPayment";
 import MyProfile from "./pages/my-profile/MyProfile";
 import Dashboard from "./components/dashboard/Dashboard";
-import PrivateRouter, { AdminPrivateRouter, PickerPrivateRouter, RoleRouter, StroreRouter } from "./pages/users/PrivateRouter";
+import PrivateRouter, { AdminPrivateRouter, CustomizeRouter, PickerPrivateRouter, RoleRouter, StroreRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
 import StartPickingOrder from "./pages/orders/StartPickingOrder";
@@ -68,7 +68,7 @@ function App() {
       const refreshJWT = localStorage.getItem("refreshJWT");
       const accessJWT = sessionStorage.getItem("accessJWT");
 
-      if (!user._id && (refreshJWT || accessJWT)) {
+      if (!user?._id && (refreshJWT || accessJWT)) {
         try {
           const result = await dispatch(autoLoginUserAction());
           if (result) {
@@ -84,7 +84,7 @@ function App() {
       hasAutoLoginRun.current = true;
       autoLogin();
     }
-  }, [dispatch, fromLocation, user._id, navigate]);
+  }, [dispatch, fromLocation, user?._id, navigate]);
 
   useEffect(() => {
     if (user?._id) {
@@ -164,13 +164,13 @@ function App() {
 
         <Route
           path="/jobs/:_id"
-          element={<Layout title=""><ContractManagement /></Layout>}
+          element={<Layout title=""><CustomizeRouter path="/jobs"><ContractManagement /></CustomizeRouter></Layout>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/jobs"
-          element={<Layout title=""><JobCategory /></Layout>}
+          element={<Layout title=""><RoleRouter><JobCategory /></RoleRouter></Layout>}
           errorElement={<ErrorPage />}
         />
         JobCategory

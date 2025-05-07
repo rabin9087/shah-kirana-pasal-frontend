@@ -8,12 +8,19 @@ import {
     Legend, Rectangle, ResponsiveContainer
 } from 'recharts';
 import { DailyMonthlyAndItemProfit } from "./StoreProfit";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { addDays, subDays } from "date-fns";
+
 
 const StoreSalesDashboard = () => {
+    const [date, setDate] = useState<Date>(new Date())
+    const newDate = date.toISOString().split("T")[0]
     const { user } = useAppSelector(s => s.userInfo)
+
     const { data: dailySales = [] as IStoreSale[], isLoading } = useQuery<IStoreSale[]>({
-        queryKey: ['dailyStoreSales'],
-        queryFn: async () => await dailyStoreSales()
+        queryKey: ['dailyStoreSales', date],
+        queryFn: async () => await dailyStoreSales(newDate)
     });
 
     const { data: totalStoreSales = [] as IStoreSale[] } = useQuery<IStoreSale[]>({
@@ -25,16 +32,26 @@ const StoreSalesDashboard = () => {
     const totalSales = dailySales?.reduce((acc, { amount }) => acc + amount, 0);
     const allTotalStoreSales = totalStoreSales?.reduce((acc, { amount }) => acc + amount, 0);
 
-    const { dailyProfitArray, itemProfitArray, monthlyProfitArray} = DailyMonthlyAndItemProfit(totalStoreSales)
+    const { dailyProfitArray, itemProfitArray, monthlyProfitArray } = DailyMonthlyAndItemProfit(totalStoreSales)
     // const monthlyProfit = monthlyProfitArray?.reduce((acc, { profit }) => acc + profit, 0);
+    const changeDate = async (newDate: Date) => {
+        setDate(newDate);
+    };
+
+    console.log(dailyProfitArray, itemProfitArray, monthlyProfitArray)
 
     if (isLoading) return <Layout title="">Loading...</Layout>
     return (
         <Layout title="" >
+            {(!dailySales?.length && !totalStoreSales?.length) && <div className="flex flex-col items-center justify-center h-[60vh]">
+                <h2 className="text-2xl font-bold">Not Sales Yet</h2>
+                <p className="text-gray-500 mt-2">Sales data will appear here once available.</p>
+            </div>}
             {dailySales?.length > 0 && <div className="overflow-auto text-center">
                 <hr />
                 <h2 className="font-bold mt-4">Daily Sales</h2>
                 <div className="flex flex-col justify-center">
+                    <h2>{date.toISOString().split("T")[0]} </h2>
                     <p>Total Sales: Rs. {totalSales} </p>
                     <p>Total Customers: {dailySales?.length}</p>
 
@@ -59,8 +76,6 @@ const StoreSalesDashboard = () => {
                     </BarChart>
                 </ResponsiveContainer>
             </div>}
-
-            
 
             {dailyProfitArray?.length > 0 && <div className="overflow-auto text-center">
                 <hr />
@@ -165,6 +180,35 @@ const StoreSalesDashboard = () => {
 
             </div>}
 
+            <div className="flex justify-center gap-2 mb-4">
+                <button
+                    type="button"
+                    className="p-2 border rounded-md hover:bg-gray-200"
+                    onClick={() => changeDate(subDays(date as Date, 1))}
+                >
+                    <ChevronLeft size={16} />
+                </button>
+
+                {/* Date Input */}
+                <div className="relative">
+                    <input
+                        type="date"
+                        className="border rounded-md px-3 py-2"
+                        value={date.toISOString().slice(0, 10)}  // Properly formatted for input
+                        onChange={(e) => changeDate(new Date(e.target.value))}
+                    />
+                </div>
+
+                {/* Next Day Button */}
+                <button
+                    type="button"
+                    className="p-2 border rounded-md hover:bg-gray-200"
+                    onClick={() => changeDate(addDays(date as Date, 1))}
+                >
+                    <ChevronRight size={16} />
+                </button>
+                {/* </div> */}
+            </div>
         </Layout>
     )
 }

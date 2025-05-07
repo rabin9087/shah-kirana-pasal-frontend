@@ -25,21 +25,21 @@ export const allStoreSales = async() => {
     isPrivate: true,
     });
     
-    return response.storeSales as IStoreSale[] 
+    return response.storeSales as IStoreSale[]  ?? []
   } catch (error) {
     throw new Error("Failed to update product");
   }
 };
 
-export const dailyStoreSales = async () => {
+export const dailyStoreSales = async (date: string) => {
   try {
     const response = await axiosProcessor({
     method: "get",
-    url: `${storeSaleAPI}/dailyStoreSales`,
+    url: `${storeSaleAPI}/dailyStoreSales/${date}`,
     isPrivate: true,
     });
     
-    return response.storeSales as IStoreSale[] 
+    return response.storeSales as IStoreSale[]  ?? []
   } catch (error) {
     throw new Error("Failed to update product");
   }

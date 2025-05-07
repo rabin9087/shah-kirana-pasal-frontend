@@ -7,7 +7,7 @@ export const createDue = async(data: IDue) => {
     const response = await axiosProcessor({
     method: "post",
     url: `${dueApi}`,
-    isPrivate: false,
+    isPrivate: true,
     obj: data,
     });
     
@@ -22,26 +22,26 @@ export const getDuesByUser = async(userId: string) => {
     const response = await axiosProcessor({
     method: "get",
     url: `${dueApi}/${userId}`,
-    isPrivate: false,
+    isPrivate: true,
     });
     
-    return response.dues
+    return response.dues ?? []
   } catch (error) {
     throw new Error("Failed to get dues");
   }
 };
 
-export const updateUsersDuesById = async(userId: string, obj: object) => {
-  try {
+export const updateUsersDuesById = async(_id: string, data: object) => {
+   try {
     const response = await axiosProcessor({
     method: "patch",
-    url: `${dueApi}/${userId}`,
-    isPrivate: false,
-    obj: obj,
+    url: `${dueApi}/${_id}`,
+      isPrivate: true,
+    obj: data
     });
     
-    return response.dues
+    return response.due ?? {}
   } catch (error) {
-    throw new Error("Failed to update dues");
+    throw new Error("Failed to get dues");
   }
 };

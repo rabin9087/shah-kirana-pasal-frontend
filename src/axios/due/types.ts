@@ -7,6 +7,7 @@ export interface IDue {
     totalAmout: number;
     dueAmount: number;
     duePaymentStatus: string; // Array of product IDs
+    paymentHistory?: [{ paymentMethod: string, amount: number, paymentDate: Date, _id?: string }] 
     isActive: boolean;
     createdAt?: Date;
     updatedAt?: Date;

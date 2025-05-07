@@ -113,8 +113,6 @@ const Sales = () => {
     const { dailyProfit, monthlyProfit } = CalculateDailyAndMonthlyProfit(sales);
     const { currentMonthDailyProfit } = CurrentMonthDailyProfit(sales)
 
-    console.log(dailyProfit, monthlyProfit, currentMonthDailyProfit)
-
     return (
         <>
             <div className="overflow-auto text-center">

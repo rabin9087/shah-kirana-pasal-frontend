@@ -1,3 +1,4 @@
+import { useEffect } from "react"; // <-- important
 import { Button } from "@/components/ui/button";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -8,21 +9,21 @@ import { useAppSelector } from "@/hooks";
 import { storeName } from "@/axios";
 
 const SignIn = () => {
-  const { user } = useAppSelector(s => s.userInfo)
-  const navigate = useNavigate()
-  // const location = useLocation()
-  // const fromLocation = location?.state?.from?.pathname || location.pathname || "/";
-  if (user?._id) {
-    navigate("/")
-    return
-  }
+  const { user } = useAppSelector(s => s.userInfo);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?._id) {
+      navigate("/");
+    }
+  }, [user, navigate]); // run when user or navigate changes
+
   return (
     <Layout title="">
       <div className="flex flex-col items-center justify-center h-screen bg-sign-up bg-cover">
 
         {/* Login Form Section */}
         <div className="w-full max-w-md bg-white/90 p-6 rounded-lg shadow-lg">
-          {/* <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2> */}
 
           <SignInForm />
 

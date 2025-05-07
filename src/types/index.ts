@@ -84,6 +84,7 @@ export type serverReturnDataType = {
   message?: string;
   result?: [];
   user?: IUser;
+  data?: IUser;
   accessJWT?: string;
   users?: IUser[];
   userEmail_Phone?: string;
@@ -94,7 +95,7 @@ export type serverReturnDataType = {
   product?: IProductTypes,
   clientSecret?: string
   order: IOrder
-  orders: IOrder[]
+  orders: IOrder[] 
   sales: ISalesProps
   amount: [],
   pagination: {

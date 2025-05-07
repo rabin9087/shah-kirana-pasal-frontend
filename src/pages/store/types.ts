@@ -1,6 +1,8 @@
+import { IProductTypes } from "@/types/index";
+
 export interface IStoreSaleItemTypes {
     itemName?: string;
-    productId: string,
+    productId:  IProductTypes | string,
     price: number,
     costPrice?: number,
     orderQuantity: number,

@@ -59,3 +59,15 @@ export const RoleRouter = ({ children }: { children: JSX.Element }) => {
         <Unauthorized />
     );
 };
+
+export const CustomizeRouter = ({ children, path }: { children: JSX.Element, path: string }) => {
+
+    const { user } = useAppSelector((state) => state.userInfo);
+
+    if (!user?.role) {
+        return <Navigate to={`${path}`} replace />;
+    }
+
+    // otherwise render the wrapped component
+    return children;
+};

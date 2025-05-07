@@ -20,7 +20,7 @@ export const DailyMonthlyAndItemProfit = (storeSales: IStoreSale[]) => {
                 if (item.costPrice != null) {
                     const profit = (item.price - item.costPrice) * item.orderQuantity;
                     orderProfit += profit;
-                    itemProfit[item.productId] = (itemProfit[item.productId] || 0) + profit;
+                    itemProfit[item?.productId as string] = (itemProfit[item?.productId as string] || 0) + profit;
                 }
             });
 

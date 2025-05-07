@@ -43,6 +43,7 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
             <div className="flex justify-center gap-2 mb-4">
 
                 <button
+                    type="button"
                     className="p-2 border rounded-md hover:bg-gray-200"
                     onClick={() => changeDate(subDays(date, 1))}
                 >
@@ -62,6 +63,7 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
 
                 {/* Next Day Button */}
                 <button
+                    type="button"
                     className="p-2 border rounded-md hover:bg-gray-200"
                     onClick={() => changeDate(addDays(date, 1))}
                 >

@@ -8,6 +8,7 @@ import { updateUserProfile } from "@/axios/user/user.axios";
 import { FaSpinner } from "react-icons/fa";
 import { updateProfileAction } from "@/action/user.action";
 import { toast } from "react-toastify";
+import EditMyProfile from "./EditMyProfile";
 // import { useLocation, useNavigate } from "react-router";
 
 const MyProfile = () => {
@@ -20,6 +21,7 @@ const MyProfile = () => {
     const [imageFile, setImageFile] = useState<File | null>(null);
     // const location = useLocation();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -68,6 +70,9 @@ const MyProfile = () => {
         <Layout title="My Profile">
             <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2">
+                    <div className="flex justify-end">
+                        <Button onClick={ () => setIsEditProfileOpen(true)}>Edit</Button>
+                    </div>
                     {/* Profile Image Section */}
                     <div className="relative flex justify-center mb-6">
                         <img
@@ -157,9 +162,17 @@ const MyProfile = () => {
                             />
                             <div className="flex justify-center items-center mt-2">
                                 <Button variant="outline" onClick={closeModal} className="mt-2">
-                                    {language === "en" ? "Close" : ""}
+                                    {language === "en" ? "Close" : "बन्द"}
                                 </Button>
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {isEditProfileOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white p-4 mx-10 rounded-md shadow-md max-w-md w-full flex flex-col  justify-center items-center">
+                            <EditMyProfile setIsEditProfileOpen={setIsEditProfileOpen} />
                         </div>
                     </div>
                 )}

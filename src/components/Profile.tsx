@@ -74,7 +74,7 @@ export function Profile() {
                 <DropdownMenuItem>
                     <Link to="/order-placed" className="flex items-center gap-2"><MdOutlineShoppingCart /> {language === "en" ? "Purchased History" : "खरिद गरिएको इतिहास"}</Link>
                 </DropdownMenuItem>
-                {user.role !== "" && storeName === "Shah Kirana Pasal" &&
+                {user?.role !== "" && storeName === "Shah Kirana Pasal" &&
                     <DropdownMenuItem className="flex">
                         <Link to="/shop" className="flex items-center gap-2"><CiShop /><span> {language === "en" ? "Create Shop" : "पसल सिर्जना गर्नुहोस्"} </span> </Link>
                     </DropdownMenuItem>}

@@ -6,15 +6,16 @@ import { useParams } from 'react-router';
 import Layout from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useAppSelector } from '@/hooks';
 
 const UserProfileEdit = () => {
     const { userPhone } = useParams();
-
+    const { user } = useAppSelector(s => s.userInfo)
     // Fetch user data using useQuery
     const { data } = useQuery<IUser | undefined>({
-        queryKey: ["userDetails", userPhone],
-        queryFn: async (): Promise<IUser | undefined> => await getAUser(userPhone as string),
-        enabled: !!userPhone,
+        queryKey: ["userDetails", userPhone !== undefined ? userPhone : user.phone],
+        queryFn: async (): Promise<IUser | undefined> => await getAUser(userPhone !== undefined ? userPhone : user.phone as string),
+        enabled: !! (userPhone !== undefined ? userPhone : user.phone),
     });
 
     // Initialize state with fetched data or default to empty strings
