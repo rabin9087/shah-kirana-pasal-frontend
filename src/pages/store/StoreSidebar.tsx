@@ -163,9 +163,9 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                                 </div>
 
                                 <div className='flex justify-between'>
-                                    <p className="text-sm text-gray-600">Rate: Rs. {(item.salesPrice ?? item.price).toFixed(2)}</p>
+                                    <p className="text-sm text-gray-600">Rate: $ {(item.salesPrice ?? item.price).toFixed(2)}</p>
                                     <p className="text-sm text-gray-600">
-                                        Subtotal: Rs. {((item.salesPrice ?? item.price) * item.orderQuantity).toFixed(2)}
+                                        Subtotal: $ {((item.salesPrice ?? item.price) * item.orderQuantity).toFixed(2)}
                                     </p>
                                 </div>
                                 <div className="flex justify-between items-center gap-2 mt-2">
@@ -238,14 +238,14 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                                 {language === "en" ? "Final Total" : "छुट पछि कुल"}
                             </span>
                             <span>
-                                {language === "en" ? "Rs." : "रु."}
+                                {language === "en" ? "$" : "रु."}
                                 {(dynamicTotalAmount - discount + addVat).toFixed(2)}
                             </span>
                         </div>
                         {(actualTotal - totalAmount + discount - addVat) > 0 && (
                             <div className="w-full text-sm md:w-[350px] flex justify-end font-bold px-2 mb-1">
                                 <span className="w-fit bg-yellow-400 rounded-md px-2 py-1 text-sm">
-                                    {language === "en" ? "SAVING Rs." : "बचत गर्दै रु."}
+                                    {language === "en" ? "SAVING $" : "बचत गर्दै रु."}
                                     {(actualTotal - dynamicTotalAmount + discount - addVat).toFixed(2)}
                                 </span>
                             </div>
@@ -286,11 +286,11 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                         {(
                             <div>
                                 <p className="text-blue-600 text-2xl font-semibold mb-4">
-                                    Received: Rs.{amountReceive?.toFixed(2)}
+                                    Received: ${amountReceive?.toFixed(2)}
                                 </p>
                                 <hr />
                                 <p className="text-green-600 text-2xl font-semibold mb-4">
-                                    Change: Rs.{changeAmount?.toFixed(2)}
+                                    Change: ${changeAmount?.toFixed(2)}
                                 </p>
                             </div>
                         )}

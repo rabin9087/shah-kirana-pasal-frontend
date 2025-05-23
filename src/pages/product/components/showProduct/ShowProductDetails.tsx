@@ -35,18 +35,15 @@ const ShowProductDetails = () => {
         enabled: Boolean(sku || barcode), // <-- enable query only when sku or barcode is truthy
     });
 
-    console.log(data)
-
     useEffect(() => {
         if (data?._id) {
             dispatch(setAProduct(data));
         }
+
     }, [dispatch, data]); // <- depend on full data
 
     return (
         <Layout title="">
-
-
             <div className="flex justify-start gap-2 mt-4 items-center ps-4 font-bold">
                 <Button onClick={() => navigate(-1)}>{"<"} BACK</Button>
                 <p>ARTICLE DETAILA</p>

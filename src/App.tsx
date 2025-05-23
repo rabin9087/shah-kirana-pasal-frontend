@@ -92,7 +92,6 @@ function App() {
     }
   }, [user?._id, fromLocation, navigate]);
 
-
   return (
     <>
       <Routes>
@@ -164,7 +163,11 @@ function App() {
 
         <Route
           path="/jobs/:_id"
-          element={<Layout title=""><CustomizeRouter path="/jobs"><ContractManagement /></CustomizeRouter></Layout>}
+          element={<Layout title="">
+            <CustomizeRouter path="/jobs">
+              <ContractManagement />
+            </CustomizeRouter>
+          </Layout>}
           errorElement={<ErrorPage />}
         />
 

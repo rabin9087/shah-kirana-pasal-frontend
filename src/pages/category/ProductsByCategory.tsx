@@ -57,7 +57,7 @@ const ProductCardByCategory: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                <div className="grid justify-center  gap-1 py-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7">
                     {NotsaleOnProducts.map((product: IProductTypes) =>
                         <ProductCard key={product._id} item={product} />
                     )}

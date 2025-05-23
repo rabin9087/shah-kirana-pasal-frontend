@@ -129,7 +129,7 @@ export const Store = () => {
 
             const dueAmount = totalAmount - customerCash;
             const confirmDue = window.confirm(
-                `This customer will have a due amount of Rs. ${dueAmount}. Do you want to proceed?`
+                `This customer will have a due amount of $ ${dueAmount}. Do you want to proceed?`
             );
 
             if (!confirmDue) {
@@ -212,7 +212,7 @@ export const Store = () => {
 
                     <div className="mb-8">
                         <h2 className="text-xl font-semibold mb-4">Sale Products</h2>
-                        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mr-0 lg:mr-[400px]">
+                        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 mr-0 lg:mr-[400px]">
                             {saleProducts.map((product: IProductTypes) => (
                                 <StoreProductCard key={product._id} item={product} />
                             ))}
@@ -221,7 +221,7 @@ export const Store = () => {
 
                     <div>
                         <h2 className="text-xl font-semibold mb-4">Non-Sale Products</h2>
-                        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 mr-0 lg:mr-[400px]">
+                        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 mr-0 lg:mr-[400px]">
                             {nonSaleProducts.map((product: IProductTypes) => (
                                 <StoreProductCard key={product._id} item={product} />
                             ))}

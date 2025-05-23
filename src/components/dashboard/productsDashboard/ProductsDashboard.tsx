@@ -172,13 +172,13 @@ const ProductsDashboard = () => {
                                         onClick={() => navigate(`/update/product/sku_value/${sku}`)}
                                         className="whitespace-nowrap">{alternateName ? "Yes" : "No"}</TableCell>
                                     <TableCell>
-                                        <div>Rs. {price}</div>
+                                        <div>$ {price}</div>
                                         {salesPrice && (
-                                            <span className="text-yellow-500 block whitespace-nowrap ">Sale: Rs. {salesPrice}</span>
+                                            <span className="text-yellow-500 block whitespace-nowrap ">Sale: $ {salesPrice}</span>
                                         )}
                                     </TableCell>
-                                    <TableCell className="whitespace-nowrap">Rs. {costPrice}</TableCell>
-                                    <TableCell className="whitespace-nowrap">Rs. {retailerPrice}</TableCell>
+                                    <TableCell className="whitespace-nowrap">$ {costPrice}</TableCell>
+                                    <TableCell className="whitespace-nowrap">$ {retailerPrice}</TableCell>
                                     <TableCell>{quantity}</TableCell>
                                     <TableCell>{qrCodeNumber}</TableCell>
                                     <TableCell>{sku}</TableCell>

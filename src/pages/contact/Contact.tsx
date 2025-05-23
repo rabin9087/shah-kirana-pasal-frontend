@@ -1,10 +1,9 @@
 import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 
-const GOOGLE_API_KEY = import.meta.env.GOOGLE_API
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API
 const ContactUs = () => {
 
-  // const GOOGLE_API_KEY = import.meta.env.GOOGLE_API
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-2xl">
       <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
@@ -25,15 +24,19 @@ const ContactUs = () => {
         </div>
 
         {/* Phone */}
-        <div className="flex items-center space-x-3">
-          <Phone className="text-green-600" />
-          <a href="tel:+9779806047265" className="text-gray-700 hover:text-blue-600">
-            +977 9806047265
-          </a>
-          <span>/</span>
-          <a href="tel:+9779701844268" className="text-gray-700 hover:text-blue-600">
-            +977 9701844268
-          </a>
+        <div className="flex items-start space-x-3">
+          <Phone className="text-green-600 mt-1" />
+          <div className="flex flex-col space-y-1">
+            <a href="tel:+9779806047265" className="text-gray-700 hover:text-blue-600">
+              +977 9806047265
+            </a>
+            <a href="tel:+9779701844268" className="text-gray-700 hover:text-blue-600">
+              +977 9701844268
+            </a>
+            <a href="tel:+61481452920" className="text-gray-700 hover:text-blue-600">
+              +61 481 452 920
+            </a>
+          </div>
         </div>
 
         {/* Email */}
@@ -61,7 +64,7 @@ const ContactUs = () => {
         </div>
 
         <div className="flex flex-col items-center space-x-3">
-          <QRCodeGenerator value="https://www.shahkiranapasal.shop"/>
+          <QRCodeGenerator value="https://www.shahkiranapasal.shop" />
         </div>
       </div>
 
@@ -74,7 +77,7 @@ const ContactUs = () => {
 
         <iframe
           className="w-full h-64 mt-4 rounded-lg"
-          src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_API_KEY}&q=26.568254015988057,87.68418811261654`}
+          src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_API_KEY}&q=Shah Kirana Pasal, HM9M+8JP, School Chaun Bazaar Chowk Bus Stop, Gauradaha Schoolchaun Road, Maharanijhoda 57200, Nepal`}
           allowFullScreen
           loading="lazy"
         ></iframe>

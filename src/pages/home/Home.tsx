@@ -158,7 +158,7 @@ function Home(): JSX.Element {
           <p className="text-center text-gray-500">No products available.</p>
         ) : (
           <>
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7">
               {filteredProducts.allProducts.map((product: IProductTypes) => (
                 <ProductCard key={product._id} item={product} />
               ))}

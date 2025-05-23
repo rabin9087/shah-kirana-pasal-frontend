@@ -50,7 +50,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
           </CardTitle>
           {item.salesPrice && (
             <div className="w-fit mt-2 bg-yellow-300 text-sm font-bold px-2 py-1 inline-block rounded">
-              {language === "en" ? "SAVE Rs." : "बचत रु."}{(item.price - item.salesPrice).toFixed(2)}
+              {language === "en" ? "SAVE $" : "बचत रु."}{(item.price - item.salesPrice).toFixed(2)}
             </div>
           )}
         </CardHeader>
@@ -63,23 +63,23 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
               <div className="flex justify-between items-start font-bold">
                 <div className="flex justify-start items-start">
                   <span className="font-medium">
-                    {language === "en" ? "Rs." : "रु."}{Math.floor(item.salesPrice)}
+                    {language === "en" ? "$" : "रु."}{Math.floor(item.salesPrice)}
                   </span>
                   <span className="text-sm">
                     {((item.price) % 1 * 100).toFixed(0).padStart(2, '0')}
                   </span>
                 </div>
                 <span className="text-sm text-gray-500 line-through ms-2 my-auto">
-                  {language === "en" ? "Rs." : "रु."}{item.price.toFixed(2)}
+                  {language === "en" ? "$" : "रु."}{item.price.toFixed(2)}
                 </span>
               </div>
             ) : (
                 <div className="flex justify-start items-start font-bold">
                   {/* <span className={`text-xl mt-1 text-gray-600 ${item.salesPrice > 0 ? "mb-1" : "mb-4"}`}>
-                    Rs.
+                    $
                   </span> */}
                   <span className="font-medium">
-                    {language === "en" ? "Rs." : "रु."}{Math.floor(item.salesPrice > 0 ? item.salesPrice : item.price)}
+                    {language === "en" ? "$" : "रु."}{Math.floor(item.salesPrice > 0 ? item.salesPrice : item.price)}
                   </span>
                   <span className="text-sm">
                     {((item.salesPrice > 0 ? item.salesPrice : item.price) % 1 * 100).toFixed(0).padStart(2, '0')}

@@ -38,8 +38,6 @@ const StoreSalesDashboard = () => {
         setDate(newDate);
     };
 
-    console.log(dailyProfitArray, itemProfitArray, monthlyProfitArray)
-
     if (isLoading) return <Layout title="">Loading...</Layout>
     return (
         <Layout title="" >
@@ -56,10 +54,10 @@ const StoreSalesDashboard = () => {
                     <p>Total Customers: {dailySales?.length}</p>
 
                 </div>
-                <ResponsiveContainer width="100%" height={400}>
+                <ResponsiveContainer width="100%" height={300}>
                     <BarChart
                         className="mt-4"
-                        data={dailySales} // Use aggregated sales by month
+                        data={dailySales}
                         margin={{
                             top: 5,
                             right: 30,
@@ -69,19 +67,26 @@ const StoreSalesDashboard = () => {
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
-                        <YAxis dataKey="amount" />
+                        <YAxis
+                            domain={[0, 'auto']} // auto-adjusts Y-axis based on max value
+                        />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="amount" fill="#8884d8" activeBar={<Rectangle fill="gold" stroke="blue" />} />
+                        <Bar
+                            dataKey="amount"
+                            fill="#8884d8"
+                            activeBar={<Rectangle fill="gold" stroke="blue" />}
+                        />
                     </BarChart>
                 </ResponsiveContainer>
+
             </div>}
 
             {dailyProfitArray?.length > 0 && <div className="overflow-auto text-center">
                 <hr />
                 <h2 className="font-bold mt-4">Daily Profits</h2>
                 <div className="flex flex-col justify-center">
-                    <p>Daily Profits: Rs. {totalSales} </p>
+                    <p>Daily Profits: $ {totalSales.toLocaleString("en-IN")} </p>
                     <p>Total Customers: {dailySales?.length}</p>
                 </div>
 
@@ -93,7 +98,8 @@ const StoreSalesDashboard = () => {
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="date" />
-                        <YAxis />
+                        <YAxis domain={[0, 'auto']} // auto-adjusts Y-axis based on max value
+                        />
                         <Tooltip />
                         <Legend />
                         <Bar dataKey="profit" fill="#8884d8" activeBar={<Rectangle fill="gold" stroke="blue" />} />
@@ -106,7 +112,7 @@ const StoreSalesDashboard = () => {
                 <hr />
                 <h2 className="font-bold mt-4">All Sales</h2>
                 <div className="flex flex-col justify-center">
-                    <p>Total Sales: Rs. {allTotalStoreSales} </p>
+                    <p>Total Sales: $ {allTotalStoreSales.toLocaleString("en-IN")} </p>
                     <p>Total Customers: {totalStoreSales?.length}</p>
 
                 </div>
@@ -136,7 +142,6 @@ const StoreSalesDashboard = () => {
                 <h2 className="font-bold mt-4">Monthly Profits</h2>
                 <div className="flex flex-col justify-center">
                     {/* <p>Monthly Profits: Rs. {monthlyProfit} </p> */}
-                    <p>Total Customers: {monthlyProfitArray?.length}</p>
                 </div>
 
                 <ResponsiveContainer width="100%" height={400}>
@@ -159,7 +164,7 @@ const StoreSalesDashboard = () => {
                 <hr />
                 <h2 className="font-bold mt-4">Every Sales Profits</h2>
                 <div className="flex flex-col justify-center">
-                    <p>Profits on Every Sales: Rs. {totalSales} </p>
+                    <p>Profits on Every Sales: $ {totalSales} </p>
                     <p>Total Customers: {itemProfitArray?.length}</p>
                 </div>
 

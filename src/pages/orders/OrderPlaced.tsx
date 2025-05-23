@@ -67,7 +67,7 @@ export const OrderPlaced: React.FC = () => {
                             </p>
                             <div className="md:flex justify-between">
                                 <div>
-                                    <p className="text-gray-700"><strong>{language === "en" ? "Amount" : "रकम"}: </strong> {language === "en" ? "Rs. " : "रु."} {latestOrder?.amount?.toFixed(2)}</p>
+                                    <p className="text-gray-700"><strong>{language === "en" ? "Amount" : "रकम"}: </strong> {language === "en" ? "$ " : "रु."} {latestOrder?.amount?.toFixed(2)}</p>
                                     <p className="text-gray-700"><strong>{language === "en" ? "Purchased At" : "किनेको दिन"}:</strong> {new Date(latestOrder.purchasedAt).toLocaleString()}</p>
                                     <p className="text-gray-700"><strong>{language === "en" ? "Order status" : "अर्डर स्थिति"}: </strong>
                                         {language === "en" ? latestOrder.deliveryStatus :
@@ -95,8 +95,8 @@ export const OrderPlaced: React.FC = () => {
                                         <div>
                                             <p className="font-semibold text-gray-900">{language === "en" ? item.productId.name : item.productId.alternateName ? item.productId.alternateName : item.productId.name}</p>
                                             <p className="text-gray-700">{language === "en" ? "Quantity" : "मात्रा"}: {item?.orderQuantity}</p>
-                                            <p className="text-gray-700">{language === "en" ? "Price Rs. " : "मूल्य रु."}: {item?.productId?.salesPrice ? item?.productId?.salesPrice : item?.price}
-                                                <p className="line-through">{item?.productId?.salesPrice && "Rs." + item?.price} </p>
+                                            <p className="text-gray-700">{language === "en" ? "Price $ " : "मूल्य रु."}: {item?.productId?.salesPrice ? item?.productId?.salesPrice : item?.price}
+                                                <p className="line-through">{item?.productId?.salesPrice && "$" + item?.price} </p>
                                             </p>
 
                                             {item.note && <p className="text-sm text-gray-500">Note: {item.note}</p>}

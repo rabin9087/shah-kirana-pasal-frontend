@@ -117,9 +117,9 @@ const Sales = () => {
         <>
             <div className="overflow-auto text-center">
                 <div className="flex flex-col text-center mb-8">
-                    <div className="font-bold ">Total sales: {totalAmount.toFixed(2)}</div>
-                    <div className="font-bold ">Total Paid: {paidOrders.toFixed(2)}</div>
-                    <div className="font-bold ">Not Paid: {(totalAmount - paidOrders).toFixed(2)}</div>
+                    <div className="font-bold ">Total sales: ${totalAmount.toLocaleString("en-IN")}</div>
+                    <div className="font-bold ">Total Paid: ${paidOrders.toLocaleString("en-IN")}</div>
+                    <div className="font-bold ">Not Paid: ${(totalAmount - paidOrders).toLocaleString("en-IN")}</div>
                 </div>
                 {/* <h2 className="font-bold mt-4">Monthly Sales</h2>
                 <ResponsiveContainer width="100%" height={400}>

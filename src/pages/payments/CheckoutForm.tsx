@@ -363,7 +363,7 @@ const CheckoutForm = () => {
                             </div>
                         </div>
                         <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                            <h3 className='p-2 font-bold text-xl text-center' > {language === "en" ? "Amount to be paid  Rs." : "तिर्नुपर्ने रकम:  रु."} {cartAmount?.toFixed(2)}</h3></div>
+                            <h3 className='p-2 font-bold text-xl text-center' > {language === "en" ? "Amount to be paid $" : "तिर्नुपर्ने रकम: रु."} {cartAmount?.toFixed(2)}</h3></div>
                             {paymentType === "card" && <div>
                                 <PaymentButton amount={cartAmount} />
                                 {/* <EsewaPaymentButton amount={cartAmount} /> */}

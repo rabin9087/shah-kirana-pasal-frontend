@@ -60,7 +60,7 @@ export const StoreProductCard: React.FC<{ item: IProductTypes; addClass?: string
                 </CardTitle>
                 {item.salesPrice && (
                     <div className="w-fit mt-2 bg-yellow-300 text-sm font-bold px-2 py-1 inline-block rounded">
-                        {language === "en" ? "SAVE Rs." : "बचत रु."}
+                        {language === "en" ? "SAVE $" : "बचत रु."}
                         {(item.price - item.salesPrice).toFixed(2)}
                     </div>
                 )}
@@ -71,7 +71,7 @@ export const StoreProductCard: React.FC<{ item: IProductTypes; addClass?: string
                     <div className="flex justify-between items-start font-bold">
                         <div className="flex justify-start items-start">
                             <span className="font-medium">
-                                {language === "en" ? "Rs." : "रु."}
+                                {language === "en" ? "$" : "रु."}
                                 {Math.floor(item.salesPrice)}
                             </span>
                             <span className="text-sm">
@@ -79,14 +79,14 @@ export const StoreProductCard: React.FC<{ item: IProductTypes; addClass?: string
                             </span>
                         </div>
                         <span className="text-sm text-gray-500 line-through ms-2 my-auto">
-                            {language === "en" ? "Rs." : "रु."}
+                            {language === "en" ? "$" : "रु."}
                             {item.price.toFixed(2)}
                         </span>
                     </div>
                 ) : (
                     <div className="flex justify-start items-start font-bold">
                         <span className="font-medium">
-                            {language === "en" ? "Rs." : "रु."}
+                            {language === "en" ? "$" : "रु."}
                             {Math.floor(item.price)}
                         </span>
                         <span className="text-sm">
