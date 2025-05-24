@@ -38,7 +38,7 @@ const OrdersDashboard = () => {
                 [data, user]
         );
 
-        const handleOnOrderPick = async () => {
+        const handleOnExpressOrderPick = async () => {
                 if (ordersPicking.length > 0) {
                         navigate(`/order/orderNumber=/${ordersPicking[0].orderNumber}`);
                         return;
@@ -56,12 +56,34 @@ const OrdersDashboard = () => {
                 setIsModalOpen(true);
         };
 
+        const handleOnOrdersPick = async () => {
+                if (ordersPicking.length > 0) {
+                        navigate(`/order/orderNumber=/${ordersPicking[0].orderNumber}`);
+                        return;
+                }
+
+                if (ordersToPick.length > 0) {
+                        // await updateAOrder(ordersToPick[0]._id as string, {
+                        //         deliveryStatus: "Picking",
+                        //         picker: { userId: user._id, name: `${user.fName} ${user.lName}` },
+                        // });
+                        navigate(`/orders/pickup`);
+                        return;
+                }
+
+                setIsModalOpen(true);
+        };
+
         return (
                 <>
                         <>
                                 {adminRoles.includes(user.role) && (
                                         <div className="flex justify-between items-center">
-                                                <Button type="button" onClick={handleOnOrderPick}>Start Picking</Button>
+                                                <div className="flex flex-col items-cente gap-1">
+                                                        <Button type="button" onClick={handleOnExpressOrderPick}>Express</Button>
+                                                        <Button type="button" onClick={handleOnOrdersPick}>Start Picking</Button>
+                                                </div>
+
                                                 <div>
                                                         <p>Orders to pick: {ordersToPick.length}</p>
                                                         {ordersPicking.length > 0 && <p>You are picking: {ordersPicking.length}</p>}

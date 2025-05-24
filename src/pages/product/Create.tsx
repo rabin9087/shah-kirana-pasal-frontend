@@ -150,6 +150,28 @@ const CreateProduct = () => {
     });
   };
 
+  // const [scannedData, setScannedData] = useState<string | null>(null);
+  // const [inputBuffer, setInputBuffer] = useState("");
+  useEffect(() => {
+    let buffer = "";
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        setBarcode(buffer);
+        buffer = "";
+        // setInputBuffer("");
+      } else {
+        buffer += e.key;
+        // setInputBuffer(buffer);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
 
   useEffect(() => {
     setValue('images', images);

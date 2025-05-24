@@ -45,6 +45,7 @@ import StoreSalesDashboard from "./components/dashboard/storeSales/StoreSalesDas
 import { CreateShop } from "./pages/shop/CreateShop";
 import ContractManagement from "./pages/contractManagement/ContractManagement";
 import JobCategory from "./pages/jobCategory/JobCategory";
+import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -294,6 +295,16 @@ function App() {
           element={
             <PickerPrivateRouter>
               <StartPickingOrder />
+            </PickerPrivateRouter>
+          }
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/orders/pickup"
+          element={
+            <PickerPrivateRouter>
+              <StartPickingMultipleOrders />
             </PickerPrivateRouter>
           }
           errorElement={<ErrorPage />}

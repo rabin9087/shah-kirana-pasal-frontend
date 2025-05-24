@@ -32,10 +32,11 @@ const sortItems = (items: any) => {
     });
 };
 
-const StartPickingOrder = () => {
+const StartPickingMultipleOrders = () => {
+    const {orders} = useAppSelector(s => s.ordersInfo)
     const dispatch = useAppDispatch();
     const navignate = useNavigate()
-    const { orderNumber } = useParams();
+    // const { orderNumber } = useParams();
     const { order } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,21 +45,26 @@ const StartPickingOrder = () => {
     const [barcode, setBarcode] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
 
+    const ordersToPick = orders.map(({ items }) => items)
+    console.log(ordersToPick)
+
     const sortedItems = sortItems(order?.items || []);
     const currentItem = sortedItems[currentIndex];
 
-    const { data = initialState.order } = useQuery<IOrder>({
-        queryKey: ['order', orderNumber],
-        queryFn: () => getAOrder(orderNumber as string)
-    })
+    // const { data = initialState.order } = useQuery<IOrder>({
+    //     queryKey: ['order', orderNumber],
+    //     queryFn: () => getAOrder(orderNumber as string)
+    // })
 
-    useEffect(() => {
-        if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
-            dispatch(setAOrder(data as IOrder));
-        } else if (data?._id === "") {
-            dispatch(setAOrder(initialState.order as IOrder));
-        }
-    }, [dispatch, data]);
+    console.log(orders)
+
+    // useEffect(() => {
+    //     if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
+    //         dispatch(setAOrder(data as IOrder));
+    //     } else if (data?._id === "") {
+    //         dispatch(setAOrder(initialState.order as IOrder));
+    //     }
+    // }, [dispatch, data]);
 
     const handleNext = () => {
         if (currentIndex < sortedItems.length - 1) {
@@ -290,4 +296,4 @@ const StartPickingOrder = () => {
     );
 };
 
-export default StartPickingOrder;
+export default StartPickingMultipleOrders;
