@@ -30,6 +30,7 @@ const RFScannerInput: React.FC = () => {
         <div className="p-4">
             <h2 className="text-xl font-semibold mb-2">RF Scanner Input</h2>
             <p className="mb-2">Scanned Data: <span className="font-mono">{scannedData}</span></p>
+            <p className="mb-2">Scanned Data: <span className="font-mono">{barcode}</span></p>
             <input
                 type="text"
                 value={inputBuffer}

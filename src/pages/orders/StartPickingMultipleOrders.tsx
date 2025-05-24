@@ -1,13 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getAOrder, updateAOrder } from "@/axios/order/order";
-import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrders.slice";
+import {  updateAOrder } from "@/axios/order/order";
+import {  updateSuppliedQuantity } from "@/redux/allOrders.slice";
 import ScanOrderProduct from "./ScanOrderProduct";
-import { useQuery } from "@tanstack/react-query";
-import { IOrder } from "@/axios/order/types";
+
 
 type ProductLocation = {
     A: number;
