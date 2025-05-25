@@ -149,11 +149,12 @@ const CreateProduct = () => {
       }
     });
   };
-
+  console.log(barcode)
   // const [scannedData, setScannedData] = useState<string | null>(null);
   // const [inputBuffer, setInputBuffer] = useState("");
   useEffect(() => {
     let buffer = "";
+    console.log(barcode)
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
@@ -395,26 +396,27 @@ const CreateProduct = () => {
 
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 {input.map(({ label, name, placeholder, required, type, generate, value, func, classname, inputeType }) => (
-                  <div className={`sm:col-span-3 ${classname}`} key={name}>
+                  <div className={`sm:col-span-3 ${classname}`} key={name as string}>
                     <div className='flex justify-between place-items-baseline'>
-                      <Label htmlFor={name} className="block text-md font-medium leading-6 text-gray-900">
+                      <Label htmlFor={name as string} className="block text-md font-medium leading-6 text-gray-900">
                         {label}
                       </Label>
                       <div className='flex justify-end gap-2'>
                         {generate === "barcode" &&
-                          <Label htmlFor={name}> <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} /></Label>
+                          <Label htmlFor={name as string}> <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} /></Label>
                         }
 
                         {generate &&
                           <Button type='button' onClick={func}
-                          ><Label htmlFor={name}>Generate {generate} </Label>
+                          ><Label htmlFor={name as string}>Generate {generate} </Label>
                           </Button>}
                       </div>
                     </div>
 
                     <div className={`mt-2 flex `}>
-                      {!inputeType && <Input
-                        id={name}
+                      {!inputeType &&
+                        <Input
+                        id={name as string}
                         type={type}
                         defaultValue={value}
                         required={required}

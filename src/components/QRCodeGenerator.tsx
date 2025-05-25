@@ -1,21 +1,32 @@
 import QRCode from "react-qr-code";
 import Barcode from "react-barcode";
 
-type qrCodeValue = {
-  value: any
-}
+type QRCodeValueProps = {
+  value: string; // or `value: string | number` if needed
+  width?: number;
+  height?: number;
+};
 
-export const QRCodeGenerator = ({ value }: qrCodeValue) => {
+
+export const QRCodeGenerator = ({
+  value,
+  width = 100,
+  height = 100,
+}: QRCodeValueProps) => {
   return (
-      <QRCode
-        className="w-28 h-28"
-        size={2}
-        style={{ height: "auto", maxWidth: "100%", width: "" }}
-        value={value}
-        viewBox={`0 0 256 256`}
-      />
-  )
-}
+    <QRCode
+      value={value}
+      size={width} // QR code is square; `size` controls both width and height
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
+        maxWidth: "100%",
+      }}
+      viewBox="0 0 256 256"
+      className="w-28 h-28"
+    />
+  );
+};
 
 type BarCodeGeneratorProps = {
   value: string;

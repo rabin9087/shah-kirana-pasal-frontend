@@ -90,6 +90,7 @@ const StartPickingMultipleOrders = () => {
 
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true)
+        
         if (order?._id) {
             const items = order?.items.map(({ productId, quantity, _id, price, note, supplied, costPrice }) =>
                 ({ productId: productId._id, price, quantity, note, supplied, _id, costPrice }));
@@ -98,7 +99,7 @@ const StartPickingMultipleOrders = () => {
             return navignate(-1)
         }
         setPacking(false)
-        return;
+        return navignate(-1)
     }
 
     const updateSuppliedQuintity = () => {

@@ -12,8 +12,6 @@ interface IOrderList {
 }
 
 export const DateNavigator = ({ data, date, setDate }: IOrderList) => {
-
-
     const dispatch = useAppDispatch()
     const { orders } = useAppSelector(s => s.ordersInfo)
 
