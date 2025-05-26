@@ -42,6 +42,8 @@ const StartPickingOrder = () => {
     const [notFound, setNotFound] = useState(false);
     const [packing, setPacking] = useState(false);
     const [barcode, setBarcode] = useState("");
+    const [buff, setBuff] = useState("");
+    const [res, setRes] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
 
     const sortedItems = sortItems(order?.items || []);
@@ -128,18 +130,22 @@ const StartPickingOrder = () => {
         let buffer = "";
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Enter") {
+                setRes("enter")
                 console.log(buffer)
                 console.log(currentItem?.productId?.qrCodeNumber)
                 setBarcode(buffer);
                 if (buffer === currentItem?.productId?.qrCodeNumber) {
+                    setBuff("code matched")
                     updateSuppliedQuintity();
                 } else {
+                    setBuff("code not matched")
+
                     setNotFound(true)
                 }
                 buffer = "";
             } else {
                 buffer += e.key;
-              
+              setRes("exit")
                 // setInputBuffer(buffer);
             }
             // setBarcode("");
@@ -197,6 +203,7 @@ const StartPickingOrder = () => {
                                         <p className="text-xs">SOH: {currentItem?.productId?.quantity}</p>
                                         <p className="text-xs font-thin">{currentItem?.productId?.qrCodeNumber}</p>
                                         <p className="text-xs font-thin">Barcode: {barcode !== "" ? barcode : "No code return"}</p>
+                                        <p className="text-xs font-thin">Buff: {buff}, Result: {res} </p>
                                     </div>
                                     <img
                                         src={currentItem?.productId?.thumbnail}
