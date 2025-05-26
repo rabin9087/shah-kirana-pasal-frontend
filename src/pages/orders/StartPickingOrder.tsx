@@ -125,14 +125,12 @@ const StartPickingOrder = () => {
             setNotFound(true)
         }
     };
-    
+
     useEffect(() => {
         let buffer = "";
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Enter") {
                 setRes("enter")
-                console.log(buffer)
-                console.log(currentItem?.productId?.qrCodeNumber)
                 setBarcode(buffer);
                 if (buffer === currentItem?.productId?.qrCodeNumber) {
                     setBuff("code matched")
@@ -142,10 +140,11 @@ const StartPickingOrder = () => {
 
                     setNotFound(true)
                 }
-                buffer = "";
+                // buffer = ""; // Clear for next scan
             } else {
+                // Append each character to the buffer
                 buffer += e.key;
-              setRes("exit")
+                setRes("exit")
                 // setInputBuffer(buffer);
             }
             // setBarcode("");
@@ -202,7 +201,7 @@ const StartPickingOrder = () => {
                                         <p className="text-xs">Price: ${currentItem?.productId?.price}</p>
                                         <p className="text-xs">SOH: {currentItem?.productId?.quantity}</p>
                                         <p className="text-xs font-thin">{currentItem?.productId?.qrCodeNumber}</p>
-                                        <p className="text-xs font-thin">Barcode: {barcode !== "" ? barcode : "No code return"}</p>
+                                        <p className="text-xs font-thin">Barcode: {barcode !== "" ? barcode : "No code return"}, {barcode}</p>
                                         <p className="text-xs font-thin">Buff: {buff}, Result: {res} </p>
                                     </div>
                                     <img
