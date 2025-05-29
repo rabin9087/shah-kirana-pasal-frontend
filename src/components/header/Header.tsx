@@ -58,16 +58,17 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
         {/* Header Content */}
         <div className="flex w-full gap-2 justify-start items-center text-md font-bold leading-none">
           <Button
+          
             variant={"link"}
             onClick={() => {
               dispatch(toggleSideBar());
             }}
-            className="p-2 hover:bg-gray-300 bg-primary-foreground"
+            className="p-2 hover:bg-gray-300 bg-primary-foreground h-10 w-10"
           >
             {open ? (
               <RxCross1 className="text-red-500 bg-white" size={20} />
             ) : (
-              <GiHamburgerMenu size={20} />
+              <GiHamburgerMenu size={20} height={20} width={20}/>
             )}
           </Button>
           <span className="text-primary-foreground p-2">
