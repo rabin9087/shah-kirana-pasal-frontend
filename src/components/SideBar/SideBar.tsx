@@ -39,7 +39,8 @@ const SideBar = () => {
               Categories
             </h2>
             <Button
-              className="text-white hover:text-white/80 dark:text-gray-400"
+              variant="ghost"
+              className="text-gray-700 bg-gray-100"
               type="button"
               onClick={() => {
                 dispatch(toggleSideBar());
@@ -59,7 +60,7 @@ const SideBar = () => {
                   dispatch(toggleSideBar());
                 }}
               >
-                <li className="flex items-center justify-between px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-all duration-150">
+                <li className="flex mt-0.5 items-center justify-between px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-all duration-150">
                   <span className="text-gray-700 dark:text-gray-200 font-medium">
                     {language === "en" ? name.toLocaleUpperCase() :
                       alternativeName ? alternativeName?.toLocaleUpperCase() : name.toLocaleUpperCase()}

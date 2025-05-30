@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { ICategoryTypes, IProductTypes } from "@/types/index";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategories } from "@/axios/category/category";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { setCategory } from "@/redux/category.slice";
 // import { setProducts } from "@/redux/product.slice";
 
@@ -32,13 +32,37 @@ const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData, 
     }
   }, [dispatch, cats.length])
 
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollTop = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollTop = window.scrollY;
+
+      if (currentScrollTop > lastScrollTop.current && currentScrollTop > 50) {
+        setShowHeader(false); // scrolling down
+      } else {
+        setShowHeader(true); // scrolling up
+      }
+
+      lastScrollTop.current = currentScrollTop <= 0 ? 0 : currentScrollTop;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const { open } = useAppSelector((Store => Store.sidebar))
   return (
     <div className={`flex flex-col border-2 bg-background ${open ? "h-screen overflow-hidden " : "min-h-screen"}`}>
-      <Header data={data} types={types} setData={setData} />
+      <div
+        className={`fixed top-0 left-0 right-0 z-40 transition-transform duration-500 ${showHeader ? "translate-y-0" : "-translate-y-full"
+          }`}
+      >
+        <Header data={data} types={types} setData={setData} />
+      </div>
       {/* <HeaderNav/> */}
-      <main className="relative w-full gap-2 border-2 mb-2">
+      <main className="relative w-full gap-2 border-2 mb-2 pt-[110px]">
         <SideBar />
         <div>
           <div className={`flex justify-center p-2 font-bold underline text-2xl ${addClass}`}>{title}</div>

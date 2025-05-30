@@ -115,10 +115,10 @@ function Home(): JSX.Element {
   );
 
   return (
-    <Layout types="products" title="Shop Smart">
-      <div className="w-full mb-8">
+    <Layout types="products" title={page === 1 ? "Smart Shop": ""}>
+      {page === 1 && <div className="w-full mb-8">
         <CarouselWithAutoplay />
-      </div>
+      </div>}
 
       <ProductSection
         title="Hot Deals & Sales"
@@ -165,7 +165,7 @@ function Home(): JSX.Element {
               </div>            
 
             {/* Pagination Buttons */}
-              <div className="flex justify-center items-center gap-4 mt-8">
+              <div className="flex justify-center items-center flex-wrap gap-2 mt-8">
                 <Button
                   variant="outline"
                   disabled={page === 1}
@@ -173,15 +173,53 @@ function Home(): JSX.Element {
                 >
                   Previous
                 </Button>
-                <p>
-                  Page {page} of {data.pagination.totalPages || 1}
-                </p>
+
+                {(() => {
+                  const totalPages = data.pagination.totalPages || 1;
+                  const range: (number | "...")[] = [];
+
+                  const start = Math.max(1, page - 2);
+                  const end = Math.min(totalPages, page + 2);
+
+                  if (start > 1) {
+                    range.push(1);
+                    if (start > 2) range.push("...");
+                  }
+
+                  for (let i = start; i <= end; i++) {
+                    range.push(i);
+                  }
+
+                  if (end < totalPages) {
+                    if (end < totalPages - 1) range.push("...");
+                    range.push(totalPages);
+                  }
+
+                  return range.map((p, index) => (
+                    <button
+                      key={index}
+                      disabled={p === "..."}
+                      onClick={() => typeof p === "number" && setPage(p)}
+                      className={`px-3 py-1 text-sm rounded border ${p === page
+                          ? "bg-primary text-white"
+                          : p === "..."
+                            ? "cursor-default text-muted"
+                            : "hover:bg-accent"
+                        }`}
+                    >
+                      {p}
+                    </button>
+                  ));
+                })()}
+
                 <Button
                   variant="outline"
                   disabled={page === data.pagination.totalPages}
                   onClick={() =>
                     setPage((prev) =>
-                      data.pagination.totalPages ? Math.min(prev + 1, data.pagination.totalPages) : prev + 1
+                      data.pagination.totalPages
+                        ? Math.min(prev + 1, data.pagination.totalPages)
+                        : prev + 1
                     )
                   }
                 >

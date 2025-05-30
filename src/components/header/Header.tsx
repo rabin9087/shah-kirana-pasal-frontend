@@ -9,6 +9,7 @@ import { RxCross1 } from "react-icons/rx";
 import { Profile } from "../Profile";
 import { IProductTypes } from "@/types/index";
 import { useState } from "react";
+import logo from "/assets/shahKiranaPasal.png"
 
 const links = [
   {
@@ -51,32 +52,32 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   const { user } = useAppSelector((s) => s.userInfo);
   const { open } = useAppSelector((s) => s.sidebar);
   const [results, setResults] = useState<IResults[] | []>([]);
-
+  
   return (
-    <div className="p-4 shadow-sm sticky top-0 rounded-md z-10 flex flex-col justify-center mx-auto w-full bg-primary">
+    <div className="p-2 shadow-sm sticky top-0 rounded-md z-10 flex flex-col justify-center mx-auto w-full bg-primary">
       <div className="flex justify-between">
         {/* Header Content */}
         <div className="flex w-full gap-2 justify-start items-center text-md font-bold leading-none">
           <Button
-          
             variant={"link"}
+            type="button"
             onClick={() => {
               dispatch(toggleSideBar());
             }}
-            className="p-2 hover:bg-gray-300 bg-primary-foreground h-10 w-10"
+            className="p-2 h-12 w-12 bg-white/10"
           >
             {open ? (
-              <RxCross1 className="text-red-500 bg-white" size={20} />
+              <RxCross1 className="text-white font-bold" size={30}
+              />
             ) : (
-              <GiHamburgerMenu size={20} height={20} width={20}/>
+                <GiHamburgerMenu className="hover:text-gray-400 text-white font-bold" size={30} height={30} width={30} />
             )}
           </Button>
           <span className="text-primary-foreground p-2">
             <Link to={"/"}>
               <img
-                src="/assets/shahKiranaPasal.png"
-                // src="https://shahkiranapasal.s3.us-east-1.amazonaws.com/1743346946867_logo_shahKiranaPasal.png"
-                className="w-16 h-16 object-contain rounded-full"
+                src={logo}
+                className="w-10 h-10 object-contain rounded-full"
                 alt="Shah Kirana Pasal Logo"
               />
 
@@ -95,11 +96,12 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
               .map((item) => (
                 <Link
                   to={item.path}
-                  className={`${pathname === item.path
-                    ? " bg-secondary"
-                    : "text-primary-foreground"
-                    } font-semibold p-2 rounded-sm`}
                   key={item.name}
+                  className={`font-semibold p-2 rounded-sm transition-colors duration-200
+                    ${pathname === item.path
+                      ? "text-white bg-white/10 hover:no-underline" // active item: light background, no underline
+                      : "text-primary-foreground hover:underline hover:text-white/80" // inactive: underline and lighter text on hover
+                    }`}
                 >
                   {item.name}
                 </Link>
@@ -110,12 +112,12 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
         {(user.role === "STOREUSER" || user.role === "ADMIN" || user.role === "SUPERADMIN") &&
           <div className="flex md:hidden gap-2 items-center justify-center">
             <Link to={"/store"}
-              className="bg-white px-3 py-1 rounded-md font-semibold "
+              className="text-white hover:underline px-3 py-1 rounded-md font-semibold "
             >
               Store
             </Link>
             <Link to={"/storeSales"}
-              className="bg-white px-3 py-1 rounded-md font-semibold "
+              className="text-white hover:underline px-3 py-1 rounded-md font-semibold "
             >
               Sales
             </Link>
@@ -129,7 +131,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
       </div>
 
       {/* Search Bar and Results */}
-      <div className="relative flex flex-col justify-center items-center w-full mx-auto mt-2">
+      <div className="relative flex flex-col justify-center items-center w-full mx-auto">
         <SearchBar
           data={data}
           types={types}
