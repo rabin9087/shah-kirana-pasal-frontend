@@ -47,7 +47,9 @@ export const Store = () => {
 
     useEffect(() => {
         if (data.length) {
-            dispatch(setProducts(data));
+            const sortedUsers = [...data].sort((a, b) => a.name.localeCompare(b.name));
+
+            dispatch(setProducts(sortedUsers));
         }
     }, [dispatch, data]);
 
@@ -267,10 +269,9 @@ export const Store = () => {
                     </Button>
                 </div>
 
-
                 {/* Mobile Sidebar */}
                 {showMobileSidebar && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex items-end">
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
                         <div className="bg-white w-full h-full rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-2 px-4">
                             <div className="flex justify-end items-center mb-4">
                                 <button

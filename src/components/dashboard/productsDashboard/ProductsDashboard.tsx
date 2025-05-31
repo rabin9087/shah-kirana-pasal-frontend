@@ -36,7 +36,8 @@ const ProductsDashboard = () => {
 
     useEffect(() => {
         if (data.length) {
-            dispatch(setProducts(data))
+            const sortedUsers = [...data].sort((a, b) => a.name.localeCompare(b.name));
+            dispatch(setProducts(sortedUsers))
         }
     }, [dispatch, data])
 

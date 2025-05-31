@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import Modal from 'react-modal';
 import AddUser from "./AddUser";
 
-
 const UsersDashboard = () => {
     const dispatch = useAppDispatch()
     const [isOpen, setIsOpen] = useState(false);
@@ -27,8 +26,9 @@ const UsersDashboard = () => {
     // Sync usersData whenever `users` changes
     useEffect(() => {
         if (data.length) {
-            setUsersData(data); 
-            dispatch(setUsers(data));
+            const sortedUsers = [...data].sort((a, b) => a.fName.localeCompare(b.fName));
+            setUsersData(sortedUsers);
+            dispatch(setUsers(sortedUsers));
         }
     }, [dispatch, data]);
 
@@ -126,7 +126,7 @@ const UsersDashboard = () => {
                     )}
                 </CardContent>
             </Card>
-  
+
         </div>
     );
 };

@@ -69,6 +69,7 @@ export interface IUser {
   updatedAt: string;
   __v: number;
 }
+
 export interface ICartHistory {
   items: IAddToCartTypes[];
   amount: number;// Store previous cart data

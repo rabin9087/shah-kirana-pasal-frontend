@@ -62,11 +62,20 @@ const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData, 
         <Header data={data} types={types} setData={setData} />
       </div>
       {/* <HeaderNav/> */}
-      <main className="relative w-full gap-2 border-2 mb-2 pt-[110px]">
-        <SideBar />
-        <div>
-          <div className={`flex justify-center p-2 font-bold underline text-2xl ${addClass}`}>{title}</div>
-          {children}
+      <main className="relative w-full gap-1 border-2 mb-2 pt-[110px] overflow-x-hidden">
+        {/* Sidebar as an absolute drawer */}
+        <div className="relative">
+          <div className={`absolute top-0 left-0 z-50 transition-transform duration-300 
+      ${open ? "translate-x-0" : "-translate-x-full"} 
+      bg-background shadow-lg h-full w-[250px]`}>
+            <SideBar />
+          </div>
+
+          {/* Content pushed below header, not affected by sidebar */}
+          <div className="pl-0 md:pl-[4px] transition-all duration-300">
+            <div className={`flex justify-center p-2 font-bold underline text-2xl ${addClass}`}>{title}</div>
+            {children}
+          </div>
         </div>
       </main>
       <Footer />
