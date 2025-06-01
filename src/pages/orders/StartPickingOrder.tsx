@@ -164,6 +164,7 @@ const StartPickingOrder = () => {
                     <div>
                         <Button className="bg-primary text-white p-2 rounded-md ms-2"
                             onClick={() => updateDeliveryStatus(order?.deliveryStatus === "Order placed" ? "Picking" : order?.deliveryStatus as string)}
+                            disabled={packing}
                         >
                             {"<"} BACK
                         </Button>

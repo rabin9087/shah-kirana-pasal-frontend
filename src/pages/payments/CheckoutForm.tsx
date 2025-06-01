@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import {
     AddressElement, useElements, useStripe, LinkAuthenticationElement,
+    PaymentElement,
 } from '@stripe/react-stripe-js';
 import { FormEvent, useEffect, useState } from 'react';
 import DeliveryDateSelector from './DeliveryDate';
@@ -13,6 +14,7 @@ import { FaRegEdit } from "react-icons/fa";
 import LocationComponent from '../home/GeoLocation';
 import { UserDetailsModel } from './UserDetailsModel';
 import { PaymentButton } from './KhaltiWebPaymentMethod';
+import { toast } from 'react-toastify';
 // import { EsewaPaymentButton } from './PaymentWithESewa';
 
 const CheckoutForm = () => {
@@ -103,6 +105,11 @@ const CheckoutForm = () => {
             alert("Email is Required")
             setIsAddressComplete(false)
             throw new Error("Email is Required!.");
+        }
+
+        if (orderItems.length === 0) {
+            toast.error("Please add items to cart!");
+            return
         }
 
         const { city, country, line1, name, phone, state, postal_code } = contactInfo.shipping
@@ -371,7 +378,7 @@ const CheckoutForm = () => {
                                     {/* <EsewaPaymentButton amount={cartAmount} /> */}
                                 </div>}
 
-                                {/* <PaymentElement id="payment-element" options={{ layout: 'tabs' }} /> */}
+                                <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />
                             </>
                         )}
                     </div>
