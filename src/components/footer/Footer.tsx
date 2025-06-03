@@ -8,7 +8,7 @@ const Footer = () => {
         {/* Store Logo & Info */}
         <div className="flex flex-col items-center md:items-start">
           <img src={logo} alt={`${storeName} Logo`} className="w-20 h-20 rounded-full" />
-          <h2 className="text-2xl font-bold mt-2">{ storeName}</h2>
+          <h2 className="text-2xl font-bold mt-2">{storeName}</h2>
           <p className="text-gray-200 mt-1 text-center md:text-left">
             {storeSlogan}
           </p>

@@ -54,35 +54,37 @@ const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData, 
 
   const { open } = useAppSelector((Store => Store.sidebar))
   return (
-    <div className="flex flex-col min-h-screen bg-background"> {/* Ensures full-height layout */}
+    <div className={`flex flex-col ${open ? "h-screen overflow-hidden" : "min-h-screen"} bg-background`}>
       <div
         className={`fixed top-0 left-0 right-0 z-40 transition-transform duration-500 ${showHeader ? "translate-y-0" : "-translate-y-full"
           }`}
       >
         <Header data={data} types={types} setData={setData} />
       </div>
+      {/* <HeaderNav/> */}
+      <main className={`flex-1 relative pt-[116px] overflow-x-hidden `}>
+        {/* Sidebar as an absolute drawer */}
+        <div className="relative">
+          <div className={`absolute top-0 left-0 z-50 transition-transform duration-300 
+      ${open ? "translate-x-0" : "-translate-x-full"} 
+      bg-background shadow-lg min-h-screen w-full md:w-[300px]`}>
+            <SideBar />
+          </div>
 
-      <div className="flex flex-1 pt-[110px]"> {/* Makes the main content take available space */}
-        {/* Sidebar */}
-        <div
-          className={`fixed top-[110px] left-0 z-50 transition-transform duration-300 
-        ${open ? "translate-x-0" : "-translate-x-full"} 
-        bg-background shadow-lg h-full w-[250px]`}
-        >
-          <SideBar />
+          {/* Content pushed below header, not affected by sidebar */}
+          <div className="pl-0 md:pl-[4px] transition-all duration-300">
+            <div className={`flex justify-center p-2 font-bold underline text-2xl ${addClass}`}>{title}</div>
+            {children}
+          </div>
         </div>
-
-        {/* Content area */}
-        <div className={`flex-1 ml-0 ${open ? "md:ml-[0px]" : ""} transition-all duration-300`}>
-          <div className={`flex justify-center p-2 font-bold underline text-2xl ${addClass}`}>{title}</div>
-          <div className="px-4">{children}</div>
+      </main>
+      {!open && (
+        <div className="mt-auto">
+          <Footer />
         </div>
-      </div>
-
-      <Footer /> {/* Always sticks to bottom, due to flex layout */}
+      )}
     </div>
   );
-
 };
 
 export default Layout;
