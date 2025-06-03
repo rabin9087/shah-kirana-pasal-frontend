@@ -100,7 +100,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
 
     return (
         <div
-            className="mb- fixed right-0 top-0 h-full w-full md:w-[400px] shadow-2xl bg-white p-4 mt-[80px] rounded-l-2xl z-30 flex flex-col"
+            className="mb- fixed right-0 h-full w-full md:w-[400px] shadow-2xl bg-white p-1 mt-[-12px] rounded-l-2xl z-30 flex flex-col overflow-y-auto"
             onMouseEnter={() => setIsSidebarHovered(true)}
             onMouseLeave={() => setIsSidebarHovered(false)}
         >

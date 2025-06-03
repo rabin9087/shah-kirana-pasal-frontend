@@ -273,7 +273,7 @@ export const Store = () => {
                 {showMobileSidebar && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
                         <div className="bg-white w-full h-full rounded-t-lg shadow-lg transform transition-all duration-500 translate-y-0 p-2 px-4">
-                            <div className="flex justify-end items-center mb-4">
+                            <div className="flex justify-end items-center mb-2">
                                 <button
                                     onClick={() => setShowMobileSidebar(false)}
                                     className="text-lg font-bold px-2 py-1 border rounded"
