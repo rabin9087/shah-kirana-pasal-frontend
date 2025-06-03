@@ -190,3 +190,17 @@ export const getAProductBySKU = async(sku: string) => {
       throw new Error("Failed to fetch products");
   }
 };
+
+export const updateProductsQuantity = async(data: [{productId: string, quantity: number, supplied: number}]) => {
+try {
+    const response = await axiosProcessor({
+      method: "patch",
+      url: `${productApi}/quantityUpdate`,
+      isPrivate: true,
+      obj: data,
+    });
+    return response.product as IProductTypes
+  } catch (error) {
+      throw new Error("Failed to fetch products");
+  }
+}

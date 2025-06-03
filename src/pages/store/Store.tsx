@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { setProducts } from '@/redux/product.slice';
 import { Button } from '@/components/ui/button';
 import { IProductTypes } from '@/types/index';
-import { getAllProducts } from '@/axios/product/product';
+import { getAllProducts, updateProductsQuantity } from '@/axios/product/product';
 import { addProduct, clearStoreCart } from '@/redux/storeCart';
 import CustomModal from '@/components/CustomModal';
 import { toast } from 'react-toastify';
@@ -119,6 +119,7 @@ export const Store = () => {
             setAmountRecieve(paymentMethod === "Cash" ? customerCash : totalAmount);
 
             await createStoreSales(customeSale);
+            await updateProductsQuantity(storeSaleItems.map(({ productId, orderQuantity }) => ({ productId, supplied: orderQuantity })) as any);
             toast.success("Cash payment successful!");
             resetSaleState();
         } else if (paymentMethod === "Card") {
@@ -140,7 +141,7 @@ export const Store = () => {
             }
 
             const storeSales = await createStoreSales(customeSale);
-
+            await updateProductsQuantity(storeSaleItems.map(({ productId, orderQuantity }) => ({ productId, supplied: orderQuantity })) as any);
             const customeDue: IDue = {
                 userId: `${customer._id}`,
                 totalAmout: totalAmount,

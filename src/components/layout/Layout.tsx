@@ -65,9 +65,9 @@ const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData, 
       <main className={`flex-1 relative pt-[116px] overflow-x-hidden `}>
         {/* Sidebar as an absolute drawer */}
         <div className="relative">
-          <div className={`fixed left-0 z-50 transition-transform duration-300 
-      ${open ? "translate-x-0" : "-translate-x-full"} 
-      bg-background shadow-lg min-h-screen w-full md:w-[300px]`}>
+          <div className={`fixed left-0 z-50  transition-transform duration-300 
+                 ${open ? "translate-x-0" : "-translate-x-full"} 
+                 bg-background shadow-lg min-h-screen w-full md:w-[300px]`}>
             <SideBar />
           </div>
 

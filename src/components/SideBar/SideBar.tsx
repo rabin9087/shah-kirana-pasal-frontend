@@ -32,7 +32,7 @@ const SideBar = () => {
         <div
           ref={drawerRef}
           className="fixed top-0 left-0 z-40 w-full md:w-72 lg:w-80 h-full bg-white shadow-lg dark:bg-gray-900 
-    transform transition-transform duration-300 ease-in-out overflow-y-auto"
+                       transform transition-transform duration-300 ease-in-out overflow-y-auto"
         >
           {/* Header */}
           <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700">

@@ -7,7 +7,8 @@ import { getAOrder, updateAOrder } from "@/axios/order/order";
 import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrders.slice";
 import ScanOrderProduct from "./ScanOrderProduct";
 import { useQuery } from "@tanstack/react-query";
-import { IOrder } from "@/axios/order/types";
+import { IItemTypes, IOrder } from "@/axios/order/types";
+import { updateProductsQuantity } from "@/axios/product/product";
 
 type ProductLocation = {
     A: number;
@@ -36,7 +37,7 @@ const StartPickingOrder = () => {
     const dispatch = useAppDispatch();
     const navignate = useNavigate()
     const { orderNumber } = useParams();
-    const { order } = useAppSelector((s) => s.ordersInfo);
+    const { order, orders } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [notFound, setNotFound] = useState(false);
@@ -53,6 +54,33 @@ const StartPickingOrder = () => {
         queryKey: ['order', orderNumber],
         queryFn: () => getAOrder(orderNumber as string)
     })
+
+    const pikingOrder = orders.filter((item) => item.orderNumber === order?.orderNumber);
+
+    const { items } = pikingOrder[0]
+    const updateItems = order?.items
+
+    function getChangedItems(oldArr: IItemTypes[], newArr: IItemTypes[]): IItemTypes[] {
+
+        return newArr.filter((newItem) => {
+            const match = oldArr.find(
+                (oldItem) => oldItem._id === newItem._id
+            );
+
+            if (!match) return true; // new item
+
+            // Compare values
+            return (
+                newItem.productId?._id !== match.productId?._id ||
+                newItem.quantity !== match.quantity ||
+                newItem.supplied !== match.supplied
+            );
+        });
+    }
+
+
+    const updateChanged = getChangedItems(items, updateItems as IItemTypes[])
+        console.log(updateChanged)
 
     useEffect(() => {
         if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
@@ -91,6 +119,7 @@ const StartPickingOrder = () => {
             const items = order?.items.map(({ productId, quantity, _id, price, note, supplied, costPrice }) =>
                 ({ productId: productId._id, price, quantity, note, supplied, _id, costPrice }));
             await updateAOrder(order._id, { deliveryStatus: status, items })
+            await updateProductsQuantity(updateChanged.map(({productId, quantity, supplied}) => ({productId: productId._id, quantity, supplied})) as any)
             setPacking(false)
             return navignate(-1)
         }
