@@ -34,6 +34,8 @@ const UpdateProductLocation = ({
         expireDate: '',
     });
 
+    const [updatingValue, setUpdatingValue] = useState(false)
+
     const handleOnClose = () => {
         setProductLocation('');
         setUpdateFields({
@@ -56,18 +58,33 @@ const UpdateProductLocation = ({
         const payload: Partial<IProductTypes> = {
             [field]:
                 field === 'quantity' || field === 'price' || field === 'costPrice'
-                    ? Number(value)
+                    ? field === 'quantity'
+                        ? (data?.quantity ?? 0) + Number(value)
+                        : Number(value)
                     : value,
         };
 
         try {
+            setUpdatingValue(true)
             await updateAProduct(payload, productId);
+            setUpdatingValue(false)
             await refetch();
             handleOnClose();
         } catch (error) {
             console.error('Update failed', error);
         }
     };
+
+    const quantityValue = updateFields.quantity;
+
+    console.log(quantityValue)
+
+    useEffect(() => {
+        if (updateFields.quantity !== '') {
+            console.log('Quantity input changed:', updateFields.quantity);
+            // You can perform any action here with the quantity value
+        }
+    }, [updateFields.quantity]);
 
     useEffect(() => {
         if (!isOpen) {
@@ -84,7 +101,7 @@ const UpdateProductLocation = ({
 
     const fieldsConfig = [
         { name: 'productLocation', placeholder: 'Enter new location (e.g., 5.6.7)', type: 'text' },
-        { name: 'quantity', placeholder: 'Enter new quantity', type: 'number' },
+        { name: 'quantity', placeholder: 'Add new SOH', type: 'number' },
         { name: 'price', placeholder: 'Enter new price', type: 'number' },
         { name: 'costPrice', placeholder: 'Enter new cost price', type: 'number' },
         { name: 'expireDate', placeholder: 'Enter new expire date', type: 'text' },
@@ -114,9 +131,10 @@ const UpdateProductLocation = ({
                             <p className="text-gray-600 text-sm">
                                 Current Location: {formatLocation(data.productLocation ?? '')}
                             </p>
-                            <p className="text-gray-600 text-sm">Current Quantity: {data.quantity}</p>
+                            <p className="text-gray-600 text-sm">Current SOH: {data.quantity}</p>
                             <p className="text-gray-600 text-sm">Current Cost Price: {data.costPrice}</p>
                             <p className="text-gray-600 text-sm">Current Expire Date: {data.expireDate}</p>
+                            <p className="text-gray-600 text-sm">Total SOH: {((data?.quantity) + (!quantityValue ? 0 : parseInt(quantityValue)))}</p>
                         </div>
                     </div>
 
@@ -140,7 +158,7 @@ const UpdateProductLocation = ({
                                     }))
                                 }
                             />
-                            <Button type="submit">Update</Button>
+                            <Button type="submit" disabled={updatingValue}>Update</Button>
                         </form>
                     ))}
                 </div>
