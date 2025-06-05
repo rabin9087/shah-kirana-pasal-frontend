@@ -77,8 +77,6 @@ const UpdateProductLocation = ({
 
     const quantityValue = updateFields.quantity;
 
-    console.log(quantityValue)
-
     useEffect(() => {
         if (updateFields.quantity !== '') {
             console.log('Quantity input changed:', updateFields.quantity);

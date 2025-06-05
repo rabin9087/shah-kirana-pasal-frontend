@@ -9,6 +9,7 @@ import ScanOrderProduct from "./ScanOrderProduct";
 import { useQuery } from "@tanstack/react-query";
 import { IItemTypes, IOrder } from "@/axios/order/types";
 import { updateProductsQuantity } from "@/axios/product/product";
+import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 
 type ProductLocation = {
     A: number;
@@ -44,7 +45,6 @@ const StartPickingOrder = () => {
     const [packing, setPacking] = useState(false);
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
-    const [res, setRes] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
 
     const sortedItems = sortItems(order?.items || []);
@@ -75,6 +75,8 @@ const StartPickingOrder = () => {
         });
     }
 
+    console.log(barcode)
+
     useEffect(() => {
         if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
             dispatch(setAOrder(data as IOrder));
@@ -86,12 +88,14 @@ const StartPickingOrder = () => {
     const handleNext = () => {
         if (currentIndex < sortedItems.length - 1) {
             setCurrentIndex(currentIndex + 1);
+            setBarcode("")
         }
     };
 
     const handleBack = () => {
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
+            setBarcode("")
         }
     };
 
@@ -154,34 +158,33 @@ const StartPickingOrder = () => {
     };
 
     useEffect(() => {
-        let buffer = "";
-        const handleKeyDown = (e: KeyboardEvent) => {
+        const handleKeyPress = (e: KeyboardEvent) => {
             if (e.key === "Enter") {
-                setRes("enter")
-                setBarcode(buffer);
-                if (buffer === currentItem?.productId?.qrCodeNumber) {
-                    setBuff("code matched")
-                    updateSuppliedQuintity();
-                } else {
-                    setBuff("code not matched")
-
-                    setNotFound(true)
-                }
-                // buffer = ""; // Clear for next scan
+                setBarcode(buff.trim());  // Finalize the barcode
+                setBuff("");              // Reset buffer
             } else {
-                // Append each character to the buffer
-                buffer += e.key;
-                setRes("exit")
-                // setInputBuffer(buffer);
+                setBuff(prev => prev + e.key); // Accumulate scanned chars
             }
-            // setBarcode("");
         };
 
-        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keypress", handleKeyPress);
         return () => {
-            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keypress", handleKeyPress);
         };
-    }, []);
+    }, [buff]);
+
+    useEffect(() => {
+        if (!barcode) return;
+        if (barcode === currentItem?.productId?.qrCodeNumber) {
+            setBarcode("");
+            updateSuppliedQuintity();
+        } else {
+            setNotFound(true)
+        }
+
+        setTimeout(() => setBarcode(""), 500); // Optional reset
+    }, [barcode]);
+
 
     return (
         <>
@@ -225,12 +228,10 @@ const StartPickingOrder = () => {
 
                                 <div className="flex justify-between gap-2 text-left w-full">
                                     <div className="ms-2 py-2">
-                                        <p className="text-xs">SKU: <strong className="text-xl"> {currentItem?.productId?.sku}</strong> {barcode}</p>
+                                        <p className="text-xs">SKU: <strong className="text-xl"> {currentItem?.productId?.sku}</strong></p>
                                         <p className="text-xs">Price: ${currentItem?.productId?.price}</p>
                                         <p className="text-xs">SOH: {currentItem?.productId?.quantity}</p>
-                                        <p className="text-xs font-thin">{currentItem?.productId?.qrCodeNumber}</p>
-                                        <p className="text-xs font-thin">Barcode: {barcode !== "" ? barcode : "No code return"}, {barcode}</p>
-                                        <p className="text-xs font-thin">Buff: {buff}, Result: {res} </p>
+                                        <div className="flex justify-center items-center mt-2"><BarCodeGenerator value={currentItem?.productId?.qrCodeNumber} height={20} width={1}/></div>
                                     </div>
                                     <img
                                         src={currentItem?.productId?.thumbnail}
