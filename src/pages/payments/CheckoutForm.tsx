@@ -133,7 +133,7 @@ const CheckoutForm = () => {
                 const result = await stripe?.confirmPayment({
                     elements,
                     confirmParams: {
-                        // return_url: return_url,
+                        return_url: "https://www.shahkiranapasal.shop/payment/success",
                     },
                     redirect: "if_required",
                 });

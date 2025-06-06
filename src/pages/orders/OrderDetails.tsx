@@ -42,7 +42,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
     }
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-4 sm:p-6 rounded-lg w-full sm:w-3/5 shadow-lg max-h-[90vh] overflow-auto">
                 <h3 className="text-lg sm:text-xl font-semibold mb-4">Order Details</h3>
 
@@ -213,12 +213,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                 </div>
 
                 {/* Close Button */}
-                <button
-                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
-                    onClick={onClose}
-                >
-                    Close
-                </button>
+                <div className="flex justify-end">
+                    <button
+                        className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
+                        onClick={onClose}
+                    >
+                        Close
+                    </button>
+                </div>
+                
             </div>
         </div>
     );

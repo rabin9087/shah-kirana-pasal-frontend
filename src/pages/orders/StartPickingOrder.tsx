@@ -55,7 +55,7 @@ const StartPickingOrder = () => {
         queryFn: () => getAOrder(orderNumber as string)
     })
 
-    const pikingOrder = orders.filter((item) => item.orderNumber === order?.orderNumber);
+    const pikingOrder = orders?.filter((item) => item.orderNumber === order?.orderNumber);
 
     function getChangedItems(oldArr: IItemTypes[], newArr: IItemTypes[]): IItemTypes[] {
 
@@ -74,8 +74,6 @@ const StartPickingOrder = () => {
             );
         });
     }
-
-    console.log(barcode)
 
     useEffect(() => {
         if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
@@ -118,10 +116,12 @@ const StartPickingOrder = () => {
             const updateItems = order?.items
             const updateChanged = getChangedItems(items, updateItems as IItemTypes[])
 
-            const pickedItems = order?.items.map(({ productId, quantity, _id, price, note, supplied, costPrice }) =>
-                ({ productId: productId._id, price, quantity, note, supplied, _id, costPrice }));
-            await updateAOrder(order._id, { deliveryStatus: status, items: pickedItems })
-            updateChanged.length && await updateProductsQuantity(updateChanged.map(({ productId, quantity, supplied }) => ({ productId: productId._id, quantity, supplied })) as any)
+            // const pickedItems = order?.items?.map(({ productId, quantity, _id, price, note, supplied, costPrice }) =>
+            //     ({ productId: productId._id, price, quantity, note, supplied, _id, costPrice }));
+
+            updateChanged.length && await updateAOrder(order._id, { deliveryStatus: status, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) })
+
+            updateChanged.length && await updateProductsQuantity(updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) as any)
             setPacking(false)
             return navignate(-1)
         }
@@ -231,7 +231,8 @@ const StartPickingOrder = () => {
                                         <p className="text-xs">SKU: <strong className="text-xl"> {currentItem?.productId?.sku}</strong></p>
                                         <p className="text-xs">Price: ${currentItem?.productId?.price}</p>
                                         <p className="text-xs">SOH: {currentItem?.productId?.quantity}</p>
-                                        <div className="flex justify-center items-center mt-2"><BarCodeGenerator value={currentItem?.productId?.qrCodeNumber} height={20} width={1}/></div>
+                                        <div className="flex justify-center items-center mt-2">
+                                            <BarCodeGenerator value={currentItem?.productId?.qrCodeNumber} height={20} width={1} /></div>
                                     </div>
                                     <img
                                         src={currentItem?.productId?.thumbnail}
