@@ -21,6 +21,46 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import SearchInput from "@/components/search/SearchInput";
+import { formatLocation } from "@/pages/orders/StartPickingOrder";
+
+export const sortOptions = [
+    { label: "Name", value: "name" },
+    { label: "Expire Date", value: "expireDate" },
+    { label: "SOH", value: "quantity" }, // Stock on Hand
+    { label: "Location", value: "productLocation" },
+    { label: "Price", value: "price" },
+] as const;
+
+export const sortProducts = (
+    products: IProductTypes[],
+    sortBy: typeof sortOptions[number]["value"],
+    order: "asc" | "desc" = "asc"
+): IProductTypes[] => {
+    const sorted = [...products].sort((a, b) => {
+        const valA = a[sortBy as keyof IProductTypes];
+        const valB = b[sortBy as keyof IProductTypes];
+
+        if (valA == null) return 1;
+        if (valB == null) return -1;
+
+        if (typeof valA === "string" && typeof valB === "string") {
+            return order === "asc"
+                ? valA.localeCompare(valB)
+                : valB.localeCompare(valA);
+        }
+
+        if (typeof valA === "number" && typeof valB === "number") {
+            return order === "asc" ? valA - valB : valB - valA;
+        }
+
+        return 0;
+    });
+
+    return sorted;
+};
+
+type SortField = typeof sortOptions[number]["value"];
+
 
 const ProductsDashboard = () => {
     const { products } = useAppSelector(state => state.productInfo)
@@ -28,6 +68,8 @@ const ProductsDashboard = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [searchData, setSearchData] = useState(products)
+    const [sortBy, setSortBy] = useState<SortField>("name");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const { data = [], error } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
         queryFn: () => getAllProducts(),
@@ -69,8 +111,12 @@ const ProductsDashboard = () => {
                 description: "Unable to delete Product!",
             })
         }
-
     }
+
+    useEffect(() => {
+        const sorted = sortProducts(products, sortBy, sortOrder);
+        setSearchData(sorted);
+    }, [products, sortBy, sortOrder]);
 
     // const screenWidth = screen.width;
     // console.log(`Device screen width: ${screenWidth}px`);
@@ -112,6 +158,37 @@ const ProductsDashboard = () => {
                 setFilteredData={setSearchData}
             />
 
+            <div className="flex flex-wrap justify-center items-center gap-4 my-4">
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-600">Sort by:</span>
+                    <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortField)}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Sort By" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {sortOptions.map(option => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-600">Order:</span>
+                    <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as "asc" | "desc")}>
+                        <SelectTrigger className="w-[120px]">
+                            <SelectValue placeholder="Order" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="asc">Ascending</SelectItem>
+                            <SelectItem value="desc">Descending</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+
             <div className="mt-4 border w-full px-2 overflow-x-scroll">
                 {products.length < 1 ? <div className="flex justify-center">
 
@@ -128,16 +205,17 @@ const ProductsDashboard = () => {
                                 <TableHead>Price</TableHead>
                                 <TableHead>Cost_Price</TableHead>
                                 <TableHead>Retailer_Price</TableHead>
-                                <TableHead>Quantity</TableHead>
+                                <TableHead>SOH</TableHead>
                                 <TableHead>Barcode</TableHead>
                                 <TableHead>SKU</TableHead>
                                 <TableHead>Location</TableHead>
+                                <TableHead>Expire</TableHead>
                                 <TableHead className="text-right">Edit</TableHead>
                                 <TableHead className="text-right">Delete</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {searchData.map(({ _id, status, name, alternateName, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku, costPrice, retailerPrice }, i) => (
+                            {searchData.map(({ _id, status, name, alternateName, price, quantity, qrCodeNumber, productLocation, salesPrice, thumbnail, sku, costPrice, retailerPrice, expireDate }, i) => (
                                 <TableRow
                                     key={_id}
                                     className="even:bg-gray-50 hover:scale-[1.01] hover:shadow-md transition-transform cursor-pointer"
@@ -183,7 +261,8 @@ const ProductsDashboard = () => {
                                     <TableCell>{quantity}</TableCell>
                                     <TableCell>{qrCodeNumber}</TableCell>
                                     <TableCell>{sku}</TableCell>
-                                    <TableCell>{productLocation}</TableCell>
+                                    <TableCell>{formatLocation(productLocation as string)}</TableCell>
+                                    <TableCell>{expireDate}</TableCell>
                                     <TableCell className="text-right">
                                         <Link
                                             to={`/update/product/sku_value/${sku}`}

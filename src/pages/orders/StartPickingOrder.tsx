@@ -16,16 +16,16 @@ type ProductLocation = {
     S: number;
 };
 
-const formatLocation = (location: string): string => {
+export const formatLocation = (location: string): string => {
     const parts = location.split(".").map((num) => num.padStart(2, ""));
     return `A${parts[0]} - B${parts[1]} - S${parts[2]}`;
 };
-const parseLocation = (location: string): ProductLocation => {
+export const parseLocation = (location: string): ProductLocation => {
     const [A, B, S] = location.split(".").map((num) => parseInt(num));
     return { A, B, S };
 };
 
-const sortItems = (items: any) => {
+export const sortItems = (items: any) => {
     return [...items].sort((a, b) => {
         const locA = parseLocation(a.productId?.productLocation);
         const locB = parseLocation(b.productId?.productLocation);

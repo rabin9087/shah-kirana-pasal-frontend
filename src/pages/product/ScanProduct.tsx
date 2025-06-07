@@ -1,5 +1,5 @@
 import CustomModal from "@/components/CustomModal";
-import Modal from 'react-modal';
+// import Modal from 'react-modal';
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,9 +36,9 @@ const ScanProduct = () => {
         }
     };
 
-    const handleOnClose = () => {
-        setIsOpen(false);
-    };
+    // const handleOnClose = () => {
+    //     setIsOpen(false);
+    // };
 
     useEffect(() => {
         if (barcode !== "") {
@@ -164,7 +164,7 @@ const ScanProduct = () => {
                     productLocation={productLocation}
                 />
             </div>
-
+{/* 
             <Modal
                 isOpen={isOpen}
                 onRequestClose={handleOnClose}
@@ -179,7 +179,7 @@ const ScanProduct = () => {
                         Close
                     </Button>
                 </div>
-            </Modal>
+            </Modal> */}
 
         </Layout>
     );

@@ -271,6 +271,17 @@ const UpdateProductForm = () => {
                     {errors.productLocation && <p className="mt-2 text-sm text-red-600">{errors.productLocation.message}</p>}
                 </div>
 
+                {/* Expire date */}
+                <div>
+                    <label htmlFor="expireDate" className="block text-sm font-medium text-gray-700">Expire Date</label>
+                    <input
+                        id="expireDate"
+                        {...register('expireDate')}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                    {errors.expireDate && <p className="mt-2 text-sm text-red-600">{errors.expireDate.message}</p>}
+                </div>
+
                 {/* Description */}
                 <div>
                     <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
