@@ -112,8 +112,7 @@ const UpdateProductLocation = ({
             overlayClassName="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
             className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md max-h-screen overflow-y-auto"
         >
-            {isLoading && <p>Loading product details...</p>}
-            {isError && <p className="text-red-500">Error fetching product data.</p>}
+
             {data && (
                 <div className="flex flex-col gap-4">
                     <div className="flex gap-4 items-start">
@@ -161,7 +160,10 @@ const UpdateProductLocation = ({
                     ))}
                 </div>
             )}
-
+            {isLoading && <p>Loading product details...</p>}
+            {isError && <div className="bg-gray-300 p-4 mx-16 rounded-md shadow-lg max-w-md w-72  flex flex-col justify-center items-center">
+                <h3>Article not found!</h3>
+            </div>}
             <div className="mt-6">
                 <Button variant="secondary" onClick={handleOnClose} className="w-full">
                     Close

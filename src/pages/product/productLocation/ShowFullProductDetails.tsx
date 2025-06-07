@@ -45,6 +45,7 @@ const ShowFullProductDetails = () => {
 
                 {!isLoading && error && (
                     <ProductNotFoundModal open={true} onClose={() => navigate(-1)} />
+                    
                 )}
 
                 {!isLoading && !error && !product?._id && (

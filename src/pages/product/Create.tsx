@@ -149,13 +149,9 @@ const CreateProduct = () => {
       }
     });
   };
-  console.log(barcode)
-  // const [scannedData, setScannedData] = useState<string | null>(null);
-  // const [inputBuffer, setInputBuffer] = useState("");
+
   useEffect(() => {
     let buffer = "";
-    console.log(barcode)
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         setBarcode(buffer);
@@ -403,7 +399,8 @@ const CreateProduct = () => {
                       </Label>
                       <div className='flex justify-end gap-2'>
                         {generate === "barcode" &&
-                          <Label htmlFor={name as string}> <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} /></Label>
+                          <Label htmlFor={name as string}>
+                            <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} /></Label>
                         }
 
                         {generate &&

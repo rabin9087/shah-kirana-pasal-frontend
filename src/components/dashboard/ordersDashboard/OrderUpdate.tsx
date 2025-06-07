@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { initialState } from "@/redux/allOrders.slice";
 
 export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarcode: (barcode: string) => void }) => {
-    
+
     const { data = initialState.order } = useQuery<IOrder>({
         queryKey: ['order', barcode],
         queryFn: () => getAOrder(barcode as string),
@@ -152,7 +152,7 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                                 </select>
                             </td>
                         </tr>
-                        
+
                         <tr >
                             <td className="font-semibold p-1 whitespace-nowrap">Created Date:</td>
                             <td className="p-1 whitespace-nowrap" >{data?.createdAt?.toLocaleString().split("T")[0]}</td>
@@ -210,21 +210,29 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                 </div>
 
                 {/* Close Button */}
-                <button
-                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
-                    onClick={() => setBarcode("")}
-                >
-                    Close
-                </button>
-            </div> : <div className="bg-white p-4 sm:p-6 rounded-lg w-full sm:w-3/5 shadow-lg max-h-[90vh] overflow-auto">
-                <h3 className="text-red-500 text-center">Order not found!</h3>
-                <button
-                    className="text-center mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
-                    onClick={() => setBarcode("")}
-                >
-                    Close
-                </button>
-            </div>}
+                <div className="flex justify-end">
+                    <button
+                        className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
+                        onClick={() => setBarcode("")}
+                        type="button"
+                    >
+                        Close
+                    </button>
+                </div>
+
+            </div> :
+                <div className="flex flex-col justify-center items-center bg-white p-8 rounded-lg shadow-lg max-h-[90vh] overflow-auto">
+                    <h3 className="text-red-500 text-center">Order not found!</h3>
+     
+                    <button
+                        className="text-center mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
+                        onClick={() => setBarcode("")}
+                        type="button"
+                    >
+                        Close
+                        </button>
+                       
+                </div>}
         </div>
     );
 };

@@ -8,7 +8,6 @@ import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrde
 import ScanOrderProduct from "./ScanOrderProduct";
 import { useQuery } from "@tanstack/react-query";
 import { IItemTypes, IOrder } from "@/axios/order/types";
-import { updateProductsQuantity } from "@/axios/product/product";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 
 type ProductLocation = {
@@ -115,13 +114,7 @@ const StartPickingOrder = () => {
             const { items } = pikingOrder[0]
             const updateItems = order?.items
             const updateChanged = getChangedItems(items, updateItems as IItemTypes[])
-
-            // const pickedItems = order?.items?.map(({ productId, quantity, _id, price, note, supplied, costPrice }) =>
-            //     ({ productId: productId._id, price, quantity, note, supplied, _id, costPrice }));
-
             updateChanged.length && await updateAOrder(order._id, { deliveryStatus: status, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) })
-
-            updateChanged.length && await updateProductsQuantity(updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) as any)
             setPacking(false)
             return navignate(-1)
         }

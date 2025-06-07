@@ -46,6 +46,7 @@ import { CreateShop } from "./pages/shop/CreateShop";
 import ContractManagement from "./pages/contractManagement/ContractManagement";
 import JobCategory from "./pages/jobCategory/JobCategory";
 import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
+import GenerateBarcodeQRCode from "./utils/GenerateBarcodeQRCode";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -352,6 +353,13 @@ function App() {
         <Route
           path="/printProductsQRCodeNameSku"
           element={<PrintProductsQRCodeNameSku />}
+          errorElement={<ErrorPage />}
+        />
+
+
+        <Route
+          path="/barcode-qrcode"
+          element={<GenerateBarcodeQRCode />}
           errorElement={<ErrorPage />}
         />
 

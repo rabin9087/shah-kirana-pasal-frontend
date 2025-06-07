@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { BarCodeGenerator, QRCodeGenerator } from "@/components/QRCodeGenerator";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useParams } from "react-router";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router";
+import { ToggleSwitch } from "@/pages/product/components/showProduct/PrintSingleProductBarcodeNameSku";
+import { Input } from "@/components/ui/input";
 
-const PrintSingleProductBarcodeNameSku = () => {
-    const location = useLocation();
+const GenerateBarcodeQRCode = () => {
     const navigate = useNavigate();
-    const { qrCodeNumber } = useParams();
-    const [name, setName] = useState("");
+    const [barcodeQrCode, setBarcodeQrCode] = useState("")
     const [barcodeDisplayValue, setBarcodeDisplayValue] = useState(false);
     const [generateBarcode, setGenerateBarcode] = useState(true);
     const [generateQRcode, setGenerateQRcode] = useState(false);
@@ -19,11 +18,34 @@ const PrintSingleProductBarcodeNameSku = () => {
 
     const generatedArray = Array.from({ length: count });
 
-    useEffect(() => {
-        if (location?.state) {
-            setName(location.state.name);
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value.trim() === "") {
+            setBarcodeQrCode("");
+        } else {
+            setBarcodeQrCode(value);
         }
-    }, [location]);
+    }
+
+    useEffect(() => {
+        let buffer = "";
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Enter") {
+                setBarcodeQrCode(buffer);
+                buffer = "";
+                // setInputBuffer("");
+            } else {
+                buffer += e.key;
+                // setInputBuffer(buffer);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
 
     return (
         <div className="p-4 print:p-0 max-w-screen-md mx-auto">
@@ -31,16 +53,16 @@ const PrintSingleProductBarcodeNameSku = () => {
                 {"<"} BACK
             </Button>
 
-            <h2 className="text-center text-xl font-bold mb-4">
-                Product Name: {name}
-            </h2>
-            <p className="text-center text-lg sm:text-xl font-bold mb-6 text-gray-800">
-                Barcode Value: <span className="text-indigo-600">{qrCodeNumber}</span>
-            </p>
-
             {/* Toggle Controls Section */}
             <div className="bg-white shadow-md rounded-xl p-4 sm:p-6 mb-8 max-w-2xl mx-auto w-full">
                 <div className="flex flex-col gap-6 sm:gap-8">
+                    <Input
+                        type="text"
+                        id="barcodeQrCode"
+                        value={barcodeQrCode}
+                        onChange={handleOnChange}
+                        placeholder="Enter the barcode/qrCode" />
+
 
                     {/* Display Barcode Value Text */}
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -148,7 +170,7 @@ const PrintSingleProductBarcodeNameSku = () => {
                         {generateBarcode && (
                             <div className="flex-1 flex justify-center">
                                 <BarCodeGenerator
-                                    value={qrCodeNumber as string}
+                                    value={barcodeQrCode as string}
                                     height={height}
                                     width={width}
                                     displayValue={barcodeDisplayValue}
@@ -158,39 +180,17 @@ const PrintSingleProductBarcodeNameSku = () => {
                         {generateQRcode && (
                             <div className="flex-1 flex justify-center">
                                 <QRCodeGenerator
-                                    value={qrCodeNumber as string}
+                                    value={barcodeQrCode as string}
                                     height={QRHeightWidth}
                                     width={QRHeightWidth}
                                 />
                             </div>
+                            
                         )}
                     </div>
                 ))}
             </div>
-
-
         </div>
     );
-};
-
-export default PrintSingleProductBarcodeNameSku;
-
-// 🧩 Reusable Toggle component
-export const ToggleSwitch = ({
-    value,
-    onToggle,
-}: {
-    value: boolean;
-    onToggle: () => void;
-}) => (
-    <button
-        onClick={onToggle}
-        className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 ${value ? "bg-green-500" : "bg-gray-300"
-            }`}
-    >
-        <span
-            className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform duration-300 ${value ? "translate-x-8" : "translate-x-1"
-                }`}
-        />
-    </button>
-);
+}
+export default GenerateBarcodeQRCode

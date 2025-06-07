@@ -114,7 +114,7 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
                                             return acc + (supplied as number)
                                         }, 0) === order?.items?.reduce((acc, { quantity }) => {
                                             return acc + (quantity as number)
-                                        }, 0) ? "Yes" : "NO"}</td>
+                                        }, 0) ? "✅ Yes" : "❌ NO"}</td>
 
                                         <td className="p-2 whitespace-nowrap text-center">
                                             {order?.items?.length}</td>

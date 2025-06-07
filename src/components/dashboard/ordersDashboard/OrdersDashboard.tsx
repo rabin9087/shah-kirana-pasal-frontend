@@ -1,7 +1,7 @@
 import OrdersList from "@/pages/orders/OrderList";
 import { useQuery } from "@tanstack/react-query";
 import { getAOrdersByDate, updateAOrder } from "@/axios/order/order";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { IOrder } from "@/axios/order/types";
 import OrderChart from "./OrderChart";
 import ScanOrderProduct from "@/pages/orders/ScanOrderProduct";
@@ -15,7 +15,7 @@ const OrdersDashboard = () => {
         const { user } = useAppSelector((state) => state.userInfo);
         const adminRoles = ["ADMIN", "PICKER", "SUPERADMIN"];
         const navigate = useNavigate();
-
+        const [buff, setBuff] = useState("");
         const [barcode, setBarcode] = useState("");
         const [isModalOpen, setIsModalOpen] = useState(false);
         const [date, setDate] = useState(new Date());
@@ -70,9 +70,26 @@ const OrdersDashboard = () => {
                         navigate(`/orders/pickup`);
                         return;
                 }
-
+                355574
+                
                 setIsModalOpen(true);
         };
+
+        useEffect(() => {
+                const handleKeyPress = (e: KeyboardEvent) => {
+                        if (e.key === "Enter") {
+                                setBarcode(buff.trim());  // Finalize the barcode
+                                setBuff("");              // Reset buffer
+                        } else {
+                                setBuff(prev => prev + e.key); // Accumulate scanned chars
+                        }
+                };
+
+                window.addEventListener("keypress", handleKeyPress);
+                return () => {
+                        window.removeEventListener("keypress", handleKeyPress);
+                };
+        }, [buff]);
 
         return (
                 <>

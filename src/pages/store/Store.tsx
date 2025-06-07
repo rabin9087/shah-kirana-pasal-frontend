@@ -36,6 +36,7 @@ export const Store = () => {
     const { user, customer } = useAppSelector(state => state.userInfo);
     const { items } = useAppSelector(state => state.storeCart);
     const [storeData, setStoreData] = useState<boolean>(false)
+    const [buff, setBuff] = useState("");
 
     const dispatch = useAppDispatch();
     const [productData, setProductData] = useState<IProductTypes[]>(products);
@@ -48,10 +49,25 @@ export const Store = () => {
     useEffect(() => {
         if (data.length) {
             const sortedUsers = [...data].sort((a, b) => a.name.localeCompare(b.name));
-
             dispatch(setProducts(sortedUsers));
         }
     }, [dispatch, data]);
+
+    useEffect(() => {
+        const handleKeyPress = (e: KeyboardEvent) => {
+            if (e.key === "Enter") {
+                setBarcode(buff.trim());  // Finalize the barcode
+                setBuff("");              // Reset buffer
+            } else {
+                setBuff(prev => prev + e.key); // Accumulate scanned chars
+            }
+        };
+
+        window.addEventListener("keypress", handleKeyPress);
+        return () => {
+            window.removeEventListener("keypress", handleKeyPress);
+        };
+    }, [buff]);
 
     useEffect(() => {
         if (barcode) {
