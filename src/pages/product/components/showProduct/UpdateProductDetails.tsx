@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { RiImageEditFill } from 'react-icons/ri';
 import { useAppSelector } from '@/hooks';
 import { IStoredAt } from '@/axios/product/types';
+import { BarCodeGenerator } from '@/components/QRCodeGenerator';
 
 const UpdateProductForm = () => {
     const { sku } = useParams();
@@ -122,9 +123,13 @@ const UpdateProductForm = () => {
                     multiple
                 />
             </div>
+
             <div className='w-full flex justify-center'>
                 <Button className='text-center' onClick={handleSaveImage}>{loading ? "Updating..." : "Update Image"}</Button>
 
+            </div>
+            <div className='flex justify-end mt-4 me-8'>
+                <BarCodeGenerator value={data.qrCodeNumber as string} displayValue height={25} width={1.5} />
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4">
                 {/* Product Name */}
@@ -187,7 +192,6 @@ const UpdateProductForm = () => {
                                 </option>
                             ))}
                         </select>
-
 
                         {errors.storedAt && (
                             <p className="mt-2 text-sm text-red-600">{errors.storedAt.message}</p>
@@ -285,6 +289,7 @@ const UpdateProductForm = () => {
                     </Button>
                 </div>
             </form>
+            
         </Layout>
 
     );

@@ -5,9 +5,13 @@ import { useNavigate } from "react-router";
 import { ToggleSwitch } from "@/pages/product/components/showProduct/PrintSingleProductBarcodeNameSku";
 import { Input } from "@/components/ui/input";
 
-const GenerateBarcodeQRCode = () => {
+type GenerateBarcodeQRCodeTypes = {
+    qrBarcode?: string
+}
+
+const GenerateBarcodeQRCode = ({ qrBarcode }: GenerateBarcodeQRCodeTypes) => {
     const navigate = useNavigate();
-    const [barcodeQrCode, setBarcodeQrCode] = useState("")
+    const [barcodeQrCode, setBarcodeQrCode] = useState<string | GenerateBarcodeQRCodeTypes>(qrBarcode || "")
     const [barcodeDisplayValue, setBarcodeDisplayValue] = useState(false);
     const [generateBarcode, setGenerateBarcode] = useState(true);
     const [generateQRcode, setGenerateQRcode] = useState(false);
@@ -59,7 +63,7 @@ const GenerateBarcodeQRCode = () => {
                     <Input
                         type="text"
                         id="barcodeQrCode"
-                        value={barcodeQrCode}
+                        value={barcodeQrCode as string}
                         onChange={handleOnChange}
                         placeholder="Enter the barcode/qrCode" />
 
@@ -185,7 +189,7 @@ const GenerateBarcodeQRCode = () => {
                                     width={QRHeightWidth}
                                 />
                             </div>
-                            
+
                         )}
                     </div>
                 ))}

@@ -11,7 +11,7 @@ import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } fro
 import { useAppSelector } from "@/hooks"
 import { IAddToCartTypes } from "../addToCart"
 
-const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: string}> = ({ item, addClass }) => {
+const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: string }> = ({ item, addClass }) => {
   const { cart } = useAppSelector((state) => state.addToCartInfo)
   const { language } = useAppSelector((state) => state.settings)
   const orderQty = getOrderNumberQuantity(item._id, cart)
@@ -74,22 +74,31 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
                 </span>
               </div>
             ) : (
-                <div className="flex justify-start items-start font-bold">
-                  {/* <span className={`text-xl mt-1 text-gray-600 ${item.salesPrice > 0 ? "mb-1" : "mb-4"}`}>
+              <div className="flex justify-start items-start font-bold">
+                {/* <span className={`text-xl mt-1 text-gray-600 ${item.salesPrice > 0 ? "mb-1" : "mb-4"}`}>
                     $
                   </span> */}
-                  <span className="font-medium">
-                    {language === "en" ? "$" : "रु."}{Math.floor(item.salesPrice > 0 ? item.salesPrice : item.price)}
-                  </span>
-                  <span className="text-sm">
-                    {((item.salesPrice > 0 ? item.salesPrice : item.price) % 1 * 100).toFixed(0).padStart(2, '0')}
-                  </span>
-                </div>
+                <span className="font-medium">
+                  {language === "en" ? "$" : "रु."}{Math.floor(item.salesPrice > 0 ? item.salesPrice : item.price)}
+                </span>
+                <span className="text-sm">
+                  {((item.salesPrice > 0 ? item.salesPrice : item.price) % 1 * 100).toFixed(0).padStart(2, '0')}
+                </span>
+              </div>
             )}
             <p className="min-h-5">
               {item.quantity <= 5 && (
                 <p className="text-sm text-red-500">
-                  {language === "en" ? `Only ${item.quantity} left in stock!` : `स्टकमा केवल ${item.quantity} ओटा मात्र बाँकी छ!`}
+                  {language === "en" ? (
+                    item.quantity > 0
+                      ? `Only ${item.quantity} left in stock!`
+                      : "Out of stock!"
+                  ) : (
+                    item.quantity > 0
+                      ? `स्टकमा केवल ${item.quantity} ओटा मात्र बाँकी छ!`
+                      : "स्टक सकिएको छ!"
+                  )}
+
                 </p>
               )}
             </p>
@@ -100,7 +109,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
             {itemExist(item._id, cart).length ? (
               <ChangeItemQty item={{ ...item, orderQuantity: orderQty || 0 }} />
             ) : (
-                 <AddToCartButton item={{ ...item, orderQuantity: orderQty || 0 }} />
+              <AddToCartButton item={{ ...item, orderQuantity: orderQty || 0 }} />
             )}
           </CardFooter>
         </div>
