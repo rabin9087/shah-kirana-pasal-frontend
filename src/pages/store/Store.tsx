@@ -217,7 +217,7 @@ export const Store = () => {
                             <SearchInput
                                 placeholder="Search product"
                                 data={products}
-                                searchKey={`name`}
+                                searchKeys={[`name`]}
                                 setFilteredData={(filtered) => {
                                     setProductData(filtered.length > 0 || filtered === products ? filtered : products);
                                 }}

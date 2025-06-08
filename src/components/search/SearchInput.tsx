@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 type SearchInputProps<T> = {
     placeholder?: string;
     data: T[];
-    searchKey: keyof T; // The key to filter on (e.g., "name")
+    searchKeys: (keyof T)[]; // The key to filter on (e.g., "name")
     setFilteredData: (filtered: T[]) => void;
     className?: string;
 };
@@ -11,13 +11,11 @@ type SearchInputProps<T> = {
 const SearchInput = <T,>({
     placeholder = "Search...",
     data,
-    searchKey,
+    searchKeys,
     setFilteredData,
     className,
 }: SearchInputProps<T>) => {
     const [searchQuery, setSearchQuery] = useState("");
-
-    // Avoid setting filtered data repeatedly
     const prevFilteredRef = useRef<T[]>([]);
 
     useEffect(() => {
@@ -26,19 +24,19 @@ const SearchInput = <T,>({
         if (searchQuery.trim() === "") {
             filtered = data;
         } else {
+            const lowerQuery = searchQuery.toLowerCase();
             filtered = data.filter((item) =>
-                (item[searchKey] as unknown as string)
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase())
+                searchKeys.some((key) =>
+                    String(item[key]).toLowerCase().includes(lowerQuery)
+                )
             );
         }
 
-        // Compare previous filtered data with current
         if (JSON.stringify(prevFilteredRef.current) !== JSON.stringify(filtered)) {
             prevFilteredRef.current = filtered;
             setFilteredData(filtered);
         }
-    }, [searchQuery, data, searchKey, setFilteredData]);
+    }, [searchQuery, data, searchKeys, setFilteredData]);
 
     return (
         <div className={`flex flex-wrap justify-end items-center gap-4 py-2 me-1 ${className}`}>
@@ -62,5 +60,6 @@ const SearchInput = <T,>({
         </div>
     );
 };
+
 
 export default SearchInput;

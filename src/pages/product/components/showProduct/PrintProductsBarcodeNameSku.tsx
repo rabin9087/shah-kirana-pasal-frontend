@@ -42,10 +42,10 @@ const PrintProductsQRCodeNameSku = () => {
             <SearchInput
                 placeholder="Search product"
                 data={products}
-                searchKey={"name"}
-                setFilteredData={(filtered) => {
-                    setProductData(filtered.length > 0 || filtered === products ? filtered : products);
-                }}
+                searchKeys={["name"]}
+                setFilteredData={(filtered) =>
+                    setProductData(filtered.length > 0 || filtered === data ? filtered : data)
+                }
             />
             <div className="flex flex-col sm:flex-row gap-4 sm:items-center mb-4">
                 <div className="flex-1">
@@ -107,7 +107,7 @@ const PrintProductsQRCodeNameSku = () => {
                         </Link>
                         <strong className="text-md mt-2">{sku}</strong>
                         <strong className="text-md mt-2">{language === "en" ? "Rs." : "रु"} {salesPrice ? salesPrice : price}</strong>
-                       
+
                     </div>
                 ))}
             </div>

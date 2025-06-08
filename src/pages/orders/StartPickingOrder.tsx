@@ -9,6 +9,8 @@ import ScanOrderProduct from "./ScanOrderProduct";
 import { useQuery } from "@tanstack/react-query";
 import { IItemTypes, IOrder } from "@/axios/order/types";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
+import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 type ProductLocation = {
     A: number;
@@ -48,6 +50,7 @@ const StartPickingOrder = () => {
 
     const sortedItems = sortItems(order?.items || []);
     const currentItem = sortedItems[currentIndex];
+    const lastItem = sortedItems[currentIndex - 1];
 
     const { data = initialState.order } = useQuery<IOrder>({
         queryKey: ['order', orderNumber],
@@ -150,6 +153,15 @@ const StartPickingOrder = () => {
         }
     };
 
+    // Extracting aisle (A) and bay (B) from location format "A.B.S"
+    const location = currentItem?.productId?.productLocation ?? "";
+    const lastItemLocation = lastItem?.productId?.productLocation ?? "";
+    const parts = location.split(".");
+    const aisle = parseInt(parts[0], 10); // A
+    const bay = parseInt(parts[1], 10);   // B
+    const lastParts = lastItemLocation.split(".");
+    const lastAisle = parseInt(lastParts[0], 10);
+
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
             if (e.key === "Enter") {
@@ -204,6 +216,18 @@ const StartPickingOrder = () => {
                             <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
                                 <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md">
                                     <p className="text-3xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                    <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2 text-3xl">
+                                        {aisle === lastAisle ? "" :
+                                            aisle % 2 === 0 ?
+                                                <p className="text-green-500 font-extrabold "
+                                                    style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={25} /></p> :
+                                                <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={25} /></p>
+                                        }
+                                        <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={25} /></p>
+                                        <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={25} /></p>
+
+
+                                    </div>
                                     <div className="text-center text-md me-2 text-white">
                                         {sortedItems.length - currentIndex}/{sortedItems.length}
                                     </div>

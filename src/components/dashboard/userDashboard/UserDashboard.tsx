@@ -49,17 +49,19 @@ const UsersDashboard = () => {
                         <div className="overflow-auto w-full">
                             <div className="flex justify-between items-center me-4">
                                 <p>Total Users: {data?.length}</p>
+                            </div>
+                            <div className="flex md:justify-end items-center gap-2 w-full ms-1">
+                                <SearchInput
+                                    placeholder="Search the user"
+                                    data={users}
+                                    searchKeys={["fName", "lName", "email", "phone"]}
+                                    setFilteredData={(filtered) =>
+                                        setUsersData(filtered.length > 0 || filtered === data ? filtered : data)
+                                    }
+                                />
                                 <Button type="button" onClick={() => setIsOpen(true)}>+ Add user</Button>
                             </div>
 
-                            <SearchInput
-                                placeholder="Search the user"
-                                data={users}
-                                searchKey={"fName"}
-                                setFilteredData={(filtered) => {
-                                    setUsersData(filtered.length > 0 || filtered === data ? filtered : data);
-                                }}
-                            />
                             <Table className="min-w-full">
                                 <TableHeader>
                                     <TableRow className="bg-gray-200">
