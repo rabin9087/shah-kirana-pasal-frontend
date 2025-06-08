@@ -100,7 +100,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
 
     return (
         <div
-            className="mb- fixed right-0 h-full w-full md:w-[400px] shadow-2xl bg-white p-1 mt-[-12px] rounded-l-2xl z-30 flex flex-col overflow-y-auto"
+            className="fixed border-2 border-blue-400 right-0 h-full w-full md:w-[400px] shadow-2xl bg-white p-1 rounded-l-2xl z-30 flex flex-col overflow-y-auto"
             onMouseEnter={() => setIsSidebarHovered(true)}
             onMouseLeave={() => setIsSidebarHovered(false)}
         >
@@ -114,7 +114,8 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                     <div className="flex justify-end items-center gap-2">
                         {customer?._id && <p onClick={() => handelOnClearCustomer()}
                             className="p-1 border px-2 bg-red-500 text-white rounded-md text-end hover:focus: hover:bg-red-300">
-                            x</p>}                        <div className="w-[120px]">
+                            x</p>}
+                        <div className="w-[120px]">
                             <SearchBarComponent
                                 types="users"
                                 results={result}
@@ -304,10 +305,7 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                         className="bg-white p-6 rounded-xl shadow-xl max-h-screen overflow-y-auto w-full max-w-md"
                     >
                         <AddUser />
-                        <div>
-
-                        </div>
-                        <Button type="button" onClick={() => setIsOpen(false)} className="mt-4 w-full">
+                        <Button type="button" onClick={() => setIsOpen(false)} className="mt-4 w-full bg-red-500 text-white">
                             Close
                         </Button>
                     </Modal>
@@ -320,9 +318,6 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                         className="bg-white p-6 rounded-xl shadow-xl max-h-screen overflow-y-auto w-full max-w-md"
                     >
                         <CustomerDue />
-                        <div>
-
-                        </div>
                         <Button type="button" onClick={() => setShowCustomerDue(false)} className="mt-4 w-full">
                             Close
                         </Button>

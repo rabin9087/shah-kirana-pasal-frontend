@@ -3,6 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface InititalState {
   orders: IOrder[];
+  outOfStockOrders: IOrder[];
   order: IOrder | null;
 };
 
@@ -10,6 +11,7 @@ interface InititalState {
 export const initialState: InititalState= {
   orders: [],
   order: null,
+  outOfStockOrders: []
 };
 
 const ordersSlice = createSlice({
@@ -21,6 +23,9 @@ const ordersSlice = createSlice({
     },
     setAOrder: (state, { payload }: PayloadAction<IOrder>) => {
       state.order = payload;
+    },
+    setOutOfStockOrders: (state, { payload }: PayloadAction<IOrder[]>) => {
+      state.outOfStockOrders = payload;
     },
 
     updateSuppliedQuantity: (state, { payload }: PayloadAction<{ _id: string; supplied: number }>) => {
@@ -37,5 +42,5 @@ const ordersSlice = createSlice({
 });
 
 const { reducer, actions } = ordersSlice;
-export const { setOrders, setAOrder, updateSuppliedQuantity } = actions;
+export const { setOrders, setAOrder, setOutOfStockOrders, updateSuppliedQuantity } = actions;
 export default reducer;

@@ -9,6 +9,7 @@ import { FaSpinner } from "react-icons/fa";
 import { updateProfileAction } from "@/action/user.action";
 import { toast } from "react-toastify";
 import EditMyProfile from "./EditMyProfile";
+import logo from "/assets/shahKiranaPasal.png"
 // import { useLocation, useNavigate } from "react-router";
 
 const MyProfile = () => {
@@ -77,7 +78,7 @@ const MyProfile = () => {
                     <div className="relative flex justify-center mb-6">
                         <img
                             onClick={openModal}
-                            src={selectedImage || user?.profile || "/default-profile.png"} // Default profile image fallback
+                            src={(selectedImage || user?.profile) ? (selectedImage || user?.profile) : logo} // Default profile image fallback
                             alt="Profile"
                             className="w-32 h-32 rounded-full object-fill border-4 border-gray-300"
                         />
@@ -156,7 +157,7 @@ const MyProfile = () => {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white p-4 mx-10 rounded-md shadow-md max-w-md w-full flex flex-col  justify-center items-center">
                             <img
-                                src={user.profile || ""}
+                                src={user.profile || logo}
                                 alt="Product"
                                 className="w-72 rounded-full h-72 object-cover"
                             />

@@ -117,7 +117,9 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
                                         }, 0) ? "✅ Yes" : "❌ NO"}</td>
 
                                         <td className="p-2 whitespace-nowrap text-center">
-                                            {order?.items?.length}</td>
+                                            {order?.items?.reduce((acc, { supplied }) => {
+                                                return acc + (supplied as number)
+                                            }, 0)}/{order?.items?.length}</td>
                                         <td className="p-2 whitespace-nowrap text-center"> {order?.picker?.name}</td>
                                     </tr>
 

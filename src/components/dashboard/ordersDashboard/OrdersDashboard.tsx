@@ -7,7 +7,7 @@ import OrderChart from "./OrderChart";
 import ScanOrderProduct from "@/pages/orders/ScanOrderProduct";
 import { OrderUpdate } from "./OrderUpdate";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/hooks";
+import {useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { DateNavigator } from "@/pages/orders/OrderTable";
 import OpenStartPickingModal from "@/pages/orders/OpenStartPickingModal";
@@ -21,7 +21,6 @@ const OrdersDashboard = () => {
         const [isModalOpen, setIsModalOpen] = useState(false);
         const [isOpenPicking, setIsOpenPicking] = useState(false);
         const [date, setDate] = useState(new Date());
-
         const formattedDate = useMemo(() => date.toISOString().split("T")[0], [date]);
 
         const { data = [] } = useQuery<IOrder[]>({
@@ -39,6 +38,13 @@ const OrdersDashboard = () => {
                 () => data.filter((order) => order.deliveryStatus === "Picking" && order.picker?.userId === user?._id),
                 [data, user]
         );
+
+        const outOfStock = useMemo(
+                () => data.filter((order) => order.deliveryStatus === "Packed"),
+                [data, user]
+        );
+
+        console.log(outOfStock)
 
         const handleOnExpressOrderPick = async () => {
                 if (ordersPicking.length > 0) {
@@ -71,12 +77,18 @@ const OrdersDashboard = () => {
                         //         picker: { userId: user._id, name: `${user.fName} ${user.lName}` },
                         // });
                         navigate(`/orders/pickup`);
-                        return;
                 }
                 setIsOpenPicking(false);
                 setIsModalOpen(true);
 
         };
+
+        const handleOnOutodStock = async () => {
+                if (outOfStock.length > 0) {
+                        navigate(`/orders/out-of-stock`);
+                        return;
+                }
+        }
 
         useEffect(() => {
                 const handleKeyPress = (e: KeyboardEvent) => {
@@ -134,6 +146,7 @@ const OrdersDashboard = () => {
                                 setIsOpenPicking={setIsOpenPicking}
                                 handleOnOrdersPick={handleOnOrdersPick}
                                 handleOnExpressOrderPick={handleOnExpressOrderPick}
+                                handleOnOutodStock={handleOnOutodStock}
                         />}
 
                 </>

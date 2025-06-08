@@ -1,45 +1,21 @@
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getAOrder, updateAOrder } from "@/axios/order/order";
-import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrders.slice";
+import { updateAOrder } from "@/axios/order/order";
+import { setOutOfStockOrders, updateSuppliedQuantity } from "@/redux/allOrders.slice";
 import ScanOrderProduct from "./ScanOrderProduct";
-import { useQuery } from "@tanstack/react-query";
-import { IItemTypes, IOrder } from "@/axios/order/types";
+import { IItemTypes } from "@/axios/order/types";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { formatLocation, sortItems } from "./StartPickingOrder";
 
-type ProductLocation = {
-    A: number;
-    B: number;
-    S: number;
-};
-
-export const formatLocation = (location: string): string => {
-    const parts = location.split(".").map((num) => num.padStart(2, ""));
-    return `A${parts[0]} - B${parts[1]} - S${parts[2]}`;
-};
-export const parseLocation = (location: string): ProductLocation => {
-    const [A, B, S] = location.split(".").map((num) => parseInt(num));
-    return { A, B, S };
-};
-
-export const sortItems = (items: any) => {
-    return [...items].sort((a, b) => {
-        const locA = parseLocation(a.productId?.productLocation);
-        const locB = parseLocation(b.productId?.productLocation);
-        return locA.A - locB.A || locA.B - locB.B || locA.S - locB.S;
-    });
-};
-
-const StartPickingOrder = () => {
+const OutOfStockOrders = () => {
     const dispatch = useAppDispatch();
-    const navignate = useNavigate()
-    const { orderNumber } = useParams();
-    const { order, orders } = useAppSelector((s) => s.ordersInfo);
+    const navigate = useNavigate()
+    const { order, orders, outOfStockOrders } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [notFound, setNotFound] = useState(false);
@@ -47,15 +23,9 @@ const StartPickingOrder = () => {
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
-
     const sortedItems = sortItems(order?.items || []);
     const currentItem = sortedItems[currentIndex];
     const lastItem = sortedItems[currentIndex - 1];
-
-    const { data = initialState.order } = useQuery<IOrder>({
-        queryKey: ['order', orderNumber],
-        queryFn: () => getAOrder(orderNumber as string)
-    })
 
     const pikingOrder = orders?.filter((item) => item.orderNumber === order?.orderNumber);
 
@@ -76,14 +46,6 @@ const StartPickingOrder = () => {
             );
         });
     }
-
-    useEffect(() => {
-        if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
-            dispatch(setAOrder(data as IOrder));
-        } else if (data?._id === "") {
-            dispatch(setAOrder(initialState.order as IOrder));
-        }
-    }, [dispatch, data]);
 
     const handleNext = () => {
         if (currentIndex < sortedItems.length - 1) {
@@ -119,7 +81,7 @@ const StartPickingOrder = () => {
             const updateChanged = getChangedItems(items, updateItems as IItemTypes[])
             updateChanged.length && await updateAOrder(order._id, { deliveryStatus: status, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) })
             setPacking(false)
-            navignate(-1)
+            navigate(-1)
         }
         setPacking(false)
         return;
@@ -171,7 +133,6 @@ const StartPickingOrder = () => {
                 setBuff(prev => prev + e.key); // Accumulate scanned chars
             }
         };
-
         window.addEventListener("keypress", handleKeyPress);
         return () => {
             window.removeEventListener("keypress", handleKeyPress);
@@ -190,6 +151,14 @@ const StartPickingOrder = () => {
         setTimeout(() => setBarcode(""), 500); // Optional reset
     }, [barcode]);
 
+    console.log(outOfStockOrders)
+
+    useEffect(() => {
+        if (orders && orders.length > 0 && outOfStockOrders.length === 0) {
+            const filtered = orders?.filter(order =>order.deliveryStatus === "Packed");
+            dispatch(setOutOfStockOrders(filtered));
+        }
+    }, [orders.length, outOfStockOrders.length, dispatch]);
 
     return (
         <>
@@ -198,7 +167,7 @@ const StartPickingOrder = () => {
                     <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
                     <div>
                         <Button className="bg-primary text-white p-2 rounded-md ms-2"
-                            onClick={() => updateDeliveryStatus(order?.deliveryStatus === "Order placed" ? "Picking" : order?.deliveryStatus as string)}
+                            onClick={() => updateDeliveryStatus("Packed")}
                             disabled={packing}
                         >
                             {"<"} BACK
@@ -299,7 +268,7 @@ const StartPickingOrder = () => {
                                     <Button
                                         className="px-6 text-white py-2 text-lg font-medium"
                                         disabled={packing}
-                                        onClick={() => updateDeliveryStatus("Packed")}
+                                        onClick={() => updateDeliveryStatus("Completed")}
                                     >
                                         {packing ? "PACKING..." : "PACK"}
                                     </Button>
@@ -347,4 +316,4 @@ const StartPickingOrder = () => {
     );
 };
 
-export default StartPickingOrder;
+export default OutOfStockOrders;

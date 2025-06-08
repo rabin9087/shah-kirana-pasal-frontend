@@ -47,6 +47,7 @@ import ContractManagement from "./pages/contractManagement/ContractManagement";
 import JobCategory from "./pages/jobCategory/JobCategory";
 import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
 import GenerateBarcodeQRCode from "./utils/GenerateBarcodeQRCode";
+import OutOfStockOrders from "./pages/orders/OutOfStockOrders";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -311,6 +312,15 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/orders/out-of-stock"
+          element={
+            <PickerPrivateRouter>
+              <OutOfStockOrders />
+            </PickerPrivateRouter>
+          }
+          errorElement={<ErrorPage />}
+        />
 
         <Route
           path="/my-profile"
