@@ -17,6 +17,7 @@ import Layout from '@/components/layout/Layout';
 import SearchInput from '@/components/search/SearchInput';
 import { IDue } from '@/axios/due/types';
 import { createDue } from '@/axios/due/due';
+import LockBodyScroll from '@/utils/LockBodyScroll';
 
 export const Store = () => {
     const [barcode, setBarcode] = useState("");
@@ -40,7 +41,7 @@ export const Store = () => {
 
     const dispatch = useAppDispatch();
     const [productData, setProductData] = useState<IProductTypes[]>(products);
-
+    LockBodyScroll(showMobileSidebar)
     const { data = [] } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
         queryFn: () => getAllProducts(),

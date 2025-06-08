@@ -43,8 +43,6 @@ const Cart: React.FC = () => {
     }
   }, [cart, cartQuantity, user?._id, dispatch]);
 
-  
-
   return (
     <Drawer>
       <DrawerTrigger className=" relative bg-blue-400/30 hover:bg-blue-400/50 text-sm md:text-md m-4 p-2 px-4 rounded-md">

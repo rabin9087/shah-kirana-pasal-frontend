@@ -72,7 +72,6 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
     const [calculator, setCalculator] = useState<boolean>(false)
     const [showCustomerDue, setShowCustomerDue] = useState<boolean>(false)
     const scrollContainerRef = useRef<HTMLDivElement>(null);
-
     const handelOnClearCustomer = () => {
         dispatch(resetCustomer());
     }

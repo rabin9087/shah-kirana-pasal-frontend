@@ -37,7 +37,6 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   const { user } = useAppSelector((s) => s.userInfo);
   const { open } = useAppSelector((s) => s.sidebar);
   const [results, setResults] = useState<IResults[]>([]);
-
   const hasAccess = (roles?: string[]) =>
     !roles || roles.includes(user?.role);
 

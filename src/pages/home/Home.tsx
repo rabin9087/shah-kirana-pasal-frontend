@@ -25,7 +25,6 @@ interface ProductResponse {
 
 function Home(): JSX.Element {
   const { categories } = useAppSelector((s) => s.categoryInfo);
-
   const [page, setPage] = useState(1);
   const limit = 20;
 
@@ -115,7 +114,7 @@ function Home(): JSX.Element {
   );
 
   return (
-    <Layout types="products" title={page === 1 ? "Smart Shop": ""}>
+    <Layout types="products" title={page === 1 ? "Smart Shop" : ""}>
       {page === 1 && <div className="w-full mb-8">
         <CarouselWithAutoplay />
       </div>}
@@ -158,74 +157,74 @@ function Home(): JSX.Element {
           <p className="text-center text-gray-500">No products available.</p>
         ) : (
           <>
-              <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7">
               {filteredProducts.allProducts.map((product: IProductTypes) => (
                 <ProductCard key={product._id} item={product} />
               ))}
-              </div>            
+            </div>
 
             {/* Pagination Buttons */}
-              <div className="flex justify-center items-center flex-wrap gap-2 mt-8">
-                <Button
-                  variant="outline"
-                  disabled={page === 1}
-                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                >
-                  Previous
-                </Button>
+            <div className="flex justify-center items-center flex-wrap gap-2 mt-8">
+              <Button
+                variant="outline"
+                disabled={page === 1}
+                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              >
+                Previous
+              </Button>
 
-                {(() => {
-                  const totalPages = data.pagination.totalPages || 1;
-                  const range: (number | "...")[] = [];
+              {(() => {
+                const totalPages = data.pagination.totalPages || 1;
+                const range: (number | "...")[] = [];
 
-                  const start = Math.max(1, page - 2);
-                  const end = Math.min(totalPages, page + 2);
+                const start = Math.max(1, page - 2);
+                const end = Math.min(totalPages, page + 2);
 
-                  if (start > 1) {
-                    range.push(1);
-                    if (start > 2) range.push("...");
-                  }
+                if (start > 1) {
+                  range.push(1);
+                  if (start > 2) range.push("...");
+                }
 
-                  for (let i = start; i <= end; i++) {
-                    range.push(i);
-                  }
+                for (let i = start; i <= end; i++) {
+                  range.push(i);
+                }
 
-                  if (end < totalPages) {
-                    if (end < totalPages - 1) range.push("...");
-                    range.push(totalPages);
-                  }
+                if (end < totalPages) {
+                  if (end < totalPages - 1) range.push("...");
+                  range.push(totalPages);
+                }
 
-                  return range.map((p, index) => (
-                    <button
-                      key={index}
-                      disabled={p === "..."}
-                      onClick={() => typeof p === "number" && setPage(p)}
-                      className={`px-3 py-1 text-sm rounded border ${p === page
-                          ? "bg-primary text-white"
-                          : p === "..."
-                            ? "cursor-default text-muted"
-                            : "hover:bg-accent"
-                        }`}
-                    >
-                      {p}
-                    </button>
-                  ));
-                })()}
+                return range.map((p, index) => (
+                  <button
+                    key={index}
+                    disabled={p === "..."}
+                    onClick={() => typeof p === "number" && setPage(p)}
+                    className={`px-3 py-1 text-sm rounded border ${p === page
+                      ? "bg-primary text-white"
+                      : p === "..."
+                        ? "cursor-default text-muted"
+                        : "hover:bg-accent"
+                      }`}
+                  >
+                    {p}
+                  </button>
+                ));
+              })()}
 
-                <Button
-                  variant="outline"
-                  disabled={page === data.pagination.totalPages}
-                  onClick={() =>
-                    setPage((prev) =>
-                      data.pagination.totalPages
-                        ? Math.min(prev + 1, data.pagination.totalPages)
-                        : prev + 1
-                    )
-                  }
-                >
-                  Next
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                disabled={page === data.pagination.totalPages}
+                onClick={() =>
+                  setPage((prev) =>
+                    data.pagination.totalPages
+                      ? Math.min(prev + 1, data.pagination.totalPages)
+                      : prev + 1
+                  )
+                }
+              >
+                Next
+              </Button>
+            </div>
           </>
         )}
       </div>

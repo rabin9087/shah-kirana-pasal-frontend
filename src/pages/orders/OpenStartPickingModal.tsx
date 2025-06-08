@@ -1,5 +1,6 @@
 
 import { Button } from '@/components/ui/button';
+import LockBodyScroll from '@/utils/LockBodyScroll';
 import Modal from 'react-modal';
 
 type OpenStartPickingModalProps = {
@@ -10,7 +11,7 @@ type OpenStartPickingModalProps = {
     handleOnOutodStock: () => void
 };
 const OpenStartPickingModal = ({ isOpenPicking, setIsOpenPicking, handleOnOrdersPick, handleOnExpressOrderPick, handleOnOutodStock }: OpenStartPickingModalProps) => {
-
+    LockBodyScroll(isOpenPicking)
     const handleOnClose = () => {
         setIsOpenPicking(false);
     }
