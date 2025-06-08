@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { DateNavigator } from "@/pages/orders/OrderTable";
+import OpenStartPickingModal from "@/pages/orders/OpenStartPickingModal";
 
 const OrdersDashboard = () => {
         const { user } = useAppSelector((state) => state.userInfo);
@@ -18,6 +19,7 @@ const OrdersDashboard = () => {
         const [buff, setBuff] = useState("");
         const [barcode, setBarcode] = useState("");
         const [isModalOpen, setIsModalOpen] = useState(false);
+        const [isOpenPicking, setIsOpenPicking] = useState(false);
         const [date, setDate] = useState(new Date());
 
         const formattedDate = useMemo(() => date.toISOString().split("T")[0], [date]);
@@ -52,8 +54,9 @@ const OrdersDashboard = () => {
                         navigate(`/order/orderNumber=/${ordersToPick[0].orderNumber}`);
                         return;
                 }
-
+                setIsOpenPicking(false);
                 setIsModalOpen(true);
+
         };
 
         const handleOnOrdersPick = async () => {
@@ -70,9 +73,9 @@ const OrdersDashboard = () => {
                         navigate(`/orders/pickup`);
                         return;
                 }
-                355574
-                
+                setIsOpenPicking(false);
                 setIsModalOpen(true);
+
         };
 
         useEffect(() => {
@@ -97,8 +100,7 @@ const OrdersDashboard = () => {
                                 {adminRoles.includes(user.role) && (
                                         <div className="flex justify-between items-center">
                                                 <div className="flex flex-col items-cente gap-1">
-                                                        <Button type="button" onClick={handleOnExpressOrderPick}>Express</Button>
-                                                        <Button type="button" onClick={handleOnOrdersPick}>Start Picking</Button>
+                                                        <Button type="button" onClick={() => setIsOpenPicking(true)}>Start Picking</Button>
                                                 </div>
 
                                                 <div>
@@ -127,6 +129,13 @@ const OrdersDashboard = () => {
                                 )}
                         </>
                         {barcode && <OrderUpdate barcode={barcode} setBarcode={setBarcode} />}
+                        {isOpenPicking && <OpenStartPickingModal
+                                isOpenPicking={isOpenPicking}
+                                setIsOpenPicking={setIsOpenPicking}
+                                handleOnOrdersPick={handleOnOrdersPick}
+                                handleOnExpressOrderPick={handleOnExpressOrderPick}
+                        />}
+
                 </>
         );
 };
