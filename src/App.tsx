@@ -28,7 +28,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRouter, { AdminPrivateRouter, CustomizeRouter, PickerPrivateRouter, RoleRouter, StroreRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
-import StartPickingOrder from "./pages/orders/StartPickingOrder";
+import StartPickingOrder from "./pages/orders/startPicking/StartPickingOrder";
 import UserDetails from "./components/dashboard/userDashboard/UserDetails";
 import UserProfileEdit from "./components/dashboard/userDashboard/UserProfile";
 import NotFoundPage from "./components/notFound/NotFound";
@@ -47,7 +47,7 @@ import ContractManagement from "./pages/contractManagement/ContractManagement";
 import JobCategory from "./pages/jobCategory/JobCategory";
 import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
 import GenerateBarcodeQRCode from "./utils/GenerateBarcodeQRCode";
-import OutOfStockOrders from "./pages/orders/OutOfStockOrders";
+import OutOfStockOrders from "./pages/orders/outOfStock/OutOfStockOrders";
 
 // Set the app elementchec
 Modal.setAppElement('#root');

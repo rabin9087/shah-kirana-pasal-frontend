@@ -30,7 +30,7 @@ const OpenStartPickingModal = ({ isOpenPicking, setIsOpenPicking, handleOnOrders
                         className="text-lg font-semibold text-blue-800 cursor-pointer"
                         onClick={handleOnOrdersPick}
                     >
-                        Deliver Later
+                        Pick Multiple Orders
                     </p>
                     <button
                         onClick={handleOnOrdersPick}

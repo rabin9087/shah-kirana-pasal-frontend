@@ -5,12 +5,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { updateAOrder } from "@/axios/order/order";
 import { setOutOfStockOrders, updateSuppliedQuantity } from "@/redux/allOrders.slice";
-import ScanOrderProduct from "./ScanOrderProduct";
+import ScanOrderProduct from "../ScanOrderProduct";
 import { IItemTypes } from "@/axios/order/types";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { formatLocation, sortItems } from "./StartPickingOrder";
+import { formatLocation, sortItems } from "../startPicking/StartPickingOrder";
+import OpenBasketLableModal from "./OpenBasketLableModal";
 
 const OutOfStockOrders = () => {
     const dispatch = useAppDispatch();
@@ -18,12 +19,22 @@ const OutOfStockOrders = () => {
     const { order, orders, outOfStockOrders } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isBasketLabelOpen, setIsBasketLabelOpen] = useState(false);
     const [notFound, setNotFound] = useState(false);
     const [packing, setPacking] = useState(false);
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
-    const sortedItems = sortItems(order?.items || []);
+
+    let allItems = []
+
+    for (let i = 0; i < outOfStockOrders.length; i++) {
+        const items = (outOfStockOrders[i]?.items || []);
+        allItems.push(...items)
+    }
+
+    const sortedItems = sortItems(allItems.filter(({ quantity, supplied }) => (supplied as number < quantity)))
+
     const currentItem = sortedItems[currentIndex];
     const lastItem = sortedItems[currentIndex - 1];
 
@@ -46,6 +57,11 @@ const OutOfStockOrders = () => {
             );
         });
     }
+
+    const currentItemOrder = outOfStockOrders?.find(order =>
+        order.items.some(item => item._id === currentItem?._id)
+    );
+
 
     const handleNext = () => {
         if (currentIndex < sortedItems.length - 1) {
@@ -70,12 +86,12 @@ const OutOfStockOrders = () => {
         setIsModalOpen(false);
         setNotFound(false)
         setModalImage(null);
+        setIsBasketLabelOpen(true)
     };
 
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true)
         if (order?._id) {
-
             const { items } = pikingOrder[0]
             const updateItems = order?.items
             const updateChanged = getChangedItems(items, updateItems as IItemTypes[])
@@ -88,6 +104,7 @@ const OutOfStockOrders = () => {
     }
 
     const updateSuppliedQuintity = () => {
+        setIsBasketLabelOpen(true)
         const supplied = currentItem?.supplied + 1
         if (supplied > currentItem?.quantity) {
             return
@@ -99,6 +116,7 @@ const OutOfStockOrders = () => {
         if (supplied === currentItem?.quantity) {
             setCurrentIndex(currentIndex + 1);
         }
+
     }
 
     const resetSuppliedQuintity = () => {
@@ -151,11 +169,9 @@ const OutOfStockOrders = () => {
         setTimeout(() => setBarcode(""), 500); // Optional reset
     }, [barcode]);
 
-    console.log(outOfStockOrders)
-
     useEffect(() => {
         if (orders && orders.length > 0 && outOfStockOrders.length === 0) {
-            const filtered = orders?.filter(order =>order.deliveryStatus === "Packed");
+            const filtered = orders?.filter(order => order.deliveryStatus === "Packed");
             dispatch(setOutOfStockOrders(filtered));
         }
     }, [orders.length, outOfStockOrders.length, dispatch]);
@@ -164,7 +180,9 @@ const OutOfStockOrders = () => {
         <>
             {<div className="w-full h-screen max-w-md mx-auto flex flex-col">
                 <Card className="flex flex-col flex-1 p-4 border rounded-lg shadow-lg bg-white">
-                    <h2 className="text-xl font-bold text-center mb-2">Order Details</h2>
+
+                    <h2 className="text-xl font-bold text-center mb-2">Out Of Stock Orders</h2>
+                    <p className="text-xl font-bold text-center mb-2">{currentItemOrder?.orderNumber}</p>
                     <div>
                         <Button className="bg-primary text-white p-2 rounded-md ms-2"
                             onClick={() => updateDeliveryStatus("Packed")}
@@ -172,28 +190,24 @@ const OutOfStockOrders = () => {
                         >
                             {"<"} BACK
                         </Button>
-                        <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
                     </div>
                     <div className="flex flex-col items-start justify-start p-2">
-                        <p>Name: {order?.name}</p>
-                        <p>Phone: {order?.phone}</p>
-                        <p>Email: {order?.email}</p>
-                        <p>Address: {order?.address}</p>
+
                     </div>
                     <div className="mt-4 space-y-3 flex-1 overflow-auto h-full">
                         {currentItem && (
                             <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
                                 <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md">
-                                    <p className="text-3xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
-                                    <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2 text-3xl">
+                                    <p className="text-2xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                    <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2 text-xl">
                                         {aisle === lastAisle ? "" :
                                             aisle % 2 === 0 ?
                                                 <p className="text-green-500 font-extrabold "
-                                                    style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={25} /></p> :
-                                                <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={25} /></p>
+                                                    style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={20} /></p> :
+                                                <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={20} /></p>
                                         }
-                                        <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={25} /></p>
-                                        <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={25} /></p>
+                                        <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
+                                        <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
 
 
                                     </div>
@@ -311,6 +325,11 @@ const OutOfStockOrders = () => {
                 )}
             </div>}
 
+            {isBasketLabelOpen && <OpenBasketLableModal
+                isBasketLabelOpen={isBasketLabelOpen}
+                closeModal={closeModal}
+                orderNumber={currentItemOrder?.orderNumber as number}
+            />}
 
         </>
     );

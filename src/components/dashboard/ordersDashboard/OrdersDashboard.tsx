@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import {useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { DateNavigator } from "@/pages/orders/OrderTable";
-import OpenStartPickingModal from "@/pages/orders/OpenStartPickingModal";
+import OpenStartPickingModal from "@/pages/orders/startPicking/OpenStartPickingModal";
 
 const OrdersDashboard = () => {
         const { user } = useAppSelector((state) => state.userInfo);
@@ -43,8 +43,6 @@ const OrdersDashboard = () => {
                 () => data.filter((order) => order.deliveryStatus === "Packed"),
                 [data, user]
         );
-
-        console.log(outOfStock)
 
         const handleOnExpressOrderPick = async () => {
                 if (ordersPicking.length > 0) {
@@ -88,6 +86,8 @@ const OrdersDashboard = () => {
                         navigate(`/orders/out-of-stock`);
                         return;
                 }
+                setIsOpenPicking(false);
+                setIsModalOpen(true);
         }
 
         useEffect(() => {

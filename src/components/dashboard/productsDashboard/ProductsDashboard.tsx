@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import SearchInput from "@/components/search/SearchInput";
-import { formatLocation } from "@/pages/orders/StartPickingOrder";
+import { formatLocation } from "@/pages/orders/startPicking/StartPickingOrder";
 
 export const sortOptions = [
     { label: "Name", value: "name" },

@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getAOrder, updateAOrder } from "@/axios/order/order";
 import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrders.slice";
-import ScanOrderProduct from "./ScanOrderProduct";
+import ScanOrderProduct from "../ScanOrderProduct";
 import { useQuery } from "@tanstack/react-query";
 import { IItemTypes, IOrder } from "@/axios/order/types";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
