@@ -117,9 +117,19 @@ const StartPickingOrder = () => {
             const { items } = pikingOrder[0]
             const updateItems = order?.items
             const updateChanged = getChangedItems(items, updateItems as IItemTypes[])
-            updateChanged.length && await updateAOrder(order._id, { deliveryStatus: status, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) })
+            const itemsQuantityLength = items?.reduce((acc, { quantity }) => {
+                return acc + (quantity as number)
+            }, 0)
+
+            const updateChangedLength = updateChanged?.reduce((acc, { supplied }) => {
+                return acc + (supplied as number)
+            }, 0)
+            console.log(itemsQuantityLength, updateChangedLength)
+            const updateStatus = itemsQuantityLength === updateChangedLength ? "Completed" : status
             setPacking(false)
             navignate(-1)
+            updateChanged.length && await updateAOrder(order._id, { deliveryStatus: updateStatus, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) })
+
         }
         setPacking(false)
         return;

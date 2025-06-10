@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { updateAOrder } from "@/axios/order/order";
-import { setOutOfStockOrders, updateSuppliedQuantity } from "@/redux/allOrders.slice";
+import { updateMultipleOrders } from "@/axios/order/order";
+import { setOutOfStockOrders, updateOutOfStockSuppliedQuantity } from "@/redux/allOrders.slice";
 import ScanOrderProduct from "../ScanOrderProduct";
 import { IItemTypes } from "@/axios/order/types";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
@@ -13,10 +13,15 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { formatLocation, sortItems } from "../startPicking/StartPickingOrder";
 import OpenBasketLableModal from "./OpenBasketLableModal";
 
+type ItemSummary = {
+    productId: string;
+    supplied?: number;
+};
+
 const OutOfStockOrders = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate()
-    const { order, orders, outOfStockOrders } = useAppSelector((s) => s.ordersInfo);
+    const { orders, outOfStockOrders } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isBasketLabelOpen, setIsBasketLabelOpen] = useState(false);
@@ -33,12 +38,9 @@ const OutOfStockOrders = () => {
         allItems.push(...items)
     }
 
-    const sortedItems = sortItems(allItems.filter(({ quantity, supplied }) => (supplied as number < quantity)))
-
+    const sortedItems = sortItems(allItems)
     const currentItem = sortedItems[currentIndex];
     const lastItem = sortedItems[currentIndex - 1];
-
-    const pikingOrder = orders?.filter((item) => item.orderNumber === order?.orderNumber);
 
     function getChangedItems(oldArr: IItemTypes[], newArr: IItemTypes[]): IItemTypes[] {
 
@@ -61,7 +63,6 @@ const OutOfStockOrders = () => {
     const currentItemOrder = outOfStockOrders?.find(order =>
         order.items.some(item => item._id === currentItem?._id)
     );
-
 
     const handleNext = () => {
         if (currentIndex < sortedItems.length - 1) {
@@ -91,36 +92,68 @@ const OutOfStockOrders = () => {
 
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true)
-        if (order?._id) {
-            const { items } = pikingOrder[0]
-            const updateItems = order?.items
-            const updateChanged = getChangedItems(items, updateItems as IItemTypes[])
-            updateChanged.length && await updateAOrder(order._id, { deliveryStatus: status, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) })
+        if (outOfStockOrders.length) {
+            const oldOutOfStocks: IItemTypes[] = [];
+            const allOrderNumbers: number[] = [];
+
+            // Only consider orders with "Packed" status
+            const stockNeeded = orders.filter(order => order.deliveryStatus === "Packed");
+
+            // Collect all old items and orderNumbers from packed orders
+            for (const order of stockNeeded) {
+                oldOutOfStocks.push(...(order.items || []));
+                if (order.orderNumber !== undefined) {
+                    allOrderNumbers.push(order.orderNumber);
+                }
+            }
+
+            // Find updated (changed) items compared to original packed items
+            const updateChanged: IItemTypes[] = getChangedItems(oldOutOfStocks, sortedItems);
+
+            // Build an array of orders with updated items
+            const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string }[] = [];
+
+            for (const orderNumber of allOrderNumbers) {
+                const matchingOrder = outOfStockOrders.find(order => order.orderNumber === orderNumber);
+
+                if (!matchingOrder) continue;
+
+                // Filter only changed items from this order
+                const newItems = matchingOrder.items.filter(item =>
+                    updateChanged.some(changed => changed._id === item._id)
+                );
+
+                if (newItems.length > 0) {
+                    orderItems.push({ orderNumber, items: newItems.map(({ productId, supplied }) => ({ productId: productId._id, supplied })), deliveryStatus: status });
+                }
+            }
             setPacking(false)
             navigate(-1)
+            updateChanged.length && await updateMultipleOrders(orderItems)
+            dispatch(setOutOfStockOrders([]))
         }
         setPacking(false)
+        navigate(-1)
         return;
     }
 
     const updateSuppliedQuintity = () => {
-        setIsBasketLabelOpen(true)
+        // setIsBasketLabelOpen(true)
         const supplied = currentItem?.supplied + 1
         if (supplied > currentItem?.quantity) {
             return
         }
-        dispatch(updateSuppliedQuantity({ _id: currentItem._id, supplied }))
-        if (currentIndex + 1 === order?.items?.length) {
+        dispatch(updateOutOfStockSuppliedQuantity({ _id: currentItem._id, supplied }))
+        if (currentIndex + 1 === sortedItems.length) {
             return
         }
         if (supplied === currentItem?.quantity) {
             setCurrentIndex(currentIndex + 1);
         }
-
     }
 
     const resetSuppliedQuintity = () => {
-        dispatch(updateSuppliedQuantity({ _id: currentItem._id, supplied: 0 }))
+        dispatch(updateOutOfStockSuppliedQuantity({ _id: currentItem._id, supplied: 0 }))
     }
 
     const handleBarcodeScan = (scannedCode: string) => {
@@ -171,10 +204,26 @@ const OutOfStockOrders = () => {
 
     useEffect(() => {
         if (orders && orders.length > 0 && outOfStockOrders.length === 0) {
-            const filtered = orders?.filter(order => order.deliveryStatus === "Packed");
-            dispatch(setOutOfStockOrders(filtered));
+            // Filter orders to find those that are "Packed" and contain at least one out-of-stock item.
+            const filteredOrdersWithOutOfStockItems = orders
+                ?.filter(order => order.deliveryStatus === "Packed")
+                .filter(order =>
+                    order.items.some(item => (item.supplied as number) < item.quantity)
+                )
+                .map(order => {
+                    // For each such order, create a new order object.
+                    // You might want to create a deep copy if you modify other properties of the order later
+                    // or just modify the items array. For simplicity, we'll create a new object.
+                    return {
+                        ...order,
+                        // Filter the items within this order to only include the out-of-stock ones.
+                        items: order.items.filter(item => (item.supplied as number) < item.quantity)
+                    };
+                });
+
+            dispatch(setOutOfStockOrders(filteredOrdersWithOutOfStockItems || [])); // Ensure it's an array for dispatch
         }
-    }, [orders.length, outOfStockOrders.length, dispatch]);
+    }, []);
 
     return (
         <>
@@ -277,7 +326,7 @@ const OutOfStockOrders = () => {
                                 </Button>
                             </div>
 
-                            {currentIndex + 1 === order?.items.length && (
+                            {currentIndex + 1 === sortedItems.length && (
                                 <div className="flex justify-center items-center bg-primary mx-2 rounded-lg shadow-md mt-1">
                                     <Button
                                         className="px-6 text-white py-2 text-lg font-medium"

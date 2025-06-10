@@ -7,7 +7,7 @@ import OrderChart from "./OrderChart";
 import ScanOrderProduct from "@/pages/orders/ScanOrderProduct";
 import { OrderUpdate } from "./OrderUpdate";
 import { Button } from "@/components/ui/button";
-import {useAppSelector } from "@/hooks";
+import { useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { DateNavigator } from "@/pages/orders/OrderTable";
 import OpenStartPickingModal from "@/pages/orders/startPicking/OpenStartPickingModal";
@@ -21,13 +21,21 @@ const OrdersDashboard = () => {
         const [isModalOpen, setIsModalOpen] = useState(false);
         const [isOpenPicking, setIsOpenPicking] = useState(false);
         const [date, setDate] = useState(new Date());
-        const formattedDate = useMemo(() => date.toISOString().split("T")[0], [date]);
+        // Get the year, month, and day
+
+
+
+        const formattedDate = (date: Date) => {
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed, so add 1 and pad with '0'
+                const day = date.getDate().toString().padStart(2, '0');       // Pad with '0'
+                return `${year}-${month}-${day}`;
+        }
 
         const { data = [] } = useQuery<IOrder[]>({
-                queryKey: ["orders", formattedDate],
-                queryFn: () => getAOrdersByDate(formattedDate),
+                queryKey: ["orders", formattedDate(date)],
+                queryFn: () => getAOrdersByDate(formattedDate(date)),
         });
-
         // Filter orders based on status and user role
         const ordersToPick = useMemo(
                 () => data.filter((order) => order.deliveryStatus === "Order placed"),
@@ -38,6 +46,12 @@ const OrdersDashboard = () => {
                 () => data.filter((order) => order.deliveryStatus === "Picking" && order.picker?.userId === user?._id),
                 [data, user]
         );
+
+        const notSupppliedItems = []
+        for (let i = 0; i < data.length; i++) {
+                const items = (data[i]?.items || []);
+                notSupppliedItems.push(...items)
+        }
 
         const outOfStock = useMemo(
                 () => data.filter((order) => order.deliveryStatus === "Packed"),
@@ -82,7 +96,7 @@ const OrdersDashboard = () => {
         };
 
         const handleOnOutodStock = async () => {
-                if (outOfStock.length > 0) {
+                if (outOfStock.length > 0 && notSupppliedItems.length) {
                         navigate(`/orders/out-of-stock`);
                         return;
                 }
@@ -126,9 +140,11 @@ const OrdersDashboard = () => {
 
                                 <OrderChart data={data} />
 
-                                {user.role === "PICKER" && <DateNavigator data={data} date={date} setDate={setDate} />}
+                                {user.role === "PICKER" &&
+                                        <DateNavigator data={data} date={date} setDate={setDate} />}
 
-                                {(user.role === "ADMIN" || user.role === "SUPERADMIN") && <OrdersList data={data} date={date} setDate={setDate} />}
+                                {(user.role === "ADMIN" || user.role === "SUPERADMIN") &&
+                                        <OrdersList data={data} date={date} setDate={setDate} />}
                                 {isModalOpen && (
                                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                                                 <div className="bg-white p-4 mx-10 rounded-md shadow-md max-w-md w-full flex flex-col justify-center items-center">

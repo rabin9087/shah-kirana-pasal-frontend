@@ -50,11 +50,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                     <Link
                         to={`/order/orderNumber=/${order?.orderNumber}`}
                         className={`text-white text-right p-2 shadow-md rounded-md 
-                            ${status === "Collected" && "bg-green-500"}
-                            ${status === "Order placed" && "bg-primary"}
-                            ${status === "Picking" && "bg-primary"}
-                            ${status === "Packed" && "bg-green-500"}
+                           ${status === "Packed" && "bg-green-300"}
+                            ${status === "Completed" && "bg-green-600"}
+                            ${status === "Picking" && " bg-yellow-500"}
                             ${status === "Cancelled" && "bg-red-500"}
+                            ${status === "Collected" && "bg-green-400"}
+                            ${status === "Order placed" && "bg-primary"}
+                            
+                          
                             `}
                         onClick={() => updateDeliveryStatus(status === "Order placed" ? "Picking" : status)}
 
@@ -62,6 +65,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                         {status === "Order placed" && "Start Picking"}
                         {status === "Picking" && "Continue Picking"}
                         {(status === "Packed") && "Packed"}
+                        {(status === "Completed") && "Completed"}
                         {status === "Collected" && "Collected"}
                         {status === "Cancelled" && "Cancelled"}
                     </Link>
@@ -128,13 +132,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                                 >
                                     {order?.orderType === "pickup" ? <>
                                         <option value="Order placed">Order placed</option>
-
+                                        <option value="Completed">Completed</option>
                                         <option value="Picking">Picking</option>
                                         <option value="Packed">Packed</option>
                                         <option value="Collected">Collected</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </> : <>
                                         <option value="Order placed">Order placed</option>
+                                        <option value="Completed">Completed</option>
                                         <option value="Picking">Picking</option>
                                         <option value="Packed">Packed</option>
                                         <option value="Out for Delivery">Out for Delivery</option>                                        <option value="Delivered">Delivered</option>
@@ -221,7 +226,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                         Close
                     </button>
                 </div>
-                
+
             </div>
         </div>
     );

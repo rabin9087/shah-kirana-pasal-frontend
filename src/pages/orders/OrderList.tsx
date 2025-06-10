@@ -19,7 +19,7 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
     const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
     const { orders } = useAppSelector(s => s.ordersInfo)
 
-     const changeDate = async (newDate: Date) => {
+    const changeDate = async (newDate: Date) => {
         setDate(newDate);
     };
 
@@ -85,7 +85,7 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
                                     <th className="p-2 text-left whitespace-nowrap">Payment</th>
                                     <th className="p-2 text-left whitespace-nowrap">Ordered Date</th>
                                     <th className="p-2 text-left whitespace-nowrap">Pickup Date</th>
-                                    <th className="p-2 text-left whitespace-nowrap">Supplied_All</th>
+                                    {/* <th className="p-2 text-left whitespace-nowrap">Supplied_All</th> */}
                                     <th className="p-2 text-left whitespace-nowrap">Articles</th>
                                     <th className="p-2 text-left whitespace-nowrap">Picker</th>
                                 </tr>
@@ -100,26 +100,30 @@ const OrdersList = ({ data, date, setDate }: IOrderList) => {
                                         <td className="p-2 whitespace-nowrap overflow-hidden text-ellipsis">{order?.name}</td>
                                         <td className="p-2 whitespace-nowrap">${order?.amount?.toFixed(2)}</td>
                                         <td className={`p-2 whitespace-nowrap 
+                                                ${order?.deliveryStatus === "Order placed" && "text-primary"}
                                                 ${order?.deliveryStatus === "Packed" && "text-green-300"}
+                                                 ${order?.deliveryStatus === "Completed" && "text-green-600"}
                                                 ${order?.deliveryStatus === "Picking" && "text-yellow-500"}
                                                 ${order?.deliveryStatus === "Cancelled" && "text-red-500"}
-                                                ${order?.deliveryStatus === "Collected" && "text-green-500"}
+                                                ${order?.deliveryStatus === "Collected" && "text-green-400"}
                                             `}>
                                             {order?.deliveryStatus}
                                         </td>
                                         <td className={`p-2 whitespace-nowrap ${order?.paymentStatus === "Paid" ? "text-green-500" : "text-red-500"}`}>{order?.paymentStatus}</td>
                                         <td className="p-2 whitespace-nowrap">{order?.createdAt?.toLocaleString().split("T")[0]}</td>
                                         <td className="p-2 whitespace-nowrap">{order?.requestDeliveryDate}</td>
-                                        <td className="p-2 whitespace-nowrap text-center">{order?.items?.reduce((acc, { supplied }) => {
+                                        {/* <td className="p-2 whitespace-nowrap text-center">{order?.items?.reduce((acc, { supplied }) => {
                                             return acc + (supplied as number)
                                         }, 0) === order?.items?.reduce((acc, { quantity }) => {
                                             return acc + (quantity as number)
-                                        }, 0) ? "✅ Yes" : "❌ NO"}</td>
-
+                                        }, 0) ? "✅ Yes" : "❌ NO"}
+                                        </td> */}
                                         <td className="p-2 whitespace-nowrap text-center">
                                             {order?.items?.reduce((acc, { supplied }) => {
                                                 return acc + (supplied as number)
-                                            }, 0)}/{order?.items?.length}</td>
+                                            }, 0)}/{order?.items?.reduce((acc, { quantity }) => {
+                                                return acc + (quantity as number)
+                                            }, 0)}</td>
                                         <td className="p-2 whitespace-nowrap text-center"> {order?.picker?.name}</td>
                                     </tr>
 

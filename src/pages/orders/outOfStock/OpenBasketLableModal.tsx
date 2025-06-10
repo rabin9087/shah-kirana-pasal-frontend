@@ -1,4 +1,4 @@
-import {  QRCodeGenerator } from '@/components/QRCodeGenerator';
+import { Button } from '@/components/ui/button';
 import LockBodyScroll from '@/utils/LockBodyScroll';
 import Modal from 'react-modal';
 type OpenBasketLableModalProps = {
@@ -7,7 +7,7 @@ type OpenBasketLableModalProps = {
     closeModal: () => void;
     orderNumber:  string | number;
 };
-const OpenBasketLableModal = ({ isBasketLabelOpen, closeModal, orderNumber }: OpenBasketLableModalProps) => {
+const OpenBasketLableModal = ({ isBasketLabelOpen, closeModal }: OpenBasketLableModalProps) => {
     LockBodyScroll(isBasketLabelOpen)
   return (
       <Modal
@@ -20,13 +20,13 @@ const OpenBasketLableModal = ({ isBasketLabelOpen, closeModal, orderNumber }: Op
           <div className="flex justify-center items-center overflow-y-auto max-h-[70vh] space-y-6">
               {/* Deliver Later Card */}
               <div className="text-center bg-blue-100 p-4 rounded-md shadow-lg flex justify-between items-center">
-                  <QRCodeGenerator value ={ orderNumber as string} />
+                  {/* <QRCodeGenerator value ={ orderNumber as string} /> */}
               </div>
         
           </div>
 
           {/* Footer Button */}
-          {/* <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-6">
               <Button
                   variant="secondary"
                   onClick={closeModal}
@@ -34,7 +34,7 @@ const OpenBasketLableModal = ({ isBasketLabelOpen, closeModal, orderNumber }: Op
               >
                   Close
               </Button>
-          </div> */}
+          </div>
       </Modal>
   )
 }

@@ -6,16 +6,18 @@ interface IOrderChart {
 }
 const OrderChart = ({ data }: IOrderChart) => {
     const totalArticles = data.map((items) => items.items.length).reduce((acc, item) => { return acc + item }, 0)
-    const articlePacked = data.filter(({ deliveryStatus }) => (deliveryStatus === "Packed") || (deliveryStatus === "Collected") ).reduce((acc, { items }) => { return acc + items.length }, 0);
+    const articlePacked = data.filter(({ deliveryStatus }) => (deliveryStatus === "Packed") || (deliveryStatus === "Collected")).reduce((acc, { items }) => { return acc + items.length }, 0);
+    const completedPacked = data.filter(({ deliveryStatus }) => (deliveryStatus === "Completed")).reduce((acc, { items }) => { return acc + items.length }, 0);
     const picking = data.filter(({ deliveryStatus }) => (deliveryStatus === "Picking")).reduce((acc, { items }) => { return acc + items.length }, 0);
     const awaitingPicking = data.filter(({ deliveryStatus }) => (deliveryStatus === "Order placed")).reduce((acc, { items }) => { return acc + items.length }, 0);
-   
+
     const total = [{
         name: "Order Status",
         "Total Articles": totalArticles,
         "Picking": picking,
-        "Completed": articlePacked,
-        "Awaiting Pick": awaitingPicking
+        "Packed": articlePacked,
+        "Awaiting Pick": awaitingPicking,
+        "Completed": completedPacked,
     }];
 
     // const chartData = data.map((order) => ({
@@ -25,6 +27,20 @@ const OrderChart = ({ data }: IOrderChart) => {
     //     "Completed": order.deliveryStatus === "Packed" ? order.items.length : 0,
     //     "Article Remaining": order.deliveryStatus !== "Packed" && order.deliveryStatus !== "Picking" ? order.items.length : 0,
     // }));
+
+    // const getColorByValue = (value, key) => {
+    //     if (key === "Awaiting Pick") {
+    //         if (value > 50) return "#FF0000";  // bright red for large values
+    //         if (value > 20) return "#FFA500";  // orange for medium
+    //         return "#FFFF00";                  // yellow for small
+    //     }
+    //     // other keys can have other rules
+    //     if (key === "Completed") {
+    //         return value > 100 ? "#008000" : "#00FF00";
+    //     }
+    //     // fallback color
+    //     return "#0000FF";
+    // };
 
     return (
         <div className={"flex justify-start"}>
@@ -90,7 +106,7 @@ const OrderChart = ({ data }: IOrderChart) => {
                             position="outside"
                             angle={0}
                             offset={25}
-                            
+
                         />
                     </Bar>
                     <Bar
@@ -108,6 +124,22 @@ const OrderChart = ({ data }: IOrderChart) => {
                             fill="#FF0000"
                         />
 
+                    </Bar>
+                    <Bar
+                        dataKey="Packed"
+                        fill="#1aff1a"
+                        stackId="b"  // Stack both bars together
+                        barSize={70}  // Make this bar thinner so it sits inside the first one
+                    // activeBar={<Rectangle fill="red" stroke="red" />}
+
+                    >
+                        <LabelList
+                            dataKey="Packed"
+                            position="outside"
+                            angle={0}
+                            offset={25}
+
+                        />
                     </Bar>
                 </BarChart>
             </ResponsiveContainer>

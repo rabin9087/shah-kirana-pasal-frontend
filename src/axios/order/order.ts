@@ -74,4 +74,19 @@ export const updateAOrder = async(_id: string, data: object) => {
   }
 };
 
+export const updateMultipleOrders = async (data: object) => {
+  try {
+    const response = await axiosProcessor({
+    method: "patch",
+    url: `${orderApi}` + "/updateMultiple",
+    isPrivate: true,
+    obj: data
+    });
+    
+    return response
+  } catch (error) {
+    throw new Error("Failed to update product");
+  }
+};
+
 

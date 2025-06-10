@@ -37,10 +37,29 @@ const ordersSlice = createSlice({
       ),
     };
   }
+    },
+   updateOutOfStockSuppliedQuantity: (
+  state,
+  { payload }: PayloadAction<{ _id: string; supplied: number }>
+) => {
+  state.outOfStockOrders = state.outOfStockOrders.map(order => {
+    const updatedItems = order.items.map(item =>
+      item._id === payload._id
+        ? { ...item, supplied: payload.supplied }
+        : item
+    );
+
+    // Check if any item was updated (to avoid unnecessary reassignments)
+    const hasUpdated = order.items.some(item => item._id === payload._id);
+
+    return hasUpdated ? { ...order, items: updatedItems } : order;
+  });
 },
+
+
   },
 });
 
 const { reducer, actions } = ordersSlice;
-export const { setOrders, setAOrder, setOutOfStockOrders, updateSuppliedQuantity } = actions;
+export const { setOrders, setAOrder, setOutOfStockOrders, updateSuppliedQuantity, updateOutOfStockSuppliedQuantity } = actions;
 export default reducer;

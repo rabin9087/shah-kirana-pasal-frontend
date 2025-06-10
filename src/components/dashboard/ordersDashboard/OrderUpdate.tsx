@@ -52,10 +52,11 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                     </div>
                     <div
                         className={`text-white text-right p-2 shadow-md rounded-md 
-                            ${status === "Collected" && "bg-green-500"}
+                            ${status === "Collected" && "bg-green-700"}
                             ${status === "Order placed" && "bg-primary"}
                             ${status === "Picking" && "bg-primary"}
                             ${status === "Packed" && "bg-green-500"}
+                            ${status === "Completed" && "bg-green-700"}
                             ${status === "Cancelled" && "bg-red-500"}
                             `}
                     >
@@ -135,9 +136,9 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
                                 >
                                     {data?.orderType === "pickup" ? <>
                                         <option value="Order placed">Order placed</option>
-
                                         <option value="Picking">Picking</option>
                                         <option value="Packed">Packed</option>
+                                        <option value="Completed">Completed</option>
                                         <option value="Collected">Collected</option>
                                         <option value="Cancelled">Cancelled</option>
                                     </> : <>
@@ -223,15 +224,15 @@ export const OrderUpdate = ({ barcode, setBarcode }: { barcode: string, setBarco
             </div> :
                 <div className="flex flex-col justify-center items-center bg-white p-8 rounded-lg shadow-lg max-h-[90vh] overflow-auto">
                     <h3 className="text-red-500 text-center">Order not found!</h3>
-     
+
                     <button
                         className="text-center mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full sm:w-auto"
                         onClick={() => setBarcode("")}
                         type="button"
                     >
                         Close
-                        </button>
-                       
+                    </button>
+
                 </div>}
         </div>
     );
