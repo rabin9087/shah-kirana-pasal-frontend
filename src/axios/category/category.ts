@@ -48,3 +48,12 @@ export const updateACategory= (data: UpdateCategorySchema) => {
      obj: data,
   });
 };
+
+export const updateACategoryStatus= (_id: string, data: string) => {
+  return axiosProcessor({
+    method: "patch",
+    url: `${categoryApi}/${_id}`,
+    isPrivate: false,
+     obj: {data},
+  });
+};

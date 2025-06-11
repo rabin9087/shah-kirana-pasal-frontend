@@ -1,5 +1,5 @@
 
-import { updateACategoryAction } from "@/action/category.action"
+import { updateACategoryStatus } from "@/axios/category/category"
 import CustomModal from "@/components/CustomModal"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,7 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useAppDispatch, useAppSelector } from "@/hooks"
+import { useAppSelector } from "@/hooks"
 
 import { IoCreateOutline } from "react-icons/io5";
 import { Link } from "react-router-dom"
@@ -20,22 +20,21 @@ import { Link } from "react-router-dom"
 const CategoriesDashboard = () => {
 
     const { categories } = useAppSelector(state => state.categoryInfo)
-    const dispatch = useAppDispatch()
 
     const handelOnChecked = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { checked, value } = e.target
 
-        await dispatch(updateACategoryAction({ _id: value, status: checked ? "ACTIVE" : "INACTIVE" }))
+        await updateACategoryStatus(value, checked ? "ACTIVE" : "INACTIVE")
     }
 
     return (
         <>
             <p>Total Categories: {categories?.length}</p>
             <div className="flex justify-end items-center mb-4 me-4">
-                <CustomModal create={"createCategory"} />             
+                <CustomModal create={"createCategory"} />
             </div>
             <Table className="min-w-full table-auto border-collapse border border-gray-200">
-               
+
                 <TableCaption className="text-lg font-medium text-gray-900">All Categories</TableCaption>
 
                 <TableHeader>
@@ -88,7 +87,7 @@ const CategoriesDashboard = () => {
                 </TableBody>
             </Table>
         </>
-        
+
 
     )
 }

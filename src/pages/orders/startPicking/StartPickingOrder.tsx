@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getAOrder, updateAOrder } from "@/axios/order/order";
 import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrders.slice";
 import ScanOrderProduct from "../ScanOrderProduct";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IItemTypes, IOrder } from "@/axios/order/types";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
@@ -37,7 +37,7 @@ export const sortItems = (items: any) => {
 
 const StartPickingOrder = () => {
     const dispatch = useAppDispatch();
-    const navignate = useNavigate()
+    const navigate = useNavigate()
     const { orderNumber } = useParams();
     const { order, orders } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -57,6 +57,7 @@ const StartPickingOrder = () => {
         queryFn: () => getAOrder(orderNumber as string)
     })
 
+    const queryClient = useQueryClient()
     const pikingOrder = orders?.filter((item) => item.orderNumber === order?.orderNumber);
 
     function getChangedItems(oldArr: IItemTypes[], newArr: IItemTypes[]): IItemTypes[] {
@@ -124,12 +125,12 @@ const StartPickingOrder = () => {
             const updateChangedLength = updateChanged?.reduce((acc, { supplied }) => {
                 return acc + (supplied as number)
             }, 0)
-            console.log(itemsQuantityLength, updateChangedLength)
             const updateStatus = itemsQuantityLength === updateChangedLength ? "Completed" : status
             setPacking(false)
-            navignate(-1)
+            navigate("/dashboard/orders")
             updateChanged.length && await updateAOrder(order._id, { deliveryStatus: updateStatus, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) })
-
+            queryClient.invalidateQueries({ queryKey: ['order', orderNumber] })
+            queryClient.invalidateQueries({ queryKey: ["orders", (order.requestDeliveryDate)] })
         }
         setPacking(false)
         return;

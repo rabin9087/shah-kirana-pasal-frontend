@@ -12,6 +12,13 @@ import { useNavigate } from "react-router-dom";
 import { DateNavigator } from "@/pages/orders/OrderTable";
 import OpenStartPickingModal from "@/pages/orders/startPicking/OpenStartPickingModal";
 
+export const formattedDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed, so add 1 and pad with '0'
+        const day = date.getDate().toString().padStart(2, '0');       // Pad with '0'
+        return `${year}-${month}-${day}`;
+}
+
 const OrdersDashboard = () => {
         const { user } = useAppSelector((state) => state.userInfo);
         const adminRoles = ["ADMIN", "PICKER", "SUPERADMIN"];
@@ -24,18 +31,11 @@ const OrdersDashboard = () => {
         // Get the year, month, and day
 
 
-
-        const formattedDate = (date: Date) => {
-                const year = date.getFullYear();
-                const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed, so add 1 and pad with '0'
-                const day = date.getDate().toString().padStart(2, '0');       // Pad with '0'
-                return `${year}-${month}-${day}`;
-        }
-
         const { data = [] } = useQuery<IOrder[]>({
                 queryKey: ["orders", formattedDate(date)],
                 queryFn: () => getAOrdersByDate(formattedDate(date)),
         });
+
         // Filter orders based on status and user role
         const ordersToPick = useMemo(
                 () => data.filter((order) => order.deliveryStatus === "Order placed"),
@@ -58,7 +58,7 @@ const OrdersDashboard = () => {
                 [data, user]
         );
 
-        const handleOnExpressOrderPick = async () => {
+        const handleOnOrderPickNow = async () => {
                 if (ordersPicking.length > 0) {
                         navigate(`/order/orderNumber=/${ordersPicking[0].orderNumber}`);
                         return;
@@ -77,22 +77,20 @@ const OrdersDashboard = () => {
 
         };
 
-        const handleOnOrdersPick = async () => {
-                if (ordersPicking.length > 0) {
+        const handleOnMultipleOrdersPick = async () => {
+                if (ordersPicking.length > 0 && ordersPicking.length < 2) {
                         navigate(`/order/orderNumber=/${ordersPicking[0].orderNumber}`);
                         return;
                 }
 
-                if (ordersToPick.length > 0) {
-                        // await updateAOrder(ordersToPick[0]._id as string, {
-                        //         deliveryStatus: "Picking",
-                        //         picker: { userId: user._id, name: `${user.fName} ${user.lName}` },
-                        // });
-                        navigate(`/orders/pickup`);
+                if (ordersToPick.length > 0 || ordersPicking.length > 1) {
+                        navigate("/orders/pickup");
+                        return;
                 }
+
                 setIsOpenPicking(false);
                 setIsModalOpen(true);
-
+                return
         };
 
         const handleOnOutodStock = async () => {
@@ -160,8 +158,8 @@ const OrdersDashboard = () => {
                         {isOpenPicking && <OpenStartPickingModal
                                 isOpenPicking={isOpenPicking}
                                 setIsOpenPicking={setIsOpenPicking}
-                                handleOnOrdersPick={handleOnOrdersPick}
-                                handleOnExpressOrderPick={handleOnExpressOrderPick}
+                                handleOnMultipleOrdersPick={handleOnMultipleOrdersPick}
+                                handleOnOrderPickNow={handleOnOrderPickNow}
                                 handleOnOutodStock={handleOnOutodStock}
                         />}
 

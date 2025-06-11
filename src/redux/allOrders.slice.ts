@@ -5,13 +5,15 @@ interface InititalState {
   orders: IOrder[];
   outOfStockOrders: IOrder[];
   order: IOrder | null;
+  pickMultipleOrders:  IOrder[];
 };
 
 // Correct initial state
 export const initialState: InititalState= {
   orders: [],
   order: null,
-  outOfStockOrders: []
+  outOfStockOrders: [],
+  pickMultipleOrders: []
 };
 
 const ordersSlice = createSlice({
@@ -28,6 +30,10 @@ const ordersSlice = createSlice({
       state.outOfStockOrders = payload;
     },
 
+    setPickMultipleOrders: (state, { payload }: PayloadAction<IOrder[]>) => {
+      state.pickMultipleOrders = payload;
+    },
+
     updateSuppliedQuantity: (state, { payload }: PayloadAction<{ _id: string; supplied: number }>) => {
       if (state.order && state.order?.items.filter((item) => (item._id === payload._id))) {
     state.order = {
@@ -38,6 +44,7 @@ const ordersSlice = createSlice({
     };
   }
     },
+
    updateOutOfStockSuppliedQuantity: (
   state,
   { payload }: PayloadAction<{ _id: string; supplied: number }>
@@ -54,12 +61,29 @@ const ordersSlice = createSlice({
 
     return hasUpdated ? { ...order, items: updatedItems } : order;
   });
-},
+    },
+   
+    updatePickMultipleOrdersSuppliedQuantity: (
+  state,
+  { payload }: PayloadAction<{ _id: string; supplied: number }>
+) => {
+  state.pickMultipleOrders = state.pickMultipleOrders.map(order => {
+    const updatedItems = order.items.map(item =>
+      item._id === payload._id
+        ? { ...item, supplied: payload.supplied }
+        : item
+    );
 
+    // Check if any item was updated (to avoid unnecessary reassignments)
+    const hasUpdated = order.items.some(item => item._id === payload._id);
+
+    return hasUpdated ? { ...order, items: updatedItems } : order;
+  });
+},
 
   },
 });
 
 const { reducer, actions } = ordersSlice;
-export const { setOrders, setAOrder, setOutOfStockOrders, updateSuppliedQuantity, updateOutOfStockSuppliedQuantity } = actions;
+export const { setOrders, setAOrder, setOutOfStockOrders, updateSuppliedQuantity, updateOutOfStockSuppliedQuantity, setPickMultipleOrders, updatePickMultipleOrdersSuppliedQuantity } = actions;
 export default reducer;

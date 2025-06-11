@@ -6,11 +6,11 @@ import Modal from 'react-modal';
 type OpenStartPickingModalProps = {
     isOpenPicking: boolean;
     setIsOpenPicking: React.Dispatch<React.SetStateAction<boolean>>;
-    handleOnOrdersPick: () => void;
-    handleOnExpressOrderPick: () => void
+    handleOnMultipleOrdersPick: () => void;
+    handleOnOrderPickNow: () => void
     handleOnOutodStock: () => void
 };
-const OpenStartPickingModal = ({ isOpenPicking, setIsOpenPicking, handleOnOrdersPick, handleOnExpressOrderPick, handleOnOutodStock }: OpenStartPickingModalProps) => {
+const OpenStartPickingModal = ({ isOpenPicking, setIsOpenPicking, handleOnMultipleOrdersPick, handleOnOrderPickNow, handleOnOutodStock }: OpenStartPickingModalProps) => {
     LockBodyScroll(isOpenPicking)
     const handleOnClose = () => {
         setIsOpenPicking(false);
@@ -28,12 +28,12 @@ const OpenStartPickingModal = ({ isOpenPicking, setIsOpenPicking, handleOnOrders
                 <div className="bg-blue-100 p-4 rounded-md shadow-lg flex justify-between items-center">
                     <p
                         className="text-lg font-semibold text-blue-800 cursor-pointer"
-                        onClick={handleOnOrdersPick}
+                        onClick={handleOnMultipleOrdersPick}
                     >
                         Pick Multiple Orders
                     </p>
                     <button
-                        onClick={handleOnOrdersPick}
+                        onClick={handleOnMultipleOrdersPick}
                         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition"
                     >
                         Pick
@@ -44,12 +44,12 @@ const OpenStartPickingModal = ({ isOpenPicking, setIsOpenPicking, handleOnOrders
                 <div className="bg-green-100 p-4 rounded-md shadow-lg flex justify-between items-center">
                     <p
                         className="text-lg font-semibold text-green-800 cursor-pointer"
-                        onClick={handleOnExpressOrderPick}
+                        onClick={handleOnOrderPickNow}
                     >
                         Pick Now
                     </p>
                     <button
-                        onClick={handleOnExpressOrderPick}
+                        onClick={handleOnOrderPickNow}
                         className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition"
                     >
                         Pick

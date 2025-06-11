@@ -12,6 +12,7 @@ import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { formatLocation, sortItems } from "../startPicking/StartPickingOrder";
 import OpenBasketLableModal from "./OpenBasketLableModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 type ItemSummary = {
     productId: string;
@@ -30,7 +31,7 @@ const OutOfStockOrders = () => {
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
-
+    const queryClient = useQueryClient()
     let allItems = []
 
     for (let i = 0; i < outOfStockOrders.length; i++) {
@@ -128,9 +129,11 @@ const OutOfStockOrders = () => {
                 }
             }
             setPacking(false)
-            navigate(-1)
+            navigate("/dashboard/orders")
             updateChanged.length && await updateMultipleOrders(orderItems)
             dispatch(setOutOfStockOrders([]))
+            queryClient.invalidateQueries({ queryKey: ["orders", (outOfStockOrders[0].requestDeliveryDate)] })
+
         }
         setPacking(false)
         navigate(-1)
@@ -378,6 +381,7 @@ const OutOfStockOrders = () => {
                 isBasketLabelOpen={isBasketLabelOpen}
                 closeModal={closeModal}
                 orderNumber={currentItemOrder?.orderNumber as number}
+                
             />}
 
         </>

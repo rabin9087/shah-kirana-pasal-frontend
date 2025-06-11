@@ -29,7 +29,7 @@ const AddToCart = () => {
 
                 <div className="flex flex-col">
                     <div className="flex justify-between w-full md:w-[400px] text-xl font-bold pt-4 px-2 ">
-                        <span className="text-gray-600">{language=== "en" ? "Subtotal": "उपकुल राशि"} </span>
+                        <span className="text-gray-600">{language === "en" ? "Subtotal" : "उपकुल राशि"} </span>
                         <span> {language === "en" ? "Rs." : "रु."}{toatl.toFixed(2)}</span>
                     </div>
                     {(actualToatl - toatl) > 0 && <div className="w-full text-sm md:w-[400px] flex justify-end p-2 font-bold px-2">
@@ -38,7 +38,7 @@ const AddToCart = () => {
                 </div>
                 <div className="w-full md:w-[400px]  py-2 flex justify-center">
                     <Link to={"/payment"}>
-                        <Button className="w-full md:w-[250px]">{language === "en" ? "Checkout" : "अहिले तिर्नुहोस्"}</Button>
+                        <Button className="w-[250px] md:w-[250px]">{language === "en" ? "Checkout" : "अहिले तिर्नुहोस्"}</Button>
                     </Link>
                 </div>
             </div>}

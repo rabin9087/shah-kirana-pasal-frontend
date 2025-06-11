@@ -1,6 +1,7 @@
 import { updateAOrder } from "@/axios/order/order";
 import { IOrder } from "@/axios/order/types";
 import { useAppSelector } from "@/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -13,14 +14,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
     const { user } = useAppSelector(s => s.userInfo)
     const [status, setStatus] = useState(order?.deliveryStatus);
     const [paymentStatus, setPaymentStatus] = useState(order?.paymentStatus);
-
+    const queryClient = useQueryClient()
 
     const handleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
         if (order?._id) {
             await updateAOrder(order._id, { deliveryStatus: newStatus });
-            // await updateAOrder(order._id, { deliveryStatus: status, picker: { userId: user._id, name: user.fName + " " + user.lName } });
+            queryClient.invalidateQueries({ queryKey: ["orders", (order.requestDeliveryDate)] })
         }
         return;
     };
@@ -30,6 +31,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
         setPaymentStatus(newStatus);
         if (order?._id) {
             await updateAOrder(order._id, { paymentStatus: newStatus });
+            queryClient.invalidateQueries({ queryKey: ["orders", (order.requestDeliveryDate)] })
         }
         return;
     };
@@ -37,6 +39,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
     const updateDeliveryStatus = async (status: string) => {
         if (order?._id) {
             await updateAOrder(order._id, { deliveryStatus: status, picker: { userId: user._id, name: user.fName + " " + user.lName } });
+            queryClient.invalidateQueries({ queryKey: ["orders", (order.requestDeliveryDate)] })
         }
         return;
     }

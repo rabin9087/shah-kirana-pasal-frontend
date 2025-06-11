@@ -5,6 +5,7 @@ import { toggleSideBar } from "@/redux/sidebar.slice";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
+import LockBodyScroll from "@/utils/LockBodyScroll";
 
 const SideBar = () => {
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -12,7 +13,7 @@ const SideBar = () => {
   const { language } = useAppSelector((store) => store.settings);
   const { categories } = useAppSelector((state) => state.categoryInfo);
   const dispatch = useAppDispatch();
-
+  LockBodyScroll(open)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
@@ -52,8 +53,8 @@ const SideBar = () => {
           </div>
 
           {/* Category List */}
-          <ul className="mt-4 px-4 space-y-2 overflow-y-auto max-h-[600px] sm:max-h-[500px] pb-8 mb-8">
-            {categories.map(({ _id, name, alternativeName, slug }) => (
+          <ul className="mt-4 px-4 space-y-2 overflow-y-auto max-h-[600px] sm:max-h-[500px] pb-12 mb-8">
+            {categories.filter(({status}) => status === "ACTIVE" ).map(({ _id, name, alternativeName, slug }) => (
               <Link
                 to={`/category/${slug}`}
                 key={_id}

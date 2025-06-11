@@ -45,9 +45,9 @@ import StoreSalesDashboard from "./components/dashboard/storeSales/StoreSalesDas
 import { CreateShop } from "./pages/shop/CreateShop";
 import ContractManagement from "./pages/contractManagement/ContractManagement";
 import JobCategory from "./pages/jobCategory/JobCategory";
-import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
 import GenerateBarcodeQRCode from "./utils/GenerateBarcodeQRCode";
 import OutOfStockOrders from "./pages/orders/outOfStock/OutOfStockOrders";
+import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
