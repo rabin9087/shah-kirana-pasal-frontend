@@ -13,8 +13,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatLocation, sortItems } from "./startPicking/StartPickingOrder";
 import ScanOrderProduct from "./ScanOrderProduct";
 import OpenBasketLableModal, { NotFoundModal } from "./outOfStock/OpenBasketLableModal";
-import audioSuccess from "./startPicking/beep-329314.mp3";
-import audioError from "./startPicking/beep-313342.mp3";
+import audioSuccess from "../../../public/assets/audio/beep-329314.mp3";
+import audioError from "../../../public/assets/audio/beep-313342.mp3";
 
 type ItemSummary = {
     productId: string;

@@ -68,7 +68,7 @@ export const NotFoundModal = ({ isBasketLabelOpen, articleCheck, basketCheck, cl
                     {(isBasketLabelOpen && basketCheck) ? "Incorrect basket!" : articleCheck && "Article not found!"}
                 </h3>
                 <p className="text-sm text-gray-500">
-                    Please try again or double-check the basket.
+                    {(isBasketLabelOpen && basketCheck) ? "Please try again or double-check the basket." : articleCheck && "Please try again or check the article."}
                 </p>
                 <Button
                     variant="outline"
