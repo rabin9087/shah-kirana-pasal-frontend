@@ -13,6 +13,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatLocation, sortItems } from "./startPicking/StartPickingOrder";
 import ScanOrderProduct from "./ScanOrderProduct";
 import OpenBasketLableModal, { NotFoundModal } from "./outOfStock/OpenBasketLableModal";
+import audioSuccess from "./startPicking/beep-329314.mp3";
+import audioError from "./startPicking/beep-313342.mp3";
 
 type ItemSummary = {
     productId: string;
@@ -27,13 +29,16 @@ const StartPickingMultipleOrders = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isBasketLabelOpen, setIsBasketLabelOpen] = useState(false);
-    const [notFound, setNotFound] = useState(false);
+    const [basketCheck, setBasketCheck] = useState(false);
+    const [articleCheck, setArticleCheck] = useState(false);
     const [packing, setPacking] = useState(false);
     const [barcode, setBarcode] = useState("");
     const [baketNumber, setBasketNumber] = useState<number>(0);
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
     const queryClient = useQueryClient()
+    const audioPlaySuccess = new Audio(audioSuccess);
+    const audioPlayError = new Audio(audioError);
 
     let allItems = []
 
@@ -99,7 +104,8 @@ const StartPickingMultipleOrders = () => {
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setNotFound(false)
+        setBasketCheck(false)
+        setArticleCheck(false)
         setModalImage(null);
     };
 
@@ -186,7 +192,7 @@ const StartPickingMultipleOrders = () => {
             setBarcode("");
             updateSuppliedQuintity();
         } else {
-            setNotFound(true)
+            setBasketCheck(true)
         }
     };
 
@@ -201,9 +207,6 @@ const StartPickingMultipleOrders = () => {
 
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
-            if (isBasketLabelOpen) {
-
-            }
             if (e.key === "Enter") {
                 setBarcode(buff.trim());
                 // Finalize the barcode
@@ -220,15 +223,15 @@ const StartPickingMultipleOrders = () => {
 
     useEffect(() => {
         if (!barcode) return;
-
         const handleBasketLabelScan = () => {
             const match = barcode === currentItemOrder?.orderNumber?.toString();
             if (match) {
+                audioPlaySuccess.play()
                 setIsBasketLabelOpen(false);
-                // updateSuppliedQuintity();
                 setCurrentIndex(currentIndex + 1)
             } else {
-                setNotFound(true);
+                audioPlayError.play()
+                setBasketCheck(true)
             }
             return match;
         };
@@ -236,9 +239,11 @@ const StartPickingMultipleOrders = () => {
         const handleProductScan = () => {
             const match = barcode === currentItem?.productId?.qrCodeNumber;
             if (match) {
+                audioPlaySuccess.play()
                 updateSuppliedQuintity();
             } else {
-                setNotFound(true);
+                audioPlayError.play()
+                setArticleCheck(true)
             }
         };
 
@@ -254,7 +259,7 @@ const StartPickingMultipleOrders = () => {
         const timeout = setTimeout(() => setBarcode(""), 500);
 
         return () => clearTimeout(timeout);
-    }, [barcode, isBasketLabelOpen, currentItemOrder?.orderNumber, currentItem?.productId?.qrCodeNumber]);
+    }, [barcode, currentItemOrder?.orderNumber, currentItem?.productId?.qrCodeNumber]);
 
 
     useEffect(() => {
@@ -324,8 +329,6 @@ const StartPickingMultipleOrders = () => {
                                         }
                                         <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
                                         <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
-
-
                                     </div>
                                     <div className="text-center text-md me-2 text-white">
                                         {sortedItems.length - currentIndex}/{sortedItems.length}
@@ -427,16 +430,24 @@ const StartPickingMultipleOrders = () => {
                     </div>
                 )}
 
-                {notFound && <NotFoundModal isBasketLabelOpen={isBasketLabelOpen} closeNotFoundModal={closeModal} />}
+
             </div>}
 
-            {isBasketLabelOpen && <OpenBasketLableModal
-                isBasketLabelOpen={isBasketLabelOpen}
-                closeModal={closeModal}
-                orderNumber={currentItemOrder?.orderNumber as number}
-                baketNumber={baketNumber}
-                supplied={currentItem?.supplied}
-            />}
+            {(basketCheck || articleCheck) &&
+                <NotFoundModal
+                    articleCheck={articleCheck}
+                    basketCheck={basketCheck}
+                    isBasketLabelOpen={isBasketLabelOpen}
+                    closeNotFoundModal={closeModal} />}
+
+            {isBasketLabelOpen &&
+                <OpenBasketLableModal
+                    isBasketLabelOpen={isBasketLabelOpen}
+                    closeModal={closeModal}
+                    orderNumber={currentItemOrder?.orderNumber as number}
+                    baketNumber={baketNumber}
+                    supplied={currentItem?.supplied}
+                />}
 
         </>
     );
