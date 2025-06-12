@@ -272,7 +272,73 @@ const OutOfStockOrders = () => {
                                         {currentItem?.productId?.name}
                                     </h3>
                                 </div>
+                                <div className="space-y-1 w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md p-1 border border-gray-200">
+                                    {/* Ordered & Supplied */}
+                                    <div className="flex items-center justify-between p-2 gap-2 mx-auto">
+                                        <div className="flex flex-col justify-between">
+                                            <div className="flex justify-around gap-2">
+                                                <div className="flex-1 text-center  bg-gray-50 p-3 rounded-md border shadow-sm">
+                                                    <p className="text-gray-500 text-xs">Ordered</p>
+                                                    <p className="text-xl font-semibold text-gray-800">{currentItem?.quantity}</p>
+                                                </div>
+                                                <div className="flex-1 text-center bg-gray-50 p-3 rounded-md border shadow-sm">
+                                                    <p className="text-gray-500 text-xs">Supplied</p>
+                                                    <p className="text-xl font-semibold text-blue-600">
+                                                        {currentItem?.supplied ?? 0}
+                                                    </p>
+                                                </div>
+                                            </div>
 
+                                            {/* Product Details & Image */}
+                                            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                                                {/* Left Side: Product Info */}
+                                                <div className="flex-1 space-y-1 w-full">
+                                                    {/* SKU & Price */}
+                                                    <div className="flex justify-between items-center mt-1 bg-blue-50 p-1 rounded-md border shadow-sm">
+                                                        <p className="text-sm text-gray-600 font-medium">
+                                                            <span className="text-xl font-bold ms-4">{currentItem?.productId?.sku}</span>
+                                                        </p>
+                                                        <p className="text-blue-600 font-semibold me-4">${currentItem?.productId?.price}</p>
+                                                    </div>
+
+                                                    {/* SOH & Basket */}
+                                                    <div className="flex justify-between gap-2">
+                                                        <div className="flex-1 text-center bg-gray-100 p-2 rounded-md border shadow-sm">
+                                                            <p className="text-xs text-gray-500">SOH</p>
+                                                            <p className="text-lg font-medium">{currentItem?.productId?.quantity}</p>
+                                                        </div>
+                                                        {/* <div className="flex-1 text-center bg-gray-100 p-2 rounded-md border shadow-sm">
+                                                            <p className="text-xs text-gray-500">Basket</p>
+                                                            <p className="text-lg font-medium">{""}</p>
+                                                        </div> */}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="w-20 h-20 shrink-0">
+                                            <img
+                                                src={currentItem?.productId?.thumbnail}
+                                                alt={currentItem?.productId?.name}
+                                                className="w-full h-full object-cover rounded-lg border shadow cursor-pointer"
+                                                onClick={() => openModal(currentItem?.productId?.thumbnail)}
+                                            />
+
+                                        </div>
+                                    </div>
+
+                                    {/* Barcode */}
+                                    <div className="flex justify-center pt-2">
+                                        <BarCodeGenerator value={currentItem?.productId?.qrCodeNumber} height={25} width={2} />
+                                    </div>
+                                    {/* Optional Note */}
+                                    {currentItem?.note && (
+                                        <p className="font-thin text-base text-red-500 border border-red-200 rounded-md px-2 py-1 text-center bg-red-50">
+                                            {currentItem?.note}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* <div>  
                                 <div className="flex justify-around gap-4 py-2">
                                     <p className="text-xs border p-2">Ordered: <strong className="text-xl"> {currentItem?.quantity}</strong> </p>
                                     <p className="text-xs border p-2">Supplied:  <strong className="text-xl"> {currentItem?.supplied ? currentItem?.supplied : 0} </strong></p>
@@ -295,7 +361,9 @@ const OutOfStockOrders = () => {
                                 </div>
                                 <p className={`text-xs min-h-[2rem] text-center text-red-400 
                                 ${currentItem?.note !== "" && "border px-2"}`}>
-                                    {currentItem?.note ? currentItem?.note : ""}</p>
+                                        {currentItem?.note ? currentItem?.note : ""}</p>
+                                </div> */}
+
                             </CardContent>
                         )}
 
@@ -381,7 +449,7 @@ const OutOfStockOrders = () => {
                 isBasketLabelOpen={isBasketLabelOpen}
                 closeModal={closeModal}
                 orderNumber={currentItemOrder?.orderNumber as number}
-                
+
             />}
 
         </>
