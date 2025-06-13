@@ -42,6 +42,8 @@ const StartPickingMultipleOrders = () => {
 
     let allItems = []
 
+
+
     const pickingMultipleOrders = useMemo(
         () => orders.filter((order) => order.deliveryStatus === "Picking" && order.picker?.userId === user?._id),
         [orders, user]
@@ -60,6 +62,10 @@ const StartPickingMultipleOrders = () => {
     const sortedItems = sortItems(allItems)
     const currentItem = sortedItems[currentIndex];
     const lastItem = sortedItems[currentIndex - 1];
+
+    const totalProductOfSameId = sortedItems.filter((item) => item?.productId?._id === currentItem?.productId?._id)?.reduce((acc, { quantity }) => {
+        return acc + (quantity as number)
+    }, 0)
 
     function getChangedItems(oldArr: IItemTypes[], newArr: IItemTypes[]): IItemTypes[] {
 
@@ -120,7 +126,7 @@ const StartPickingMultipleOrders = () => {
 
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true)
-        if (orders.length) {
+        if (pickingMultipleOrders.length || pickMultipleOrders.length) {
             const oldOutOfStocks: IItemTypes[] = [];
             const allOrderNumbers: number[] = [];
 
@@ -174,12 +180,11 @@ const StartPickingMultipleOrders = () => {
 
         dispatch(updatePickMultipleOrdersSuppliedQuantity({ _id: currentItem._id, supplied }));
 
-        if (currentIndex + 1 === sortedItems.length) return;
-
         if (supplied === currentItem?.quantity) {
             handelOnSetBasket();
             setIsBasketLabelOpen(true); // Only open basket label, do not move index here
         }
+        if (currentIndex + 1 === sortedItems.length) return;
     };
 
     const resetSuppliedQuintity = () => {
@@ -228,7 +233,10 @@ const StartPickingMultipleOrders = () => {
             if (match) {
                 audioPlaySuccess.play()
                 setIsBasketLabelOpen(false);
-                setCurrentIndex(currentIndex + 1)
+                if (sortedItems.length !== currentIndex + 1) {
+                    setCurrentIndex(currentIndex + 1)
+                }
+                return
             } else {
                 audioPlayError.play()
                 setBasketCheck(true)
@@ -316,19 +324,26 @@ const StartPickingMultipleOrders = () => {
                         {currentItem && (
                             <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
                                 <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md">
-                                    <p className="text-2xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
-                                    <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2 text-xl">
-                                        {aisle === lastAisle ? "" :
-                                            aisle % 2 === 0 ?
-                                                <p className="text-green-500 font-extrabold "
-                                                    style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={20} /></p> :
-                                                <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={20} /></p>
-                                        }
-                                        <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
-                                        <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
+                                    <p className="text-3xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                    <div className="flex flex-col items-center justify-center">
+                                        <div className="text-white">
+                                            <p className="font-thin text-sm">{(currentItem?.quantity < totalProductOfSameId) ? (currentItem?.quantity + "/" + totalProductOfSameId) : "All"} </p>
+                                        </div>
+                                        <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
+                                            {aisle === lastAisle ? "" :
+                                                aisle % 2 === 0 ?
+                                                    <p className="text-green-500 font-extrabold "
+                                                        style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={20} /></p> :
+                                                    <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={20} /></p>
+                                            }
+                                            <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
+                                            <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
+                                        </div>
                                     </div>
-                                    <div className="text-center text-md me-2 text-white">
-                                        {sortedItems.length - currentIndex}/{sortedItems.length}
+
+                                    <div className="flex flex-col text-center text-md me-2 text-white p-2 shadow-md rounded-md bg-blue-700">
+                                        <p>{sortedItems.length - currentIndex}/{sortedItems.length} </p>
+                                        <p className="font-thin text-sm">left in trip</p>
                                     </div>
                                 </div>
                                 <div className="min-h-[4rem]">
