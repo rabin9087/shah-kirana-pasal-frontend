@@ -11,7 +11,7 @@ import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { formatLocation, sortItems } from "../startPicking/StartPickingOrder";
-import OpenBasketLableModal from "./OpenBasketLableModal";
+import { NotFoundModal } from "./OpenBasketLableModal";
 import { useQueryClient } from "@tanstack/react-query";
 
 type ItemSummary = {
@@ -25,9 +25,9 @@ const OutOfStockOrders = () => {
     const { orders, outOfStockOrders } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isBasketLabelOpen, setIsBasketLabelOpen] = useState(false);
-    const [notFound, setNotFound] = useState(false);
     const [packing, setPacking] = useState(false);
+    const [articleCheck, setArticleCheck] = useState(false);
+
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
@@ -86,9 +86,8 @@ const OutOfStockOrders = () => {
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setNotFound(false)
+        setArticleCheck(false)
         setModalImage(null);
-        setIsBasketLabelOpen(true)
     };
 
     const updateDeliveryStatus = async (status: string) => {
@@ -125,7 +124,11 @@ const OutOfStockOrders = () => {
                 );
 
                 if (newItems.length > 0) {
-                    orderItems.push({ orderNumber, items: newItems.map(({ productId, supplied }) => ({ productId: productId._id, supplied })), deliveryStatus: status });
+                    orderItems.push({
+                        orderNumber,
+                        items: newItems.map(({ productId, supplied }) =>
+                            ({ productId: productId._id, supplied })), deliveryStatus: status
+                    });
                 }
             }
             setPacking(false)
@@ -165,7 +168,7 @@ const OutOfStockOrders = () => {
             setBarcode("");
             updateSuppliedQuintity();
         } else {
-            setNotFound(true)
+            setArticleCheck(true)
         }
     };
 
@@ -199,7 +202,8 @@ const OutOfStockOrders = () => {
             setBarcode("");
             updateSuppliedQuintity();
         } else {
-            setNotFound(true)
+            setArticleCheck(true)
+            // setNotFound(true)
         }
 
         setTimeout(() => setBarcode(""), 500); // Optional reset
@@ -431,26 +435,11 @@ const OutOfStockOrders = () => {
                     </div>
                 )}
 
-                {notFound && (
-                    <div className="fixed inset-0 w-fit my-auto h-full  max-w-md mx-auto bg-black bg-opacity-50 flex items-center justify-center mt-20 z-50">
-                        <div className="bg-white p-4 mx-16 rounded-md shadow-lg max-w-md w-72  flex flex-col justify-center items-center">
-                            <h3>Article not found!</h3>
-                            <div className="flex justify-center items-center mt-2">
-                                <Button variant="outline" onClick={closeModal} className="mt-2">
-                                    Close
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {( articleCheck) &&
+                    <NotFoundModal
+                        articleCheck={articleCheck}
+                        closeNotFoundModal={closeModal} />}
             </div>}
-
-            {isBasketLabelOpen && <OpenBasketLableModal
-                isBasketLabelOpen={isBasketLabelOpen}
-                closeModal={closeModal}
-                orderNumber={currentItemOrder?.orderNumber as number}
-
-            />}
 
         </>
     );

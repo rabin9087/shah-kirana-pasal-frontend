@@ -42,8 +42,6 @@ const StartPickingMultipleOrders = () => {
 
     let allItems = []
 
-
-
     const pickingMultipleOrders = useMemo(
         () => orders.filter((order) => order.deliveryStatus === "Picking" && order.picker?.userId === user?._id),
         [orders, user]
@@ -124,54 +122,112 @@ const StartPickingMultipleOrders = () => {
         }
     };
 
-    const updateDeliveryStatus = async (status: string) => {
-        setPacking(true)
-        if (pickingMultipleOrders.length || pickMultipleOrders.length) {
-            const oldOutOfStocks: IItemTypes[] = [];
-            const allOrderNumbers: number[] = [];
+    const allOrderNumbers = Array.from(
+        new Set(pickMultipleOrders.map(order => order.orderNumber))
+    );
 
-            // Only consider orders with "Packed" status
-            const stockNeeded = orders.filter(order => order.deliveryStatus === "Packed");
+    // Step 2: Get matching orders
+    const multipleOrderPicking = orders.filter(order =>
+        allOrderNumbers.includes(order?.orderNumber as number)
+    );
 
-            // Collect all old items and orderNumbers from packed orders
-            for (const order of stockNeeded) {
-                oldOutOfStocks.push(...(order.items || []));
-                if (order.orderNumber !== undefined) {
-                    allOrderNumbers.push(order.orderNumber);
-                }
-            }
+    // Step 3: Flatten all existing items from matched orders
+    const oldMultipleOrdersItems: IItemTypes[] = multipleOrderPicking.flatMap(order => order.items || []);
 
-            // Find updated (changed) items compared to original packed items
-            const updateChanged: IItemTypes[] = getChangedItems(oldOutOfStocks, sortedItems);
+    // Step 4: Get only updated items
+    const updateChanged: IItemTypes[] = getChangedItems(oldMultipleOrdersItems, sortedItems);
+    const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string }[] = [];
 
-            // Build an array of orders with updated items
-            const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string }[] = [];
+    for (const orderNumber of allOrderNumbers) {
+        const matchingOrder = multipleOrderPicking.find(order => order.orderNumber === orderNumber);
 
-            for (const orderNumber of allOrderNumbers) {
-                const matchingOrder = pickMultipleOrders.find(order => order.orderNumber === orderNumber);
+        if (!matchingOrder) continue;
 
-                if (!matchingOrder) continue;
+        // Filter only changed items from this order
+        const newItems = matchingOrder.items.filter(item =>
+            updateChanged.some(changed => changed._id === item._id)
+        );
 
-                // Filter only changed items from this order
-                const newItems = matchingOrder.items.filter(item =>
-                    updateChanged.some(changed => changed._id === item._id)
-                );
-
-                if (newItems.length > 0) {
-                    orderItems.push({ orderNumber, items: newItems.map(({ productId, supplied }) => ({ productId: productId._id, supplied })), deliveryStatus: status });
-                }
-            }
-            setPacking(false)
-            navigate("/dashboard/orders")
-            updateChanged.length && await updateMultipleOrders(orderItems)
-            dispatch(setPickMultipleOrders([]))
-            queryClient.invalidateQueries({ queryKey: ["orders", (orders[0].requestDeliveryDate)] })
-
+        if (newItems.length > 0) {
+            orderItems.push({
+                orderNumber: orderNumber as number,
+                items: newItems.map(({ productId, supplied }) => ({
+                    productId: productId._id,
+                    supplied
+                })),
+                deliveryStatus: status
+            });
         }
-        setPacking(false)
-        navigate("/dashboard/orders")
-        return;
     }
+
+    console.log("allOrderNumbers", allOrderNumbers)
+    console.log("multipleOrderPicking", multipleOrderPicking)
+    console.log("updateChanged", updateChanged)
+    console.log("oldMultipleOrdersItems", oldMultipleOrdersItems)
+    console.log("sortedItems", sortedItems)
+    console.log("orderItems", orderItems)
+
+    const updateDeliveryStatus = async (status: string) => {
+        setPacking(true);
+
+        if (!pickMultipleOrders.length) {
+            setPacking(false);
+            return;
+        }
+
+        // Step 1: Extract unique orderNumbers from pickMultipleOrders
+        const allOrderNumbers = Array.from(
+            new Set(pickMultipleOrders.map(order => order.orderNumber))
+        );
+
+        // Step 2: Get matching orders
+        const multipleOrderPicking = orders.filter(order =>
+            allOrderNumbers.includes(order?.orderNumber as number)
+        );
+
+        // Step 3: Flatten all existing items from matched orders
+        const oldMultipleOrdersItems: IItemTypes[] = multipleOrderPicking.flatMap(order => order.items || []);
+
+        // Step 4: Get only updated items
+        const updateChanged: IItemTypes[] = getChangedItems(oldMultipleOrdersItems, sortedItems);
+
+        // Step 5: Build unique orderItems array
+        const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string }[] = [];
+
+        for (const orderNumber of allOrderNumbers) {
+            const matchingOrder = multipleOrderPicking.find(order => order.orderNumber === orderNumber);
+
+            if (!matchingOrder) continue;
+
+            // Filter only changed items from this order
+            const newItems = matchingOrder.items.filter(item =>
+                updateChanged.some(changed => changed._id === item._id)
+            );
+
+            if (newItems.length > 0) {
+                orderItems.push({
+                    orderNumber: orderNumber as number,
+                    items: newItems.map(({ productId, supplied }) => ({
+                        productId: productId._id,
+                        supplied
+                    })),
+                    deliveryStatus: status
+                });
+            }
+        }
+
+        // Step 6: Call API if there are changes
+
+        // Step 7: Cleanup
+        setPacking(false);
+        navigate("/dashboard/orders");
+        queryClient.invalidateQueries({ queryKey: ["orders", orders[0]?.requestDeliveryDate] });
+        if (updateChanged.length) {
+            await updateMultipleOrders(orderItems);
+        }
+        dispatch(setPickMultipleOrders([]));
+    };
+
 
     const updateSuppliedQuintity = () => {
         const supplied = currentItem?.supplied + 1;
@@ -313,7 +369,7 @@ const StartPickingMultipleOrders = () => {
                 <Card className="flex flex-col flex-1 p- border rounded-lg shadow-lg bg-white">
                     <div>
                         <Button className="bg-primary text-white p-2 rounded-md ms-2 mt-2"
-                            onClick={() => updateDeliveryStatus("Packed")}
+                            onClick={() => updateDeliveryStatus("Picking")}
                             disabled={packing}
                         >
                             {"<"} BACK
@@ -456,7 +512,7 @@ const StartPickingMultipleOrders = () => {
                                     <Button
                                         className="px-6 text-white py-2 text-lg font-medium"
                                         disabled={packing}
-                                        onClick={() => updateDeliveryStatus("Completed")}
+                                        onClick={() => updateDeliveryStatus("Packed")}
                                     >
                                         {packing ? "PACKING..." : "PACK"}
                                     </Button>

@@ -11,6 +11,7 @@ import { IItemTypes, IOrder } from "@/axios/order/types";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { NotFoundModal } from "../outOfStock/OpenBasketLableModal";
 
 type ProductLocation = {
     A: number;
@@ -42,7 +43,7 @@ const StartPickingOrder = () => {
     const { order, orders } = useAppSelector((s) => s.ordersInfo);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [notFound, setNotFound] = useState(false);
+    const [articleCheck, setArticleCheck] = useState(false);
     const [packing, setPacking] = useState(false);
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
@@ -107,7 +108,7 @@ const StartPickingOrder = () => {
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setNotFound(false)
+        setArticleCheck(false)
         setModalImage(null);
     };
 
@@ -160,7 +161,7 @@ const StartPickingOrder = () => {
             setBarcode("");
             updateSuppliedQuintity();
         } else {
-            setNotFound(true)
+            setArticleCheck(false)
         }
     };
 
@@ -195,7 +196,7 @@ const StartPickingOrder = () => {
             setBarcode("");
             updateSuppliedQuintity();
         } else {
-            setNotFound(true)
+            setArticleCheck(false)
         }
 
         setTimeout(() => setBarcode(""), 500); // Optional reset
@@ -406,21 +407,11 @@ const StartPickingOrder = () => {
                     </div>
                 )}
 
-                {notFound && (
-                    <div className="fixed inset-0 w-fit my-auto h-full  max-w-md mx-auto bg-black bg-opacity-50 flex items-center justify-center mt-20 z-50">
-                        <div className="bg-white p-4 mx-16 rounded-md shadow-lg max-w-md w-72  flex flex-col justify-center items-center">
-                            <h3>Article not found!</h3>
-                            <div className="flex justify-center items-center mt-2">
-                                <Button variant="outline" onClick={closeModal} className="mt-2">
-                                    Close
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {(articleCheck) &&
+                    <NotFoundModal
+                        articleCheck={articleCheck}
+                        closeNotFoundModal={closeModal} />}
             </div>}
-
-
         </>
     );
 };

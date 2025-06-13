@@ -49,9 +49,9 @@ const OpenBasketLableModal = ({ isBasketLabelOpen, closeModal, orderNumber, bake
 export default OpenBasketLableModal
 
 type OpenNotFoundModalProps = {
-    isBasketLabelOpen: boolean;
+    isBasketLabelOpen?: boolean;
     articleCheck: boolean;
-    basketCheck: boolean;
+    basketCheck?: boolean;
     closeNotFoundModal: () => void
 };
 
