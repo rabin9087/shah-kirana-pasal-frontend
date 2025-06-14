@@ -65,11 +65,13 @@ const OrdersDashboard = () => {
                 }
 
                 if (ordersToPick.length > 0) {
+                        navigate(`/order/orderNumber=/${ordersToPick[0].orderNumber}`);
                         await updateAOrder(ordersToPick[0]._id as string, {
                                 deliveryStatus: "Picking",
                                 picker: { userId: user._id, name: `${user.fName} ${user.lName}` },
+                                startPickingTime: new Date()
                         });
-                        navigate(`/order/orderNumber=/${ordersToPick[0].orderNumber}`);
+
                         return;
                 }
                 setIsOpenPicking(false);

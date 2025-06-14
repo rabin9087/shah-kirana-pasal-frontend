@@ -3,11 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { updateMultipleOrders } from "@/axios/order/order";
+import { updateAOrder, updateMultipleOrders } from "@/axios/order/order";
 import { updatePickMultipleOrdersSuppliedQuantity, setPickMultipleOrders } from "@/redux/allOrders.slice";
 import { IItemTypes } from "@/axios/order/types";
 import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
+import { GoDotFill } from "react-icons/go";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatLocation, sortItems } from "./startPicking/StartPickingOrder";
@@ -40,6 +41,7 @@ const StartPickingMultipleOrders = () => {
     const audioPlaySuccess = new Audio(audioSuccess);
     const audioPlayError = new Audio(audioError);
 
+
     let allItems = []
 
     const pickingMultipleOrders = useMemo(
@@ -61,9 +63,7 @@ const StartPickingMultipleOrders = () => {
     const currentItem = sortedItems[currentIndex];
     const lastItem = sortedItems[currentIndex - 1];
 
-    const totalProductOfSameId = sortedItems.filter((item) => item?.productId?._id === currentItem?.productId?._id)?.reduce((acc, { quantity }) => {
-        return acc + (quantity as number)
-    }, 0)
+
 
     function getChangedItems(oldArr: IItemTypes[], newArr: IItemTypes[]): IItemTypes[] {
 
@@ -82,6 +82,23 @@ const StartPickingMultipleOrders = () => {
             );
         });
     }
+
+    const totalProductOfSameId = sortedItems.filter((item) => item?.productId?._id === currentItem?.productId?._id)?.reduce((acc, { quantity }) => {
+        return acc + (quantity as number)
+    }, 0)
+    const totalItemsToPick = sortedItems.reduce((acc, { quantity }) => {
+        return acc + (quantity as number)
+    }, 0)
+    const timeAllocatedToPick = totalItemsToPick * 20
+    const totalPickingTime = (): number => {
+        const updatedAt = pickMultipleOrders[0]?.startPickingTime;
+
+        if (!updatedAt) return 0;
+
+        const startTime = new Date(updatedAt).getTime();
+        const now = Date.now();
+        return Math.floor((now - startTime) / 1000);
+    };
 
     const currentItemOrder = pickMultipleOrders?.find(order =>
         order.items.some(item => item._id === currentItem?._id)
@@ -122,51 +139,6 @@ const StartPickingMultipleOrders = () => {
         }
     };
 
-    const allOrderNumbers = Array.from(
-        new Set(pickMultipleOrders.map(order => order.orderNumber))
-    );
-
-    // Step 2: Get matching orders
-    const multipleOrderPicking = orders.filter(order =>
-        allOrderNumbers.includes(order?.orderNumber as number)
-    );
-
-    // Step 3: Flatten all existing items from matched orders
-    const oldMultipleOrdersItems: IItemTypes[] = multipleOrderPicking.flatMap(order => order.items || []);
-
-    // Step 4: Get only updated items
-    const updateChanged: IItemTypes[] = getChangedItems(oldMultipleOrdersItems, sortedItems);
-    const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string }[] = [];
-
-    for (const orderNumber of allOrderNumbers) {
-        const matchingOrder = multipleOrderPicking.find(order => order.orderNumber === orderNumber);
-
-        if (!matchingOrder) continue;
-
-        // Filter only changed items from this order
-        const newItems = matchingOrder.items.filter(item =>
-            updateChanged.some(changed => changed._id === item._id)
-        );
-
-        if (newItems.length > 0) {
-            orderItems.push({
-                orderNumber: orderNumber as number,
-                items: newItems.map(({ productId, supplied }) => ({
-                    productId: productId._id,
-                    supplied
-                })),
-                deliveryStatus: status
-            });
-        }
-    }
-
-    console.log("allOrderNumbers", allOrderNumbers)
-    console.log("multipleOrderPicking", multipleOrderPicking)
-    console.log("updateChanged", updateChanged)
-    console.log("oldMultipleOrdersItems", oldMultipleOrdersItems)
-    console.log("sortedItems", sortedItems)
-    console.log("orderItems", orderItems)
-
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true);
 
@@ -192,10 +164,10 @@ const StartPickingMultipleOrders = () => {
         const updateChanged: IItemTypes[] = getChangedItems(oldMultipleOrdersItems, sortedItems);
 
         // Step 5: Build unique orderItems array
-        const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string }[] = [];
+        const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string, endPickingTime?: Date | null}[] = [];
 
         for (const orderNumber of allOrderNumbers) {
-            const matchingOrder = multipleOrderPicking.find(order => order.orderNumber === orderNumber);
+            const matchingOrder = pickMultipleOrders.find(order => order.orderNumber === orderNumber);
 
             if (!matchingOrder) continue;
 
@@ -211,20 +183,21 @@ const StartPickingMultipleOrders = () => {
                         productId: productId._id,
                         supplied
                     })),
-                    deliveryStatus: status
+                    deliveryStatus: status,
+                    endPickingTime: status === "Packed" ? new Date() : null
                 });
             }
         }
-
         // Step 6: Call API if there are changes
 
         // Step 7: Cleanup
         setPacking(false);
         navigate("/dashboard/orders");
-        queryClient.invalidateQueries({ queryKey: ["orders", orders[0]?.requestDeliveryDate] });
+
         if (updateChanged.length) {
             await updateMultipleOrders(orderItems);
         }
+        queryClient.invalidateQueries({ queryKey: ["orders", orders[0]?.requestDeliveryDate] });
         dispatch(setPickMultipleOrders([]));
     };
 
@@ -292,12 +265,14 @@ const StartPickingMultipleOrders = () => {
                 if (sortedItems.length !== currentIndex + 1) {
                     setCurrentIndex(currentIndex + 1)
                 }
-                return
+
             } else {
                 audioPlayError.play()
                 setBasketCheck(true)
+                setArticleCheck(true)
             }
-            return match;
+            return setBarcode("")
+
         };
 
         const handleProductScan = () => {
@@ -309,16 +284,14 @@ const StartPickingMultipleOrders = () => {
                 audioPlayError.play()
                 setArticleCheck(true)
             }
+            return setBarcode("");
         };
 
-        const processed = isBasketLabelOpen
+        isBasketLabelOpen
             ? handleBasketLabelScan()
             : handleProductScan();
 
         // Always clear barcode after handling
-        if (processed) {
-            setBarcode("");
-        }
 
         const timeout = setTimeout(() => setBarcode(""), 500);
 
@@ -357,11 +330,30 @@ const StartPickingMultipleOrders = () => {
                     ...order,
                     items: order.items.filter(item => (item.supplied as number) < item.quantity)
                 }));
-
             dispatch(setPickMultipleOrders(orderPlacedOrders));
         }
     }, [orders, user?._id, pickingMultipleOrders.length, pickNewMultipleOrders.length, dispatch]);
 
+    useEffect(() => {
+        const updateOrders = async () => {
+            if (pickMultipleOrders.length && user._id) {
+                for (const order of pickMultipleOrders) {
+                    if (!order._id || order.deliveryStatus === "Picking") continue;
+
+                    await updateAOrder(order._id, {
+                        deliveryStatus: "Picking",
+                        picker: {
+                            userId: user._id,
+                            name: `${user.fName} ${user.lName}`,
+                        },
+                        startPickingTime: new Date()
+                    });
+                }
+            }
+        };
+
+        updateOrders();
+    }, [pickMultipleOrders.length, user._id]);
 
     return (
         <>
@@ -379,11 +371,16 @@ const StartPickingMultipleOrders = () => {
                     <div className="mt-1 space-y-1 flex-1 overflow-auto max-h-screen">
                         {currentItem && (
                             <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
-                                <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md">
-                                    <p className="text-3xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md gap-2">
+                                    <p className="text-2xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
                                     <div className="flex flex-col items-center justify-center">
                                         <div className="text-white">
                                             <p className="font-thin text-sm">{(currentItem?.quantity < totalProductOfSameId) ? (currentItem?.quantity + "/" + totalProductOfSameId) : "All"} </p>
+                                        </div>
+                                        <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
+                                           
+                                            <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
+                                            <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
                                             {aisle === lastAisle ? "" :
@@ -392,15 +389,26 @@ const StartPickingMultipleOrders = () => {
                                                         style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={20} /></p> :
                                                     <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={20} /></p>
                                             }
-                                            <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
-                                            <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col justify-between items-center text-md text-white p-2 shadow-md rounded-md bg-blue-700">
+                                        <div className="flex justify-between items-center gap-2">
+                                            <div className="rounded-full">
+                                                <GoDotFill className={`
+                                                   ${timeAllocatedToPick > totalPickingTime() && "bg-green-500 rounded-full text-green-500"} 
+                                                ${(totalPickingTime() === timeAllocatedToPick || (totalPickingTime() >= timeAllocatedToPick && totalPickingTime() <= timeAllocatedToPick / 0.1)) && "bg-yellow-500 rounded-full text-yellow-500"} 
+                                                ${timeAllocatedToPick < totalPickingTime() && "bg-red-500 rounded-full text-red-500"} 
+                                                
+                                                `} size={15} />
+                                            </div>
+                                            <p>{sortedItems.length - currentIndex}/{sortedItems.length} </p>
+                                        </div>
+                                        <div className="flex flex-col text-center">
+
+                                            <p className="font-thin text-sm">left in trip</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col text-center text-md me-2 text-white p-2 shadow-md rounded-md bg-blue-700">
-                                        <p>{sortedItems.length - currentIndex}/{sortedItems.length} </p>
-                                        <p className="font-thin text-sm">left in trip</p>
-                                    </div>
                                 </div>
                                 <div className="min-h-[4rem]">
                                     <h3 className="text-base my-2 text-start font-bold ms-2">

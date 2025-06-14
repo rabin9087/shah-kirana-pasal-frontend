@@ -88,5 +88,3 @@ export const updateMultipleOrders = async (data: object) => {
     throw new Error("Failed to update product");
   }
 };
-
-

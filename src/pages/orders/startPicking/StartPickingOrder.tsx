@@ -12,6 +12,7 @@ import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { NotFoundModal } from "../outOfStock/OpenBasketLableModal";
+import { GoDotFill } from "react-icons/go";
 
 type ProductLocation = {
     A: number;
@@ -129,7 +130,7 @@ const StartPickingOrder = () => {
             const updateStatus = itemsQuantityLength === updateChangedLength ? "Completed" : status
             setPacking(false)
             navigate("/dashboard/orders")
-            updateChanged.length && await updateAOrder(order._id, { deliveryStatus: updateStatus, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })) })
+            updateChanged.length && await updateAOrder(order._id, { deliveryStatus: updateStatus, items: updateChanged.map(({ productId, supplied }) => ({ productId: productId._id, supplied })), endPickingTime: status === "Packed" && new Date() })
             queryClient.invalidateQueries({ queryKey: ['order', orderNumber] })
             queryClient.invalidateQueries({ queryKey: ["orders", (order.requestDeliveryDate)] })
         }
@@ -164,6 +165,28 @@ const StartPickingOrder = () => {
             setArticleCheck(false)
         }
     };
+
+    const totalProductOfSameId = sortedItems.filter((item) => item?.productId?._id === currentItem?.productId?._id)?.reduce((acc, { quantity }) => {
+        return acc + (quantity as number)
+    }, 0)
+
+    const totalItemsToPick = sortedItems.reduce((acc, { quantity }) => {
+        return acc + (quantity as number)
+    }, 0)
+
+    const timeAllocatedToPick = totalItemsToPick * 20
+
+    const totalPickingTime = (): number => {
+        const updatedAt = order?.startPickingTime;
+
+        if (!updatedAt) return 0;
+
+        const startTime = new Date(updatedAt).getTime();
+        const now = Date.now();
+        return Math.floor((now - startTime) / 1000);
+    };
+
+    console.log(timeAllocatedToPick, totalPickingTime())
 
     // Extracting aisle (A) and bay (B) from location format "A.B.S"
     const location = currentItem?.productId?.productLocation ?? "";
@@ -226,23 +249,44 @@ const StartPickingOrder = () => {
                     <div className="mt-4 space-y-3 flex-1 overflow-auto h-full">
                         {currentItem && (
                             <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
-                                <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md">
-                                    <p className="text-3xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
-                                    <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2 text-3xl">
+                                <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md gap-2">
+                                    <p className="text-2xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                    <div className="flex flex-col items-center justify-center">
+                                        <div className="text-white">
+                                            <p className="font-thin text-sm">{(currentItem?.quantity < totalProductOfSameId) ? (currentItem?.quantity + "/" + totalProductOfSameId) : "All"} </p>
+                                        </div>
+                                        <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
+                                          
+                                            <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
+                                            <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
+                                        </div>
+                                        <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
                                         {aisle === lastAisle ? "" :
                                             aisle % 2 === 0 ?
                                                 <p className="text-green-500 font-extrabold "
-                                                    style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={25} /></p> :
-                                                <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={25} /></p>
-                                        }
-                                        <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={25} /></p>
-                                        <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={25} /></p>
-
-
+                                                    style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={20} /></p> :
+                                                <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={20} /></p>
+                                            }
+                                        </div>
                                     </div>
-                                    <div className="text-center text-md me-2 text-white">
-                                        {sortedItems.length - currentIndex}/{sortedItems.length}
+                                    <div className="flex flex-col justify-between items-center text-md text-white p-2 shadow-md rounded-md bg-blue-700">
+                                        <div className="flex justify-between items-center gap-2">
+                                            <div className="rounded-full">
+                                                <GoDotFill className={`
+                                                   ${timeAllocatedToPick > totalPickingTime() && "bg-green-500 rounded-full text-green-500"} 
+                                                ${(totalPickingTime() === timeAllocatedToPick || (totalPickingTime() >= timeAllocatedToPick && totalPickingTime() <= timeAllocatedToPick / 0.1)) && "bg-yellow-500 rounded-full text-yellow-500"} 
+                                                ${timeAllocatedToPick < totalPickingTime() && "bg-red-500 rounded-full text-red-500"} 
+                                                
+                                                `} size={15} />
+                                            </div>
+                                            <p>{sortedItems.length - currentIndex}/{sortedItems.length} </p>
+                                        </div>
+                                        <div className="flex flex-col text-center">
+
+                                            <p className="font-thin text-sm">left in trip</p>
+                                        </div>
                                     </div>
+
                                 </div>
                                 <div className="min-h-[4rem]">
                                     <h3 className="text-base my-2 text-start font-bold ms-2">
@@ -285,6 +329,7 @@ const StartPickingOrder = () => {
                                                             <p className="text-xs text-gray-500">SOH</p>
                                                             <p className="text-lg font-medium">{currentItem?.productId?.quantity}</p>
                                                         </div>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -312,34 +357,6 @@ const StartPickingOrder = () => {
                                     )}
                                 </div>
 
-                                {/* <div> 
-
-
-                                <div className="flex justify-around gap-4 py-2">
-                                    <p className="text-xs border p-2">Ordered: <strong className="text-xl"> {currentItem?.quantity}</strong> </p>
-                                    <p className="text-xs border p-2">Supplied:  <strong className="text-xl"> {currentItem?.supplied ? currentItem?.supplied : 0} </strong></p>
-                                </div>
-
-                                <div className="flex justify-between gap-2 text-left w-full">
-                                    <div className="ms-2 py-2">
-                                        <p className="text-xs">SKU: <strong className="text-xl"> {currentItem?.productId?.sku}</strong></p>
-                                        <p className="text-xs">Price: ${currentItem?.productId?.price}</p>
-                                        <p className="text-xs">SOH: {currentItem?.productId?.quantity}</p>
-                                        <div className="flex justify-center items-center mt-2">
-                                            <BarCodeGenerator value={currentItem?.productId?.qrCodeNumber} height={20} width={1} /></div>
-                                    </div>
-                                    <img
-                                        src={currentItem?.productId?.thumbnail}
-                                        alt={currentItem?.productId?.name}
-                                        className="w-16 h-16 mt-4 object-cover rounded-md cursor-pointer"
-                                        onClick={() => openModal(currentItem?.productId?.thumbnail)}
-                                    />
-                                </div>
-                                <p className={`text-xs min-h-[2rem] text-center text-red-400 
-                                ${currentItem?.note !== "" && "border px-2"}`}>
-                                        {currentItem?.note ? currentItem?.note : ""}</p>
-                                
-                                </div> */}
                             </CardContent>
                         )}
 
