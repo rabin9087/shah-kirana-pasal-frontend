@@ -23,7 +23,6 @@ const CheckoutForm = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [isAddressComplete, setIsAddressComplete] = useState(false);
-    const [zipPayment, setZipPayment] = useState(false);
     const { language } = useAppSelector((state) => state.settings)
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
     const [paymentType, setPaymentType] = useState<"cash" | "card">("card");
@@ -91,8 +90,6 @@ const CheckoutForm = () => {
         dispatch(updateCartInUserAxios(user.phone, []));
         dispatch(updateCartHistoryInUserAxios({ phone: user.phone, items, cartAmount, orderNumber, deliveryStatus: "Order Placed", paymentStatus: paymentType === "card" ? "Paid" : "Not Yet Paid" }));
     }
-
-    console.log(zipPayment)
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
