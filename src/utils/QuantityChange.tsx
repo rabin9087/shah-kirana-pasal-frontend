@@ -11,8 +11,11 @@ export const AddToCartButton = ({ item }: { item: IAddToCartTypes }) => {
         dispatch(setAddToCart({ ...item, orderQuantity: 1 }));
     };
     return (
-        <Button variant={"default"} onClick={handleOnAddToCart} className="w-full">
-            {language === "en" ? "Add To Cart": "कार्टमा थप्नुहोस्"}
+        <Button
+            variant={"default"}
+            disabled={item.quantity < 1}
+            onClick={handleOnAddToCart} className="w-full">
+            {language === "en" ? "Add To Cart" : "कार्टमा थप्नुहोस्"}
         </Button>
     );
 };
@@ -22,8 +25,8 @@ export const ChangeItemQty = ({ item }: { item: IAddToCartTypes }) => {
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value;
         const parsedValue = parseInt(value);
-        
-            dispatch(setAddToCart({ ...item, orderQuantity: isNaN(parsedValue) ? 0 : parsedValue }));
+
+        dispatch(setAddToCart({ ...item, orderQuantity: isNaN(parsedValue) ? 0 : parsedValue }));
     };
 
     return (

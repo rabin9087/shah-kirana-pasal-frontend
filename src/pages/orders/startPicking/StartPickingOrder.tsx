@@ -186,8 +186,6 @@ const StartPickingOrder = () => {
         return Math.floor((now - startTime) / 1000);
     };
 
-    console.log(timeAllocatedToPick, totalPickingTime())
-
     // Extracting aisle (A) and bay (B) from location format "A.B.S"
     const location = currentItem?.productId?.productLocation ?? "";
     const lastItemLocation = lastItem?.productId?.productLocation ?? "";

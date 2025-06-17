@@ -8,10 +8,10 @@ type OpenBasketLableModalProps = {
     setIsOpenPicking?: React.Dispatch<React.SetStateAction<boolean>>;
     closeModal: () => void;
     orderNumber: string | number;
-    baketNumber?: number;
+    basketNumber?: number;
     supplied?: number;
 };
-const OpenBasketLableModal = ({ isBasketLabelOpen, closeModal, orderNumber, baketNumber, supplied }: OpenBasketLableModalProps) => {
+const OpenBasketLableModal = ({ isBasketLabelOpen, closeModal, orderNumber, basketNumber, supplied }: OpenBasketLableModalProps) => {
     LockBodyScroll(isBasketLabelOpen)
 
     return (
@@ -24,7 +24,7 @@ const OpenBasketLableModal = ({ isBasketLabelOpen, closeModal, orderNumber, bake
             <div className="flex flex-col items-center text-center space-y-5">
                 <h2 className="text-blue-600 text-3xl font-extrabold flex items-center gap-2">
                     <BsBasket2Fill size={28} className="text-black" />
-                    Basket #{baketNumber}
+                    Basket #{basketNumber}
                 </h2>
 
                 <p className="text-gray-700 text-lg">

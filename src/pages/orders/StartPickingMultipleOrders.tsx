@@ -34,7 +34,7 @@ const StartPickingMultipleOrders = () => {
     const [articleCheck, setArticleCheck] = useState(false);
     const [packing, setPacking] = useState(false);
     const [barcode, setBarcode] = useState("");
-    const [baketNumber, setBasketNumber] = useState<number>(0);
+    const [basketNumber, setBasketNumber] = useState<number>(0);
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
     const queryClient = useQueryClient()
@@ -53,6 +53,15 @@ const StartPickingMultipleOrders = () => {
         () => orders.filter((order) => order.deliveryStatus === "Order placed"),
         [orders, user]
     );
+
+    // const handelOnSetBasket = () => {
+    //     for (const basket in pickMultipleOrders) {
+    //         const basnketNumber = pickMultipleOrders[basket].orderNumber;
+    //         if (basnketNumber === currentItemOrder?.orderNumber) {
+    //             return setBasketNumber(parseInt(basket) + 1);
+    //         }
+    //     }
+    // };
 
     for (let i = 0; i < pickMultipleOrders.length; i++) {
         const items = (pickMultipleOrders[i]?.items || []);
@@ -130,15 +139,6 @@ const StartPickingMultipleOrders = () => {
         setModalImage(null);
     };
 
-    const handelOnSetBasket = () => {
-        for (let i = 0; i < pickMultipleOrders.length; i++) {
-            const basnketNumber = pickMultipleOrders[i].orderNumber;
-            if (basnketNumber === currentItemOrder?.orderNumber) {
-                return setBasketNumber(i + 1);
-            }
-        }
-    };
-
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true);
 
@@ -164,7 +164,7 @@ const StartPickingMultipleOrders = () => {
         const updateChanged: IItemTypes[] = getChangedItems(oldMultipleOrdersItems, sortedItems);
 
         // Step 5: Build unique orderItems array
-        const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string, endPickingTime?: Date | null}[] = [];
+        const orderItems: { orderNumber: number, items: ItemSummary[], deliveryStatus: string, endPickingTime?: Date | null }[] = [];
 
         for (const orderNumber of allOrderNumbers) {
             const matchingOrder = pickMultipleOrders.find(order => order.orderNumber === orderNumber);
@@ -198,9 +198,8 @@ const StartPickingMultipleOrders = () => {
             await updateMultipleOrders(orderItems);
         }
         queryClient.invalidateQueries({ queryKey: ["orders", orders[0]?.requestDeliveryDate] });
-        dispatch(setPickMultipleOrders([]));
+        // dispatch(setPickMultipleOrders([]));
     };
-
 
     const updateSuppliedQuintity = () => {
         const supplied = currentItem?.supplied + 1;
@@ -210,7 +209,7 @@ const StartPickingMultipleOrders = () => {
         dispatch(updatePickMultipleOrdersSuppliedQuantity({ _id: currentItem._id, supplied }));
 
         if (supplied === currentItem?.quantity) {
-            handelOnSetBasket();
+            // handelOnSetBasket();
             setIsBasketLabelOpen(true); // Only open basket label, do not move index here
         }
         if (currentIndex + 1 === sortedItems.length) return;
@@ -256,6 +255,12 @@ const StartPickingMultipleOrders = () => {
     }, [buff]);
 
     useEffect(() => {
+        for (const basket in pickMultipleOrders) {
+            const basnketNumber = pickMultipleOrders[basket].orderNumber;
+            if (basnketNumber === currentItemOrder?.orderNumber) {
+                setBasketNumber(parseInt(basket) + 1);
+            }
+        }
         if (!barcode) return;
         const handleBasketLabelScan = () => {
             const match = barcode === currentItemOrder?.orderNumber?.toString();
@@ -298,7 +303,6 @@ const StartPickingMultipleOrders = () => {
         return () => clearTimeout(timeout);
     }, [barcode, currentItemOrder?.orderNumber, currentItem?.productId?.qrCodeNumber]);
 
-
     useEffect(() => {
         if (!orders || orders.length === 0) return;
 
@@ -315,7 +319,7 @@ const StartPickingMultipleOrders = () => {
                     items: order.items.filter(item => (item.supplied as number) < item.quantity)
                 }));
 
-            dispatch(setPickMultipleOrders(pickingOrders));
+            dispatch(setPickMultipleOrders(pickingOrders.slice(0, 4)));
             return; // ✅ stop here if pickingMultipleOrders
         }
 
@@ -330,7 +334,7 @@ const StartPickingMultipleOrders = () => {
                     ...order,
                     items: order.items.filter(item => (item.supplied as number) < item.quantity)
                 }));
-            dispatch(setPickMultipleOrders(orderPlacedOrders));
+            dispatch(setPickMultipleOrders(orderPlacedOrders.slice(0, 4)));
         }
     }, [orders, user?._id, pickingMultipleOrders.length, pickNewMultipleOrders.length, dispatch]);
 
@@ -351,9 +355,8 @@ const StartPickingMultipleOrders = () => {
                 }
             }
         };
-
         updateOrders();
-    }, [pickMultipleOrders.length, user._id]);
+    }, [pickMultipleOrders.length, user._id,]);
 
     return (
         <>
@@ -378,7 +381,7 @@ const StartPickingMultipleOrders = () => {
                                             <p className="font-thin text-sm">{(currentItem?.quantity < totalProductOfSameId) ? (currentItem?.quantity + "/" + totalProductOfSameId) : "All"} </p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
-                                           
+
                                             <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
                                             <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
                                         </div>
@@ -453,7 +456,7 @@ const StartPickingMultipleOrders = () => {
                                                         </div>
                                                         <div className="flex-1 text-center bg-gray-100 p-2 rounded-md border shadow-sm">
                                                             <p className="text-xs text-gray-500">Basket</p>
-                                                            <p className="text-lg font-medium">{baketNumber}</p>
+                                                            <p className="text-lg font-medium">{basketNumber}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -564,7 +567,7 @@ const StartPickingMultipleOrders = () => {
                     isBasketLabelOpen={isBasketLabelOpen}
                     closeModal={closeModal}
                     orderNumber={currentItemOrder?.orderNumber as number}
-                    baketNumber={baketNumber}
+                    basketNumber={basketNumber}
                     supplied={currentItem?.supplied}
                 />}
 

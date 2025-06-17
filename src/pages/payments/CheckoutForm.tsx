@@ -11,7 +11,6 @@ import { resetCart } from '@/redux/addToCart.slice';
 import { updateCartHistoryInUserAxios, updateCartInUserAxios } from '@/action/user.action';
 import { useNavigate } from 'react-router';
 import { FaRegEdit } from "react-icons/fa";
-import LocationComponent from '../home/GeoLocation';
 import { UserDetailsModel } from './UserDetailsModel';
 import { PaymentButton } from './KhaltiWebPaymentMethod';
 import { toast } from 'react-toastify';
@@ -26,9 +25,9 @@ const CheckoutForm = () => {
     const [isAddressComplete, setIsAddressComplete] = useState(false);
     const { language } = useAppSelector((state) => state.settings)
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
-    const [paymentType, setPaymentType] = useState<"cash" | "card">("cash");
+    const [paymentType, setPaymentType] = useState<"cash" | "card">("card");
     const [changeDetails, setChangeDetails] = useState(false);
-    const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+    // const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
     const [userDetails, setUserDetails] = useState(
         {
@@ -36,7 +35,7 @@ const CheckoutForm = () => {
             lName: user.lName,
             email: user.email,
             phone: user.phone,
-            address: user.address !== "" ? user.address + ", (" + location?.lat.toString() + ", " + location?.lng.toString() + ")" : location?.lat.toString() + ", " + location?.lng.toString(),
+            address: user.address,
         })
 
     const [requestDeliveryDate, setRequestDeliveryDate] = useState<string>("")
@@ -212,12 +211,6 @@ const CheckoutForm = () => {
     };
 
     useEffect(() => {
-        if (location?.lat && location?.lng) {
-            setUserDetails((prev) => ({ ...prev, address: user.address !== "" ? user.address + ", (" + location?.lat.toString() + ", " + location?.lng.toString() + ")" : location?.lat.toString() + ", " + location?.lng.toString(), }));
-        }
-    }, [location?.lat, location?.lng]);
-
-    useEffect(() => {
         if (!user) {
         } else {
             setContactInfo({
@@ -308,8 +301,6 @@ const CheckoutForm = () => {
                                         userDetails={userDetails}
                                     />
 
-                                    <LocationComponent setLocation={setLocation} />
-
                                     {orderType === "delivery" && <div className='shadow-md bg-slate-100 rounded-md ps-2'>
                                         <h3 className='p-2 font-bold text-xl'>Shipping Details</h3>
 
@@ -347,6 +338,17 @@ const CheckoutForm = () => {
                                     <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
                                         <h3 className='p-2 font-bold text-xl' >{language === "en" ? "Payment Type" : "भुक्तान प्रकार"}</h3>
                                         <div className="flex items-center space-x-4">
+
+                                            <Button
+                                                type='button'
+                                                className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "card"
+                                                    ? "bg-blue-500 text-white"
+                                                    : "bg-gray-200 text-gray-700"
+                                                    }`}
+                                                onClick={() => setPaymentType("card")}
+                                            >
+                                                {language === "en" ? "Card" : " कार्ड"}
+                                            </Button>
                                             <Button type='button'
                                                 className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "cash"
                                                     ? "bg-blue-500 text-white"
@@ -357,17 +359,6 @@ const CheckoutForm = () => {
                                                 {language === "en" ? "Cash" : "कैश"}
                                             </Button>
 
-                                            <Button
-                                                type='button'
-                                                className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "card"
-                                                    ? "bg-blue-500 text-white"
-                                                    : "bg-gray-200 text-gray-700"
-                                                    }`}
-                                                onClick={() => setPaymentType("card")}
-
-                                            >
-                                                {language === "en" ? "Card" : " कार्ड"}
-                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -378,7 +369,7 @@ const CheckoutForm = () => {
                                     {/* <EsewaPaymentButton amount={cartAmount} /> */}
                                 </div>}
 
-                                <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />
+                                {paymentType === "card" && <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />}
                             </>
                         )}
                     </div>

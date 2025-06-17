@@ -15,8 +15,9 @@ import TogglePasswordVisibility from "./TogglePassword";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginUserAction } from "@/action/user.action";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
+import countryCodes from '../../utils/countryCodes.json'
 
 // Define schema with zod
 const formSchema = z.object({
@@ -37,6 +38,8 @@ function SignInForm() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [currentCountry, setCurrentCountry] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(() => countryCodes[0]); // default
 
   // Determine where the user was navigating from
   const fromLocation = location?.state?.from?.pathname || location.pathname || "/";
@@ -58,7 +61,9 @@ function SignInForm() {
 
   // Handle form submission
   const onSubmit = async (values: TForm) => {
-    const signin = await dispatch(loginUserAction(values))
+    const isPhoneNumber = /^\d+$/.test(values.email_phone);
+    const formattedPhoneOrEmail = isPhoneNumber
+    const signin = await dispatch(loginUserAction({ email_phone: formattedPhoneOrEmail ? selectedCountry.dial_code + values.email_phone : values.email_phone, password: values.password }))
     if (signin) {
       navigate("/")
       return
@@ -72,6 +77,34 @@ function SignInForm() {
       navigate(fromLocation, { replace: true });
     }
   }, [user?._id, fromLocation, navigate]);
+
+  // Get user's country from IP and set it
+  useEffect(() => {
+    const getUserCountry = async () => {
+      try {
+        const res = await fetch("https://get.geojs.io/v1/ip/geo.json");
+        const data = await res.json();``
+
+        setCurrentCountry(data.country); // e.g., "Australia"
+      } catch (error) {
+        console.error("Geo lookup failed:", error);
+      }
+    };
+
+    getUserCountry();
+  }, []);
+
+  // When currentCountry changes, update selectedCountry
+  useEffect(() => {
+    if (!currentCountry) return;
+
+    const found = countryCodes.find((item) => item.name === currentCountry);
+    if (found) {
+      setSelectedCountry(found);
+    }
+  }, [currentCountry]);
+
+  console.log(selectedCountry)
 
 
   return (

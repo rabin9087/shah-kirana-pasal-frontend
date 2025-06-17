@@ -10,6 +10,7 @@ import { toggleSideBar } from "@/redux/sidebar.slice";
 import { IProductTypes } from "@/types/index";
 import logo from "/assets/shahKiranaPasal.png";
 import { RxCross1 } from "react-icons/rx";
+import { FaSearch } from "react-icons/fa";
 
 const links = [
   { name: "Home", path: "/" },
@@ -37,6 +38,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   const { user } = useAppSelector((s) => s.userInfo);
   const { open } = useAppSelector((s) => s.sidebar);
   const [results, setResults] = useState<IResults[]>([]);
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(false)
   const hasAccess = (roles?: string[]) =>
     !roles || roles.includes(user?.role);
 
@@ -101,13 +103,16 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
 
         {/* Right Section: Cart + Profile */}
         <div className="flex w-full items-center justify-end gap-1">
+          <FaSearch
+            onClick={() => setShowSearchBar(!showSearchBar)}
+            className="text-white" size={20} />
           <Cart />
           <Profile />
         </div>
       </div>
 
       {/* Search Section */}
-      <div className="relative flex flex-col justify-center items-center w-full mx-auto">
+      {showSearchBar  && <div className="relative flex flex-col justify-center items-center w-full mx-auto">
         <SearchBar
           data={data}
           types={types}
@@ -120,7 +125,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
             <ResultsComponent results={results} setResults={setResults} />
           </div>
         )}
-      </div>
+      </div>}
     </div>
   );
 };

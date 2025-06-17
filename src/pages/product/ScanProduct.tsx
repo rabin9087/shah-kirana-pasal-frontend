@@ -81,7 +81,7 @@ const ScanProduct = () => {
                     {/* View Product Location */}
                     <div
                         onClick={() => setActiveInput("productLocation")}
-                        className={`bg-gray-50 p-4 rounded-xl shadow hover:shadow-md transition ${activeInput === "productLocation" ? "bg-blue-200" : ""}`}>
+                        className={`bg-gray-50 p-4 rounded-xl shadow hover:shadow-md transition ${activeInput === "productLocation" ? "bg-slate-200" : ""}`}>
                         <Label htmlFor="productLocation" className="text-lg font-semibold text-gray-700 mb-2 block">
                             View Product Location
                         </Label>
@@ -91,7 +91,7 @@ const ScanProduct = () => {
                     </div>
                     <div
                         onClick={() => setActiveInput("barcode")}
-                        className={`bg-gray-50 p-4 rounded-xl shadow hover:shadow-md transition ${activeInput === "barcode" ? "bg-blue-200" : ""}`}>
+                        className={`bg-gray-50 p-4 rounded-xl shadow hover:shadow-md transition ${activeInput === "barcode" ? "bg-slate-200" : ""}`}>
                         <Label htmlFor="barcode" className="text-lg font-semibold text-gray-700 mb-2 block">
                             View Product Details
                         </Label>

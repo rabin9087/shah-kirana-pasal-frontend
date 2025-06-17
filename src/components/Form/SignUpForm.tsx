@@ -17,7 +17,7 @@ import { createNewAdmin, createNewUser } from "@/action/user.action";
 import { useNavigate } from "react-router";
 import { createUserParams } from "@/types/index";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import countryCodes from '../../utils/countryCodes.json'
 
 const formSchema = z.object({
@@ -61,8 +61,9 @@ function SignUpForm({ token, nevigateTo }: ISignupType) {
     ToggleVisibility: toggleConfirmPassword,
     type: confirmPasswordType,
   } = TogglePasswordVisibility();
-  const nepal = countryCodes.findIndex((item) => item.name === 'Nepal')
-  const [selectedCountry, setSelectedCountry] = useState(countryCodes[nepal] || {}); // Default to the first country
+  const [currentCountry, setCurrentCountry] = useState("");
+  const country = countryCodes.findIndex((item) => item.name === currentCountry)
+  const [selectedCountry, setSelectedCountry] = useState(countryCodes[country] || {}); // Default to the first country
 
   const form = useForm<TForm>({
     resolver: zodResolver(formSchema),
@@ -99,7 +100,7 @@ function SignUpForm({ token, nevigateTo }: ISignupType) {
       if (nevigateTo === "store") {
         return
       }
-      
+
       navigate("/sign-in");
     } else {
       toast.error("Account creation failed. Please try again.", {
@@ -108,6 +109,24 @@ function SignUpForm({ token, nevigateTo }: ISignupType) {
       });
     }
   }
+
+  useEffect(() => {
+    const getUserCountry = async () => {
+      try {
+        const res = await fetch("https://get.ipapi.co/v1/ip/geo.json");
+        const data = await res.json();
+        setCurrentCountry(data.country); // e.g., "Australia"
+        const found = countryCodes.find((item) => item.name === data.country);
+        if (found) {
+          setSelectedCountry(found);
+        }
+      } catch (error) {
+        console.error("Geo lookup failed:", error);
+      }
+    };
+
+    getUserCountry();
+  }, []);
 
   return (
     <Form {...form}>
@@ -193,15 +212,15 @@ function SignUpForm({ token, nevigateTo }: ISignupType) {
             </option>
           ))}
         </select>
-        
+
         <div className="flex gap-5 flex-col sm:flex-row">
-          
+
           <FormField
             control={form.control}
             name="phone"
             render={({ field }) => (
               <FormItem className="w-full relative">
-                
+
                 <FormControl>
                   <Input
                     placeholder="Enter your phone number"
