@@ -23,6 +23,7 @@ const CheckoutForm = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [isAddressComplete, setIsAddressComplete] = useState(false);
+    const [zipPayment, setZipPayment] = useState(false);
     const { language } = useAppSelector((state) => state.settings)
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
     const [paymentType, setPaymentType] = useState<"cash" | "card">("card");
@@ -91,6 +92,8 @@ const CheckoutForm = () => {
         dispatch(updateCartHistoryInUserAxios({ phone: user.phone, items, cartAmount, orderNumber, deliveryStatus: "Order Placed", paymentStatus: paymentType === "card" ? "Paid" : "Not Yet Paid" }));
     }
 
+    console.log(zipPayment)
+
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
@@ -133,14 +136,19 @@ const CheckoutForm = () => {
                     elements,
                     confirmParams: {
                         return_url: "https://www.shahkiranapasal.shop/payment/success",
+
                     },
                     redirect: "if_required",
+
                 });
 
                 if (result?.error) {
                     // Show error to your customer (for example, payment details incomplete)
                     console.log(result.error.message);
                 }
+                // if (result?.paymentIntent?.payment_method === "zip") {
+                //     setZipPayment(true)
+                // }
                 else if (result?.paymentIntent?.status === "succeeded") {
                     // Your customer will be redirected to your `return_url`. For some payment
                     // methods like iDEAL, your customer will be redirected to an intermediate
@@ -172,6 +180,8 @@ const CheckoutForm = () => {
                     const orderNumber = await createOrder(customer_details)
                     updateCartAndUserCart(orderNumber.orderNumber as number)
                     setPlaceOrderStatus("Payment Completed")
+                    dispatch(resetCart())
+
                     return navigate("/payment/success")
 
                 }

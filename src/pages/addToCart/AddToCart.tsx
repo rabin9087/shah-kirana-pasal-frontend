@@ -30,7 +30,7 @@ const AddToCart = () => {
                 <div className="flex flex-col">
                     <div className="flex justify-between w-full md:w-[400px] text-xl font-bold pt-4 px-2 ">
                         <span className="text-gray-600">{language === "en" ? "Subtotal" : "उपकुल राशि"} </span>
-                        <span> {language === "en" ? "Rs." : "रु."}{toatl.toFixed(2)}</span>
+                        <span> {language === "en" ? "$" : "रु."}{toatl.toFixed(2)}</span>
                     </div>
                     {(actualToatl - toatl) > 0 && <div className="w-full text-sm md:w-[400px] flex justify-end p-2 font-bold px-2">
                         <span className="w-fit bg-yellow-400 rounded-md px-2 py-1 text-end"> {language === "en" ? "SAVING  Rs." : "बचत गर्दै  रु."}{(actualToatl - toatl).toFixed(2)}</span>

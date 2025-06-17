@@ -93,7 +93,7 @@ const ProductLanding = () => {
                         <div className="flex justify-between items-center font-bold">
                             <div className="flex justify-start items-start font-bold">
                                 <span className={`text-xl mt-1 text-gray-600 ${product.salesPrice > 0 ? "mb-1" : "mb-4"}`}>
-                                    {language === "en" ? "Rs.": "रु."}
+                                    {language === "en" ? "$": "रु."}
                                 </span>
                                 <span className="text-3xl">
                                     {Math.floor(product.salesPrice > 0 ? product.salesPrice : product.price)}

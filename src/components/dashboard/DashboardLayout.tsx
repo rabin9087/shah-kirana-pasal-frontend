@@ -16,10 +16,7 @@ const DashboardLayout = () => {
 
     const menuItems = ["users", "products", "categories", "orders", "online_sales", "store_sales"];
     const pickerMenu = ["orders"];
-
-    // Split menus
     const primaryMenus = ["users", "products", "categories", "orders", "online_sales", "store_sales"];
-    // const secondaryMenus = [];
 
     const getMenuItems = () => {
         if (user.role === "ADMIN" || user?.role === "SUPERADMIN") return [...menuItems];
@@ -29,7 +26,6 @@ const DashboardLayout = () => {
 
     const allowedMenus = getMenuItems();
     const allowedPrimaryMenus = primaryMenus.filter(item => allowedMenus.includes(item));
-    // const allowedSecondaryMenus = secondaryMenus.filter(item => allowedMenus.includes(item));
 
     const [activeMenu, setActiveMenu] = useState<string>(
         allowedMenus.includes(menu as string) ? (menu as string) : allowedMenus[0]
@@ -71,40 +67,36 @@ const DashboardLayout = () => {
 
     return (
         <div className="overflow-x-auto">
-            <div className="flex justify-center gap-4 my-4 mx-8">
-                {/* Primary Select */}
-                {allowedPrimaryMenus.length > 0 && (
-                    <select
-                        value={activeMenu}
-                        onChange={(e) => handleMenuClick(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                        <option disabled>Select Main Menu</option>
-                        {allowedPrimaryMenus.map((item) => (
-                            <option key={item} value={item}>
-                                {item.charAt(0).toUpperCase() + item.slice(1)}
-                            </option>
-                        ))}
-                    </select>
-                )}
-
-                {/* Secondary Select */}
-                {/* {allowedSecondaryMenus.length > 0 && (
-                    <select
-                        value={activeMenu}
-                        onChange={(e) => handleMenuClick(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                        <option disabled>Select Secondary Menu</option>
-                        {allowedSecondaryMenus.map((item) => (
-                            <option key={item} value={item}>
-                                {item.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
-                            </option>
-                        ))}
-                    </select>
-                )} */}
+            {/* Select tag on mobile only */}
+            <div className="block md:hidden mx-4 mt-4">
+                <select
+                    value={activeMenu}
+                    onChange={(e) => handleMenuClick(e.target.value)}
+                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                    {allowedPrimaryMenus.map((item) => (
+                        <option key={item} value={item}>
+                            {item.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                        </option>
+                    ))}
+                </select>
             </div>
 
+            {/* Tab buttons on tablet and desktop only */}
+            <div className="hidden md:flex flex-wrap justify-center gap-4 mx-8 mt-6">
+                {allowedPrimaryMenus.map((item) => (
+                    <button
+                        key={item}
+                        onClick={() => handleMenuClick(item)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border ${activeMenu === item
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                            }`}
+                    >
+                        {item.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                    </button>
+                ))}
+            </div>
 
             <div className="flex min-h-screen my-4">
                 <div className="flex-1 p-4 md:p-6 bg-gray-100 w-full">

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { getAllUsers } from "@/axios/user/user.axios";
 import { IUser } from "@/types/index";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";// Assuming you have an Alert component
+import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import SearchInput from "@/components/search/SearchInput";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -11,26 +11,33 @@ import { setUsers } from "@/redux/dashboard.slice";
 import { Button } from "@/components/ui/button";
 import Modal from 'react-modal';
 import AddUser from "./AddUser";
+import { SortKey, sortUsers } from "../utils/SortData";
 
 const UsersDashboard = () => {
-    const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch();
     const [isOpen, setIsOpen] = useState(false);
-    const { users } = useAppSelector(s => s.dashboardData)
+    const { users } = useAppSelector(s => s.dashboardData);
     const { data = [], isLoading, isError } = useQuery<IUser[]>({
         queryKey: ["allUsers"],
         queryFn: getAllUsers,
-        // enabled: users.length === 0
     });
     const [usersData, setUsersData] = useState<IUser[]>(users);
+    const [sortBy, setSortBy] = useState<SortKey>("name"); // ⬅️ track selected sort key
 
-    // Sync usersData whenever `users` changes
     useEffect(() => {
         if (data.length) {
-            const sortedUsers = [...data].sort((a, b) => a.fName.localeCompare(b.fName));
-            setUsersData(sortedUsers);
-            dispatch(setUsers(sortedUsers));
+            const sorted = sortUsers(data, sortBy);
+            setUsersData(sorted);
+            dispatch(setUsers(sorted));
         }
-    }, [dispatch, data]);
+    }, [data, sortBy, dispatch]);
+
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value as SortKey;
+        setSortBy(value);
+        const sorted = sortUsers(usersData, value);
+        setUsersData(sorted);
+    };
 
     return (
         <div className="overflow-x-auto w-full">
@@ -39,80 +46,84 @@ const UsersDashboard = () => {
                     <CardTitle className="text-lg md:text-2xl font-bold">Users Dashboard</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    {/* {isError && <Alert type="error" message="Failed to fetch users" />} */}
-
                     {!isLoading && !isError && data.length === 0 && (
                         <p className="text-center text-gray-500">No users found.</p>
                     )}
-
                     {!isLoading && !isError && data.length > 0 && (
                         <div className="overflow-auto w-full">
-                            <div className="flex justify-between items-center me-4">
-                                <p>Total Users: {data?.length}</p>
-                            </div>
-                            <div className="flex md:justify-end items-center gap-2 w-full ms-1">
-                                <SearchInput
-                                    placeholder="Search the user"
-                                    data={users}
-                                    searchKeys={["fName", "lName", "email", "phone"]}
-                                    setFilteredData={(filtered) =>
-                                        setUsersData(filtered.length > 0 || filtered === data ? filtered : data)
-                                    }
-                                />
-                                <Button type="button" onClick={() => setIsOpen(true)}>+ Add user</Button>
+                            <div className="flex justify-between items-center flex-wrap gap-2 mb-4 px-1">
+                                <p>Total Users: {usersData.length}</p>
+                                <div className="flex gap-2 items-center">
+                                    <p>Sort User by:</p>
+                                    <select
+                                        className="px-2 py-1 border rounded"
+                                        value={sortBy}
+                                        onChange={handleSortChange}
+                                    >
+                                        <option value="name">Name</option>
+                                        <option value="createdAt">Created Date</option>
+                                    </select>
+                                    <SearchInput
+                                        placeholder="Search user"
+                                        data={users}
+                                        searchKeys={["fName", "lName", "email", "phone"]}
+                                        setFilteredData={(filtered) => {
+                                            const sorted = sortUsers(filtered.length ? filtered : data, sortBy);
+                                            setUsersData(sorted);
+                                        }}
+                                    />
+                                    <Button onClick={() => setIsOpen(true)}>+ Add user</Button>
+                                </div>
                             </div>
 
                             <Table className="min-w-full">
                                 <TableHeader>
                                     <TableRow className="bg-gray-200">
-                                        <TableCell className="text-xs md:text-sm">S.N.</TableCell>
-                                        <TableCell className="text-xs md:text-sm">Name</TableCell>
-                                        <TableCell className="text-xs md:text-sm">Email</TableCell>
-                                        <TableCell className="text-xs md:text-sm">Phone</TableCell>
-                                        <TableCell className="text-xs md:text-sm">Address</TableCell>
-                                        <TableCell className="text-xs md:text-sm">Status</TableCell>
-                                        <TableCell className="text-xs md:text-sm">Verified</TableCell>
-                                        <TableCell className="text-xs md:text-sm">Role</TableCell>
-                                        <TableCell className="text-xs md:text-sm">Actions</TableCell>
+                                        <TableCell>S.N.</TableCell>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell>Email</TableCell>
+                                        <TableCell>Phone</TableCell>
+                                        <TableCell>Address</TableCell>
+                                        <TableCell>Status</TableCell>
+                                        <TableCell>Verified</TableCell>
+                                        <TableCell>Role</TableCell>
+                                        <TableCell>Actions</TableCell>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {usersData.map((user, index) => (
                                         <TableRow key={user._id}>
-                                            <TableCell className="whitespace-nowrap">{index + 1}</TableCell>
-                                            <TableCell className="whitespace-nowrap">{`${user.fName} ${user.lName}`}</TableCell>
-                                            <TableCell className="whitespace-nowrap">{user.email}</TableCell>
-                                            <TableCell className="whitespace-nowrap">{user.phone}</TableCell>
-                                            <TableCell className="whitespace-nowrap">{user.address}</TableCell>
-                                            <TableCell className="whitespace-nowrap">
-                                                <span className={user?.status === "ACTIVE" ? "text-green-500" : "text-red-500"}>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>{`${user.fName} ${user.lName}`}</TableCell>
+                                            <TableCell>{user.email}</TableCell>
+                                            <TableCell>{user.phone}</TableCell>
+                                            <TableCell>{user.address}</TableCell>
+                                            <TableCell>
+                                                <span className={user.status === "ACTIVE" ? "text-green-500" : "text-red-500"}>
                                                     {user.status}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="whitespace-nowrap">
-                                                <span className={user?.isVerified ? "text-green-500" : "text-red-500"}>
+                                            <TableCell>
+                                                <span className={user.isVerified ? "text-green-500" : "text-red-500"}>
                                                     {user.isVerified ? "Verified" : "Unverified"}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="whitespace-nowrap">
-                                                <span className={`${user.role === "ADMIN" ? "text-green-500" : "text-primary"}`}>
+                                            <TableCell>
+                                                <span className={user.role === "ADMIN" ? "text-green-500" : "text-primary"}>
                                                     {user.role}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="whitespace-nowrap">
-                                                <div className="flex items-center gap-2">
-                                                    <Link to={`/dashboard/user/${user.phone}`} className="p-2 px-4 w-1/2 bg-gray-200 rounded-md text-sm">
-                                                        View
-                                                    </Link>
-                                                    <Link to={`/edit/userProfile/${user.phone}`} className="p-2 px-4 w-1/2 bg-blue-500 text-white rounded-md text-sm">
-                                                        Edit
-                                                    </Link>
+                                            <TableCell>
+                                                <div className="flex gap-2">
+                                                    <Link to={`/dashboard/user/${user.phone}`} className="p-2 px-4 bg-gray-200 rounded-md text-sm">View</Link>
+                                                    <Link to={`/edit/userProfile/${user.phone}`} className="p-2 px-4 bg-blue-500 text-white rounded-md text-sm">Edit</Link>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
+
                             <Modal
                                 isOpen={isOpen}
                                 onRequestClose={() => setIsOpen(false)}
@@ -120,15 +131,12 @@ const UsersDashboard = () => {
                                 className="bg-white p-6 rounded-xl shadow-xl max-h-screen overflow-y-auto w-full max-w-md"
                             >
                                 <AddUser />
-                                <Button type="button" onClick={() => setIsOpen(false)} className="mt-4 w-full">
-                                    Close
-                                </Button>
+                                <Button onClick={() => setIsOpen(false)} className="mt-4 w-full">Close</Button>
                             </Modal>
                         </div>
                     )}
                 </CardContent>
             </Card>
-
         </div>
     );
 };

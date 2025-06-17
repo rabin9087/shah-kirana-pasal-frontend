@@ -70,7 +70,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                     </div>
                 </div>
                 <div className="text-xl w-fit text-start items-center my-auto">
-                    <p> {language === "en" ? "Rs." : "रु."}{((item.salesPrice > 0 ? item.salesPrice : item.price) * item.orderQuantity).toFixed(2)} </p>
+                    <p> {language === "en" ? "$" : "रु."}{((item.salesPrice > 0 ? item.salesPrice : item.price) * item.orderQuantity).toFixed(2)} </p>
                     {item.salesPrice > 0 && <p className="text-sm text-end  text-gray-500 line-through">{language === "en" ? "was Rs." : "पहिले रु."}{(item.price * item.orderQuantity).toFixed(2)}</p>}
                 </div>
 
