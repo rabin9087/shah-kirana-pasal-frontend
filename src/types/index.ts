@@ -113,6 +113,7 @@ export type serverReturnDataType = {
   jobs: IJobs[];
   jobCategory: IJobCategory;
   jobCategories: IJobCategory[];
+  checkoutUrl: string;
 };
 
 export type LocationState = {

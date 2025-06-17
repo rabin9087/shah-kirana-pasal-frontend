@@ -12,8 +12,10 @@ import { updateCartHistoryInUserAxios, updateCartInUserAxios } from '@/action/us
 import { useNavigate } from 'react-router';
 import { FaRegEdit } from "react-icons/fa";
 import { UserDetailsModel } from './UserDetailsModel';
-import { PaymentButton } from './KhaltiWebPaymentMethod';
 import { toast } from 'react-toastify';
+// import ZipCheckout from './paymentTypes/ZipPayPaymentMethod';
+// import { EsewaPaymentButton } from './paymentTypes/PaymentWithESewa';
+// import ZipPayButton from './paymentTypes/ZipPayPaymentMethod';
 // import { EsewaPaymentButton } from './PaymentWithESewa';
 
 const CheckoutForm = () => {
@@ -237,180 +239,232 @@ const CheckoutForm = () => {
         }
     }, [user]);
 
-    // const appearance = { theme: "stripe" };
-    // const options = {
-    //     clientSecret,
-    //     appearance,
-    // };
-
     return (
-        <div className="h-screen w-full flex items-center justify-center bg-gray-100">
-            <div className="w-full md:max-w-full max-w-md h-[95vh] overflow-y-auto bg-white rounded-lg shadow-lg p-4 md:p-8">
-                <form onSubmit={handleSubmit} className="w-full space-y-6">
-                    <div className='mx-4 my-4'>
-                        {isAddressComplete && <Button
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+            <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-4 md:p-8 overflow-y-auto max-h-[95vh]">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {isAddressComplete && (
+                        <Button
                             type="button"
-                            onClick={() => setIsAddressComplete(false)} className='w-fit my-4'>
-                            &lt;  {" "}{language === "en" ? "Previous" : "अघिल्लो"}
-                        </Button>}
-                        <div className='flex flex-col gap-2'>
-                            <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                <h3 className='p-2 font-bold text-xl' >{language === "en" ? "Order Type" : "अर्डर प्रकार"}</h3>
-                                <div className="flex items-center space-x-4">
-                                    <Button
-                                        type='button'
-                                        className={`px-4 py-2 rounded-lg transition-colors ${orderType === "pickup"
-                                            ? "bg-blue-500 text-white"
-                                            : "bg-gray-200 text-gray-700"
-                                            }`}
-                                        onClick={() => setOrderType("pickup")}
-                                    >
-                                        {language === "en" ? "Pick up" : "`पसलबाट उठाउनुहोस्`"}
-                                    </Button>
+                            onClick={() => setIsAddressComplete(false)}
+                            className="mb-4"
+                        >
+                            &lt; {language === "en" ? "Previous" : "अघिल्लो"}
+                        </Button>
+                    )}
 
-                                    <Button
-                                        type='button'
-                                        className={`px-4 py-2 rounded-lg transition-colors ${orderType === "delivery"
-                                            ? "bg-blue-500 text-white"
-                                            : "bg-gray-200 text-gray-700"
-                                            }`}
-                                        disabled
-                                        onClick={() => setOrderType("delivery")}
-                                    >
-                                        {language === "en" ? "Delivery" : "डिलीवरी"}
-                                    </Button>
-                                </div>
-                            </div>
+                    {/* Order Type */}
+                    <section className="bg-slate-100 rounded-lg p-4 shadow">
+                        <h2 className="text-xl font-bold mb-4">
+                            {language === "en" ? "Order Type" : "अर्डर प्रकार"}
+                        </h2>
+                        <div className="flex gap-4">
+                            <Button
+                                type="button"
+                                className={`px-4 py-2 rounded-lg transition-colors ${orderType === "pickup"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-200 text-gray-700"
+                                    }`}
+                                onClick={() => setOrderType("pickup")}
+                            >
+                                {language === "en" ? "Pick up" : "पसलबाट उठाउनुहोस्"}
+                            </Button>
+                            <Button
+                                type="button"
+                                className="px-4 py-2 rounded-lg bg-gray-300 text-gray-500 cursor-not-allowed"
+                                disabled
+                            >
+                                {language === "en" ? "Delivery" : "डिलीवरी"}
+                            </Button>
                         </div>
-                        {!isAddressComplete ? (
-                            <>
-                                <div className='flex flex-col gap-2'>
-                                    <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                        <h3 className='p-2 font-bold text-xl' >Contact Info</h3>
-                                        <LinkAuthenticationElement
-                                            onChange={(event) => handleEmailChange(event?.value?.email)} />
-                                        {/* If collecting shipping */}
-                                        {orderType === "pickup" &&
+                    </section>
 
-                                            <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-                                                <div className='flex justify-between'>
-                                                    <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                                                        {language === "en" ? "User's Details" : "प्रयोगकर्ताको विवरण"}</h2>
-                                                    <Button type='button' onClick={() => setChangeDetails(true)}><FaRegEdit size={20} /></Button>
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <p><span className="font-medium" >{language === "en" ? "First Name" : "पहिलो नाम"}:</span> {userDetails.fName || "N/A"}</p>
-                                                    <p><span className="font-medium">{language === "en" ? "Last Name" : "अन्तिम नाम"}:</span> {userDetails.lName || "N/A"}</p>
-                                                    <p><span className="font-medium">{language === "en" ? "Phone" : "फोन"}:</span> {userDetails.phone || "N/A"}</p>
-                                                    <p><span className="font-medium">{language === "en" ? "Email" : "इमेल"}:</span> {userDetails.email || "N/A"}</p>
-                                                    <p><span className="font-medium">{language === "en" ? "Address" : "ठेगाना"}:</span> {userDetails.address || "N/A"}</p>
-                                                </div>
-                                            </div>}
+                    {!isAddressComplete ? (
+                        <>
+                            {/* Contact Info */}
+                            <section className="bg-slate-100 rounded-lg p-4 shadow space-y-4">
+                                <h2 className="text-xl font-bold">
+                                    {language === "en" ? "Contact Info" : "सम्पर्क जानकारी"}
+                                </h2>
+                                <LinkAuthenticationElement
+                                    onChange={(event) => handleEmailChange(event?.value?.email)}
+                                />
+                                {orderType === "pickup" && (
+                                    <div className="bg-white rounded-lg shadow p-4">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h3 className="text-lg font-semibold">
+                                                {language === "en"
+                                                    ? "User's Details"
+                                                    : "प्रयोगकर्ताको विवरण"}
+                                            </h3>
+                                            <Button
+                                                type="button"
+                                                onClick={() => setChangeDetails(true)}
+                                                variant="ghost"
+                                            >
+                                                <FaRegEdit size={20} />
+                                            </Button>
+                                        </div>
+                                        <div className="space-y-2 text-sm">
+                                            <p>
+                                                <strong>{language === "en" ? "First Name" : "पहिलो नाम"}:</strong>{" "}
+                                                {userDetails.fName || "N/A"}
+                                            </p>
+                                            <p>
+                                                <strong>{language === "en" ? "Last Name" : "अन्तिम नाम"}:</strong>{" "}
+                                                {userDetails.lName || "N/A"}
+                                            </p>
+                                            <p>
+                                                <strong>{language === "en" ? "Phone" : "फोन"}:</strong>{" "}
+                                                {userDetails.phone || "N/A"}
+                                            </p>
+                                            <p>
+                                                <strong>{language === "en" ? "Email" : "इमेल"}:</strong>{" "}
+                                                {userDetails.email || "N/A"}
+                                            </p>
+                                            <p>
+                                                <strong>{language === "en" ? "Address" : "ठेगाना"}:</strong>{" "}
+                                                {userDetails.address || "N/A"}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <UserDetailsModel
-                                        isOpen={changeDetails}
-                                        onClose={() => setChangeDetails(false)}
-                                        setUserDetails={setUserDetails}
-                                        userDetails={userDetails}
-                                    />
-
-                                    {orderType === "delivery" && <div className='shadow-md bg-slate-100 rounded-md ps-2'>
-                                        <h3 className='p-2 font-bold text-xl'>Shipping Details</h3>
-
+                                )}
+                                {orderType === "delivery" && (
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-2">
+                                            {language === "en" ? "Shipping Details" : "शिपिंग विवरण"}
+                                        </h3>
                                         <AddressElement
-                                            className="p-4"
+                                            className="p-2"
                                             options={{
                                                 mode: "shipping",
-                                                allowedCountries: [], // Ensure Nepal is allowed
+                                                allowedCountries: [],
                                                 blockPoBox: false,
-                                                fields: {
-                                                    phone: "always",
-                                                    // Set to "auto" to avoid validation issues
-                                                },
-                                                autocomplete: {
-                                                    mode: "automatic"
-                                                },
+                                                fields: { phone: "always" },
+                                                autocomplete: { mode: "automatic" },
                                             }}
-
                                             onChange={handelOnAddressChange}
                                         />
-                                    </div>}
-
-                                    <DeliveryDateSelector orderType={orderType} requestDeliveryDate={requestDeliveryDate} setRequestDeliveryDate={setRequestDeliveryDate} />
-                                </div>
-
-                                <div className='flex justify-center text-center m-4'>
-                                    <Button type="button" onClick={() => setIsAddressComplete(true)} className='w-[200px]'>
-                                        {language === "en" ? "Next" : "अर्को पेज"}
-                                    </Button>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className='flex flex-col gap-2'>
-                                    <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                        <h3 className='p-2 font-bold text-xl' >{language === "en" ? "Payment Type" : "भुक्तान प्रकार"}</h3>
-                                        <div className="flex items-center space-x-4">
-
-                                            <Button
-                                                type='button'
-                                                className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "card"
-                                                    ? "bg-blue-500 text-white"
-                                                    : "bg-gray-200 text-gray-700"
-                                                    }`}
-                                                onClick={() => setPaymentType("card")}
-                                            >
-                                                {language === "en" ? "Card" : " कार्ड"}
-                                            </Button>
-                                            <Button type='button'
-                                                className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "cash"
-                                                    ? "bg-blue-500 text-white"
-                                                    : "bg-gray-200 text-gray-700"
-                                                    }`}
-                                                onClick={() => setPaymentType("cash")}
-                                            >
-                                                {language === "en" ? "Cash" : "कैश"}
-                                            </Button>
-
-                                        </div>
                                     </div>
-                                </div>
-                                <div className='shadow-md bg-slate-100 rounded-md ps-2 my-2'>
-                                    <h3 className='p-2 font-bold text-xl text-center' > {language === "en" ? "Amount to be paid $" : "तिर्नुपर्ने रकम: रु."} {cartAmount?.toFixed(2)}</h3></div>
-                                {paymentType === "card" && <div>
-                                    <PaymentButton amount={cartAmount} />
-                                    {/* <EsewaPaymentButton amount={cartAmount} /> */}
-                                </div>}
+                                )}
+                                <DeliveryDateSelector
+                                    orderType={orderType}
+                                    requestDeliveryDate={requestDeliveryDate}
+                                    setRequestDeliveryDate={setRequestDeliveryDate}
+                                />
+                            </section>
 
-                                {paymentType === "card" && <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />}
-                            </>
-                        )}
-                    </div>
-
-                    {isAddressComplete && (
-                        <>
-                            <div className='flex justify-center text-center m-4'>
-                                <Button type="submit" disabled={!stripe || placeOrderStatus === "Payment Completed"} className='w-[200px]'>
-                                    {isPending ? <div className="w-full h-full flex justify-center items-center my-20">
-                                        <div
-                                            className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                                            role="status">
-                                            <span
-                                                className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-                                            >Loading...</span>
-
-                                        </div>
-                                        <span className="ms-2">Processing payment...</span>
-                                    </div> :
-                                        language === "en" ? placeOrderStatus : "अर्डर गर्नुहोस"}
+                            <div className="flex justify-center">
+                                <Button type="button" onClick={() => setIsAddressComplete(true)} className="w-48 mt-6">
+                                    {language === "en" ? "Next" : "अर्को पेज"}
                                 </Button>
                             </div>
                         </>
+                    ) : (
+                        <>
+                            {/* Payment Type */}
+                            <section className="bg-slate-100 rounded-lg p-4 shadow space-y-4">
+                                <h2 className="text-xl font-bold">
+                                    {language === "en" ? "Payment Type" : "भुक्तान प्रकार"}
+                                </h2>
+                                <div className="flex gap-4">
+                                    <Button
+                                        type="button"
+                                        className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "card"
+                                            ? "bg-blue-500 text-white"
+                                            : "bg-gray-200 text-gray-700"
+                                            }`}
+                                        onClick={() => setPaymentType("card")}
+                                    >
+                                        {language === "en" ? "Card" : "कार्ड"}
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "cash"
+                                            ? "bg-blue-500 text-white"
+                                            : "bg-gray-200 text-gray-700"
+                                            }`}
+                                        onClick={() => setPaymentType("cash")}
+                                    >
+                                        {language === "en" ? "Cash" : "कैश"}
+                                    </Button>
+                                </div>
+                            </section>
+
+                            {/* Payment Amount */}
+                            <div className="bg-slate-100 rounded-lg p-4 text-center font-semibold shadow">
+                                {language === "en"
+                                    ? `Amount to be paid $${cartAmount?.toFixed(2)}`
+                                    : `तिर्नुपर्ने रकम: रु. ${cartAmount?.toFixed(2)}`}
+                            </div>
+
+                                {/* Card Payment Options */}
+                                
+                                {/* {paymentType === "card" && <div className='flex gap-2 py-4'>
+                                    <PaymentButton amount={cartAmount} />
+                                    <EsewaPaymentButton amount={cartAmount} />
+                                    <button
+                                        className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
+                                    >
+                                        Pay with Zip
+                                    </button>
+
+                                </div>} */}
+                            {paymentType === "card" && (
+                                <div className="space-y-6 py-4">
+                                    <div className="bg-white rounded-2xl shadow-md p-4 border">
+                                        <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                                            Pay with Card / Apple Pay / Google Pay
+                                        </h3>
+                                        <PaymentElement
+                                            className="w-full"
+                                            id="payment-element"
+                                            options={{
+                                                layout: "tabs",
+                                                wallets: {
+                                                    applePay: "auto",
+                                                    googlePay: "auto",
+                                                },
+                                            }}
+                                        />
+                                    </div>
+                                    {/* <ZipCheckout /> */}
+                                </div>
+                            )}
+                        </>
                     )}
+
+                    {/* Submit Button */}
+                    {isAddressComplete && (
+                        <div className="flex justify-center">
+                            <Button
+                                type="submit"
+                                disabled={!stripe || placeOrderStatus === "Payment Completed"}
+                                className="w-48 mt-4"
+                            >
+                                {isPending ? (
+                                    <div className="flex items-center">
+                                        <span className="loader mr-2 animate-spin h-5 w-5 border-2 border-white border-r-transparent rounded-full"></span>
+                                        <span>Processing...</span>
+                                    </div>
+                                ) : (
+                                    language === "en" ? placeOrderStatus : "अर्डर गर्नुहोस"
+                                )}
+                            </Button>
+                        </div>
+                    )}
+
+                    {/* Modal for User Details */}
+                    <UserDetailsModel
+                        isOpen={changeDetails}
+                        onClose={() => setChangeDetails(false)}
+                        setUserDetails={setUserDetails}
+                        userDetails={userDetails}
+                    />
                 </form>
             </div>
         </div>
+
     );
 };
 
