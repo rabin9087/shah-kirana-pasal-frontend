@@ -41,7 +41,6 @@ import PrintProductsQRCodeNameSku from "./pages/product/components/showProduct/P
 import PrintSingleProductBarcodeNameSku from "./pages/product/components/showProduct/PrintSingleProductBarcodeNameSku";
 import { Store } from "./pages/store/Store";
 import ShowFullProductDetails from "./pages/product/productLocation/ShowFullProductDetails";
-import StoreSalesDashboard from "./components/dashboard/storeSales/StoreSalesDashboard";
 import { CreateShop } from "./pages/shop/CreateShop";
 import ContractManagement from "./pages/contractManagement/ContractManagement";
 import JobCategory from "./pages/jobCategory/JobCategory";
@@ -179,8 +178,8 @@ function App() {
           element={<Layout title=""><RoleRouter><JobCategory /></RoleRouter></Layout>}
           errorElement={<ErrorPage />}
         />
-        JobCategory
-        <Route
+
+        {/* <Route
           path="/storeSales"
           element={
             <StroreRouter>
@@ -188,7 +187,7 @@ function App() {
             </StroreRouter>
           }
           errorElement={<ErrorPage />}
-        />
+        /> */}
 
         <Route
           path="/shop"
@@ -346,7 +345,6 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
-        {/* <Route path="/:menu" element={<DashboardLayout />} /> */}
 
         <Route
           path="/dashboard/user/:userPhone"

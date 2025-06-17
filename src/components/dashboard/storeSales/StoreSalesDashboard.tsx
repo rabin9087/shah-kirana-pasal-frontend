@@ -1,5 +1,5 @@
 import { allStoreSales, dailyStoreSales } from "@/axios/storeSale/storeSale";
-import Layout from "@/components/layout/Layout"
+// import Layout from "@/components/layout/Layout"
 import { useAppSelector } from "@/hooks";
 import { IStoreSale } from "@/pages/store/types";
 import { useQuery } from "@tanstack/react-query";
@@ -38,9 +38,9 @@ const StoreSalesDashboard = () => {
         setDate(newDate);
     };
 
-    if (isLoading) return <Layout title="">Loading...</Layout>
+    if (isLoading) return <div>Loading...</div>
     return (
-        <Layout title="" >
+        <div>
             {(!dailySales?.length && !totalStoreSales?.length) && <div className="flex flex-col items-center justify-center h-[60vh]">
                 <h2 className="text-2xl font-bold">Not Sales Yet</h2>
                 <p className="text-gray-500 mt-2">Sales data will appear here once available.</p>
@@ -214,7 +214,7 @@ const StoreSalesDashboard = () => {
                 </button>
                 {/* </div> */}
             </div>
-        </Layout>
+        </div>
     )
 }
 export default StoreSalesDashboard

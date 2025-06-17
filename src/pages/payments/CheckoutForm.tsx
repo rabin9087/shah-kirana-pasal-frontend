@@ -229,6 +229,13 @@ const CheckoutForm = () => {
             });
         }
     }, [user]);
+
+    // const appearance = { theme: "stripe" };
+    // const options = {
+    //     clientSecret,
+    //     appearance,
+    // };
+
     return (
         <div className="h-screen w-full flex items-center justify-center bg-gray-100">
             <div className="w-full md:max-w-full max-w-md h-[95vh] overflow-y-auto bg-white rounded-lg shadow-lg p-4 md:p-8">

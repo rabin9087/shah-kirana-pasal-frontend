@@ -45,7 +45,7 @@ const Cart: React.FC = () => {
 
   return (
     <Drawer>
-      <DrawerTrigger className=" relative bg-blue-400/30 hover:bg-blue-400/50 text-sm md:text-md m-4 p-2 px-4 rounded-md">
+      <DrawerTrigger className=" relative bg-blue-400/30 hover:bg-blue-400/50 text-sm md:text-md me-2 ms-2 p-1 sm:m-4 px-4 rounded-md">
         {/* <Button className=" bg-blue-400/30 hover:bg-blue-400/50 text-sm md:text-md"> */}
         <div className="flex justify-center items-center">
           <FaShoppingCart size={20} className="text-white text-sm me-1" />

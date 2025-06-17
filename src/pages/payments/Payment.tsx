@@ -8,7 +8,7 @@ import { useAppSelector } from "@/hooks";
 
 
 // const STRIPE_SECRET_KEY = "pk_test_51OdhKNL18eO1NJXbPtrqRKGrNBF5OCX8LEd5OyfqN0k8uuhyMlQBNoJIHcZaYO22hzaoUHsMLCMJ1W3gWuID3kya003qmxM2KE"
-const STRIPE_SECRET_KEY =  import.meta.env.VITE_STRIPE_PROMISE
+const STRIPE_SECRET_KEY = import.meta.env.VITE_STRIPE_PROMISE
 const Payment = () => {
     const { cart } = useAppSelector(s => s.addToCartInfo)
     const { language } = useAppSelector(s => s.settings)
@@ -26,14 +26,14 @@ const Payment = () => {
     });
 
     const stripePromise = loadStripe(STRIPE_SECRET_KEY);
-    
+
     if (!data?.clientSecret) {
         return null
     }
     return (
 
         <Layout title={language === "en" ? "Payment Details" : "भुक्तानी विवरणहरू"}>
-            <Elements stripe={stripePromise} options={{ clientSecret: data?.clientSecret }} >
+            <Elements stripe={stripePromise} options={{ clientSecret: data?.clientSecret, appearance: { theme: "stripe" } }} >
                 <CheckoutForm />
             </Elements>
         </Layout>

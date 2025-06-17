@@ -11,13 +11,14 @@ import { IProductTypes } from "@/types/index";
 import logo from "/assets/shahKiranaPasal.png";
 import { RxCross1 } from "react-icons/rx";
 import { FaSearch } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 const links = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
   { name: "Contact", path: "/contact" },
   { name: "Store", path: "/store", roles: ["ADMIN", "SUPERADMIN", "STOREUSER"] },
-  { name: "Sales", path: "/storeSales", roles: ["ADMIN", "SUPERADMIN", "STOREUSER"] },
+  // { name: "Sales", path: "/dashboard/storeSales", roles: ["ADMIN", "SUPERADMIN", "STOREUSER"] },
 ];
 
 interface IHeaderProps {
@@ -48,7 +49,7 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
     <div className={`${isMobile ? "md:hidden" : "hidden md:flex"} gap-2 items-center justify-center`}>
       {filteredLinks
         .filter(link =>
-          isMobile ? ["Store", "Sales"].includes(link.name) : true
+          isMobile ? ["Store"].includes(link.name) : true
         )
         .map(link => (
           <Link
@@ -112,20 +113,30 @@ const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
       </div>
 
       {/* Search Section */}
-      {showSearchBar  && <div className="relative flex flex-col justify-center items-center w-full mx-auto">
-        <SearchBar
-          data={data}
-          types={types}
-          setData={setData}
-          results={results}
-          setResults={setResults}
-        />
-        {results.length > 0 && (
-          <div className="absolute rounded-tl-md mx-auto top-full left-0 w-full">
-            <ResultsComponent results={results} setResults={setResults} />
-          </div>
-        )}
-      </div>}
+      <AnimatePresence>{showSearchBar &&
+        <motion.div
+          key="searchbar"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="relative flex flex-col justify-center items-center w-full mx-auto"
+        >
+          <SearchBar
+            data={data}
+            types={types}
+            setData={setData}
+            results={results}
+            setResults={setResults}
+          />
+          {results.length > 0 && (
+            <div className="absolute rounded-tl-md mx-auto top-full left-0 w-full">
+              <ResultsComponent results={results} setResults={setResults} />
+            </div>
+          )}
+        </motion.div>
+      }
+      </AnimatePresence>
     </div>
   );
 };
