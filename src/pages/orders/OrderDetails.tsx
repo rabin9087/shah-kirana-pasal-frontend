@@ -1,6 +1,7 @@
 import { updateAOrder } from "@/axios/order/order";
 import { IOrder } from "@/axios/order/types";
 import { useAppSelector } from "@/hooks";
+import PrinterButton from "@/utils/printer/PrinterButton";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
@@ -48,7 +49,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-4 sm:p-6 rounded-lg w-full sm:w-3/5 shadow-lg max-h-[90vh] overflow-auto">
                 <h3 className="text-lg sm:text-xl font-semibold mb-4">Order Details</h3>
-
+                <PrinterButton />
                 <div className="flex justify-end mb-4">
                     <Link
                         to={`/order/orderNumber=/${order?.orderNumber}`}
@@ -73,7 +74,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onClose }) => {
                         {status === "Cancelled" && "Cancelled"}
                     </Link>
                 </div>
-
+               
                 {/* Main Table for Order Details */}
                 <table className="w-full mb-4">
                     <tbody>

@@ -43,7 +43,7 @@ const UsersDashboard = () => {
         <div className="overflow-x-auto w-full">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg md:text-2xl font-bold">Users Dashboard</CardTitle>
+                    <CardTitle className="flex justify-center text-lg md:text-2xl font-bold uppercase underline">Users Dashboard</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {!isLoading && !isError && data.length === 0 && (
@@ -63,6 +63,8 @@ const UsersDashboard = () => {
                                         <option value="name">Name</option>
                                         <option value="createdAt">Created Date</option>
                                     </select>
+                                </div>
+                                <div className="flex gap-2 items-center">
                                     <SearchInput
                                         placeholder="Search user"
                                         data={users}

@@ -128,6 +128,7 @@ const ProductsDashboard = () => {
     if (error) return <Error />
     return (
         <div>
+            <h3 className="flex justify-center uppercase font-bold underline">Products Dashboard</h3>
             <p>Total Products: {products?.length}</p>
 
             {/* Top Controls Section */}

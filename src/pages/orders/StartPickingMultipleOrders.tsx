@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { updateAOrder, updateMultipleOrders } from "@/axios/order/order";
 import { updatePickMultipleOrdersSuppliedQuantity, setPickMultipleOrders } from "@/redux/allOrders.slice";
 import { IItemTypes } from "@/axios/order/types";
-import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { GoDotFill } from "react-icons/go";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -16,6 +15,7 @@ import ScanOrderProduct from "./ScanOrderProduct";
 import OpenBasketLableModal, { NotFoundModal } from "./outOfStock/OpenBasketLableModal";
 import audioSuccess from "../../../public/assets/audio/beep-329314.mp3";
 import audioError from "../../../public/assets/audio/beep-313342.mp3";
+import PrinterButton from "@/utils/printer/PrinterButton";
 
 type ItemSummary = {
     productId: string;
@@ -53,6 +53,7 @@ const StartPickingMultipleOrders = () => {
         () => orders.filter((order) => order.deliveryStatus === "Order placed"),
         [orders, user]
     );
+    if (pickMultipleOrders.length) { <PrinterButton printMultipleOrder={pickMultipleOrders}/> }
 
     // const handelOnSetBasket = () => {
     //     for (const basket in pickMultipleOrders) {
@@ -375,15 +376,15 @@ const StartPickingMultipleOrders = () => {
                         {currentItem && (
                             <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
                                 <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md gap-2">
-                                    <p className="text-2xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                    <p className="text-[28px] font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
                                     <div className="flex flex-col items-center justify-center">
                                         <div className="text-white">
                                             <p className="font-thin text-sm">{(currentItem?.quantity < totalProductOfSameId) ? (currentItem?.quantity + "/" + totalProductOfSameId) : "All"} </p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
 
-                                            <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
-                                            <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
+                                            <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
+                                            <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
                                             {aisle === lastAisle ? "" :
@@ -471,11 +472,6 @@ const StartPickingMultipleOrders = () => {
                                             />
 
                                         </div>
-                                    </div>
-
-                                    {/* Barcode */}
-                                    <div className="flex justify-center pt-2">
-                                        <BarCodeGenerator value={currentItem?.productId?.qrCodeNumber} height={25} width={2} />
                                     </div>
                                     {/* Optional Note */}
                                     {currentItem?.note && (

@@ -41,6 +41,8 @@ const StoreSalesDashboard = () => {
     if (isLoading) return <div>Loading...</div>
     return (
         <div>
+            <h3 className="flex justify-center uppercase font-bold underline mb-4">Store-sales Dashboard</h3>
+
             {(!dailySales?.length && !totalStoreSales?.length) && <div className="flex flex-col items-center justify-center h-[60vh]">
                 <h2 className="text-2xl font-bold">Not Sales Yet</h2>
                 <p className="text-gray-500 mt-2">Sales data will appear here once available.</p>

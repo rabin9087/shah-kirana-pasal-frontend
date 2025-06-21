@@ -398,9 +398,9 @@ const CheckoutForm = () => {
                                     : `तिर्नुपर्ने रकम: रु. ${cartAmount?.toFixed(2)}`}
                             </div>
 
-                                {/* Card Payment Options */}
-                                
-                                {/* {paymentType === "card" && <div className='flex gap-2 py-4'>
+                            {/* Card Payment Options */}
+
+                            {/* {paymentType === "card" && <div className='flex gap-2 py-4'>
                                     <PaymentButton amount={cartAmount} />
                                     <EsewaPaymentButton amount={cartAmount} />
                                     <button
@@ -414,7 +414,7 @@ const CheckoutForm = () => {
                                 <div className="space-y-6 py-4">
                                     <div className="bg-white rounded-2xl shadow-md p-4 border">
                                         <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                                            Pay with Card / Apple Pay / Google Pay
+                                            Pay with Card
                                         </h3>
                                         <PaymentElement
                                             className="w-full"

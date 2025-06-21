@@ -116,6 +116,8 @@ const Sales = () => {
     return (
         <>
             <div className="overflow-auto text-center">
+                <h3 className="flex justify-center uppercase font-bold underline mb-4">Online-sales Dashboard</h3>
+
                 <div className="flex flex-col text-center mb-8">
                     <div className="font-bold ">Total sales: ${totalAmount.toLocaleString("en-IN")}</div>
                     <div className="font-bold ">Total Paid: ${paidOrders.toLocaleString("en-IN")}</div>

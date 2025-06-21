@@ -29,6 +29,7 @@ const CategoriesDashboard = () => {
 
     return (
         <>
+            <h3 className="flex justify-center uppercase font-bold underline">Categories Dashboard</h3>
             <p>Total Categories: {categories?.length}</p>
             <div className="flex justify-end items-center mb-4 me-4">
                 <CustomModal create={"createCategory"} />

@@ -8,11 +8,11 @@ import { initialState, setAOrder, updateSuppliedQuantity } from "@/redux/allOrde
 import ScanOrderProduct from "../ScanOrderProduct";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IItemTypes, IOrder } from "@/axios/order/types";
-import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { NotFoundModal } from "../outOfStock/OpenBasketLableModal";
 import { GoDotFill } from "react-icons/go";
+import PrinterButton from "@/utils/printer/PrinterButton";
 
 type ProductLocation = {
     A: number;
@@ -79,6 +79,9 @@ const StartPickingOrder = () => {
             );
         });
     }
+
+    if (order?._id) { <PrinterButton printOrder={order}/> }
+
 
     useEffect(() => {
         if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
@@ -248,15 +251,15 @@ const StartPickingOrder = () => {
                         {currentItem && (
                             <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
                                 <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md gap-2">
-                                    <p className="text-2xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                    <p className="text-[28px] font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
                                     <div className="flex flex-col items-center justify-center">
                                         <div className="text-white">
                                             <p className="font-thin text-sm">{(currentItem?.quantity < totalProductOfSameId) ? (currentItem?.quantity + "/" + totalProductOfSameId) : "All"} </p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
                                           
-                                            <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
-                                            <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
+                                            <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
+                                            <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
                                         {aisle === lastAisle ? "" :
@@ -341,11 +344,6 @@ const StartPickingOrder = () => {
                                             />
 
                                         </div>
-                                    </div>
-
-                                    {/* Barcode */}
-                                    <div className="flex justify-center pt-2">
-                                        <BarCodeGenerator value={currentItem?.productId?.qrCodeNumber} height={25} width={2} />
                                     </div>
                                     {/* Optional Note */}
                                     {currentItem?.note && (

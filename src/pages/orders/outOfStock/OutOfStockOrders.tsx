@@ -7,13 +7,13 @@ import { updateMultipleOrders } from "@/axios/order/order";
 import { setOutOfStockOrders, updateOutOfStockSuppliedQuantity } from "@/redux/allOrders.slice";
 import ScanOrderProduct from "../ScanOrderProduct";
 import { IItemTypes } from "@/axios/order/types";
-import { BarCodeGenerator } from "@/components/QRCodeGenerator";
 import { RiArrowTurnBackFill, RiArrowTurnForwardFill } from "react-icons/ri";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { formatLocation, sortItems } from "../startPicking/StartPickingOrder";
 import { NotFoundModal } from "./OpenBasketLableModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { GoDotFill } from "react-icons/go";
+import PrinterButton from "@/utils/printer/PrinterButton";
 
 type ItemSummary = {
     productId: string;
@@ -28,7 +28,6 @@ const OutOfStockOrders = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [packing, setPacking] = useState(false);
     const [articleCheck, setArticleCheck] = useState(false);
-
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
@@ -110,6 +109,8 @@ const OutOfStockOrders = () => {
         setArticleCheck(false)
         setModalImage(null);
     };
+
+    if (outOfStockOrders.length) { <PrinterButton printOutOfStockOrder={outOfStockOrders} /> }
 
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true)
@@ -274,13 +275,13 @@ const OutOfStockOrders = () => {
                         {currentItem && (
                             <CardContent className="flex flex-col items-center justify-center p-3 border rounded-lg shadow-sm bg-gray-100">
                                 <div className="flex justify-between items-center w-full border-2 text-center p-2 bg-primary rounded-md gap-2">
-                                    <p className="text-2xl font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
+                                    <p className="text-[28px] font-bold text-white">{formatLocation(currentItem?.productId?.productLocation)}</p>
                                     <div className="flex flex-col items-center justify-center">
                                         <div className="text-white">
                                             <p className="font-thin text-sm">{(currentItem?.quantity < totalProductOfSameId) ? (currentItem?.quantity + "/" + totalProductOfSameId) : "All"} </p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
-                                    
+
                                             <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
                                             <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
                                         </div>
@@ -368,10 +369,6 @@ const OutOfStockOrders = () => {
                                         </div>
                                     </div>
 
-                                    {/* Barcode */}
-                                    <div className="flex justify-center pt-2">
-                                        <BarCodeGenerator value={currentItem?.productId?.qrCodeNumber} height={25} width={2} />
-                                    </div>
                                     {/* Optional Note */}
                                     {currentItem?.note && (
                                         <p className="font-thin text-base text-red-500 border border-red-200 rounded-md px-2 py-1 text-center bg-red-50">
