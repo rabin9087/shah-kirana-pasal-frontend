@@ -29,20 +29,22 @@ export const QRCodeGenerator = ({
 };
 
 type BarCodeGeneratorProps = {
-  value: string;
+  value?: string;
   width?: number;
   height?: number;
   displayValue?: boolean;
+  className?: string
 };
 
-export const BarCodeGenerator = ({ value, width = 2, height = 40, displayValue = false }: BarCodeGeneratorProps) => {
+export const BarCodeGenerator = ({ value, width = 2, height = 40, displayValue = false, className }: BarCodeGeneratorProps) => {
   return (
     <Barcode
-      value={value}
+      value={value as string}
       width={width}   // barcode line width
       height={height} // barcode height
       displayValue={displayValue} // remove text below barcode if desired
-      margin={0}
+      margin={1}
+      className={className}
     />
   );
 };

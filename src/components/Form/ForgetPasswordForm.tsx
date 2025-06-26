@@ -14,7 +14,6 @@ import { Button } from "../ui/button";
 import { useAppDispatch } from "@/hooks";
 import { forgetPasswordOTPRequest } from "@/action/user.action";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
 
 const formSchema = z.object({
   email_phone: z.string({
@@ -37,7 +36,7 @@ const ForgetPasswordForm = () => {
 
     (await dispatch(forgetPasswordOTPRequest(values))) &&
       navigate("/otp-verify");
-    return toast.success("OTP has been sent")
+    return
   }
 
   return (

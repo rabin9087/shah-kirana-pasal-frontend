@@ -4,7 +4,7 @@ import { useAppSelector } from "@/hooks";
 import ProductCard from "../productCard/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProductsByLimit } from "@/axios/product/product";
-import { useMemo, useState } from "react";
+import {  useMemo, useState } from "react";
 import NetworkError from "@/components/network Error/NetworkError";
 import CarouselWithAutoplay from "./Carousel";
 import { Sparkles, Tag, ShoppingCart, Gift, Monitor } from "lucide-react";
@@ -24,6 +24,7 @@ interface ProductResponse {
 }
 
 function Home(): JSX.Element {
+
   const { categories } = useAppSelector((s) => s.categoryInfo);
   const [page, setPage] = useState(1);
   const limit = 20;

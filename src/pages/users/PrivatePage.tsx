@@ -20,3 +20,19 @@ const PrivatePage = ({ children }: PropsWithChildren) => {
 }
 
 export default PrivatePage
+
+export const ReturenHomePage = ({ children }: PropsWithChildren) => {
+  const { user } = useAppSelector(state => state.userInfo)
+  const location = useLocation();
+  const fromLocation = location.state as LocationState
+  return (
+    <div>
+      {user._id ? <>
+        <Navigate state={{ from: fromLocation }} to={"/"} />
+      </> : <>
+        {children}
+      </>}
+    </div>
+
+  )
+}

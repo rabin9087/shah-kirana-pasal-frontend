@@ -53,7 +53,6 @@ const StartPickingMultipleOrders = () => {
         () => orders.filter((order) => order.deliveryStatus === "Order placed"),
         [orders, user]
     );
-    if (pickMultipleOrders.length) { <PrinterButton printMultipleOrder={pickMultipleOrders}/> }
 
     // const handelOnSetBasket = () => {
     //     for (const basket in pickMultipleOrders) {
@@ -371,6 +370,7 @@ const StartPickingMultipleOrders = () => {
                             {"<"} BACK
                         </Button>
                     </div>
+                    {pickMultipleOrders.length && <PrinterButton printMultipleOrder={pickMultipleOrders} />}
 
                     <div className="mt-1 space-y-1 flex-1 overflow-auto max-h-screen">
                         {currentItem && (

@@ -13,6 +13,8 @@ import { formatLocation, sortItems } from "../startPicking/StartPickingOrder";
 import { NotFoundModal } from "./OpenBasketLableModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { GoDotFill } from "react-icons/go";
+import audioSuccess from "../../../../public/assets/audio/beep-329314.mp3";
+import audioError from "../../../../public/assets/audio/beep-313342.mp3";
 import PrinterButton from "@/utils/printer/PrinterButton";
 
 type ItemSummary = {
@@ -31,7 +33,10 @@ const OutOfStockOrders = () => {
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
+    const audioPlaySuccess = new Audio(audioSuccess);
+    const audioPlayError = new Audio(audioError);
+
     let allItems = []
 
     for (let i = 0; i < outOfStockOrders.length; i++) {
@@ -109,8 +114,6 @@ const OutOfStockOrders = () => {
         setArticleCheck(false)
         setModalImage(null);
     };
-
-    if (outOfStockOrders.length) { <PrinterButton printOutOfStockOrder={outOfStockOrders} /> }
 
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true)
@@ -220,9 +223,11 @@ const OutOfStockOrders = () => {
     useEffect(() => {
         if (!barcode) return;
         if (barcode === currentItem?.productId?.qrCodeNumber) {
+            audioPlaySuccess.play()
             setBarcode("");
             updateSuppliedQuintity();
         } else {
+            audioPlayError.play()
             setArticleCheck(true)
             // setNotFound(true)
         }
@@ -269,7 +274,9 @@ const OutOfStockOrders = () => {
                         </Button>
                     </div>
                     <div className="flex flex-col items-start justify-start p-2">
-
+                        {outOfStockOrders.length > 0 && (
+                            <PrinterButton printOutOfStockOrder={outOfStockOrders} />
+                        )}
                     </div>
                     <div className="mt-4 space-y-3 flex-1 overflow-auto h-full">
                         {currentItem && (

@@ -102,10 +102,7 @@ function SignInForm() {
     if (found) {
       setSelectedCountry(found);
     }
-  }, [currentCountry]);
-
-  console.log(selectedCountry)
-
+  }, [currentCountry])
 
   return (
     <Form {...form}>

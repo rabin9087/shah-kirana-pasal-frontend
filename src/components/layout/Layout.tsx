@@ -62,7 +62,7 @@ const Layout: React.FC<LayoutProps> = ({ title, children, types, data, setData, 
         <Header data={data} types={types} setData={setData} />
       </div>
       {/* <HeaderNav/> */}
-      <main className={`flex-1 relative pt-[116px] overflow-x-hidden `}>
+      <main className={`flex-1 relative pt-[76px] overflow-x-hidden `}>
         {/* Sidebar as an absolute drawer */}
         <div className="relative">
           <div className={`fixed left-0 z-50  transition-transform duration-300 

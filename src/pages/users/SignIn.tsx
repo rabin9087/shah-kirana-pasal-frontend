@@ -10,6 +10,7 @@ import { storeName } from "@/axios";
 
 const SignIn = () => {
   const { user } = useAppSelector(s => s.userInfo);
+ 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,6 +18,7 @@ const SignIn = () => {
       navigate("/");
     }
   }, [user, navigate]); // run when user or navigate changes
+  
 
   return (
     <Layout title="">
@@ -26,7 +28,6 @@ const SignIn = () => {
         <div className="w-full max-w-md bg-white/90 p-6 rounded-lg shadow-lg">
 
           <SignInForm />
-
           <div className="text-center mt-4">
             <p className="text-sm">
               New to {storeName} Online?{" "}

@@ -3,6 +3,7 @@ import { BarCodeGenerator, QRCodeGenerator } from "@/components/QRCodeGenerator"
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router";
 import { useLocation } from "react-router-dom";
+import { PrintBarcode } from "@/utils/printer/PrinterButton";
 
 const PrintSingleProductBarcodeNameSku = () => {
     const location = useLocation();
@@ -136,6 +137,10 @@ const PrintSingleProductBarcodeNameSku = () => {
                     onChange={(e) => setQRHeightWidth(Number(e.target.value))}
                     min="1"
                 />
+            </div>
+
+            <div className="text-end mb-4">
+                <PrintBarcode value={qrCodeNumber as string} qty={count} width={width} height={height} displayValue={barcodeDisplayValue} />
             </div>
 
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-4" style={{ pageBreakInside: "avoid" }}>

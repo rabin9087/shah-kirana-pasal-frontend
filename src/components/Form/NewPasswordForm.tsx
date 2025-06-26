@@ -52,7 +52,6 @@ const NewPasswordForm = () => {
       return;
     }
     await dispatch(updateForgetPassword({ email_phone, password })) && navigate('/sign-in')
-    toast.success("New password has been successfully set,\nYou can now login with your new password")
   }
 
   return (

@@ -110,16 +110,14 @@ function SignUpForm({ token, nevigateTo }: ISignupType) {
     }
   }
 
+  // Get user's country from IP and set it
   useEffect(() => {
     const getUserCountry = async () => {
       try {
-        const res = await fetch("https://get.ipapi.co/v1/ip/geo.json");
-        const data = await res.json();
+        const res = await fetch("https://get.geojs.io/v1/ip/geo.json");
+        const data = await res.json(); ``
+
         setCurrentCountry(data.country); // e.g., "Australia"
-        const found = countryCodes.find((item) => item.name === data.country);
-        if (found) {
-          setSelectedCountry(found);
-        }
       } catch (error) {
         console.error("Geo lookup failed:", error);
       }
@@ -127,6 +125,16 @@ function SignUpForm({ token, nevigateTo }: ISignupType) {
 
     getUserCountry();
   }, []);
+
+  // When currentCountry changes, update selectedCountry
+  useEffect(() => {
+    if (!currentCountry) return;
+
+    const found = countryCodes.find((item) => item.name === currentCountry);
+    if (found) {
+      setSelectedCountry(found);
+    }
+  }, [currentCountry])
 
   return (
     <Form {...form}>

@@ -8,7 +8,7 @@ import SignIn from "./pages/users/SignIn";
 import ForgetPassword from "./pages/users/ForgetPassword";
 import OPTVerification from "./pages/users/OPTVerification";
 import NewPassword from "./pages/users/NewPassword";
-import PrivatePage from "./pages/users/PrivatePage";
+import PrivatePage, { ReturenHomePage } from "./pages/users/PrivatePage";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { useEffect, useRef } from "react";
 import { autoLoginUserAction } from "./action/user.action";
@@ -105,13 +105,13 @@ function App() {
 
         <Route
           path="/sign-in"
-          element={<SignIn />}
+          element={<ReturenHomePage> <SignIn /></ReturenHomePage>}
           errorElement={<ErrorPage />}
         />
 
         <Route
           path="/sign-up"
-          element={<SignUp />}
+          element={<ReturenHomePage> <SignUp /></ReturenHomePage>}
           errorElement={<ErrorPage />}
         />
 

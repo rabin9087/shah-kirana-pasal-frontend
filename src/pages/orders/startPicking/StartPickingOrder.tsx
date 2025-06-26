@@ -13,6 +13,8 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { NotFoundModal } from "../outOfStock/OpenBasketLableModal";
 import { GoDotFill } from "react-icons/go";
 import PrinterButton from "@/utils/printer/PrinterButton";
+import audioSuccess from "../../../../public/assets/audio/beep-329314.mp3";
+import audioError from "../../../../public/assets/audio/beep-313342.mp3";
 
 type ProductLocation = {
     A: number;
@@ -54,6 +56,9 @@ const StartPickingOrder = () => {
     const currentItem = sortedItems[currentIndex];
     const lastItem = sortedItems[currentIndex - 1];
 
+    const audioPlaySuccess = new Audio(audioSuccess);
+    const audioPlayError = new Audio(audioError);
+
     const { data = initialState.order } = useQuery<IOrder>({
         queryKey: ['order', orderNumber],
         queryFn: () => getAOrder(orderNumber as string)
@@ -79,9 +84,6 @@ const StartPickingOrder = () => {
             );
         });
     }
-
-    if (order?._id) { <PrinterButton printOrder={order}/> }
-
 
     useEffect(() => {
         if (data?._id && JSON.stringify(data) !== JSON.stringify(order)) {
@@ -217,9 +219,11 @@ const StartPickingOrder = () => {
     useEffect(() => {
         if (!barcode) return;
         if (barcode === currentItem?.productId?.qrCodeNumber) {
+            audioPlaySuccess.play()
             setBarcode("");
             updateSuppliedQuintity();
         } else {
+            audioPlayError.play()
             setArticleCheck(false)
         }
 
@@ -239,6 +243,7 @@ const StartPickingOrder = () => {
                         >
                             {"<"} BACK
                         </Button>
+                        {order?._id && <PrinterButton printOrder={order} printButton={true} />}
                         <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
                     </div>
                     <div className="flex flex-col items-start justify-start p-2">
@@ -257,16 +262,16 @@ const StartPickingOrder = () => {
                                             <p className="font-thin text-sm">{(currentItem?.quantity < totalProductOfSameId) ? (currentItem?.quantity + "/" + totalProductOfSameId) : "All"} </p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
-                                          
+
                                             <p className={`${bay % 2 === 1 ? "text-green-500" : "text-gray-200"} font-extrabold`}><FaArrowLeft size={20} /></p>
                                             <p className={`${bay % 2 === 0 ? "text-green-500" : "text-gray-200"}  font-extrabold`}><FaArrowRight size={20} /></p>
                                         </div>
                                         <div className="flex justify-center items-center gap-2 rounded-md bg-white px-2">
-                                        {aisle === lastAisle ? "" :
-                                            aisle % 2 === 0 ?
-                                                <p className="text-green-500 font-extrabold "
-                                                    style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={20} /></p> :
-                                                <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={20} /></p>
+                                            {aisle === lastAisle ? "" :
+                                                aisle % 2 === 0 ?
+                                                    <p className="text-green-500 font-extrabold "
+                                                        style={{ transform: 'scaleY(-1)' }}><RiArrowTurnForwardFill size={20} /></p> :
+                                                    <p className="text-green-500 font-extrabold"><RiArrowTurnBackFill size={20} /></p>
                                             }
                                         </div>
                                     </div>

@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { OTPVerificationRequest } from '@/action/user.action';
 import { otp_PasswordParams } from '@/types/index';
-import { toast } from 'react-toastify';
 
 const OPTVerificationForm = () => {
   const dispatch = useAppDispatch();
@@ -36,7 +35,6 @@ const OPTVerificationForm = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await dispatch(OTPVerificationRequest(values as otp_PasswordParams))
       && navigate('/new-password')
-    toast.success("OTP has been verified successfully")
 
   }
   return (
