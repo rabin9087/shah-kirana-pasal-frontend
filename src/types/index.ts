@@ -95,6 +95,7 @@ export type serverReturnDataType = {
   products?: IProductTypes[],
   product?: IProductTypes,
   clientSecret?: string
+  customerSessionClientSecret?: string
   order: IOrder
   orders: IOrder[] 
   sales: ISalesProps

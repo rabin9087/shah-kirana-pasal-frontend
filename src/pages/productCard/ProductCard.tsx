@@ -86,7 +86,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
                 </span>
               </div>
             )}
-            <span className="min-h-5">
+            <span className="block min-h-5">
               {item.quantity <= 5 && (
                 <p className="text-sm text-red-500">
                   {language === "en" ? (

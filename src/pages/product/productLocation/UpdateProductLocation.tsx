@@ -98,11 +98,11 @@ const UpdateProductLocation = ({
     }, [isOpen, setProductLocation]);
 
     const fieldsConfig = [
-        { name: 'productLocation', placeholder: 'Enter new location (e.g., 5.6.7)', type: 'text' },
-        { name: 'quantity', placeholder: 'Add new SOH', type: 'number' },
+        { name: 'productLocation', placeholder: 'Enter new location (e.g. 5.6.7)', type: 'text' },
+        { name: 'quantity', placeholder: 'Add new SOH (e.g. 50)', type: 'number' },
         { name: 'price', placeholder: 'Enter new price', type: 'number' },
         { name: 'costPrice', placeholder: 'Enter new cost price', type: 'number' },
-        { name: 'expireDate', placeholder: 'Enter new expire date', type: 'text' },
+        { name: 'expireDate', placeholder: 'Enter new expire date (e.g. 12/06/2027)', type: 'text' },
     ] as const;
 
     return (

@@ -13,8 +13,8 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { NotFoundModal } from "../outOfStock/OpenBasketLableModal";
 import { GoDotFill } from "react-icons/go";
 import PrinterButton from "@/utils/printer/PrinterButton";
-import audioSuccess from "../../../../public/assets/audio/beep-329314.mp3";
-import audioError from "../../../../public/assets/audio/beep-313342.mp3";
+import audioSuccess from "../../../../src/assets/audio/beep-329314.mp3";
+import audioError from "../../../../src/assets/audio/beep-313342.mp3";
 
 type ProductLocation = {
     A: number;
@@ -243,7 +243,7 @@ const StartPickingOrder = () => {
                         >
                             {"<"} BACK
                         </Button>
-                        {order?._id && <PrinterButton printOrder={order} printButton={true} />}
+                        {order?._id && <PrinterButton printOrder={order} printButton={false} />}
                         <p className="text-sm text-gray-600 text-center">Order No: {order?.orderNumber}</p>
                     </div>
                     <div className="flex flex-col items-start justify-start p-2">

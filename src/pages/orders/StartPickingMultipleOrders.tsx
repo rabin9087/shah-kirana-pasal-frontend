@@ -13,8 +13,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatLocation, sortItems } from "./startPicking/StartPickingOrder";
 import ScanOrderProduct from "./ScanOrderProduct";
 import OpenBasketLableModal, { NotFoundModal } from "./outOfStock/OpenBasketLableModal";
-import audioSuccess from "../../../public/assets/audio/beep-329314.mp3";
-import audioError from "../../../public/assets/audio/beep-313342.mp3";
+import audioSuccess from "../../../src/assets/audio/beep-329314.mp3";
+import audioError from "../../../src/assets/audio/beep-313342.mp3";
 import PrinterButton from "@/utils/printer/PrinterButton";
 
 type ItemSummary = {
@@ -53,15 +53,6 @@ const StartPickingMultipleOrders = () => {
         () => orders.filter((order) => order.deliveryStatus === "Order placed"),
         [orders, user]
     );
-
-    // const handelOnSetBasket = () => {
-    //     for (const basket in pickMultipleOrders) {
-    //         const basnketNumber = pickMultipleOrders[basket].orderNumber;
-    //         if (basnketNumber === currentItemOrder?.orderNumber) {
-    //             return setBasketNumber(parseInt(basket) + 1);
-    //         }
-    //     }
-    // };
 
     for (let i = 0; i < pickMultipleOrders.length; i++) {
         const items = (pickMultipleOrders[i]?.items || []);
@@ -311,12 +302,12 @@ const StartPickingMultipleOrders = () => {
                 .filter(
                     order =>
                         order.deliveryStatus === "Picking" &&
-                        order.picker?.userId === user?._id &&
-                        order.items.some(item => (item.supplied as number) < item.quantity)
+                        order.picker?.userId === user?._id
+                    // && order.items.some(item => (item.supplied as number) < item.quantity)
                 )
                 .map(order => ({
                     ...order,
-                    items: order.items.filter(item => (item.supplied as number) < item.quantity)
+                    // items: order.items.filter(item => (item.supplied as number) < item.quantity)
                 }));
 
             dispatch(setPickMultipleOrders(pickingOrders.slice(0, 4)));
@@ -327,8 +318,8 @@ const StartPickingMultipleOrders = () => {
             const orderPlacedOrders = orders
                 .filter(
                     order =>
-                        order.deliveryStatus === "Order placed" &&
-                        order.items.some(item => (item.supplied as number) < item.quantity)
+                        order.deliveryStatus === "Order placed"
+                    // &&order.items.some(item => (item.supplied as number) < item.quantity)
                 )
                 .map(order => ({
                     ...order,
@@ -469,6 +460,7 @@ const StartPickingMultipleOrders = () => {
                                                 alt={currentItem?.productId?.name}
                                                 className="w-full h-full object-cover rounded-lg border shadow cursor-pointer"
                                                 onClick={() => openModal(currentItem?.productId?.thumbnail)}
+                                                lang="lazy"
                                             />
 
                                         </div>

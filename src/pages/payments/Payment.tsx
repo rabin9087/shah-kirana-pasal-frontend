@@ -5,19 +5,20 @@ import CheckoutForm from "./CheckoutForm";
 import { useQuery } from "@tanstack/react-query";
 import { createPaymentIntent } from "@/axios/payment/payment";
 import { useAppSelector } from "@/hooks";
+// import { useState } from "react";
 
-
-// const STRIPE_SECRET_KEY = "pk_test_51OdhKNL18eO1NJXbPtrqRKGrNBF5OCX8LEd5OyfqN0k8uuhyMlQBNoJIHcZaYO22hzaoUHsMLCMJ1W3gWuID3kya003qmxM2KE"
 const STRIPE_SECRET_KEY = import.meta.env.VITE_STRIPE_PROMISE
 const Payment = () => {
     const { cart } = useAppSelector(s => s.addToCartInfo)
+    const { user } = useAppSelector(s => s.userInfo)
     const { language } = useAppSelector(s => s.settings)
     const total = cart.reduce((acc, { orderQuantity, price }) => {
         return acc + orderQuantity * price
     }, 0)
+    // const [paymentMethod, setPaymentMethod] = useState("")
 
     const paymentData = {
-        amount: total.toFixed(2), currency: "aud"
+        amount: total.toFixed(2), currency: "aud", customer: user.email
     }
 
     const { data } = useQuery({
@@ -33,7 +34,11 @@ const Payment = () => {
     return (
 
         <Layout title={language === "en" ? "Payment Details" : "भुक्तानी विवरणहरू"}>
-            <Elements stripe={stripePromise} options={{ clientSecret: data?.clientSecret, appearance: { theme: "stripe" } }} >
+            <Elements stripe={stripePromise} options={{
+                clientSecret: data?.clientSecret,
+                // customerSessionClientSecret: data?.customerSessionClientSecret,
+                appearance: { theme: "stripe" }
+            }} >
                 <CheckoutForm />
             </Elements>
         </Layout>

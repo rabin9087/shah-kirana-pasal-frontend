@@ -22,14 +22,14 @@ const CheckoutForm = () => {
     const { user } = useAppSelector((state) => state.userInfo);
     const stripe = useStripe();
     const elements = useElements();
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const [isAddressComplete, setIsAddressComplete] = useState(false);
-    const { language } = useAppSelector((state) => state.settings)
+    const { language } = useAppSelector((state) => state.settings);
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
     const [paymentType, setPaymentType] = useState<"cash" | "card">("card");
     const [changeDetails, setChangeDetails] = useState(false);
-    // const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+    const [paymentError, setPaymentError] = useState<string | undefined>(undefined);
 
     const [userDetails, setUserDetails] = useState(
         {
@@ -38,9 +38,9 @@ const CheckoutForm = () => {
             email: user.email,
             phone: user.phone,
             address: user.address,
-        })
+        });
 
-    const [requestDeliveryDate, setRequestDeliveryDate] = useState<string>("")
+    const [requestDeliveryDate, setRequestDeliveryDate] = useState<string>("");
     const [contactInfo, setContactInfo] = useState({
         email: user.email,
         shipping: {
@@ -52,22 +52,24 @@ const CheckoutForm = () => {
             country: "",
             name: user.fName + " " + user.lName,
             phone: user.phone,
-
         }
     });
-    const [isPending, setIspending] = useState<boolean>(false); // State to manage steps
-    const [placeOrderStatus, setPlaceOrderStatus] = useState<string>("Place order")
+    const [isPending, setIspending] = useState<boolean>(false);
+    const [placeOrderStatus, setPlaceOrderStatus] = useState<string>("Place order");
 
-    const { cart } = useAppSelector(state => state.addToCartInfo)
+    const { cart } = useAppSelector(state => state.addToCartInfo);
+
     const orderItems = cart.map(item => ({ productId: item?._id, quantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
     const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
 
     const cartAmount = cart.reduce((acc, { orderQuantity, price, salesPrice }) => {
         return acc + (orderQuantity * (salesPrice > 0 ? salesPrice : price));
-    }, 0)
+    }, 0);
 
     const handelOnAddressChange = (event: any) => {
         const { complete, value } = event;
+        // Update isAddressComplete based on the completeness of the address element
+        setIsAddressComplete(complete);
         if (complete) {
             setContactInfo((prev) => ({
                 ...prev,
@@ -87,78 +89,131 @@ const CheckoutForm = () => {
         }));
     };
 
-    const updateCartAndUserCart = (orderNumber: number) => {
-        dispatch(resetCart())
-        dispatch(updateCartInUserAxios(user.phone, []));
-        dispatch(updateCartHistoryInUserAxios({ phone: user.phone, items, cartAmount, orderNumber, deliveryStatus: "Order Placed", paymentStatus: paymentType === "card" ? "Paid" : "Not Yet Paid" }));
-    }
+    const updateCartAndUserCart = async (orderNumber: number, paymentStatus: string) => {
+        // Dispatch actions to reset cart and update user's cart history
+        dispatch(resetCart());
+        await dispatch(updateCartInUserAxios(user.phone, []));
+        await dispatch(updateCartHistoryInUserAxios({
+            phone: user.phone,
+            items,
+            cartAmount,
+            orderNumber,
+            deliveryStatus: "Order Placed",
+            paymentStatus: paymentStatus
+        }));
+    };
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
+        setPaymentError(undefined); // Clear previous errors
 
-        if (paymentType === "card" && !stripe || !elements) {
-            // Stripe.js hasn't yet loaded.
-            // Make sure to disable form submission until Stripe.js has loaded.
+        if (orderItems.length === 0) {
+            toast.error("Please add items to cart!");
             return;
         }
 
         if (!contactInfo.email) {
-            alert("Email is Required")
-            setIsAddressComplete(false)
-            throw new Error("Email is Required!.");
+            toast.error("Email is Required!");
+            setIsAddressComplete(false); // Go back to address step if email is missing
+            return;
         }
 
-        if (orderItems.length === 0) {
-            toast.error("Please add items to cart!");
-            return
-        }
-
-        const { city, country, line1, name, phone, state, postal_code } = contactInfo.shipping
+        const { city, country, line1, name, phone, state, postal_code } = contactInfo.shipping;
         if (orderType === "delivery" && (!city || !country || !line1 || !name || !phone ||
             !state || !postal_code || !contactInfo.email)) {
-            alert("Please fill in all the fields \nShipping Address field is required!")
-            setIsAddressComplete(false)
-            throw new Error("Shipping Address field is required!");
+            toast.error("Please fill in all the fields. Shipping Address field is required!");
+            setIsAddressComplete(false); // Go back to address step if address is incomplete
+            return;
         }
 
         if (!requestDeliveryDate) {
-            orderType === "delivery" && alert("Please select a delivery date")
-            orderType === "pickup" && alert("Please select a pickup date")
-            setIsAddressComplete(false)
-            throw new Error("Delivery date is required.");
+            toast.error(`Please select a ${orderType === "delivery" ? "delivery" : "pickup"} date`);
+            setIsAddressComplete(false); // Go back to address step if date is missing
+            return;
         }
 
+        setIspending(true);
+        setPlaceOrderStatus("Processing...");
+
         try {
-            setIspending(true)
+            let returnUrl = import.meta.env.MODE === 'production'
+                ? "https://www.shahkiranapasal.shop/payment/success"
+                : "http://localhost:5173/payment/success";
+
             if (paymentType === "card") {
-                const result = await stripe?.confirmPayment({
+                if (!stripe || !elements) {
+                    // Stripe.js hasn't yet loaded.
+                    // Make sure to disable form submission until Stripe.js has loaded.
+                    setIspending(false);
+                    setPlaceOrderStatus("Place order");
+                    return;
+                }
+
+                const result = await stripe.confirmPayment({
                     elements,
                     confirmParams: {
-                        return_url: "https://www.shahkiranapasal.shop/payment/success",
+                        return_url: returnUrl,
+                        // Add shipping details if orderType is delivery
+                        ...(orderType === "delivery" && {
+                            shipping: {
+                                address: {
+                                    line1: contactInfo.shipping.line1,
+                                    line2: contactInfo.shipping.line2,
+                                    city: contactInfo.shipping.city,
+                                    postal_code: contactInfo.shipping.postal_code,
+                                    state: contactInfo.shipping.state,
+                                    country: contactInfo.shipping.country,
+                                },
+                                name: contactInfo.shipping.name,
+                                phone: contactInfo.shipping.phone,
+                            },
 
+                        })
                     },
-                    redirect: "if_required",
-
+                    redirect: "if_required", // This handles redirects for Afterpay, Zip, etc.
                 });
+                    console.log(result)
+                    console.log("confirm payment done")
+                if (result.error) {
+                    let message = "An unexpected error occurred.";
+                    const { type, message: stripeMsg, code } = result.error;
 
-                if (result?.error) {
-                    // Show error to your customer (for example, payment details incomplete)
-                    console.log(result.error.message);
-                }
-                // if (result?.paymentIntent?.payment_method === "zip") {
-                //     setZipPayment(true)
-                // }
-                else if (result?.paymentIntent?.status === "succeeded") {
-                    // Your customer will be redirected to your `return_url`. For some payment
-                    // methods like iDEAL, your customer will be redirected to an intermediate
-                    // site first to authorize the payment, then redirected to the `return_url`.
+                    switch (type) {
+                        case 'card_error':
+                        case 'validation_error':
+                            if (code === 'insufficient_funds') {
+                                message = "Your card has insufficient balance.";
+                            } else if (code === 'card_declined') {
+                                message = "Your card was declined. Please try another payment method.";
+                            } else if (code === 'expired_card') {
+                                message = "Your card has expired. Please use a different card.";
+                            } else if (code === 'incorrect_cvc') {
+                                message = "The CVC code is incorrect.";
+                            } else {
+                                message = stripeMsg ?? "Your card could not be processed.";
+                            }
+                            break;
+                        case 'api_connection_error':
+                            message = "Network error. Please check your internet connection.";
+                            break;
+                        case 'api_error':
+                            message = "Something went wrong with Stripe. Please try again later.";
+                            break;
+                        case 'authentication_error':
+                            message = "Authentication failed. Check your Stripe configuration.";
+                            break;
+                        case 'rate_limit_error':
+                            message = "Too many requests. Please wait a moment and try again.";
+                            break;
+                        default:
+                            message = stripeMsg ?? "An error occurred during payment.";
+                            break;
+                    }
 
-                    // const { line1, line2, city, postal_code, state, country} = contactInfo.shipping
-                    // if (!line1 || !line2 || !city || !state || ! country || !postal_code) {
-
-                    // }
-                    // const full_address = `${line2 !== "" ? "UNIT " + line2 + " " : ""} ${line1}, ${city}, ${state}, ${postal_code}, ${country}`
-
+                    setPaymentError(message);
+                } else if (result.paymentIntent.status === "succeeded") {
+                    // Payment succeeded immediately (e.g., direct card payment)
+                    console.log("Payment success")
                     const customer_details = {
                         name: userDetails.fName + " " + userDetails.lName,
                         phone: userDetails.phone,
@@ -167,25 +222,33 @@ const CheckoutForm = () => {
                         items: orderItems as any,
                         deliveryStatus: "Order placed",
                         deliveryDate: {
-                            date: "NY",
-                            time: "NY"
+                            date: "NY", // This might need to be dynamic based on requestDeliveryDate
+                            time: "NY" // This might need to be dynamic based on requestDeliveryDate
                         },
                         requestDeliveryDate: requestDeliveryDate,
-                        paymentType: "card",
+                        paymentType: result.paymentIntent.payment_method_types[0],
                         amount: parseFloat(cartAmount.toFixed(2)),
                         orderType: orderType,
                         paymentStatus: "Paid",
+                    };
+                    const orderNumber = await createOrder(customer_details);
+                    await updateCartAndUserCart(orderNumber.orderNumber as number, "Paid");
+                    setPlaceOrderStatus("Payment Completed");
+                    toast.success("Payment successful! Your order has been placed.");
+                    if (result.paymentIntent?.receipt_email) {
+                        // If the payment intent has a receipt URL, you can redirect the user to it.
+                        // This is optional and can be handled differently based on your flow.
+                        window.location.href = result.paymentIntent.receipt_email;
                     }
-                    const orderNumber = await createOrder(customer_details)
-                    updateCartAndUserCart(orderNumber.orderNumber as number)
-                    setPlaceOrderStatus("Payment Completed")
-                    dispatch(resetCart())
-
-                    return navigate("/payment/success")
-
+                    navigate("/payment/success");
+                } else {
+                    // Payment requires further action (e.g., 3D Secure, Afterpay/Zip redirect)
+                    // Stripe will handle the redirect, so no explicit navigation here.
+                    // The return_url will handle the final status.
+                    setPlaceOrderStatus("Redirecting for payment...");
+                    // No need to navigate here, Stripe will redirect.
                 }
-            }
-            else if (paymentType === "cash") {
+            } else if (paymentType === "cash") {
                 const customer_details = {
                     name: userDetails.fName + " " + userDetails.lName,
                     phone: userDetails.phone,
@@ -194,46 +257,56 @@ const CheckoutForm = () => {
                     items: orderItems as any,
                     deliveryStatus: "Order placed",
                     deliveryDate: {
-                        date: "NY",
-                        time: "NY"
+                        date: "NY", // This might need to be dynamic based on requestDeliveryDate
+                        time: "NY" // This might need to be dynamic based on requestDeliveryDate
                     },
                     requestDeliveryDate: requestDeliveryDate,
                     paymentType: paymentType,
                     amount: parseFloat(cartAmount.toFixed(2)),
                     orderType: orderType,
                     paymentStatus: "Not Yet Paid",
-
-                }
-                const orderNumber = await createOrder(customer_details)
-                updateCartAndUserCart(orderNumber.orderNumber as number)
-                setPlaceOrderStatus("Payment Completed")
-                return navigate("/payment/success")
+                };
+                const orderNumber = await createOrder(customer_details);
+                await updateCartAndUserCart(orderNumber.orderNumber as number, "Not Yet Paid");
+                setPlaceOrderStatus("Order Placed");
+                toast.success("Order placed successfully! Payment due on delivery/pickup.");
+                navigate("/payment/success");
             } else {
-                return
+                setPlaceOrderStatus("Place order");
+                toast.error("Invalid payment type selected.");
+                return;
             }
+            setIspending(true);
+            setPlaceOrderStatus("Place order");
 
-        } catch (error) {
-            console.error("Error confirming payment:", error);
+        } catch (error: any) {
+            console.error("Error confirming payment or placing order:", error);
+            setPaymentError(error.message || "An unexpected error occurred during payment.");
+            setPlaceOrderStatus("Place order");
+
+            toast.error("An error occurred. Please try again.");
+        } finally {
+            setIspending(false);
         }
-
-        return setIspending(false)
     };
 
     useEffect(() => {
         if (!user) {
+            // Handle case where user is not logged in, e.g., redirect to login
+            // For now, it will just use default empty values or whatever user state provides.
         } else {
+            // Initialize contactInfo with user details, ensuring shipping address fields are empty initially
             setContactInfo({
                 email: user.email,
                 shipping: {
-                    line1: "", // Set to an empty string or default value
-                    line2: "", // Set to an empty string or default value
-                    city: "", // Set to an empty string or default value
-                    postal_code: "", // Set to an empty string or default value
-                    state: "", // Set to an empty string or default value
+                    line1: "",
+                    line2: "",
+                    city: "",
+                    postal_code: "",
+                    state: "",
                     country: "",
-                    name: user.fName + " " + user.lName, // Combine first and last name
+                    name: user.fName + " " + user.lName,
                     phone: user.phone,
-                    // You can also set other shippng info here if required
                 },
             });
         }
@@ -338,7 +411,7 @@ const CheckoutForm = () => {
                                             className="p-2"
                                             options={{
                                                 mode: "shipping",
-                                                allowedCountries: [],
+                                                allowedCountries: [], // Set to specific countries if needed, e.g., ['US', 'AU']
                                                 blockPoBox: false,
                                                 fields: { phone: "always" },
                                                 autocomplete: { mode: "automatic" },
@@ -356,7 +429,7 @@ const CheckoutForm = () => {
 
                             <div className="flex justify-center">
                                 <Button type="button" onClick={() => setIsAddressComplete(true)} className="w-48 mt-6">
-                                    {language === "en" ? "Next" : "अर्को पेज"}
+                                    {language === "en" ? "Next >" : "अर्को पेज"}
                                 </Button>
                             </div>
                         </>
@@ -399,17 +472,6 @@ const CheckoutForm = () => {
                             </div>
 
                             {/* Card Payment Options */}
-
-                            {/* {paymentType === "card" && <div className='flex gap-2 py-4'>
-                                    <PaymentButton amount={cartAmount} />
-                                    <EsewaPaymentButton amount={cartAmount} />
-                                    <button
-                                        className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
-                                    >
-                                        Pay with Zip
-                                    </button>
-
-                                </div>} */}
                             {paymentType === "card" && (
                                 <div className="space-y-6 py-4">
                                     <div className="bg-white rounded-2xl shadow-md p-4 border">
@@ -421,14 +483,19 @@ const CheckoutForm = () => {
                                             id="payment-element"
                                             options={{
                                                 layout: "tabs",
-                                                wallets: {
-                                                    applePay: "auto",
-                                                    googlePay: "auto",
-                                                },
+                                                // wallets: {
+                                                //     applePay: "auto",
+                                                //     googlePay: "auto",
+                                                // },
                                             }}
                                         />
                                     </div>
-                                    {/* <ZipCheckout /> */}
+                                    {paymentError && (
+                                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm">
+                                            <strong className="font-bold">Payment Error: </strong>
+                                            <span className="block sm:inline">{paymentError}</span>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </>
@@ -439,7 +506,7 @@ const CheckoutForm = () => {
                         <div className="flex justify-center">
                             <Button
                                 type="submit"
-                                disabled={!stripe || placeOrderStatus === "Payment Completed"}
+                                disabled={!stripe && paymentType === "card" || placeOrderStatus === "Payment Completed"}
                                 className="w-48 mt-4"
                             >
                                 {isPending ? (
@@ -464,7 +531,6 @@ const CheckoutForm = () => {
                 </form>
             </div>
         </div>
-
     );
 };
 

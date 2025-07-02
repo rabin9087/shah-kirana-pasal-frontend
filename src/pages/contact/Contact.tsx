@@ -27,12 +27,12 @@ const ContactUs = () => {
         <div className="flex items-start space-x-3">
           <Phone className="text-green-600 mt-1" />
           <div className="flex flex-col space-y-1">
-            <a href="tel:+9779806047265" className="text-gray-700 hover:text-blue-600">
+            {/* <a href="tel:+9779806047265" className="text-gray-700 hover:text-blue-600">
               +977 9806047265
             </a>
             <a href="tel:+9779701844268" className="text-gray-700 hover:text-blue-600">
               +977 9701844268
-            </a>
+            </a> */}
             <a href="tel:+61481452920" className="text-gray-700 hover:text-blue-600">
               +61 481 452 920
             </a>
@@ -43,10 +43,10 @@ const ContactUs = () => {
         <div className="flex items-center space-x-3">
           <Mail className="text-red-600" />
           <a
-            href="mailto:rabin9087@gmail.com"
+            href="mailto:shahkiranapasal7@gmail.com"
             className="text-gray-700 hover:text-blue-600"
           >
-            rabin9087@gmail.com
+            shahkiranapasal7@gmail.com
           </a>
         </div>
 

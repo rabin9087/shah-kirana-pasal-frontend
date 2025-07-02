@@ -13,8 +13,8 @@ import { formatLocation, sortItems } from "../startPicking/StartPickingOrder";
 import { NotFoundModal } from "./OpenBasketLableModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { GoDotFill } from "react-icons/go";
-import audioSuccess from "../../../../public/assets/audio/beep-329314.mp3";
-import audioError from "../../../../public/assets/audio/beep-313342.mp3";
+import audioSuccess from "../../../../src/assets/audio/beep-329314.mp3";
+import audioError from "../../../../src/assets/audio/beep-313342.mp3";
 import PrinterButton from "@/utils/printer/PrinterButton";
 
 type ItemSummary = {
