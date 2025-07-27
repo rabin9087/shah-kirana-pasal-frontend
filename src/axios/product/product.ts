@@ -165,6 +165,7 @@ export const deleteAProduct = async(_id: string) => {
 
 export const getAProduct = async({ ...data }: { [key: string]: any }) => {
   try {
+    console.log(data)
     const response = await axiosProcessor({
       method: "get",
       url: `${productApi}` + '/q',

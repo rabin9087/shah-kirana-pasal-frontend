@@ -70,10 +70,10 @@ const ProductsDashboard = () => {
     const [searchData, setSearchData] = useState(products)
     const [sortBy, setSortBy] = useState<SortField>("name");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    
     const { data = [], error } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
         queryFn: () => getAllProducts(),
-        // enabled: products.length === 0 && categories.length === 0
     });
 
     useEffect(() => {

@@ -8,7 +8,8 @@ import addToCartReducer from "./redux/addToCart.slice";
 import dashboardDataSlice from "./redux/dashboard.slice";
 import ordersSlice from "./redux/allOrders.slice";
 import settingsReducer from "./redux/setting.slice";
-import storeCartReducer from "./redux/storeCart";
+import storeCartReducer from "./redux/storeCart.slice";
+import shopsReducer from "./redux/shop.slice";
 
 import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
@@ -29,10 +30,16 @@ const storeCartPersistConfig = {
   storage,
 };
 
+const shopsPersistConfig = {
+  key: "shops",
+  storage,
+};
+
 // Wrap reducers with persist
 const persistedCartReducer = persistReducer(cartPersistConfig, addToCartReducer);
 const persistedSettingsReducer = persistReducer(settingsPersistConfig, settingsReducer);
 const persistedStoreCartReducer = persistReducer(storeCartPersistConfig, storeCartReducer);
+const persistedShopsReducer = persistReducer(shopsPersistConfig, shopsReducer);
 
 // Combine all reducers
 const rootReducer = combineReducers({
@@ -46,6 +53,7 @@ const rootReducer = combineReducers({
   ordersInfo: ordersSlice,
   storeCart: persistedStoreCartReducer, // persisted storeCart
   settings: persistedSettingsReducer,
+  shopsInfo: persistedShopsReducer,
 });
 
 // Create the store

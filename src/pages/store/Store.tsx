@@ -5,7 +5,7 @@ import { setProducts } from '@/redux/product.slice';
 import { Button } from '@/components/ui/button';
 import { IProductTypes } from '@/types/index';
 import { getAllProducts, updateProductsQuantity } from '@/axios/product/product';
-import { addProduct, clearStoreCart } from '@/redux/storeCart';
+import { addProduct, clearStoreCart } from '@/redux/storeCart.slice';
 import CustomModal from '@/components/CustomModal';
 import { toast } from 'react-toastify';
 import { StoreProductCard } from './StoreProductCard';

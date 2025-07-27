@@ -48,8 +48,11 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                     />
                 </Link>
 
-                <CardTitle className="w-full text-sm hover:underline "><Link to={`/product/${item.qrCodeNumber}`}>
-                    {language === "en" ? item.name : item.alternateName ? item.alternateName : item.name}
+                <CardTitle className="w-full text-sm"><Link to={`/product/${item.qrCodeNumber}`}>
+                    <div>
+                        <p className=" hover:underline"> {language === "en" ? item.name : item.alternateName ? item.alternateName : item.name}</p>
+                        <p className="ps-4 font-normal"> ${item.salesPrice ? item.salesPrice : item.price + " / items"}</p>
+                    </div>
                 </Link></CardTitle>
             </div>
             <div className="flex items-center justify-between w-full px-2">
@@ -81,7 +84,7 @@ const CartCard: React.FC<{ item: IAddToCartTypes }> = ({ item }) => {
                     onClick={() => setOpenNote(!opennNote)}
                 >
 
-                   {language === "en" ? "Add note" : "नोट लेख्नुहोस्"}
+                    {language === "en" ? "Add note" : "नोट लेख्नुहोस्"}
                 </p>
                 {opennNote && (
                     <>

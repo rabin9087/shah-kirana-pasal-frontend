@@ -1,4 +1,5 @@
 export interface IShop {
+    _id?: string,
     name: string;
     owner: string;
     description?: string;

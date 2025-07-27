@@ -6,6 +6,7 @@ import { createShop } from "@/axios/shop/shop";
 import { IShop } from "@/axios/shop/types";
 import { useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 export const CreateShop: React.FC = () => {
     const navigate = useNavigate()
@@ -58,8 +59,9 @@ export const CreateShop: React.FC = () => {
     // React Query Mutation
     const mutation = useMutation({
         mutationFn: createShop,
-        onSuccess: (data) => {
-            console.log("Shop created successfully:", data);
+        onSuccess: () => {
+            toast.success("Shop created successfully:");
+            navigate("/")
         },
         onError: (error) => {
             console.error("Error creating shop:", error);

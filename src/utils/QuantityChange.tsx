@@ -1,26 +1,29 @@
+import { IProductComboOffer } from "@/axios/productComboOffer/types";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { IAddToCartTypes } from "@/pages/addToCart";
 import { setAddToCart } from "@/redux/addToCart.slice";
 
-export const AddToCartButton = ({ item }: { item: IAddToCartTypes }) => {
+
+export const AddToCartButton = ({ item }: { item: IAddToCartTypes | IProductComboOffer }) => {
     const { language } = useAppSelector((state) => state.settings)
 
     const dispatch = useAppDispatch();
     const handleOnAddToCart = () => {
-        dispatch(setAddToCart({ ...item, orderQuantity: 1 }));
+        dispatch(setAddToCart({ ...item, orderQuantity: 1 } as IAddToCartTypes));
     };
     return (
         <Button
             variant={"default"}
-            disabled={item.quantity < 1}
-            onClick={handleOnAddToCart} className="w-full">
+            // disabled={(item?.quantity as number)  < 1}
+            onClick={handleOnAddToCart}
+            className="w-full">
             {language === "en" ? "Add To Cart" : "कार्टमा थप्नुहोस्"}
         </Button>
     );
 };
 
-export const ChangeItemQty = ({ item }: { item: IAddToCartTypes }) => {
+export const ChangeItemQty = ({ item }: { item: IAddToCartTypes | IProductComboOffer  }) => {
     const dispatch = useAppDispatch();
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value;
@@ -62,7 +65,7 @@ export const ChangeItemQty = ({ item }: { item: IAddToCartTypes }) => {
     );
 };
 
-export const itemExist = (productId: string, cartArray: IAddToCartTypes[]) => {
+export const itemExist = (productId: string, cartArray: IAddToCartTypes[] ) => {
     return cartArray.filter((item) => item._id === productId && item.orderQuantity > 0);
 };
 

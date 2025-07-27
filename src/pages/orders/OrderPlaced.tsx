@@ -29,7 +29,7 @@ export const OrderPlaced: React.FC = () => {
         queryFn: () => getAOrder(orderNumber as string),
         enabled: !!orderNumber, // This prevents the API call when orderNumber is null
     });
-
+console.log(data)
     return (
         <Layout title={cartHistory.length > 0 ? "" : "Order Placed"}>
             {cartHistory.length < 0 ?
@@ -85,12 +85,13 @@ export const OrderPlaced: React.FC = () => {
                             </div>
                             <h3 className="text-lg font-semibold text-gray-800 mt-4">{language === "en" ? "Items Ordered" : "अर्डर गरिएका वस्तुहरू"}:</h3>
                             <ul className="mt-2 space-y-4">
-                                {latestOrder.items.map((item: any) => (
+                                {data?.items?.map((item: any) => (
                                     <li key={item._id} className="flex items-center space-x-4 p-4 border rounded-lg">
                                         <img
-                                            src={item.productId?.thumbnail}
+                                            src={item.productId?.thumbnail ? item.productId.thumbnail : "https://via.placeholder.com/64"}
                                             alt={item.productId?.name}
                                             className="w-16 h-16 object-cover rounded-lg"
+                                            loading="lazy"
                                         />
                                         <div>
                                             <p className="font-semibold text-gray-900">{language === "en" ? item.productId.name : item.productId.alternateName ? item.productId.alternateName : item.productId.name}</p>

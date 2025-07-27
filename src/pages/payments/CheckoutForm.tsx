@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 // import ZipPayButton from './paymentTypes/ZipPayPaymentMethod';
 // import { EsewaPaymentButton } from './PaymentWithESewa';
 
+
 const CheckoutForm = () => {
     const { user } = useAppSelector((state) => state.userInfo);
     const stripe = useStripe();
@@ -25,12 +26,13 @@ const CheckoutForm = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [isAddressComplete, setIsAddressComplete] = useState(false);
-    const { language } = useAppSelector((state) => state.settings);
+    const {language } = useAppSelector((state) => state.settings);
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
     const [paymentType, setPaymentType] = useState<"cash" | "card">("card");
     const [changeDetails, setChangeDetails] = useState(false);
     const [paymentError, setPaymentError] = useState<string | undefined>(undefined);
 
+    console.log(localStorage.getItem("paymentIntentId"))
     const [userDetails, setUserDetails] = useState(
         {
             fName: user.fName,
@@ -211,7 +213,7 @@ const CheckoutForm = () => {
                     }
 
                     setPaymentError(message);
-                } else if (result.paymentIntent.status === "succeeded") {
+                }  else if (result.paymentIntent.status === "succeeded") {
                     // Payment succeeded immediately (e.g., direct card payment)
                     console.log("Payment success")
                     const customer_details = {
@@ -289,6 +291,10 @@ const CheckoutForm = () => {
             setIspending(false);
         }
     };
+
+    useEffect(() => {
+
+    }, [cartAmount])
 
     useEffect(() => {
         if (!user) {
@@ -482,13 +488,14 @@ const CheckoutForm = () => {
                                             className="w-full"
                                             id="payment-element"
                                             options={{
-                                                layout: "tabs",
+                                                layout: "auto",
                                                 // wallets: {
                                                 //     applePay: "auto",
                                                 //     googlePay: "auto",
                                                 // },
                                             }}
-                                        />
+                                            />
+                                            
                                     </div>
                                     {paymentError && (
                                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm">

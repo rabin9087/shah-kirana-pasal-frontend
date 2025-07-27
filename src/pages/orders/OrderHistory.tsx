@@ -66,7 +66,7 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
 
                                     <h3 className="text-lg font-semibold text-gray-800 mt-4">Items Ordered:</h3>
                                     <ul className="mt-2 space-y-4">
-                                        {order?.items?.map((item: any) => (
+                                        {data?.items?.map((item: any) => (
                                             <li key={item._id} className="flex items-center space-x-4 p-4 border rounded-lg">
                                                 <img
                                                     src={item?.productId?.thumbnail}

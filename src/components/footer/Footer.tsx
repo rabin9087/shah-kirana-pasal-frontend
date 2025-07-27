@@ -1,5 +1,7 @@
 import { storeName, storeSlogan } from "@/axios";
 import logo from "/assets/shahKiranaPasal.png"
+// import logo from "/assets/twenty_two_yard_cricket.jpg"
+
 import { Link } from "react-router-dom";
 const Footer = () => {
   return (

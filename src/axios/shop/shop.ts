@@ -15,3 +15,17 @@ export const createShop = async(data: FormData) => {
     throw new Error("Failed to update product");
   }
 };
+
+export const getAllShops = async() => {
+  try {
+    const response = await axiosProcessor({
+    method: "get",
+    url: `${shopApi}`,
+    isPrivate: false,
+    });
+    
+    return response.allShop
+  } catch (error) {
+    throw new Error("Failed to update product");
+  }
+};

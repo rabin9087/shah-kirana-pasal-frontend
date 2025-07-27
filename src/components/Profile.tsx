@@ -65,6 +65,7 @@ export function Profile() {
                         <DropdownMenuItem>
                             <Link to="/product/create" className="flex items-center gap-2"><IoCreateOutline /> Create Product</Link>
                         </DropdownMenuItem>
+
                         <DropdownMenuItem>
                             <Link to="/scan-product" className="flex items-center gap-2"><RxUpdate /> Update Product</Link>
                         </DropdownMenuItem>

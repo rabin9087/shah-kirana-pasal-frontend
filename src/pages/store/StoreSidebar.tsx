@@ -7,7 +7,7 @@ import { FcMoneyTransfer } from "react-icons/fc";
 import { CiCreditCard1 } from "react-icons/ci";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import SearchBarComponent, { SearchResults } from "./SearchUser";
-import { decreaseQuantity, increaseQuantity, removeProduct } from "@/redux/storeCart";
+import { decreaseQuantity, increaseQuantity, removeProduct } from "@/redux/storeCart.slice";
 import AddUser from "@/components/dashboard/userDashboard/AddUser";
 import { toast } from "react-toastify";
 import { resetCustomer } from "@/redux/user.slice";
@@ -265,6 +265,9 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                             <div className="flex-1 items-center justify-center">
                                 <Button type='button' className="hover:bg-blue-400" disabled={storeData} onClick={() => handlePayment("Cash")}><FcMoneyTransfer />Cash</Button>
                             </div>
+                            <div className="flex-1 items-center justify-center">
+                                <Button type='button' className="hover:bg-blue-400" disabled={storeData} onClick={() => handlePayment("Cash")}><FcMoneyTransfer /> <CiCreditCard1 />Split</Button>
+                            </div>
                             <div className="flex-1 flex justify-center">
                                 <CalculatorIcon
                                     className="cursor-pointer w-8 h-8 text-muted-foreground hover:text-primary"
@@ -285,11 +288,11 @@ const StoreCartSidebar: React.FC<StoreCartSidebarProps> = ({
                         )}
                         {(
                             <div>
-                                <p className="text-blue-600 text-2xl font-semibold mb-4">
+                                <p className="text-blue-600 text-xl font-semibold mb-2">
                                     Received: ${amountReceive?.toFixed(2)}
                                 </p>
                                 <hr />
-                                <p className="text-green-600 text-2xl font-semibold mb-4">
+                                <p className="text-green-600 text-xl font-semibold mb-4">
                                     Change: ${changeAmount?.toFixed(2)}
                                 </p>
                             </div>

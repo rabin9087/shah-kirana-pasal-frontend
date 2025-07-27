@@ -1,15 +1,16 @@
-
 import Layout from "@/components/layout/Layout";
 import { useAppSelector } from "@/hooks";
 import ProductCard from "../productCard/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProductsByLimit } from "@/axios/product/product";
-import {  useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import NetworkError from "@/components/network Error/NetworkError";
 import CarouselWithAutoplay from "./Carousel";
 import { Sparkles, Tag, ShoppingCart, Gift, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IProductTypes } from "@/types/index";
+import Shop from "../shop/Shop";
+import ComboProduct from "./productCombo/ComboProduct";
 
 interface Pagination {
   total: number;
@@ -24,7 +25,6 @@ interface ProductResponse {
 }
 
 function Home(): JSX.Element {
-
   const { categories } = useAppSelector((s) => s.categoryInfo);
   const [page, setPage] = useState(1);
   const limit = 20;
@@ -32,7 +32,6 @@ function Home(): JSX.Element {
   const { data, error, refetch, isFetching } = useQuery<ProductResponse>({
     queryKey: ["products", page],
     queryFn: () => getAllProductsByLimit({ page, limit }),
-    // Default to an empty response shape to avoid runtime errors
     initialData: { products: [], pagination: { totalPages: 1, page: 1, limit, total: 0 } },
   });
 
@@ -49,31 +48,29 @@ function Home(): JSX.Element {
 
   const filteredProducts = useMemo(() => {
     const activeProducts = data?.products.filter(
-      (item: IProductTypes) => item.status === "ACTIVE" && !item.salesPrice
-    ) || [];  // Make sure `activeProducts` defaults to an empty array if `data` is undefined
+      (item: IProductTypes) => item.status === "ACTIVE"
+    ) || [];
 
     return {
-      productsOnSale: activeProducts.filter((item: IProductTypes) => item.salesPrice > 0),
+      productsOnSale: activeProducts.filter((item) => item.salesPrice && item.salesPrice > 0),
       electronics: activeProducts.filter(
-        (item: IProductTypes) => item.parentCategoryID === categoryMap["electronics"]
+        (item) => item.parentCategoryID === categoryMap["electronics"] && !item.salesPrice
       ),
       chocolates: activeProducts
-        .filter((item: IProductTypes) => item.parentCategoryID === categoryMap["chocolates"])
+        .filter((item) => item.parentCategoryID === categoryMap["chocolates"] && !item.salesPrice)
         .slice(0, 10),
       snacks: activeProducts.filter(
-        (item: IProductTypes) => item.parentCategoryID === categoryMap["snacks"]
+        (item) => item.parentCategoryID === categoryMap["snacks"] && !item.salesPrice
       ),
       biscuit: activeProducts.filter(
-        (item: IProductTypes) => item.parentCategoryID === categoryMap["biscuit"]
+        (item) => item.parentCategoryID === categoryMap["biscuit"] && !item.salesPrice
       ),
       soap: activeProducts.filter(
-        (item: IProductTypes) => item.parentCategoryID === categoryMap["soap-and-saraf"]
+        (item) => item.parentCategoryID === categoryMap["soap-and-saraf"] && !item.salesPrice
       ),
-      allProducts: activeProducts,
+      allProducts: activeProducts.filter((item) => !item.salesPrice),
     };
   }, [data, categoryMap]);
-
-
 
   if (error) {
     return (
@@ -95,19 +92,25 @@ function Home(): JSX.Element {
   }) => (
     <>
       {productList.length > 0 && (
-        <div className="bg-white shadow-md rounded-2xl p-4 mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            {icon}
-            <h2 className="text-2xl font-semibold">{title}</h2>
-          </div>
-          <div className="flex gap-4 items-center overflow-x-auto scrollbar-hide py-2 px-1">
-            {productList.map((product) => (
-              <ProductCard
-                key={product._id}
-                item={product}
-                addClass="min-w-[200px] max-w-[250px]"
-              />
-            ))}
+        <div className="w-full px-2 md:px-8 flex justify-center ">
+          <div className="w-full max-w-[1440px] bg-white shadow-md rounded-2xl p-4 mb-12">
+            <div className="flex items-center gap-2 mb-4">
+              {icon}
+              <h2 className="text-2xl font-semibold">{title}</h2>
+            </div>
+
+            {/* Horizontally scrollable row */}
+            <div className="overflow-x-auto scrollbar-hide">
+              <div className="flex items-stretch space-x-4 py-2 px-1 min-w-full">
+                {productList.map((product) => (
+                  <ProductCard
+                    key={product._id}
+                    item={product}
+                    addClass="min-w-[200px] max-w-[250px] flex-shrink-0"
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -116,10 +119,21 @@ function Home(): JSX.Element {
 
   return (
     <Layout types="products" title={page === 1 ? "Smart Shop" : ""}>
-      {page === 1 && <div className="w-full mb-8">
-        <CarouselWithAutoplay />
-      </div>}
+      {page === 1 && (
+        <div className="flex justify-end me-2 m-2">
+          <Shop />
+        </div>
+      )}
 
+      {page === 1 && (
+        <div className="w-full mb-8">
+          <CarouselWithAutoplay />
+        </div>
+      )}
+      <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
+        <ComboProduct />
+      </div>
+      
       <ProductSection
         title="Hot Deals & Sales"
         icon={<Tag className="text-orange-500" />}
@@ -128,7 +142,7 @@ function Home(): JSX.Element {
       <ProductSection
         title="Snacks & Munchies"
         icon={<ShoppingCart className="text-amber-500" />}
-        productList={filteredProducts.snacks}
+        productList={filteredProducts.snacks} // Exclude biscuits from snacks
       />
       <ProductSection
         title="Chocolates"
@@ -151,85 +165,90 @@ function Home(): JSX.Element {
         productList={filteredProducts.electronics}
       />
 
-      <div className="my-12">
-        <h2 className="text-2xl font-semibold mb-6 text-center">All Products</h2>
+      <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
+        <h2 className=" font-semibold mb-6 text-center">All Products</h2>
         {isFetching && <p className="text-center text-gray-500">Loading products...</p>}
         {filteredProducts.allProducts.length === 0 && !isFetching ? (
           <p className="text-center text-gray-500">No products available.</p>
         ) : (
           <>
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7">
+            <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5">
               {filteredProducts.allProducts.map((product: IProductTypes) => (
                 <ProductCard key={product._id} item={product} />
               ))}
             </div>
 
-            {/* Pagination Buttons */}
-            <div className="flex justify-center items-center flex-wrap gap-2 mt-8">
-              <Button
-                variant="outline"
-                disabled={page === 1}
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              >
-                Previous
-              </Button>
-
-              {(() => {
-                const totalPages = data.pagination.totalPages || 1;
-                const range: (number | "...")[] = [];
-
-                const start = Math.max(1, page - 2);
-                const end = Math.min(totalPages, page + 2);
-
-                if (start > 1) {
-                  range.push(1);
-                  if (start > 2) range.push("...");
-                }
-
-                for (let i = start; i <= end; i++) {
-                  range.push(i);
-                }
-
-                if (end < totalPages) {
-                  if (end < totalPages - 1) range.push("...");
-                  range.push(totalPages);
-                }
-
-                return range.map((p, index) => (
-                  <button
-                    key={index}
-                    disabled={p === "..."}
-                    onClick={() => typeof p === "number" && setPage(p)}
-                    className={`px-3 py-1 text-sm rounded border ${p === page
-                      ? "bg-primary text-white"
-                      : p === "..."
-                        ? "cursor-default text-muted"
-                        : "hover:bg-accent"
-                      }`}
-                  >
-                    {p}
-                  </button>
-                ));
-              })()}
-
-              <Button
-                variant="outline"
-                disabled={page === data.pagination.totalPages}
-                onClick={() =>
-                  setPage((prev) =>
-                    data.pagination.totalPages
-                      ? Math.min(prev + 1, data.pagination.totalPages)
-                      : prev + 1
-                  )
-                }
-              >
-                Next
-              </Button>
-            </div>
+            {/* Pagination */}
           </>
         )}
+        
       </div>
+      <div className="flex justify-center items-center flex-wrap gap-1 my-4">
+        <Button
+          variant="outline"
+          className="flex items-center"
+          disabled={page === 1}
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+        >
+          {"< Previous"}
+        </Button>
+
+        {(() => {
+          const totalPages = data.pagination.totalPages || 1;
+          const range: (number | "...")[] = [];
+
+          const start = Math.max(1, page - 1);
+          const end = Math.min(totalPages, page + 1);
+
+          if (start > 1) {
+            range.push(1);
+            if (start > 2) range.push("...");
+          }
+
+          for (let i = start; i <= end; i++) {
+            range.push(i);
+          }
+
+          if (end < totalPages) {
+            if (end < totalPages - 1) range.push("...");
+            range.push(totalPages);
+          }
+
+          return range.map((p, index) => (
+            <button
+              key={index}
+              disabled={p === "..."}
+              onClick={() => typeof p === "number" && setPage(p)}
+              className={`px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm rounded border transition-colors duration-200 ${p === page
+                ? "bg-primary text-white border-primary"
+                : p === "..."
+                  ? "cursor-default text-gray-400 border-gray-300"
+                  : "hover:bg-accent border-gray-300"
+                }`}
+            >
+              {p}
+            </button>
+          ));
+        })()}
+
+        <Button
+          variant="outline"
+          className="flex items-center text-sm"
+          disabled={page === data.pagination.totalPages}
+          onClick={() =>
+            setPage((prev) =>
+              data.pagination.totalPages
+                ? Math.min(prev + 1, data.pagination.totalPages)
+                : prev + 1
+            )
+          }
+        >
+          {"Next >"}
+        </Button>
+      </div>
+
     </Layout>
   );
 }
+
 export default Home;

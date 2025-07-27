@@ -179,16 +179,6 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
-        {/* <Route
-          path="/storeSales"
-          element={
-            <StroreRouter>
-              <StoreSalesDashboard />
-            </StroreRouter>
-          }
-          errorElement={<ErrorPage />}
-        /> */}
-
         <Route
           path="/shop"
           element={<Layout title=""><RoleRouter><CreateShop /></RoleRouter></Layout>}

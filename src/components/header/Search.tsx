@@ -75,7 +75,7 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
     const fetchResults = async () => {
       if (debouncedQuery) {
         try {
-          const response = await searchItem(debouncedQuery)
+          const response = await searchItem(debouncedQuery);
           if (response?.status === "success") {
             setResults(response?.result as IResults[]);
           }

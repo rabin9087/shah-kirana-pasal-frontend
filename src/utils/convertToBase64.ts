@@ -16,4 +16,22 @@
     u8arr[n] = bstr.charCodeAt(n);
   }
   return new File([u8arr], filename, { type: mime });
-};
+ };
+
+ import imageCompression from 'browser-image-compression';
+
+export const compressImage = async(base64String: string, fileName: string): Promise<File>  =>  {
+  // Convert base64 to Blob
+  const res = await fetch(base64String);
+  const blob = await res.blob();
+  const originalFile = new File([blob], fileName, { type: blob.type });
+
+  // Compress image
+  const options = {
+    maxSizeMB: 0.5, // Target < 500KB
+    maxWidthOrHeight: 800, // Resize if needed
+    useWebWorker: true,
+  };
+  return await imageCompression(originalFile, options);
+}
+

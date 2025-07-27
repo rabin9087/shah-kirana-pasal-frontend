@@ -1,122 +1,136 @@
-import { IProductTypes } from "@/types/index";
+import React from "react"
 import {
     Card,
     CardContent,
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
-import { Link } from "react-router-dom";
-import {
-    AddToCartButton,
-    ChangeItemQty,
-    getOrderNumberQuantity,
-    itemExist,
-} from "@/utils/QuantityChange";
-import { useAppSelector } from "@/hooks";
-import { IAddToCartTypes } from "../addToCart";
+} from "@/components/ui/card"
+import { Link } from "react-router-dom"
+import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } from "@/utils/QuantityChange"
+import { useAppSelector } from "@/hooks"
+import { IProductComboOffer } from "@/axios/productComboOffer/types"
 
-interface Props {
-    item: IProductTypes[] | IAddToCartTypes[];
-    addClass?: string;
-}
+const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: string }> = ({ item, addClass }) => {
+    const { cart } = useAppSelector((state) => state.addToCartInfo)
+    const { language } = useAppSelector((state) => state.settings)
+    const orderQty = getOrderNumberQuantity(item?._id as string, cart)
 
-const ProductOfferCard: React.FC<Props> = ({ item, addClass }) => {
-    const { cart } = useAppSelector((state) => state.addToCartInfo);
-    const { language } = useAppSelector((state) => state.settings);
+    // Calculate savings percentage
+    const savingsPercentage = ((item.discountAmount / item.totalAmount) * 100).toFixed(0)
 
-    const mainProduct = item[0];
-    const totalOriginalPrice = item.reduce((acc, curr) => acc + curr.price, 0);
-    const totalSalePrice = item.reduce((acc, curr) => acc + (curr.salesPrice || curr.price), 0);
-    const quantity = mainProduct.quantity;
-    const orderQty = getOrderNumberQuantity(mainProduct._id, cart);
-    const productSlug = "dashain_offer"; // you can optionally pass this as a prop if needed
+    // Format dates
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString()
+    }
 
     return (
-        <Card
-            className={`w-full h-full sm:w-[190px] md:w-[250px] bg-white shadow-lg rounded-lg overflow-hidden ${addClass}`}
-        >
-            {/* Sale Badge */}
-            {totalSalePrice < totalOriginalPrice && (
-                <div className="border-2 h-24 rounded-md bg-yellow-300 flex items-center">
+        <>
+            <Card className={`w-full h-full sm:w-[190px] md:w-[250px] bg-white shadow-lg rounded-lg overflow-hidden ${addClass}`}>
+                {/* Combo Offer Badge */}
+                <div className="border-2 h-24 rounded-md bg-gradient-to-r from-red-400 to-orange-400 flex items-center">
                     <div className="ml-4 w-16 h-16 flex items-center justify-center rounded-full border-8 border-primary bg-white">
-                        <p className="font-bold text-sm">SALE</p>
+                        <p className="font-bold text-xs">COMBO</p>
+                    </div>
+                    <div className="ml-2 text-white">
+                        <p className="text-xs font-semibold">Save {savingsPercentage}%</p>
+                        <p className="text-xs">{item.items.length} Items</p>
                     </div>
                 </div>
-            )}
 
-            {/* Product Image */}
-            <Link to={`/product/${productSlug}`}>
-                <div className="flex justify-center items-center pt-2 bg-gray-200">
-                    <img
-                        src={mainProduct.thumbnail}
-                        alt={mainProduct.name || "Offer"}
-                        className="p-2 w-full h-44 object-fill transition-transform duration-300 ease-in-out"
-                        loading="lazy"
-                    />
-                </div>
-            </Link>
-
-            {/* Product Details */}
-            <CardHeader className="p-4 pb-2 pt-4">
-                <CardTitle className="text-lg font-semibold text-gray-800 h-20 overflow-hidden text-ellipsis line-clamp-3">
-                    <Link to={`/product/${productSlug}`} className="hover:underline">
-                        Dashain Combo Offer
-                    </Link>
-                </CardTitle>
-
-                {totalSalePrice < totalOriginalPrice && (
-                    <div className="w-fit mt-2 bg-yellow-300 text-sm font-bold px-2 py-1 inline-block rounded">
-                        {language === "en" ? "$" : "रु."}
-                        {totalOriginalPrice.toFixed(2)}
+                {/* Combo Offer Image */}
+                <Link to={`/`}>
+                    <div className="flex justify-center items-center pt-2 bg-gray-200">
+                        <img
+                            src={item.thumbnail}
+                            alt={item.offerName}
+                            className="p-2 w-full h-44 object-fill transition-transform duration-300 ease-in-out"
+                            loading="lazy"
+                        />
                     </div>
-                )}
-            </CardHeader>
+                </Link>
 
-            {/* Pricing & Stock */}
-            <CardContent className="px-4 pb-4">
-                <div className="flex justify-between items-start font-bold">
-                    <div className="flex items-baseline">
-                        <span className="font-medium">
-                            {language === "en" ? "$" : "रु."}
-                            {Math.floor(totalSalePrice)}
-                        </span>
-                        <span className="text-sm">
-                            {(totalSalePrice % 1 * 100).toFixed(0).padStart(2, "0")}
-                        </span>
+                {/* Combo Offer Details */}
+                <CardHeader className="p-4 pb-2 pt-4">
+                    <CardTitle className="text-lg font-semibold text-gray-800 h-20 overflow-hidden text-ellipsis line-clamp-3">
+                        <Link to={`/combo-offer/${item._id}`} className="hover:underline">
+                            {item.offerName}
+                        </Link>
+                    </CardTitle>
+
+                    {/* Savings Badge */}
+                    <div className="w-fit mt-2 bg-green-400 text-sm font-bold px-2 py-1 inline-block rounded text-white">
+                        {language === "en" ? "SAVE $" : "बचत रु."}{item.discountAmount.toFixed(2)}
                     </div>
+                </CardHeader>
 
-                    {totalSalePrice < totalOriginalPrice && (
-                        <span className="text-sm text-gray-500 line-through ms-2 my-auto">
-                            {language === "en" ? "$" : "रु."}
-                            {totalOriginalPrice.toFixed(2)}
-                        </span>
-                    )}
+                {/* Pricing Information */}
+                <div className="">
+                    <CardContent className="px-4 pb-4">
+                        <div className="flex justify-between items-start font-bold">
+                            <div className="flex justify-start items-start">
+                                <span className="font-medium text-green-600">
+                                    {language === "en" ? "$" : "रु."}{Math.floor(item.offerPrice)}
+                                </span>
+                                <span className="text-sm text-green-600">
+                                    {((item.offerPrice) % 1 * 100).toFixed(0).padStart(2, '0')}
+                                </span>
+                            </div>
+                            <span className="text-sm text-gray-500 line-through ms-2 my-auto">
+                                {language === "en" ? "$" : "रु."}{item.totalAmount.toFixed(2)}
+                            </span>
+                        </div>
+
+                        {/* Offer Validity */}
+                        <div className="mt-2">
+                            <p className="text-xs text-gray-600">
+                                {language === "en" ? "Valid till: " : "मान्य मिति: "}
+                                {formatDate(item?.offerEndDate?.toString() ?? "")}
+                            </p>
+                        </div>
+
+                        {/* Items Count */}
+                        <div className="mt-1">
+                            <p className="text-xs text-blue-600 font-medium">
+                                {language === "en"
+                                    ? `${item.items.length} products included`
+                                    : `${item.items.length} उत्पादनहरू समावेश`
+                                }
+                            </p>
+                        </div>
+                    </CardContent>
+
+                    {/* Action Buttons */}
+                    <CardFooter className="p-4 pt-0 flex items-center justify-between">
+                        {itemExist(item._id as string, cart).length ? (
+                            <ChangeItemQty item={{
+                                ...item,
+                                orderQuantity: orderQty || 0,
+                                offerName: item.offerName,
+                                offerPrice: item.offerPrice,
+                                // thumbnail: item.thumbnail,
+                                // qrCodeNumber: item._id,
+                                // quantity: 999, // Assuming combo offers have high availability
+                                // alternateName: item.offerName
+
+                            }} />
+                        ) : (
+                            <AddToCartButton item={{
+                                ...item,
+                                orderQuantity: orderQty || 0,
+                                offerName: item.offerName,
+                                offerPrice: item.offerPrice,
+                                // thumbnail: item.thumbnail,
+                                // qrCodeNumber: item._id,
+                                // quantity: 999, // Assuming combo offers have high availability
+                                // alternateName: item.offerName
+                            }} />
+                        )}
+                    </CardFooter>
                 </div>
+            </Card>
+        </>
+    )
+}
 
-                {quantity <= 5 && (
-                    <p className="text-sm text-red-500 min-h-5 mt-2">
-                        {quantity > 0
-                            ? language === "en"
-                                ? `Only ${quantity} left in stock!`
-                                : `स्टकमा केवल ${quantity} ओटा मात्र बाँकी छ!`
-                            : language === "en"
-                                ? "Out of stock!"
-                                : "स्टक सकिएको छ!"}
-                    </p>
-                )}
-            </CardContent>
-
-            {/* Cart Buttons */}
-            <CardFooter className="p-4 pt-0 flex items-center justify-between">
-                {itemExist(mainProduct._id, cart).length ? (
-                    <ChangeItemQty item={{ ...mainProduct, orderQuantity: orderQty || 0 }} />
-                ) : (
-                    <AddToCartButton item={{ ...mainProduct, orderQuantity: orderQty || 0 }} />
-                )}
-            </CardFooter>
-        </Card>
-    );
-};
-
-export default ProductOfferCard;
+export default ProductComboOfferCard

@@ -77,7 +77,8 @@ const ContactUs = () => {
 
         <iframe
           className="w-full h-64 mt-4 rounded-lg"
-          src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_API_KEY}&q=Shah Kirana Pasal, HM9M+8JP, School Chaun Bazaar Chowk Bus Stop, Gauradaha Schoolchaun Road, Maharanijhoda 57200, Nepal`}
+          // src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_API_KEY}&q=Shah Kirana Pasal, HM9M+8JP, School Chaun Bazaar Chowk Bus Stop, Gauradaha Schoolchaun Road, Maharanijhoda 57200, Nepal`}
+          src={`https://www.google.com/maps/embed/v1/place?key=${GOOGLE_API_KEY}&q=18 Paine St, Kogarah NSW 2217`}
           allowFullScreen
           loading="lazy"
         ></iframe>

@@ -2,7 +2,7 @@ import { IProductTypes } from "@/types/index";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { addProduct, decreaseQuantity, increaseQuantity, removeProduct } from "@/redux/storeCart";
+import { addProduct, decreaseQuantity, increaseQuantity, removeProduct } from "@/redux/storeCart.slice";
 
 export const StoreProductCard: React.FC<{ item: IProductTypes; addClass?: string }> = ({ item, addClass }) => {
     const dispatch = useAppDispatch();

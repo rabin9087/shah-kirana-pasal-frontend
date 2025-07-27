@@ -19,6 +19,7 @@ import { RxCross1 } from "react-icons/rx";
 import { base64ToFile } from '@/utils/convertToBase64';
 import { toast } from 'react-toastify';
 import { IStoredAt } from '@/axios/product/types';
+import ProductComboOffer from './productComboOffer/ProductComboOffer';
 
 const CreateProduct = () => {
   const [sku, setSku] = useState<string>('');
@@ -31,6 +32,7 @@ const CreateProduct = () => {
   const dispatch = useAppDispatch()
 
   const { categories } = useAppSelector(state => state.categoryInfo)
+  const [createComboProduct, setCreateComboProduct] = useState<boolean>(false);
 
   const { data = [] } = useQuery<ICategoryTypes[]>({
     queryKey: ['categories'],
@@ -292,7 +294,29 @@ const CreateProduct = () => {
   return (
     <Layout title='Enter Product Details'>
 
-      <div className='flex justify-center w-full'>
+      <div className="flex flex-col items-center justify-center w-full py-6 bg-muted/40 rounded-xl shadow-md">
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button
+            variant={createComboProduct ? 'secondary' : 'default'}
+            className={createComboProduct ? 'bg-muted text-foreground' : 'bg-primary text-white'}
+            onClick={() => setCreateComboProduct(false)}
+          >
+            Create Product
+          </Button>
+
+          <Button
+            variant={createComboProduct ? 'default' : 'secondary'}
+            className={createComboProduct ? 'bg-primary text-white' : 'bg-muted text-foreground'}
+            onClick={() => setCreateComboProduct(true)}
+          >
+            Create Combo Product
+          </Button>
+
+        </div>
+      </div>
+
+
+      {!createComboProduct ? <div className='flex justify-center w-full'>
 
         <form className='m-2 flex flex-col gap-2 w-full  md:max-w-[780px] border-2 p-4 rounded-md shadow-sm' onSubmit={handleSubmit(onSubmit)}>
           <div className='flex gap-2 items-center'>
@@ -475,8 +499,9 @@ const CreateProduct = () => {
             </Button >
           </div>
         </form>
-      </div>
-
+        
+      </div> :
+       <ProductComboOffer />}
     </Layout>
 
   )

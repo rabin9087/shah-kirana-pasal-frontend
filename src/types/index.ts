@@ -3,6 +3,7 @@ import { IJobCategory } from "@/axios/jobCategory/jobCategory";
 import { IJobs } from "@/axios/jobs/jobs";
 import { IOrder } from "@/axios/order/types";
 import { IStoredAt } from "@/axios/product/types";
+import { IProductComboOffer } from "@/axios/productComboOffer/types";
 import { IShop } from "@/axios/shop/types";
 import { ISalesProps } from "@/components/dashboard/sales/Sales";
 import { IAddToCartTypes } from "@/pages/addToCart";
@@ -94,7 +95,8 @@ export type serverReturnDataType = {
   category?: ICategoryTypes;
   products?: IProductTypes[],
   product?: IProductTypes,
-  clientSecret?: string
+  clientSecret?: string,
+  paymentIntentId?: string,
   customerSessionClientSecret?: string
   order: IOrder
   orders: IOrder[] 
@@ -108,6 +110,7 @@ export type serverReturnDataType = {
   };
   storeSales: IStoreSale | IStoreSale[] | [],
   shop: IShop,
+  allShop: IShop[],
   due: IDue,
   dues: IDue[],
   job: IJobs;
@@ -115,6 +118,7 @@ export type serverReturnDataType = {
   jobCategory: IJobCategory;
   jobCategories: IJobCategory[];
   checkoutUrl: string;
+  productComboOffers: IProductComboOffer[];
 };
 
 export type LocationState = {

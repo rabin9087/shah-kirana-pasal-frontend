@@ -37,12 +37,18 @@ const UserDetails = () => {
 
     return (
         <Layout title="User Details">
-            <Link to={"/dashboard"} className='ms-16 my-4 p-3 bg-primary rounded-md text-white mx-auto'>{"<"} Dashboard</Link>
+            <Link
+                to="/dashboard"
+                className="inline-flex ms-2 items-center gap-1 px-3 py-1.5 rounded-md bg-primary text-white text-sm font-medium shadow hover:bg-primary/90 transition"
+            >
+                <span className="text-base">←</span> Back
+            </Link>
 
             {<div className="max-w-lg mx-auto bg-white shadow-lg rounded-2xl p-6 mt-5">
 
-                <div className="flex items-center space-x-4" onClick={openModal}>
+                <div className="flex items-center space-x-4" >
                     <img
+                        onClick={openModal}
                         src={userDetail?.profile || "https://via.placeholder.com/100"}
                         alt="Profile"
                         className="w-20 h-20 rounded-full border-2 border-gray-300 object-cover"
@@ -83,20 +89,28 @@ const UserDetails = () => {
                     </p>
                 </div>
                 {isModalOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className="bg-white p-4 mx-10 rounded-md shadow-lg max-w-md w-full flex flex-col  justify-center items-center">
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center  justify-center z-50">
+                        <div className="bg-white p-6 rounded-2xl shadow-xl mx-2 w-full max-w-sm text-center">
+
+                            {/* Profile Image */}
                             <img
                                 src={userDetail?.profile || ""}
-                                alt="Product"
-                                className="w-full rounded-full h-screen/3 object-cover"
+                                alt="Profile"
+                                className="w-64 h-64 rounded-full object-cover border-4 border-primary shadow-md mx-auto"
                             />
-                            <div className="flex justify-center items-center mt-2">
-                                <Button variant="outline" onClick={closeModal} className="mt-2">
+
+                            {/* Optional Name or Info (Add if needed) */}
+                            {/* <h3 className="mt-4 text-lg font-semibold">{userDetail?.name}</h3> */}
+
+                            {/* Close Button */}
+                            <div className="mt-6">
+                                <Button variant="outline" onClick={closeModal} className="w-full">
                                     Close
                                 </Button>
                             </div>
                         </div>
                     </div>
+
                 )}
             </div>}
         </Layout>

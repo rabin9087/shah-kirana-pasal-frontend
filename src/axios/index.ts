@@ -11,6 +11,7 @@ export const rootApi = import.meta.env.PROD
 export const getAccessJWT = () => sessionStorage.getItem("accessJWT");
 export const getRefreshJWT = () => localStorage.getItem("refreshJWT");
 
+
 export const axiosInstance = axios.create({
   baseURL: rootApi,
 });
@@ -21,8 +22,14 @@ export const axiosProcessor = async ({
   obj,
   isPrivate,
   refreshToken,
+  selectedShop,
   params,
-}: IAxiosProcessParams): Promise<TAxiosProcessor> => {
+}: IAxiosProcessParams & { selectedShop?: { name?: string } }): Promise<TAxiosProcessor> => {
+
+  const requestData = {
+      ...obj,
+      ...(selectedShop?.name && { shopId: selectedShop.name }),
+    };
   try {
     // Get the appropriate token
     const token = refreshToken ? getRefreshJWT() : getAccessJWT();
@@ -38,7 +45,7 @@ export const axiosProcessor = async ({
     const { data } = await axiosInstance({
       method,
       url,
-      data: obj,
+      data: requestData,
       headers,
       params,
     });
