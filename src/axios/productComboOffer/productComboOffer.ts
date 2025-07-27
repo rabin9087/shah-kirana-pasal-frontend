@@ -21,7 +21,7 @@ export const getAllProductComboOffer = async() => {
   try {
     const response = await axiosProcessor({
     method: "get",
-    url: `${productComboOfferApi}`,
+    url: `${productComboOfferApi}/comboOffer`,
     isPrivate: true,
     });
     
