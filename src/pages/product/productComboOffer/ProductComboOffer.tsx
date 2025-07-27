@@ -338,7 +338,6 @@ const ProductComboOffer = () => {
                         type="number"
                         step="0.01"
                         {...register('offerPrice', { valueAsNumber: true })}
-                        readOnly
                         className="bg-gray-50"
                     />
                     {errors.offerPrice && (
