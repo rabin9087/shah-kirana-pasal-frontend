@@ -24,6 +24,7 @@ import SearchInput from "@/components/search/SearchInput";
 import { formatLocation } from "@/pages/orders/startPicking/StartPickingOrder";
 
 export const sortOptions = [
+    { label: "Select A Label", value: "select" },
     { label: "Name", value: "name" },
     { label: "Expire Date", value: "expireDate" },
     { label: "SOH", value: "quantity" }, // Stock on Hand
@@ -68,9 +69,9 @@ const ProductsDashboard = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [searchData, setSearchData] = useState(products)
-    const [sortBy, setSortBy] = useState<SortField>("name");
+    const [sortBy, setSortBy] = useState<SortField>("select");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-    
+
     const { data = [], error } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
         queryFn: () => getAllProducts(),
@@ -78,8 +79,13 @@ const ProductsDashboard = () => {
 
     useEffect(() => {
         if (data.length) {
-            const sortedUsers = [...data].sort((a, b) => a.name.localeCompare(b.name));
-            dispatch(setProducts(sortedUsers))
+            if (sortBy === "select") {
+                dispatch(setProducts(data))
+            } else {
+                const sortedUsers = [...data].sort((a, b) => a.name.localeCompare(b.name));
+                dispatch(setProducts(sortedUsers))
+            }
+
         }
     }, [dispatch, data])
 
@@ -114,6 +120,7 @@ const ProductsDashboard = () => {
     }
 
     useEffect(() => {
+
         const sorted = sortProducts(products, sortBy, sortOrder);
         setSearchData(sorted);
     }, [products, sortBy, sortOrder]);
@@ -274,7 +281,7 @@ const ProductsDashboard = () => {
                                     <TableCell className="whitespace-nowrap">$ {price}</TableCell>
                                     <TableCell className="whitespace-nowrap">$ {costPrice}</TableCell>
                                     <TableCell className="whitespace-nowrap">{(
-                                        <span className="text-yellow-500 block whitespace-nowrap">$ {salesPrice ? salesPrice: null}</span>
+                                        <span className="text-yellow-500 block whitespace-nowrap">$ {salesPrice ? salesPrice : null}</span>
                                     )}</TableCell>
                                     <TableCell className="whitespace-nowrap">$ {retailerPrice}</TableCell>
                                     <TableCell>{quantity}</TableCell>
