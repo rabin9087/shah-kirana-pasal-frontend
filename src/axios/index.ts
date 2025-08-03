@@ -22,30 +22,34 @@ export const axiosProcessor = async ({
   obj,
   isPrivate,
   refreshToken,
-  selectedShop,
   params,
-}: IAxiosProcessParams & { selectedShop?: { name?: string } }): Promise<TAxiosProcessor> => {
+}: IAxiosProcessParams): Promise<TAxiosProcessor> => {
 
   const requestData = {
       ...obj,
-      ...(selectedShop?.name && { shopId: selectedShop.name }),
+
     };
   try {
     // Get the appropriate token
     const token = refreshToken ? getRefreshJWT() : getAccessJWT();
-    const headers: Record<string, string> = {
-      "Content-Type": obj instanceof FormData ? "multipart/form-data" : "application/json; charset=UTF-8",
-    };
+    
+     const headers: Record<string, string> = {};
+
+    // CRITICAL FIX: Don't set Content-Type for FormData - let the browser set it with boundary
+    if (!(obj instanceof FormData)) {
+      headers["Content-Type"] = "application/json; charset=UTF-8";
+    }
 
     if (isPrivate && token) {
       headers.Authorization = `Bearer ${token}`;
     }
 
+     const requestPayload = obj instanceof FormData ? obj : requestData;
     // Make API request using axiosInstance
     const { data } = await axiosInstance({
       method,
       url,
-      data: requestData,
+      data: requestPayload,
       headers,
       params,
     });

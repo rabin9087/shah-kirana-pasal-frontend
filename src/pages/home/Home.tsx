@@ -9,7 +9,6 @@ import CarouselWithAutoplay from "./Carousel";
 import { Sparkles, Tag, ShoppingCart, Gift, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IProductTypes } from "@/types/index";
-import Shop from "../shop/Shop";
 import ComboProduct from "./productCombo/ComboProduct";
 
 interface Pagination {
@@ -119,11 +118,11 @@ function Home(): JSX.Element {
 
   return (
     <Layout types="products" title={page === 1 ? "Smart Shop" : ""}>
-      {page === 1 && (
+      {/* {page === 1 && (
         <div className="flex justify-end me-2 m-2">
           <Shop />
         </div>
-      )}
+      )} */}
 
       {page === 1 && (
         <div className="w-full mb-8">

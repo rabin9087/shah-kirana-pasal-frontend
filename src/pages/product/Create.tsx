@@ -16,62 +16,10 @@ import { getAllCategories } from '@/axios/category/category';
 import { ICategoryTypes } from '@/types/index';
 import { setCategory } from '@/redux/category.slice';
 import { RxCross1 } from "react-icons/rx";
+import { base64ToFile } from '@/utils/convertToBase64';
 import { toast } from 'react-toastify';
 import { IStoredAt } from '@/axios/product/types';
 import ProductComboOffer from './productComboOffer/ProductComboOffer';
-
-// Image compression utility function
-const compressImage = (file: File, quality: number = 0.8, maxWidth: number = 1200, maxHeight: number = 1200): Promise<string> => {
-  return new Promise((resolve) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-
-    img.onload = () => {
-      // Calculate new dimensions while maintaining aspect ratio
-      let { width, height } = img;
-
-      if (width > height) {
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width;
-          width = maxWidth;
-        }
-      } else {
-        if (height > maxHeight) {
-          width = (width * maxHeight) / height;
-          height = maxHeight;
-        }
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-
-      // Draw and compress the image
-      ctx?.drawImage(img, 0, 0, width, height);
-
-      // Convert to base64 with compression
-      const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
-      resolve(compressedDataUrl);
-    };
-
-    img.src = URL.createObjectURL(file);
-  });
-};
-
-// Convert base64 to compressed file
-const base64ToCompressedFile = (base64: string, filename: string): File => {
-  const arr = base64.split(',');
-  const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-
-  return new File([u8arr], filename, { type: mime });
-};
 
 const CreateProduct = () => {
   const [sku, setSku] = useState<string>('');
@@ -80,7 +28,6 @@ const CreateProduct = () => {
   const [image, setImage] = useState<null | string>("");
   const [images, setImages] = useState<ImageType[]>([]);
   const [thumbnail, setThumbnail] = useState<ImageType[]>([]);
-  const [isCompressing, setIsCompressing] = useState<boolean>(false);
   const dispatch = useAppDispatch()
 
   const { categories } = useAppSelector(state => state.categoryInfo)
@@ -109,63 +56,73 @@ const CreateProduct = () => {
     }
   })
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<ProductSchema>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
+    defaultValues: {
+      name: '',
+      alternateName: '',
+      sku: '',
+      qrCodeNumber: '',
+      price: '',
+      costPrice: '',
+      retailerPrice: '',
+      quantity: '',
+      storedAt: '',
+      productLocation: '',
+      productWeight: '',
+      salesPrice: '',
+      salesStartDate: '',
+      salesEndDate: '',
+      description: '',
+      parentCategoryID: '',
+      images: [],
+    }
   });
+
+  // Watch form values for debugging
+  const watchedValues = watch();
+  console.log('Form values:', watchedValues);
 
   const handleOnGenerateSKU = () => {
     const code = generateRandomCode();
     setSku(code);
+    setValue("sku", code, { shouldValidate: true });
   };
 
   const handleOnGenerateBarcode = () => {
     const code = generateRandomBarcode();
     setIsBarcode(true);
     setBarcode(code);
+    setValue("qrCodeNumber", code, { shouldValidate: true });
   };
 
-  const convert2base64 = async (imageFile: File) => {
-    setIsCompressing(true);
-
-    try {
-      // Compress the image before converting to base64
-      const compressedBase64 = await compressImage(imageFile, 0.8, 1200, 1200);
-
-      setImage(compressedBase64);
-      setValue("images", compressedBase64);
+  const convert2base64 = (image: Blob) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      setImage(result);
 
       const newImage = {
-        url: compressedBase64,
-        alt: compressedBase64.slice(5, 10) + ":" + (images.length + 1).toString()
+        url: result,
+        alt: result.slice(5, 10) + ":" + (images.length + 1).toString()
       };
 
       // Check if the image already exists in the array
       const imageExists = images.some((item) => item.url === newImage.url);
 
       if (!imageExists) {
-        setImages([...images, newImage]);
+        const updatedImages = [...images, newImage];
+        setImages(updatedImages);
+        setValue("images", updatedImages, { shouldValidate: true });
       }
+    };
 
-      // Show compression success message
-      toast.success('Image compressed successfully!');
-
-    } catch (error) {
-      toast.error('Error compressing image');
-      console.error('Compression error:', error);
-    } finally {
-      setIsCompressing(false);
-    }
+    return reader.readAsDataURL(image);
   };
 
   const handleOnImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Check file size (optional - warn if too large)
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 5) {
-        toast.warning(`Large file detected (${fileSizeMB.toFixed(2)}MB). Compressing...`);
-      }
-
       return convert2base64(file);
     }
   };
@@ -179,9 +136,11 @@ const CreateProduct = () => {
   };
 
   const handleDeleteImage = (url: string) => {
-    setImages((prevImages) => prevImages.filter((item) => item.url !== url));
+    const updatedImages = images.filter((item) => item.url !== url);
+    setImages(updatedImages);
+    setValue("images", updatedImages, { shouldValidate: true });
 
-    // If deleted image was the thumbnail, clear thumbnail
+    // If deleted image was the thumbnail, clear it
     if (image === url) {
       setImage("");
       setThumbnail([]);
@@ -189,50 +148,68 @@ const CreateProduct = () => {
   };
 
   const onSubmit = async (data: ProductSchema) => {
+    console.log('Form submission data:', data);
+
+    // Validate that required fields are present
+    if (!data.name || !data.sku || !data.qrCodeNumber || !data.price || !data.quantity || !data.parentCategoryID) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    // Validate that at least one image is present
+    if (!images || images.length === 0) {
+      toast.error('Please upload at least one product image');
+      return;
+    }
+
     const formData = new FormData();
 
-    // Append non-file fields
+    // Append non-file fields (exclude images from data object)
     Object.keys(data).forEach((key) => {
-      if (key !== 'images' && key !== 'thumbnail') {
-        formData.append(key, data[key as keyof ProductSchema] as any);
+      if (key !== 'images') {
+        const value = data[key as keyof ProductSchema];
+        if (value !== undefined && value !== null && value !== '') {
+          formData.append(key, value as string);
+        }
       }
     });
 
-    // Convert compressed images from base64 to File and append to FormData
+    // Convert images from base64 to File and append to FormData
     if (images && images.length > 0) {
       images.forEach((image, index) => {
-        const file = base64ToCompressedFile(image.url, `compressed_image_${index}.jpg`);
+        const file = base64ToFile(image.url, `image${index}.jpg`);
         formData.append('images', file);
       });
     }
 
-    // Convert compressed thumbnail from base64 to File and append to FormData
+    // Convert thumbnail from base64 to File and append to FormData
     if (thumbnail && thumbnail.length > 0) {
-      const file = base64ToCompressedFile(thumbnail[0].url, 'compressed_thumbnail.jpg');
+      const file = base64ToFile(thumbnail[0].url, 'thumbnail.jpg');
       formData.append('thumbnail', file);
     }
 
-    mutation.mutate(formData, {
-      onSuccess: (message) => {
-        if (message === "success") {
-          reset();
-          setImages([]);
-          setThumbnail([]);
-          setImage(null);
-          setSku('');
-          setBarcode('');
-          setIsBarcode(false);
-        }
-        return
-      }
-    });
+    // Debug FormData contents
+    console.log('FormData contents:');
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    try {
+      await mutation.mutateAsync(formData);
+      // Success handling is done in the mutation's onSuccess callback
+    } catch (error) {
+
+      toast.error('Failed to create product. Please try again.');
+    }
   };
 
+  // Barcode scanner effect
   useEffect(() => {
     let buffer = "";
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         setBarcode(buffer);
+        setValue("qrCodeNumber", buffer, { shouldValidate: true });
         buffer = "";
       } else {
         buffer += e.key;
@@ -243,21 +220,39 @@ const CreateProduct = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [setValue]);
+
+  // Sync generated values with form
+  useEffect(() => {
+    if (sku) {
+      setValue('sku', sku, { shouldValidate: true });
+    }
+  }, [sku, setValue]);
 
   useEffect(() => {
-    setValue('images', images);
-    if (image) {
-      setThumbnail([{ url: image, alt: image.slice(5, 10) + ":" + (images.length + 1).toString() }])
-      const imageExists = images.some((item) => item.url === image);
+    if (barcode) {
+      setValue('qrCodeNumber', barcode, { shouldValidate: true });
+    }
+  }, [barcode, setValue]);
 
+  // Set thumbnail when image is selected
+  useEffect(() => {
+    if (image) {
+      const newThumbnail = [{
+        url: image,
+        alt: image.slice(5, 10) + ":" + (images.length + 1).toString()
+      }];
+      setThumbnail(newThumbnail);
+
+      // Add to images if not already present
+      const imageExists = images.some((item) => item.url === image);
       if (!imageExists) {
-        setImages((prevImages) => {
-          return [...prevImages, { url: image, alt: image.slice(5, 10) + ":" + (images.length + 1).toString() }];
-        });
+        const updatedImages = [...images, newThumbnail[0]];
+        setImages(updatedImages);
+        setValue("images", updatedImages, { shouldValidate: true });
       }
     }
-  }, [images, image, setValue]);
+  }, [image, setValue]);
 
   const input: InputField[] = [
     {
@@ -330,10 +325,10 @@ const CreateProduct = () => {
     {
       label: "Product Location",
       name: "productLocation",
-      type: "text",
-      value: "",
+      type: "string",
+      // value: "",
       required: true,
-      placeholder: "12.8.3.5",
+      placeholder: "12.8.3",
     },
     {
       label: "Product Weight (optional)",
@@ -385,7 +380,10 @@ const CreateProduct = () => {
 
       {!createComboProduct ? (
         <div className='flex justify-center w-full'>
-          <form className='m-2 flex flex-col gap-2 w-full md:max-w-[780px] border-2 p-4 rounded-md shadow-sm' onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className='m-2 flex flex-col gap-2 w-full md:max-w-[780px] border-2 p-4 rounded-md shadow-sm'
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className='flex gap-2 items-center'>
               <Label
                 htmlFor="image"
@@ -398,31 +396,19 @@ const CreateProduct = () => {
                 <Input
                   type='file'
                   className='hidden'
-                  {...register('images')}
                   id='file'
                   onChange={handleOnImageChange}
                   multiple
                   accept="image/*"
-                  disabled={isCompressing}
                 />
 
-                <Button type='button' size={'icon'} variant={'default'} disabled={isCompressing}>
+                <Button type='button' size={'icon'} variant={'default'}>
                   <Label htmlFor='file'>
-                    {isCompressing ? (
-                      <span className="animate-spin">⭕</span>
-                    ) : (
-                      <AiFillPicture size={20} />
-                    )}
+                    <AiFillPicture size={20} />
                   </Label>
                 </Button>
               </div>
             </div>
-
-            {isCompressing && (
-              <div className="flex items-center justify-center py-2">
-                <span className="text-blue-600">Compressing image, please wait...</span>
-              </div>
-            )}
 
             <div className=''>
               {image !== "" && image !== null && (
@@ -439,16 +425,14 @@ const CreateProduct = () => {
               <hr />
               {images.length > 0 && (
                 <>
-                  <div className='flex justify-center p-2 shadow-md'>
-                    Images ({images.length})
-                  </div>
+                  <div className='flex justify-center p-2 shadow-md'>Images</div>
                   <div className='flex w-full flex-row justify-center gap-4 items-center flex-wrap py-4 border-2'>
                     {images.map(({ alt, url }) => (
                       <div key={url} className='relative w-[100px] h-[130px] md:w-[140px] md:h-[180px]'>
                         <img
                           src={url}
                           alt={alt.slice(1, 20)}
-                          className='w-full h-full object-cover cursor-pointer hover:bg-slate-200 transition-colors duration-300 border rounded'
+                          className='w-full h-full object-cover cursor-pointer hover:bg-slate-200 transition-colors duration-300'
                           onClick={() => handleImageClick(url)}
                         />
                         <Button
@@ -467,7 +451,9 @@ const CreateProduct = () => {
               )}
             </div>
 
-            {errors.images && <span className="text-red-600">{`${errors.images?.message}` as ReactNode}</span>}
+            {errors.images && (
+              <span className="text-red-600">{`${errors.images?.message}` as ReactNode}</span>
+            )}
 
             <div className="space-y-2 mt-2">
               <div className="block">
@@ -496,6 +482,9 @@ const CreateProduct = () => {
                     <CustomModal create={"createCategory"} setImage={setImage} />
                   </Button>
                 </div>
+                {errors.parentCategoryID && (
+                  <span className="text-red-600">{errors.parentCategoryID.message}</span>
+                )}
               </div>
 
               <div className="border-gray-900/10">
@@ -526,7 +515,7 @@ const CreateProduct = () => {
                           <Input
                             id={name as string}
                             type={type}
-                            defaultValue={value}
+                            value={name === 'sku' ? sku : name === 'qrCodeNumber' ? barcode : value}
                             required={required}
                             placeholder={placeholder}
                             {...register(name)}
@@ -538,6 +527,7 @@ const CreateProduct = () => {
                             id="storedAt"
                             {...register('storedAt')}
                           >
+                            <option value="">--Select storage location--</option>
                             {Object.values(IStoredAt).map((value) => (
                               <option key={value} value={value}>
                                 --{value}--
@@ -546,7 +536,11 @@ const CreateProduct = () => {
                           </select>
                         )}
                       </div>
-                      {errors.name && <span className="text-red-600">{`${errors.name.message}`}</span>}
+                      {errors[name as keyof ProductSchema] && (
+                        <span className="text-red-600">
+                          {`${errors[name as keyof ProductSchema]?.message}`}
+                        </span>
+                      )}
                     </div>
                   ))}
 
@@ -562,7 +556,9 @@ const CreateProduct = () => {
                         className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         placeholder='Enter Product description'
                       />
-                      {errors.description && <span className="text-red-600">{`${errors?.description?.message}`}</span>}
+                      {errors.description && (
+                        <span className="text-red-600">{`${errors?.description?.message}`}</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -572,13 +568,22 @@ const CreateProduct = () => {
             <div className="mt-2 flex items-center justify-end gap-2">
               <Button
                 type="submit"
-                disabled={mutation.isPending || isCompressing}
+                disabled={mutation.isPending}
               >
                 {mutation.isPending ? "Saving..." : "Save"}
               </Button>
               <Button
                 type="reset"
                 variant={"outline"}
+                onClick={() => {
+                  reset();
+                  setImages([]);
+                  setThumbnail([]);
+                  setImage("");
+                  setSku('');
+                  setBarcode('');
+                  setIsBarcode(false);
+                }}
               >
                 Cancel
               </Button>

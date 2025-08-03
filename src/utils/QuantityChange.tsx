@@ -20,6 +20,7 @@ export const AddToCartButton = ({ item }: { item: CartItem }) => {
             variant="default"
             onClick={handleOnAddToCart}
             className="w-full"
+            // disabled ={item?.quantity === 0}
         >
             {language === "en" ? "Add To Cart" : "कार्टमा थप्नुहोस्"}
         </Button>

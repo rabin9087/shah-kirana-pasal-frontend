@@ -55,7 +55,9 @@ const Payment = () => {
     }, [data?.clientSecret, data?.paymentIntentId, dispatch]);
 
     if (isLoading && !clientSecret) {
-        return <LoadingDataWithText text="Payment method loading ..." />;
+        return (<Layout title={language === "en" ? "Payment Details" : "भुक्तानी विवरणहरू"}>
+            <LoadingDataWithText text="Payment method loading ..." />
+        </Layout>);
     }
 
     if (!clientSecret) {

@@ -83,11 +83,7 @@ const CheckoutForm = () => {
             comboId: item._id
         }));
     });
-
-
-    console.log(orderItems)
-    // const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
-
+    
     const cartAmount = cart.reduce((acc, { orderQuantity, price }) => {
         return acc + (orderQuantity as number) * (price as number)
     }, 0)

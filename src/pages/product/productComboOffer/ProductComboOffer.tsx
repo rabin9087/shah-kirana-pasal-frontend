@@ -6,12 +6,15 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AiFillPlusCircle } from 'react-icons/ai';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { IProductComboOffer } from '@/axios/productComboOffer/types';
 import { comboOfferSchema } from './productComboOfferValidation';
 import { createProductComboOffer } from '@/axios/productComboOffer/productComboOffer';
-import { useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
+import { IProductTypes } from '@/types/index';
+import { getAllProducts } from '@/axios/product/product';
+import { setProducts } from '@/redux/product.slice';
 
 const ProductComboOffer = () => {
     const [selectedProducts, setSelectedProducts] = useState<IProductComboOffer['items']>([]);
@@ -19,10 +22,21 @@ const ProductComboOffer = () => {
         productId: '',
         price: '',
     });
-
+    const dispatch = useAppDispatch();
     const { products } = useAppSelector((s) => s.productInfo);
     const [tempProduct, setTempProduct] = useState(products);
 
+    const { data = [] } = useQuery<IProductTypes[]>({
+        queryKey: ['products'],
+        queryFn: () => getAllProducts(),
+        enabled: !products.length,
+    });
+
+    useEffect(() => {
+        if (data.length) {
+            dispatch(setProducts(data));
+        }
+    }, [data?.length])
     const {
         register,
         handleSubmit,
