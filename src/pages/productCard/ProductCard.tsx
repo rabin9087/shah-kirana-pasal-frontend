@@ -152,7 +152,7 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
           {/* Action Buttons */}
           <CardFooter className="p-4 pt-0">
             <div className="w-full">
-              {itemExist(item._id, cart).length ? (
+              {itemExist(item._id, cart) ? (
                 <div className="transform group-hover:scale-105 transition-transform duration-300">
                   <ChangeItemQty item={{ ...item, orderQuantity: orderQty || 0 }} />
                 </div>

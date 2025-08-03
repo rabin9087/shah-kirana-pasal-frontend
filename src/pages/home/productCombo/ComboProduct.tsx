@@ -54,10 +54,10 @@ const ClickableProductComboOfferCard: React.FC<{
 }> = ({ item, onClick, addClass }) => {
     return (
         <div
-            onClick={onClick}
             className="cursor-pointer transform hover:scale-105 transition-all duration-300 hover:shadow-xl"
         >
             <ProductComboOfferCard
+                onClick={onClick}
                 item={item}
                 addClass={`${addClass} hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary/20`}
             />

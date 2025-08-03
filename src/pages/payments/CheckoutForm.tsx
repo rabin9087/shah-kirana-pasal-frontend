@@ -26,13 +26,12 @@ const CheckoutForm = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [isAddressComplete, setIsAddressComplete] = useState(false);
-    const {language } = useAppSelector((state) => state.settings);
+    const { language } = useAppSelector((state) => state.settings);
     const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
     const [paymentType, setPaymentType] = useState<"cash" | "card">("card");
     const [changeDetails, setChangeDetails] = useState(false);
     const [paymentError, setPaymentError] = useState<string | undefined>(undefined);
 
-    console.log(localStorage.getItem("paymentIntentId"))
     const [userDetails, setUserDetails] = useState(
         {
             fName: user.fName,
@@ -60,13 +59,38 @@ const CheckoutForm = () => {
     const [placeOrderStatus, setPlaceOrderStatus] = useState<string>("Place order");
 
     const { cart } = useAppSelector(state => state.addToCartInfo);
+    console.log(cart)
 
-    const orderItems = cart.map(item => ({ productId: item?._id, quantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
-    const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
+    const orderItems = cart.flatMap(item => {
+        if (!item.offerName) {
+            return [{
+                productId: item._id,
+                quantity: item.orderQuantity,
+                price: item.price,
+                note: item.note ?? "",
+            } as any];
+        }
 
-    const cartAmount = cart.reduce((acc, { orderQuantity, price, salesPrice }) => {
-        return acc + (orderQuantity * (salesPrice > 0 ? salesPrice : price));
-    }, 0);
+        // If it's a combo offer
+        return (item.items || []).map(product => ({
+            productId: typeof product.productId === "string" 
+                ? product.productId
+                : product?.productId?._id,
+            quantity: item.orderQuantity as number,
+            price: product.price,
+            note: item.note ?? "",
+            offerName: item.offerName,
+            comboId: item._id
+        }));
+    });
+
+
+    console.log(orderItems)
+    // const items = cart.map(item => ({ productId: item?._id, orderQuantity: item.orderQuantity, price: item.price, note: item.note === undefined ? "" : item.note }));
+
+    const cartAmount = cart.reduce((acc, { orderQuantity, price }) => {
+        return acc + (orderQuantity as number) * (price as number)
+    }, 0)
 
     const handelOnAddressChange = (event: any) => {
         const { complete, value } = event;
@@ -97,7 +121,12 @@ const CheckoutForm = () => {
         await dispatch(updateCartInUserAxios(user.phone, []));
         await dispatch(updateCartHistoryInUserAxios({
             phone: user.phone,
-            items,
+            items: orderItems.map((item) => ({
+                productId: item.productId as string,
+                orderQuantity: item.quantity as number,
+                price: item.price,
+                note: item.note,
+            })),
             cartAmount,
             orderNumber,
             deliveryStatus: "Order Placed",
@@ -174,8 +203,8 @@ const CheckoutForm = () => {
                     },
                     redirect: "if_required", // This handles redirects for Afterpay, Zip, etc.
                 });
-                    console.log(result)
-                    console.log("confirm payment done")
+                console.log(result)
+                console.log("confirm payment done")
                 if (result.error) {
                     let message = "An unexpected error occurred.";
                     const { type, message: stripeMsg, code } = result.error;
@@ -213,7 +242,7 @@ const CheckoutForm = () => {
                     }
 
                     setPaymentError(message);
-                }  else if (result.paymentIntent.status === "succeeded") {
+                } else if (result.paymentIntent.status === "succeeded") {
                     // Payment succeeded immediately (e.g., direct card payment)
                     console.log("Payment success")
                     const customer_details = {
@@ -494,8 +523,8 @@ const CheckoutForm = () => {
                                                 //     googlePay: "auto",
                                                 // },
                                             }}
-                                            />
-                                            
+                                        />
+
                                     </div>
                                     {paymentError && (
                                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm">

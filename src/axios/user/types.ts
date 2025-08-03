@@ -6,4 +6,6 @@ export type ICartHistoryInUser = {
     cartAmount: number,
     orderNumber : number,
     deliveryStatus: string,
-    paymentStatus: string}
+    paymentStatus: string,
+    offerName?: string | null,
+}

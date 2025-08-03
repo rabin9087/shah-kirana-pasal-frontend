@@ -35,7 +35,7 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                     </span>
                                     {/* <Button onClick={}>Bye again</Button> */}
                                 </div>
-                                
+
                             </button>
 
                             {expandedOrder === index && (
@@ -75,7 +75,7 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                                 />
                                                 <div>
                                                     <p className="font-semibold text-gray-900">{item?.productId?.name}</p>
-                                                    <p className="text-gray-700">Quantity: {item?.orderQuantity}</p>
+                                                    <p className="text-gray-700">Quantity: {item?.quantity}</p>
                                                     <p className="text-gray-700">Price: ${item?.price}</p>
                                                     {item?.note && <p className="text-sm text-gray-500">Note: {item?.note}</p>}
                                                 </div>
@@ -86,9 +86,9 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                 </div>
                             )}
 
-                            
+
                         </div>
-                        
+
                     ))}
                 </div>
             ) : (

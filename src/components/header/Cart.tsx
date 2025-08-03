@@ -19,15 +19,15 @@ const Cart: React.FC = () => {
   const { cart } = useAppSelector((state) => state.addToCartInfo)
   const { user } = useAppSelector((state) => state.userInfo)
   const cartPrice = cart.reduce((acc, { orderQuantity, price }) => {
-    return acc + (orderQuantity * price)
+    return acc + (orderQuantity as number) * (price as number)
   }, 0)
 
-  const cartQuantity = cart.reduce((acc, { orderQuantity }) => acc + orderQuantity, 0);
+  const cartQuantity = cart.reduce((acc, { orderQuantity }) => acc + (orderQuantity ?? 0), 0);
 
-  const updatedCart: IUpdateCartToUserTypes[] = cart.filter((item) => item.productId?._id !== '')
+  const updatedCart: IUpdateCartToUserTypes[] = cart.filter((item) => item?._id !== '')
     .map(({ _id, price, orderQuantity, note }) => ({
-    productId: _id,
-    orderQuantity,
+    productId: _id as string,
+      orderQuantity: orderQuantity as number,
     note,
     price,
     }));

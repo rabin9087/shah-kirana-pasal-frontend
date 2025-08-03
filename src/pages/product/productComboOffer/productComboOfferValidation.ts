@@ -18,7 +18,7 @@ export const comboOfferSchema = z.object({
   discountAmount: z
     .number({ invalid_type_error: "Discount amount must be a number" })
     .min(0, "Discount must be at least 0"),
-  offerPrice: z
+  price: z
     .number({ invalid_type_error: "Offer price must be a number" })
     .nonnegative("Offer price must be a non-negative number"),
   offerStartDate: z.coerce.date().optional(),

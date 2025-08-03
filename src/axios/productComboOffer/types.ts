@@ -2,8 +2,10 @@ import { IProductTypes } from "@/types/index";
 
 
 export interface IProductOfferTypes {
-  productId: string | IProductTypes;
+  productId:  IProductTypes | string;
   price: string;
+  orderQuantity?: number;
+  _id?: string
 }
 
 export interface IProductComboOffer  {
@@ -16,7 +18,7 @@ export interface IProductComboOffer  {
     note?: string,
     totalAmount: number,
     discountAmount: number,
-    offerPrice: number,
+    price: number,
     offerStartDate?: Date,
     offerEndDate?: Date,
     description?: string,

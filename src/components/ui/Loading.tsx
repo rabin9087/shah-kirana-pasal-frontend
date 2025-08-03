@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react"
 import Layout from "../layout/Layout"
 
 
@@ -35,4 +36,16 @@ export const LoadingData = () => {
             </div>
     )
 
+}
+
+export const LoadingDataWithText = ({ text }: { text: string }) => { 
+
+    return (
+        <div className="w-full py-12">
+            <div className="flex flex-col items-center justify-center space-y-4">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-gray-600 font-medium">{text}</p>
+            </div>
+        </div>
+    )
 }

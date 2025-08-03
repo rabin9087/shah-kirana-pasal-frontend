@@ -86,8 +86,8 @@ export const updateCartInUserAxios = (phone: string, cart: IUpdateCartToUserType
 }
 
 
-export const updateCartHistoryInUserAxios = ({ phone, items, cartAmount, deliveryStatus, orderNumber, paymentStatus}: ICartHistoryInUser ) => async (dispatch: AppDispatch) => {
-  const pending =  updateCartHistoryInUser({phone, items, cartAmount, orderNumber, deliveryStatus, paymentStatus});
+export const updateCartHistoryInUserAxios = ({ phone, items, cartAmount, deliveryStatus, orderNumber, paymentStatus, offerName}: ICartHistoryInUser ) => async (dispatch: AppDispatch) => {
+  const pending =  updateCartHistoryInUser({phone, items, cartAmount, orderNumber, deliveryStatus, paymentStatus, offerName});
   const { status } = await pending;
   if (status === "success") {
     dispatch(getUserAction())

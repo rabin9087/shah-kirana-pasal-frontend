@@ -16,10 +16,62 @@ import { getAllCategories } from '@/axios/category/category';
 import { ICategoryTypes } from '@/types/index';
 import { setCategory } from '@/redux/category.slice';
 import { RxCross1 } from "react-icons/rx";
-import { base64ToFile } from '@/utils/convertToBase64';
 import { toast } from 'react-toastify';
 import { IStoredAt } from '@/axios/product/types';
 import ProductComboOffer from './productComboOffer/ProductComboOffer';
+
+// Image compression utility function
+const compressImage = (file: File, quality: number = 0.8, maxWidth: number = 1200, maxHeight: number = 1200): Promise<string> => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = () => {
+      // Calculate new dimensions while maintaining aspect ratio
+      let { width, height } = img;
+
+      if (width > height) {
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width = (width * maxHeight) / height;
+          height = maxHeight;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      // Draw and compress the image
+      ctx?.drawImage(img, 0, 0, width, height);
+
+      // Convert to base64 with compression
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+      resolve(compressedDataUrl);
+    };
+
+    img.src = URL.createObjectURL(file);
+  });
+};
+
+// Convert base64 to compressed file
+const base64ToCompressedFile = (base64: string, filename: string): File => {
+  const arr = base64.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+};
 
 const CreateProduct = () => {
   const [sku, setSku] = useState<string>('');
@@ -28,7 +80,7 @@ const CreateProduct = () => {
   const [image, setImage] = useState<null | string>("");
   const [images, setImages] = useState<ImageType[]>([]);
   const [thumbnail, setThumbnail] = useState<ImageType[]>([]);
-  // const navigate = useNavigate()
+  const [isCompressing, setIsCompressing] = useState<boolean>(false);
   const dispatch = useAppDispatch()
 
   const { categories } = useAppSelector(state => state.categoryInfo)
@@ -50,7 +102,7 @@ const CreateProduct = () => {
     mutationFn: (data: FormData) =>
       createProduct(data),
     onError: (error) => {
-      toast.success(error.message)
+      toast.error(error.message)
     },
     onSuccess: (message) => {
       toast.success(message)
@@ -61,11 +113,9 @@ const CreateProduct = () => {
     resolver: zodResolver(productSchema),
   });
 
-
   const handleOnGenerateSKU = () => {
     const code = generateRandomCode();
     setSku(code);
-    // setValue("sku", code)
   };
 
   const handleOnGenerateBarcode = () => {
@@ -74,28 +124,48 @@ const CreateProduct = () => {
     setBarcode(code);
   };
 
-  const convert2base64 = (image: Blob) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result as string);
-      setValue("images", reader.result)
-      const newImage = { url: reader.result as string, alt: reader.result?.slice(5, 10) + ":" + (images.length + 1).toString() as string };
+  const convert2base64 = async (imageFile: File) => {
+    setIsCompressing(true);
+
+    try {
+      // Compress the image before converting to base64
+      const compressedBase64 = await compressImage(imageFile, 0.8, 1200, 1200);
+
+      setImage(compressedBase64);
+      setValue("images", compressedBase64);
+
+      const newImage = {
+        url: compressedBase64,
+        alt: compressedBase64.slice(5, 10) + ":" + (images.length + 1).toString()
+      };
+
       // Check if the image already exists in the array
       const imageExists = images.some((item) => item.url === newImage.url);
 
       if (!imageExists) {
         setImages([...images, newImage]);
-      } else {
-        setImages([...images]);
       }
-    };
 
-    return reader.readAsDataURL(image);
+      // Show compression success message
+      toast.success('Image compressed successfully!');
+
+    } catch (error) {
+      toast.error('Error compressing image');
+      console.error('Compression error:', error);
+    } finally {
+      setIsCompressing(false);
+    }
   };
 
   const handleOnImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (optional - warn if too large)
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 5) {
+        toast.warning(`Large file detected (${fileSizeMB.toFixed(2)}MB). Compressing...`);
+      }
+
       return convert2base64(file);
     }
   };
@@ -104,12 +174,18 @@ const CreateProduct = () => {
     const clickedImage = images.find(image => image.url === url);
     if (clickedImage) {
       setImage(url);
-      setThumbnail([clickedImage]); // Replace the thumbnail array with the clicked image object
+      setThumbnail([clickedImage]);
     }
   };
 
   const handleDeleteImage = (url: string) => {
     setImages((prevImages) => prevImages.filter((item) => item.url !== url));
+
+    // If deleted image was the thumbnail, clear thumbnail
+    if (image === url) {
+      setImage("");
+      setThumbnail([]);
+    }
   };
 
   const onSubmit = async (data: ProductSchema) => {
@@ -122,24 +198,24 @@ const CreateProduct = () => {
       }
     });
 
-    // Convert images from base64 to File and append to FormData
+    // Convert compressed images from base64 to File and append to FormData
     if (images && images.length > 0) {
       images.forEach((image, index) => {
-        const file = base64ToFile(image.url, `image${index}.jpg`);
+        const file = base64ToCompressedFile(image.url, `compressed_image_${index}.jpg`);
         formData.append('images', file);
       });
     }
 
-    // Convert thumbnail from base64 to File and append to FormData
+    // Convert compressed thumbnail from base64 to File and append to FormData
     if (thumbnail && thumbnail.length > 0) {
-      const file = base64ToFile(thumbnail[0].url, 'thumbnail.jpg');
+      const file = base64ToCompressedFile(thumbnail[0].url, 'compressed_thumbnail.jpg');
       formData.append('thumbnail', file);
     }
 
     mutation.mutate(formData, {
       onSuccess: (message) => {
         if (message === "success") {
-          reset(); // Reset the form only if mutation is successful
+          reset();
           setImages([]);
           setThumbnail([]);
           setImage(null);
@@ -158,10 +234,8 @@ const CreateProduct = () => {
       if (e.key === "Enter") {
         setBarcode(buffer);
         buffer = "";
-        // setInputBuffer("");
       } else {
         buffer += e.key;
-        // setInputBuffer(buffer);
       }
     };
 
@@ -171,7 +245,6 @@ const CreateProduct = () => {
     };
   }, []);
 
-
   useEffect(() => {
     setValue('images', images);
     if (image) {
@@ -179,7 +252,6 @@ const CreateProduct = () => {
       const imageExists = images.some((item) => item.url === image);
 
       if (!imageExists) {
-        // Add new image if it does not exist
         setImages((prevImages) => {
           return [...prevImages, { url: image, alt: image.slice(5, 10) + ":" + (images.length + 1).toString() }];
         });
@@ -263,7 +335,6 @@ const CreateProduct = () => {
       required: true,
       placeholder: "12.8.3.5",
     },
-
     {
       label: "Product Weight (optional)",
       name: "productWeight",
@@ -290,10 +361,8 @@ const CreateProduct = () => {
     },
   ];
 
-
   return (
     <Layout title='Enter Product Details'>
-
       <div className="flex flex-col items-center justify-center w-full py-6 bg-muted/40 rounded-xl shadow-md">
         <div className="flex flex-wrap justify-center gap-4">
           <Button
@@ -311,199 +380,216 @@ const CreateProduct = () => {
           >
             Create Combo Product
           </Button>
-
         </div>
       </div>
 
-
-      {!createComboProduct ? <div className='flex justify-center w-full'>
-
-        <form className='m-2 flex flex-col gap-2 w-full  md:max-w-[780px] border-2 p-4 rounded-md shadow-sm' onSubmit={handleSubmit(onSubmit)}>
-          <div className='flex gap-2 items-center'>
-            <Label
-              htmlFor="image"
-              className="block text-md font-medium leading-6 text-accent-foreground"
-            >
-              Select Image:
-            </Label>
-            <div className='flex justify-center  gap-2 flex-row '>
-              <CustomModal setImage={setImage} />
-              <Input type='file' className='hidden' {...register('images')}
-                id='file'
-                onChange={handleOnImageChange}
-                multiple
-                accept="image/*"
-              />
-
-              <Button type='button' size={'icon'} variant={'default'}>
-                <Label htmlFor='file'>
-                  <AiFillPicture size={20} />
-                </Label>
-              </Button>
-
-            </div>
-          </div>
-
-          <div className=''>
-            {image !== "" && image !== null && <div className='mt-2 mx-auto md:w-[300px] text-center w-[250px]  mb-4'>
-              <span>Thumbnail</span>
-              <img
-                src={image !== "" ? image : ''}
-                className='md:order-2 mt-2 p-2 border-2 rounded-md object-cover'
-                alt='Product Image'
-              />
-            </div>}
-
-            <hr />
-            {images.length > 0 &&
-              <> <div className='flex justify-center p-2 shadow-md'>Images</div>
-                <div className='flex w-full flex-row justify-center gap-4 items-center flex-wrap py-4 border-2'>
-                  {images.map(({ alt, url }) => (
-                    <div key={url} className='relative w-[100px] h-[130px] md:w-[140px] md:h-[180px]'>
-                      <img
-                        src={url}
-                        alt={alt.slice(1, 20)}
-                        className='w-full h-full object-cover cursor-pointer hover:bg-slate-200 transition-colors duration-300'
-                        onClick={() => handleImageClick(url)}
-                      />
-                      <Button
-                        type='button'
-                        size='icon'
-                        variant={"outline"}
-                        className='top-[-0.4rem] absolute right-[-0.5rem] '
-                        onClick={() => handleDeleteImage(url)}
-                      >
-                        <RxCross1 className='w-fit border-none rounded-full border-2' size={20} />
-                      </Button>
-                    </div>
-
-                  ))}
-                </div>
-              </>}
-          </div>
-
-          {errors.images && <span className="text-red-600">{`${errors.images?.message}` as ReactNode}</span>}
-          <div className="space-y-2 mt-2">
-            <div className="block">
+      {!createComboProduct ? (
+        <div className='flex justify-center w-full'>
+          <form className='m-2 flex flex-col gap-2 w-full md:max-w-[780px] border-2 p-4 rounded-md shadow-sm' onSubmit={handleSubmit(onSubmit)}>
+            <div className='flex gap-2 items-center'>
               <Label
-                htmlFor="category"
-                className="block text-md font-medium leading-6 text-gray-900"
+                htmlFor="image"
+                className="block text-md font-medium leading-6 text-accent-foreground"
               >
-                Product Category
+                Select Image:
               </Label>
+              <div className='flex justify-center gap-2 flex-row'>
+                <CustomModal setImage={setImage} />
+                <Input
+                  type='file'
+                  className='hidden'
+                  {...register('images')}
+                  id='file'
+                  onChange={handleOnImageChange}
+                  multiple
+                  accept="image/*"
+                  disabled={isCompressing}
+                />
 
-              <div className='flex max-w-screen-md justify-center md:justify-start gap-3 me-2'>
-                <select
-                  id="category"
-                  className="w-full md:w-[310px] border-2 rounded-md text-center"
-                  {...register('parentCategoryID')}
-                >
-                  <option value="">--Select a category--</option>
-                  {categories.map(({ _id, name }, index) => (
-                    <option className="py-1" key={index} value={_id}>
-                      --{name}--
-                    </option>
-                  ))}
-                </select>
-
-                <Button type='button' size={'icon'} variant={'secondary'}>
-                  <CustomModal create={"createCategory"} setImage={setImage} />
+                <Button type='button' size={'icon'} variant={'default'} disabled={isCompressing}>
+                  <Label htmlFor='file'>
+                    {isCompressing ? (
+                      <span className="animate-spin">⭕</span>
+                    ) : (
+                      <AiFillPicture size={20} />
+                    )}
+                  </Label>
                 </Button>
               </div>
-
             </div>
-            <div className="border-gray-900/10">
 
-              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                {input.map(({ label, name, placeholder, required, type, generate, value, func, classname, inputeType }) => (
-                  <div className={`sm:col-span-3 ${classname}`} key={name as string}>
-                    <div className='flex justify-between place-items-baseline'>
-                      <Label htmlFor={name as string} className="block text-md font-medium leading-6 text-gray-900">
-                        {label}
-                      </Label>
-                      <div className='flex justify-end gap-2'>
-                        {generate === "barcode" &&
-                          <Label htmlFor={name as string}>
-                            <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} /></Label>
-                        }
+            {isCompressing && (
+              <div className="flex items-center justify-center py-2">
+                <span className="text-blue-600">Compressing image, please wait...</span>
+              </div>
+            )}
 
-                        {generate &&
-                          <Button type='button' onClick={func}
-                          ><Label htmlFor={name as string}>Generate {generate} </Label>
-                          </Button>}
-                      </div>
-                    </div>
+            <div className=''>
+              {image !== "" && image !== null && (
+                <div className='mt-2 mx-auto md:w-[300px] text-center w-[250px] mb-4'>
+                  <span>Thumbnail</span>
+                  <img
+                    src={image}
+                    className='md:order-2 mt-2 p-2 border-2 rounded-md object-cover'
+                    alt='Product Image'
+                  />
+                </div>
+              )}
 
-                    <div className={`mt-2 flex `}>
-                      {!inputeType &&
-                        <Input
-                        id={name as string}
-                        type={type}
-                        defaultValue={value}
-                        required={required}
-                        placeholder={placeholder}
-                        {...register(name)}
-                      />}
-                      {
-                        inputeType &&
-                        <select
-                          className="w-full p-2 border-2 rounded-md text-center"
-                          id="storedAt"
-                          {...register('storedAt')}
-                        >
-                          {Object.values(IStoredAt).map((value) => (
-                            <option key={value} value={value}>
-                              --{value}--
-                            </option>
-                          ))}
-                        </select>
-
-
-                      }
-                    </div>
-                    {errors.name && <span className="text-red-600">{`${errors.name.message}`}</span>}
+              <hr />
+              {images.length > 0 && (
+                <>
+                  <div className='flex justify-center p-2 shadow-md'>
+                    Images ({images.length})
                   </div>
-                ))}
+                  <div className='flex w-full flex-row justify-center gap-4 items-center flex-wrap py-4 border-2'>
+                    {images.map(({ alt, url }) => (
+                      <div key={url} className='relative w-[100px] h-[130px] md:w-[140px] md:h-[180px]'>
+                        <img
+                          src={url}
+                          alt={alt.slice(1, 20)}
+                          className='w-full h-full object-cover cursor-pointer hover:bg-slate-200 transition-colors duration-300 border rounded'
+                          onClick={() => handleImageClick(url)}
+                        />
+                        <Button
+                          type='button'
+                          size='icon'
+                          variant={"outline"}
+                          className='top-[-0.4rem] absolute right-[-0.5rem]'
+                          onClick={() => handleDeleteImage(url)}
+                        >
+                          <RxCross1 className='w-fit border-none rounded-full border-2' size={20} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
 
-                <div className="col-span-full">
-                  <Label htmlFor="description" className="block text-md font-medium leading-6 text-gray-900">
-                    Description
-                  </Label>
-                  <div className="mt-2">
-                    <textarea
-                      id="description"
-                      {...register('description')}
-                      rows={5}
-                      className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      placeholder='Enter Product description'
-                    />
-                    {errors.description && <span className="text-red-600">{`${errors?.description?.message}`}</span>}
+            {errors.images && <span className="text-red-600">{`${errors.images?.message}` as ReactNode}</span>}
+
+            <div className="space-y-2 mt-2">
+              <div className="block">
+                <Label
+                  htmlFor="category"
+                  className="block text-md font-medium leading-6 text-gray-900"
+                >
+                  Product Category
+                </Label>
+
+                <div className='flex max-w-screen-md justify-center md:justify-start gap-3 me-2'>
+                  <select
+                    id="category"
+                    className="w-full md:w-[310px] border-2 rounded-md text-center"
+                    {...register('parentCategoryID')}
+                  >
+                    <option value="">--Select a category--</option>
+                    {categories.map(({ _id, name }, index) => (
+                      <option className="py-1" key={index} value={_id}>
+                        --{name}--
+                      </option>
+                    ))}
+                  </select>
+
+                  <Button type='button' size={'icon'} variant={'secondary'}>
+                    <CustomModal create={"createCategory"} setImage={setImage} />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="border-gray-900/10">
+                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  {input.map(({ label, name, placeholder, required, type, generate, value, func, classname, inputeType }) => (
+                    <div className={`sm:col-span-3 ${classname}`} key={name as string}>
+                      <div className='flex justify-between place-items-baseline'>
+                        <Label htmlFor={name as string} className="block text-md font-medium leading-6 text-gray-900">
+                          {label}
+                        </Label>
+                        <div className='flex justify-end gap-2'>
+                          {generate === "barcode" && (
+                            <Label htmlFor={name as string}>
+                              <CustomModal setBarcode={setBarcode} scan={true} setImage={setImage} />
+                            </Label>
+                          )}
+
+                          {generate && (
+                            <Button type='button' onClick={func}>
+                              <Label htmlFor={name as string}>Generate {generate}</Label>
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className={`mt-2 flex`}>
+                        {!inputeType && (
+                          <Input
+                            id={name as string}
+                            type={type}
+                            defaultValue={value}
+                            required={required}
+                            placeholder={placeholder}
+                            {...register(name)}
+                          />
+                        )}
+                        {inputeType && (
+                          <select
+                            className="w-full p-2 border-2 rounded-md text-center"
+                            id="storedAt"
+                            {...register('storedAt')}
+                          >
+                            {Object.values(IStoredAt).map((value) => (
+                              <option key={value} value={value}>
+                                --{value}--
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
+                      {errors.name && <span className="text-red-600">{`${errors.name.message}`}</span>}
+                    </div>
+                  ))}
+
+                  <div className="col-span-full">
+                    <Label htmlFor="description" className="block text-md font-medium leading-6 text-gray-900">
+                      Description
+                    </Label>
+                    <div className="mt-2">
+                      <textarea
+                        id="description"
+                        {...register('description')}
+                        rows={5}
+                        className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        placeholder='Enter Product description'
+                      />
+                      {errors.description && <span className="text-red-600">{`${errors?.description?.message}`}</span>}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-2 flex items-center justify-end gap-2">
-            <Button
-              type="submit"
-              disabled={mutation.isPending}
-            >
-              {mutation.isPending ? "Saving..." : "Save"}
-            </Button >
-            <Button
-              type="reset"
-              variant={"outline"}
-            >
-              Cancel
-            </Button >
-          </div>
-        </form>
-        
-      </div> :
-       <ProductComboOffer />}
+            <div className="mt-2 flex items-center justify-end gap-2">
+              <Button
+                type="submit"
+                disabled={mutation.isPending || isCompressing}
+              >
+                {mutation.isPending ? "Saving..." : "Save"}
+              </Button>
+              <Button
+                type="reset"
+                variant={"outline"}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </div>
+      ) : (
+        <ProductComboOffer />
+      )}
     </Layout>
-
   )
 }
+
 export default CreateProduct

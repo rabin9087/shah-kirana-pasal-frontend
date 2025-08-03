@@ -11,7 +11,7 @@ import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } fro
 import { useAppSelector } from "@/hooks"
 import { IProductComboOffer } from "@/axios/productComboOffer/types"
 
-const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: string }> = ({ item, addClass }) => {
+const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: string, onClick: () => void }> = ({ item, addClass, onClick }) => {
     const { cart } = useAppSelector((state) => state.addToCartInfo)
     const { language } = useAppSelector((state) => state.settings)
     const orderQty = getOrderNumberQuantity(item?._id as string, cart)
@@ -40,7 +40,8 @@ const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: str
 
                 {/* Combo Offer Image */}
                 <Link to={`/`}>
-                    <div className="flex justify-center items-center pt-2 bg-gray-200">
+                    <div className="flex justify-center items-center pt-2 bg-gray-200"
+                        onClick={onClick}>
                         <img
                             src={item.thumbnail}
                             alt={item.offerName}
@@ -51,7 +52,7 @@ const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: str
                 </Link>
 
                 {/* Combo Offer Details */}
-                <CardHeader className="p-4 pb-2 pt-4">
+                <CardHeader className="p-4 pb-2 pt-4" onClick={onClick}>
                     <CardTitle className="text-lg font-semibold text-gray-800 h-20 overflow-hidden text-ellipsis line-clamp-3">
                         <Link to={`/combo-offer/${item._id}`} className="hover:underline">
                             {item.offerName}
@@ -66,14 +67,16 @@ const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: str
 
                 {/* Pricing Information */}
                 <div className="">
-                    <CardContent className="px-4 pb-4">
+                    <CardContent
+                        onClick= {onClick}
+                        className="px-4 pb-4">
                         <div className="flex justify-between items-start font-bold">
                             <div className="flex justify-start items-start">
                                 <span className="font-medium text-green-600">
-                                    {language === "en" ? "$" : "रु."}{Math.floor(item.offerPrice)}
+                                    {language === "en" ? "$" : "रु."}{Math.floor(item.price)}
                                 </span>
                                 <span className="text-sm text-green-600">
-                                    {((item.offerPrice) % 1 * 100).toFixed(0).padStart(2, '0')}
+                                    {((item.price) % 1 * 100).toFixed(0).padStart(2, '0')}
                                 </span>
                             </div>
                             <span className="text-sm text-gray-500 line-through ms-2 my-auto">
@@ -102,30 +105,28 @@ const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: str
 
                     {/* Action Buttons */}
                     <CardFooter className="p-4 pt-0 flex items-center justify-between">
-                        {itemExist(item._id as string, cart).length ? (
-                            <ChangeItemQty item={{
-                                ...item,
-                                orderQuantity: orderQty || 0,
-                                offerName: item.offerName,
-                                offerPrice: item.offerPrice,
-                                // thumbnail: item.thumbnail,
-                                // qrCodeNumber: item._id,
-                                // quantity: 999, // Assuming combo offers have high availability
-                                // alternateName: item.offerName
+                        {
 
-                            }} />
-                        ) : (
-                            <AddToCartButton item={{
-                                ...item,
-                                orderQuantity: orderQty || 0,
-                                offerName: item.offerName,
-                                offerPrice: item.offerPrice,
-                                // thumbnail: item.thumbnail,
-                                // qrCodeNumber: item._id,
-                                // quantity: 999, // Assuming combo offers have high availability
-                                // alternateName: item.offerName
-                            }} />
-                        )}
+                            (itemExist(item._id as string, cart) ? (
+
+                                <ChangeItemQty item={{
+                                    ...item,
+                                    orderQuantity: orderQty,
+                                    offerName: item.offerName,
+                                    price: item.price,
+                                }} />
+                            ) : (
+                                <AddToCartButton item={{
+                                    ...item,
+                                    orderQuantity: orderQty
+                                        // offerName: item.offerName,
+                                    // price: item.price,
+                                }} />
+                            )
+                            )
+
+                        }
+
                     </CardFooter>
                 </div>
             </Card>

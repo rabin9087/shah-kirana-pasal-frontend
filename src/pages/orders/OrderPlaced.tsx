@@ -29,7 +29,7 @@ export const OrderPlaced: React.FC = () => {
         queryFn: () => getAOrder(orderNumber as string),
         enabled: !!orderNumber, // This prevents the API call when orderNumber is null
     });
-console.log(data)
+    console.log(data)
     return (
         <Layout title={cartHistory.length > 0 ? "" : "Order Placed"}>
             {cartHistory.length < 0 ?
@@ -79,23 +79,24 @@ console.log(data)
                                     <p className="text-gray-700"><strong>{language === "en" ? "Payment status" : "भुक्तानी स्थिति"}:
                                     </strong> {language === "en" ? latestOrder.paymentStatus : latestOrder.paymentStatus === "Paid" ? "भुक्तानी गरिएको छ" : "भुक्तान गरिएको छैन"}</p>
                                 </div>
-                                <div className="flex justify-center items-center mt-4 md:mt-0">
+                                <div className="flex flex-col justify-center items-center mt-4 md:mt-0">
                                     <QRCodeGenerator value={(latestOrder?.orderNumber).toString()} />
+                                    <p className="text-center text-xl"><strong > {latestOrder?.orderNumber} </strong></p>
                                 </div>
                             </div>
                             <h3 className="text-lg font-semibold text-gray-800 mt-4">{language === "en" ? "Items Ordered" : "अर्डर गरिएका वस्तुहरू"}:</h3>
                             <ul className="mt-2 space-y-4">
                                 {data?.items?.map((item: any) => (
-                                    <li key={item._id} className="flex items-center space-x-4 p-4 border rounded-lg">
+                                    <li key={item?._id} className="flex items-center space-x-4 p-4 border rounded-lg">
                                         <img
-                                            src={item.productId?.thumbnail ? item.productId.thumbnail : "https://via.placeholder.com/64"}
-                                            alt={item.productId?.name}
+                                            src={item?.productId?.thumbnail ? item.productId.thumbnail : "https://via.placeholder.com/64"}
+                                            alt={item?.productId?.name}
                                             className="w-16 h-16 object-cover rounded-lg"
                                             loading="lazy"
                                         />
                                         <div>
                                             <p className="font-semibold text-gray-900">{language === "en" ? item.productId.name : item.productId.alternateName ? item.productId.alternateName : item.productId.name}</p>
-                                            <p className="text-gray-700">{language === "en" ? "Quantity" : "मात्रा"}: {item?.orderQuantity}</p>
+                                            <p className="text-gray-700">{language === "en" ? "Quantity" : "मात्रा"}: {item?.quantity}</p>
                                             <p className="text-gray-700">{language === "en" ? "Price $ " : "मूल्य रु."}: {item?.productId?.salesPrice ? item?.productId?.salesPrice : item?.price}
                                                 <p className="line-through">{item?.productId?.salesPrice && "$" + item?.price} </p>
                                             </p>

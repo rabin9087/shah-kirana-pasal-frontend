@@ -98,10 +98,10 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
                                 <div>
                                     <div className="flex items-baseline space-x-2">
                                         <span className="text-3xl font-bold text-green-600">
-                                            {language === "en" ? "$" : "रु."}{Math.floor(comboOffer.offerPrice)}
+                                            {language === "en" ? "$" : "रु."}{Math.floor(comboOffer.price)}
                                         </span>
                                         <span className="text-lg text-green-600">
-                                            {((comboOffer.offerPrice) % 1 * 100).toFixed(0).padStart(2, '0')}
+                                            {((comboOffer.price) % 1 * 100).toFixed(0).padStart(2, '0')}
                                         </span>
                                     </div>
                                     <div className="flex items-center space-x-2">
@@ -117,7 +117,7 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
 
                             {/* Add to Cart Button */}
                             <div className="transform hover:scale-105 transition-transform duration-300">
-                                {itemExist(comboOffer?._id as string, cart).length ? (
+                                {itemExist(comboOffer?._id as string, cart) ? (
                                     <ChangeItemQty item={{
                                         ...comboOffer,
                                         orderQuantity: comboOrderQty || 0,
@@ -148,7 +148,7 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
 
                     <div className="flex flex-col space-y-4">
                         {comboOffer.items.map((item, index) => {
-                            const product = item.productId as IProductTypes
+                            const product = item?.productId as IProductTypes
                             return (
                                 <div
                                     key={product?._id}

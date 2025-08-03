@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import SearchInput from "@/components/search/SearchInput";
 import { formatLocation } from "@/pages/orders/startPicking/StartPickingOrder";
+import { LoadingDataWithText } from "@/components/ui/Loading";
 
 export const sortOptions = [
     { label: "Select A Label", value: "select" },
@@ -72,7 +73,7 @@ const ProductsDashboard = () => {
     const [sortBy, setSortBy] = useState<SortField>("select");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-    const { data = [], error } = useQuery<IProductTypes[]>({
+    const { data = [], error, isLoading } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
         queryFn: () => getAllProducts(),
     });
@@ -82,8 +83,8 @@ const ProductsDashboard = () => {
             if (sortBy === "select") {
                 dispatch(setProducts(data))
             } else {
-                const sortedUsers = [...data].sort((a, b) => a.name.localeCompare(b.name));
-                dispatch(setProducts(sortedUsers))
+                const sortedProducts = [...data].sort((a, b) => a.name.localeCompare(b.name));
+                dispatch(setProducts(sortedProducts))
             }
 
         }
@@ -133,6 +134,7 @@ const ProductsDashboard = () => {
     // if (isLoading || isFetching) return <Loading />;
 
     if (error) return <Error />
+    if(isLoading ) return <LoadingDataWithText text="Loading products..." />;
     return (
         <div>
             <h3 className="flex justify-center uppercase font-bold underline">Products Dashboard</h3>
