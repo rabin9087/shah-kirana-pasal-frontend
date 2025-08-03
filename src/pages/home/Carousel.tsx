@@ -4,9 +4,12 @@ import Autoplay from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const images = [
-    "https://cricket-gear-images.s3.us-east-1.amazonaws.com/1742355517336_profile_IMG_9907.jpeg",
-    "https://cricket-gear-images.s3.us-east-1.amazonaws.com/1742355517336_profile_IMG_9907.jpeg",
-    "https://cricket-gear-images.s3.us-east-1.amazonaws.com/1742355517336_profile_IMG_9907.jpeg",
+    // "https://cricket-gear-images.s3.us-east-1.amazonaws.com/1742355517336_profile_IMG_9907.jpeg",
+    // "https://cricket-gear-images.s3.us-east-1.amazonaws.com/1742355517336_profile_IMG_9907.jpeg",
+    // "https://cricket-gear-images.s3.us-east-1.amazonaws.com/1742355517336_profile_IMG_9907.jpeg",
+    "https://atparramatta.com/sites/discoverparra/files/styles/global_image_style/public/2022-07/A09I7494_NikkiTo.jpg?itok=T_G_9yyo",
+    "https://sydneyroad.com.au/wp-content/uploads/2024/04/Lunar-Mart-02.jpg",
+    "https://greengoodnessco.com.au/files/wp-content/uploads/2018/08/wholefoods.jpg",
 ];
 
 export default function WoolworthsStyleCarousel() {
