@@ -2,9 +2,10 @@ import { getAllProductComboOffer } from "@/axios/productComboOffer/productComboO
 import { IProductComboOffer } from "@/axios/productComboOffer/types";
 import ProductComboOfferCard from "@/pages/productCard/ProductOfferCard";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, Package, AlertCircle, X } from "lucide-react";
+import { Package, AlertCircle, X } from "lucide-react";
 import { useState } from "react";
 import ComboProductItem from "./ComboProductItem";
+import { SkeletonCard } from "@/components/ui/Loading";
 
 // Modal Component
 const ComboModal: React.FC<{
@@ -92,8 +93,7 @@ const ComboProduct = () => {
         return (
             <div className="w-full py-12">
                 <div className="flex flex-col items-center justify-center space-y-4">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    <p className="text-gray-600 font-medium">Loading products...</p>
+                    <SkeletonCard/>
                 </div>
             </div>
         );

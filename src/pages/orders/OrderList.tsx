@@ -13,7 +13,7 @@ interface IOrderList {
     setDate: (date: Date) => void;
 }
 
-const OrdersList = ({ data, date, setDate }: IOrderList) => {
+const OrdersList = ({ data, date, setDate,  }: IOrderList) => {
 
     const dispatch = useAppDispatch()
     const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);

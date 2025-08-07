@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import Modal from 'react-modal';
 import AddUser from "./AddUser";
 import { SortKey, sortUsers } from "../utils/SortData";
+import { SkeletonProfile } from "@/components/ui/Loading";
 
 const UsersDashboard = () => {
     const dispatch = useAppDispatch();
@@ -39,13 +40,21 @@ const UsersDashboard = () => {
         setUsersData(sorted);
     };
 
+
+    if (isLoading) (<SkeletonProfile />)
+
     return (
         <div className="overflow-x-auto w-full">
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex justify-center text-lg md:text-2xl font-bold uppercase underline">Users Dashboard</CardTitle>
+                    <CardTitle className="flex justify-center text-lg md:text-2xl font-bold uppercase underline">Users Management</CardTitle>
                 </CardHeader>
                 <CardContent>
+                    {isLoading && (
+                        <div className="flex justify-center items-center my-20">
+                            <SkeletonProfile />
+                        </div>
+                    )}
                     {!isLoading && !isError && data.length === 0 && (
                         <p className="text-center text-gray-500">No users found.</p>
                     )}

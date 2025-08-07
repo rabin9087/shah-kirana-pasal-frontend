@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import SearchInput from "@/components/search/SearchInput";
 import { formatLocation } from "@/pages/orders/startPicking/StartPickingOrder";
-import { LoadingDataWithText } from "@/components/ui/Loading";
+import {  SkeletonCard } from "@/components/ui/Loading";
 
 export const sortOptions = [
     { label: "Select A Label", value: "select" },
@@ -134,10 +134,10 @@ const ProductsDashboard = () => {
     // if (isLoading || isFetching) return <Loading />;
 
     if (error) return <Error />
-    if(isLoading ) return <LoadingDataWithText text="Loading products..." />;
+    if(isLoading ) return <SkeletonCard />;
     return (
         <div>
-            <h3 className="flex justify-center uppercase font-bold underline">Products Dashboard</h3>
+            <h3 className="flex justify-center uppercase font-bold underline">Products Management</h3>
             <p>Total Products: {products?.length}</p>
 
             {/* Top Controls Section */}

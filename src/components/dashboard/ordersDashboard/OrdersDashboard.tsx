@@ -11,6 +11,7 @@ import { useAppSelector } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { DateNavigator } from "@/pages/orders/OrderTable";
 import OpenStartPickingModal from "@/pages/orders/startPicking/OpenStartPickingModal";
+import { SkeletonProfile } from "@/components/ui/Loading";
 
 export const formattedDate = (date: Date) => {
         const year = date.getFullYear();
@@ -31,7 +32,7 @@ const OrdersDashboard = () => {
         // Get the year, month, and day
 
 
-        const { data = [] } = useQuery<IOrder[]>({
+        const { data = [], isLoading } = useQuery<IOrder[]>({
                 queryKey: ["orders", formattedDate(date)],
                 queryFn: () => getAOrdersByDate(formattedDate(date)),
         });
@@ -145,6 +146,11 @@ const OrdersDashboard = () => {
 
                                 {(user.role === "ADMIN" || user.role === "SUPERADMIN") &&
                                         <OrdersList data={data} date={date} setDate={setDate} />}
+                                
+                                {isLoading && <div className="flex justify-center items-center my-20">
+                                        <SkeletonProfile />;
+
+                                </div>}
                                 {isModalOpen && (
                                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                                                 <div className="bg-white p-4 mx-10 rounded-md shadow-md max-w-md w-full flex flex-col justify-center items-center">

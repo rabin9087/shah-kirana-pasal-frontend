@@ -3,13 +3,14 @@ import { useAppSelector } from "@/hooks";
 import ProductCard from "../productCard/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProductsByLimit } from "@/axios/product/product";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NetworkError from "@/components/network Error/NetworkError";
 import CarouselWithAutoplay from "./Carousel";
 import { Sparkles, Tag, ShoppingCart, Gift, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IProductTypes } from "@/types/index";
 import ComboProduct from "./productCombo/ComboProduct";
+import {  SkeletonCard } from "@/components/ui/Loading";
 
 interface Pagination {
   total: number;
@@ -33,6 +34,10 @@ function Home(): JSX.Element {
     queryFn: () => getAllProductsByLimit({ page, limit }),
     initialData: { products: [], pagination: { totalPages: 1, page: 1, limit, total: 0 } },
   });
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [page]);
 
   const categoryMap = useMemo(
     () =>
@@ -129,9 +134,9 @@ function Home(): JSX.Element {
           <CarouselWithAutoplay />
         </div>
       )}
-      <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
+      {page === 1 && <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
         <ComboProduct />
-      </div>
+      </div>}
       
       <ProductSection
         title="Hot Deals & Sales"
@@ -166,7 +171,7 @@ function Home(): JSX.Element {
 
       <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
         <h2 className=" font-semibold mb-6 text-center">All Products</h2>
-        {/* {isFetching && <p className="text-center text-gray-500">Loading products...</p>} */}
+        {page !== 1 && isFetching && <SkeletonCard />}
         {filteredProducts.allProducts.length === 0 && !isFetching ? (
           <p className="text-center text-gray-500">No products available.</p>
         ) : (
