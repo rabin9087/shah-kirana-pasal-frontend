@@ -9,7 +9,7 @@ import { setSelectedProducts } from "@/redux/product.slice";
 import { getAllProductsByCategory } from "@/axios/product/product";
 import Error from "@/components/ui/Error";
 import ProductCard from "../productCard/ProductCard";
-import { LoadingDataWithText } from "@/components/ui/Loading";
+import { SkeletonCard } from "@/components/ui/Loading";
 
 
 const ProductCardByCategory: React.FC = () => {
@@ -49,10 +49,10 @@ const ProductCardByCategory: React.FC = () => {
     // </Layout>)
 
     return (<Layout title={`${(slug || searchTerm).toUpperCase()} PRODUCTS`} types="category">
-        {isLoading && <LoadingDataWithText text="Loading products..." />}
+        {isLoading && <SkeletonCard />}
         {data.length < 1 ? <ProductNotFound open={false} onClose={() => { }} /> :
-
             <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
+
                 <div className=" shadow-md mt-6 md:mt-24">
                     <h1 className="text-center md:text-start font-normal py-2 ps-4">Sales Products</h1>
                     <div className="mx-auto flex gap-4 items-center overflow-x-auto py-4 px-2 w-full">

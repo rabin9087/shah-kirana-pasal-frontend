@@ -18,9 +18,10 @@ import { setProducts } from '@/redux/product.slice';
 
 const ProductComboOffer = () => {
     const [selectedProducts, setSelectedProducts] = useState<IProductComboOffer['items']>([]);
-    const [productInput, setProductInput] = useState<{ productId: string; price: string }>({
+    const [productInput, setProductInput] = useState<{ productId: string; price: string, qty: string }>({
         productId: '',
         price: '',
+        qty: '1',
     });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
@@ -70,7 +71,7 @@ const ProductComboOffer = () => {
             toast.success('Combo Offer Created Successfully');
             reset();
             setSelectedProducts([]);
-            setProductInput({ productId: '', price: '' });
+            setProductInput({ productId: '', price: '', qty: '1' });
             setSelectedFile(null);
             setImagePreview('');
             // Clear file input
@@ -109,7 +110,7 @@ const ProductComboOffer = () => {
         }
 
         setSelectedProducts([...selectedProducts, { ...productInput }]);
-        setProductInput({ productId: '', price: '' });
+        setProductInput({ productId: '', price: '', qty: '0' });
         setTempProduct(products);
     };
 
@@ -320,6 +321,7 @@ const ProductComboOffer = () => {
                                         setProductInput({
                                             productId: selected._id,
                                             price: selected.price.toString(),
+                                            qty: '1',
                                         });
                                     }
                                 }}
@@ -340,16 +342,29 @@ const ProductComboOffer = () => {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div>
-                            <Label>Price</Label>
-                            <Input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                placeholder="Enter price"
-                                value={productInput.price}
-                                onChange={(e) => setProductInput({ ...productInput, price: e.target.value })}
-                            />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <Label>Price</Label>
+                                <Input
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="Enter price"
+                                    value={productInput.price}
+                                    onChange={(e) => setProductInput({ ...productInput, price: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <Label>Quantity</Label>
+                                <Input
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    placeholder="Enter Qtantity"
+                                    value={productInput.qty}
+                                    onChange={(e) => setProductInput({ ...productInput, qty: e.target.value })}
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -362,17 +377,22 @@ const ProductComboOffer = () => {
                             {selectedProducts.map((p, idx) => {
                                 const prod = getProductById(p.productId as string);
                                 return (
-                                    <li key={idx} className="flex justify-between items-center bg-white p-2 rounded shadow">
+                                    <li key={idx} className="flex justify-between gap-4 items-center bg-white p-2 rounded shadow">
+
                                         <div className="flex items-center gap-2">
+                                            <span className='font-thin'>{idx + 1}.</span>
                                             {prod && (
                                                 <img src={prod.thumbnail} alt={prod.name} className="w-6 h-6 object-cover rounded" />
                                             )}
-                                            <span className='font-thin'>{idx + 1}.</span>
-                                            {prod?.name || p.productId as string} - ${p.price}
+
+                                            {prod?.name || p.productId as string} - ${p.price} x {p.qty}
+                                        </div> 
+                                        <div className=''>
+                                            <button type="button" onClick={() => handleRemoveProduct(idx)} className="text-red-600 hover:text-red-800">
+                                                ✕
+                                            </button>
                                         </div>
-                                        <button type="button" onClick={() => handleRemoveProduct(idx)} className="text-red-600 hover:text-red-800">
-                                            ✕
-                                        </button>
+
                                     </li>
                                 );
                             })}

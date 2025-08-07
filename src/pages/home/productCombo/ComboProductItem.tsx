@@ -7,8 +7,9 @@ import { Link } from "react-router-dom"
 import { useAppSelector } from "@/hooks"
 import { ArrowLeft, Package, Star, Calendar, ShoppingCart } from "lucide-react"
 import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } from "@/utils/QuantityChange"
-import { IProductComboOffer } from "@/axios/productComboOffer/types"
+import { IProductComboOffer, IProductOfferTypes } from "@/axios/productComboOffer/types"
 import { IProductTypes } from "@/types/index"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select"
 
 interface ComboProductItemProps {
     comboOffer: IProductComboOffer
@@ -18,6 +19,8 @@ interface ComboProductItemProps {
 const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack }) => {
     const { cart } = useAppSelector((state) => state.addToCartInfo)
     const { language } = useAppSelector((state) => state.settings)
+    const { products } = useAppSelector((state) => state.productInfo)
+    console.log(products)
 
     // Calculate savings percentage
     const savingsPercentage = ((comboOffer.discountAmount / comboOffer.totalAmount) * 100).toFixed(0)
@@ -33,6 +36,7 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
 
     // Check if combo offer is in cart
     const comboOrderQty = getOrderNumberQuantity(comboOffer?._id as string, cart)
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6">
@@ -148,14 +152,14 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
 
                     <div className="flex flex-col space-y-4">
                         {comboOffer.items.map((item, index) => {
-                            const product = item?.productId as IProductTypes
+                            const product = item?.productId as IProductTypes || item as IProductOfferTypes
                             return (
                                 <div
                                     key={product?._id}
                                     className="flex items-center justify-between border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-300 bg-white"
                                 >
                                     {/* Index */}
-                                    <div className="text-sm font-semibold text-gray-500 w-14">Item {index + 1}</div>
+                                    <div className="text-sm font-semibold text-gray-500 w-14">{index + 1}.</div>
 
                                     {/* Thumbnail */}
                                     <Link to={`/product/${product.qrCodeNumber}`} className="w-16 h-16 flex-shrink-0">
@@ -171,13 +175,36 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
                                     <div className="flex-1 px-4 text-sm font-medium text-gray-800 truncate">
                                         <Link to={`/product/${product?.qrCodeNumber}`} className="hover:underline">
                                             {language === "en" ? product?.name : product?.alternateName || product?.name}
-                                        </Link>
+                                        </Link> X {item?.qty || 1}
                                     </div>
 
                                     {/* Price */}
-                                    <div className="text-base font-bold text-gray-900 min-w-[80px] text-right">
+                                    <div className="text-base me-4 font-bold text-gray-900 min-w-[80px] text-right">
                                         {language === "en" ? "$" : "रु."}{product?.price?.toFixed(2)}
                                     </div>
+
+                                    {/* <div className="text-base font-bold text-gray-900 min-w-[80px] text-right">
+                                        <Select>
+                                            <SelectTrigger className="w-24 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                                <SelectValue
+                                                    placeholder={language === "en" ? "Change" : "मात्रा"}
+                                                    className="text-gray-700"
+                                                />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-white border border-gray-200 rounded-md shadow-lg">
+                                                {Array.from({ length: 10 }, (_, i) => i + 1).map((qty) => (
+                                                    <SelectItem
+                                                        key={qty}
+                                                        value={qty.toString()}
+                                                        className="cursor-pointer px-4 py-2 hover:bg-indigo-100"
+                                                    >
+                                                        {qty}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div> */}
+
                                 </div>
                             )
                         })}

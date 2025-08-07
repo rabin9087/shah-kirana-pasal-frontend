@@ -4,6 +4,7 @@ import { IProductTypes } from "@/types/index";
 export interface IProductOfferTypes {
   productId:  IProductTypes | string;
   price: string;
+  qty: string;
   orderQuantity?: number;
   _id?: string
 }

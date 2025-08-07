@@ -12,6 +12,7 @@ import { useAppSelector } from "@/hooks"
 import { IProductComboOffer } from "@/axios/productComboOffer/types"
 
 const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: string, onClick: () => void }> = ({ item, addClass, onClick }) => {
+
     const { cart } = useAppSelector((state) => state.addToCartInfo)
     const { language } = useAppSelector((state) => state.settings)
     const orderQty = getOrderNumberQuantity(item?._id as string, cart)
@@ -54,7 +55,7 @@ const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: str
                 {/* Combo Offer Details */}
                 <CardHeader className="p-4 pb-2 pt-4" onClick={onClick}>
                     <CardTitle className="text-lg font-semibold text-gray-800 h-20 overflow-hidden text-ellipsis line-clamp-3">
-                        <Link to={`/combo-offer/${item._id}`} className="hover:underline">
+                        <Link to={`/`} className="hover:underline">
                             {item.offerName}
                         </Link>
                     </CardTitle>
