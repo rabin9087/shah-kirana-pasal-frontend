@@ -123,7 +123,7 @@ function Home(): JSX.Element {
           <Shop />
         </div>
       )} */}
-
+    
       {page === 1 && (
         <div className="w-full mb-8">
           <CarouselWithAutoplay />
@@ -166,7 +166,7 @@ function Home(): JSX.Element {
 
       <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
         <h2 className=" font-semibold mb-6 text-center">All Products</h2>
-        {isFetching && <p className="text-center text-gray-500">Loading products...</p>}
+        {/* {isFetching && <p className="text-center text-gray-500">Loading products...</p>} */}
         {filteredProducts.allProducts.length === 0 && !isFetching ? (
           <p className="text-center text-gray-500">No products available.</p>
         ) : (

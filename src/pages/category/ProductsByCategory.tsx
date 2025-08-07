@@ -9,6 +9,7 @@ import { setSelectedProducts } from "@/redux/product.slice";
 import { getAllProductsByCategory } from "@/axios/product/product";
 import Error from "@/components/ui/Error";
 import ProductCard from "../productCard/ProductCard";
+import { LoadingDataWithText } from "@/components/ui/Loading";
 
 
 const ProductCardByCategory: React.FC = () => {
@@ -20,8 +21,8 @@ const ProductCardByCategory: React.FC = () => {
     const { selectedProducts } = useAppSelector(state => state.productInfo)
     const saleOnProducts = selectedProducts.filter((item) => item.salesPrice > 0)
     const NotsaleOnProducts = selectedProducts.filter((item) => !item.salesPrice)
-  
-    const { data = [] as IProductTypes[], error } = useQuery<IProductTypes[]>({
+
+    const { data = [] as IProductTypes[], error, isLoading } = useQuery<IProductTypes[]>({
         queryKey: ["categories", slug, searchTerm],
         queryFn: async () => {
             if (searchTerm) {
@@ -43,8 +44,12 @@ const ProductCardByCategory: React.FC = () => {
     // if (isLoading || isFetching) return <Loading />;
 
     if (error) return <Error />
+    // if (isLoading) (<Layout title="">
+    //     <LoadingDataWithText text="Loading..." />
+    // </Layout>)
 
     return (<Layout title={`${(slug || searchTerm).toUpperCase()} PRODUCTS`} types="category">
+        {isLoading && <LoadingDataWithText text="Loading products..." />}
         {data.length < 1 ? <ProductNotFound open={false} onClose={() => { }} /> :
 
             <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">

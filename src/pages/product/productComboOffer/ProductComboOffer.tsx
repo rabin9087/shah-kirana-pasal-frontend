@@ -22,6 +22,9 @@ const ProductComboOffer = () => {
         productId: '',
         price: '',
     });
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>('');
+
     const dispatch = useAppDispatch();
     const { products } = useAppSelector((s) => s.productInfo);
     const [tempProduct, setTempProduct] = useState(products);
@@ -37,6 +40,7 @@ const ProductComboOffer = () => {
             dispatch(setProducts(data));
         }
     }, [data?.length])
+
     const {
         register,
         handleSubmit,
@@ -58,28 +62,34 @@ const ProductComboOffer = () => {
         },
     });
 
-    const watchedDiscountAmount = watch('discountAmount');
 
+    // Updated mutation to handle FormData
     const mutation = useMutation({
-        mutationFn: createProductComboOffer,
+        mutationFn: (formData: FormData) => createProductComboOffer(formData),
         onSuccess: () => {
             toast.success('Combo Offer Created Successfully');
             reset();
             setSelectedProducts([]);
             setProductInput({ productId: '', price: '' });
+            setSelectedFile(null);
+            setImagePreview('');
+            // Clear file input
+            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+            if (fileInput) fileInput.value = '';
         },
         onError: (error: any) => toast.error(error?.message || 'Failed to create combo offer'),
     });
 
     useEffect(() => {
         const totalAmount = selectedProducts.reduce((sum, item) => sum + parseFloat(item.price), 0);
-        const discountAmount = watchedDiscountAmount || totalAmount * 0.1;
+        const discountAmount = totalAmount * 0.1;
         const price = totalAmount - discountAmount;
 
         setValue('totalAmount', Number(totalAmount.toFixed(2)));
         setValue('price', Number(price.toFixed(2)));
         setValue('items', selectedProducts);
-    }, [selectedProducts, watchedDiscountAmount, setValue]);
+        setValue('discountAmount', discountAmount)
+    }, [selectedProducts, setValue]);
 
     const handleAddProduct = () => {
         if (!productInput.productId || !productInput.price) {
@@ -103,6 +113,24 @@ const ProductComboOffer = () => {
         setTempProduct(products);
     };
 
+    // Handle file selection and preview
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
+
+            // Create preview URL
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setSelectedFile(null);
+            setImagePreview('');
+        }
+    };
+
     const onSubmit = (data: IProductComboOffer) => {
         if (selectedProducts.length < 2) {
             toast.warning('Please add at least two products');
@@ -117,15 +145,38 @@ const ProductComboOffer = () => {
             return;
         }
 
-        const payload: IProductComboOffer = {
-            ...data,
-            items: selectedProducts,
-            totalAmount: Number(data.totalAmount.toFixed(2)),
-            discountAmount: Number(data.discountAmount.toFixed(2)),
-            price: Number(data.price.toFixed(2)),
-        };
+        // Create FormData object
+        const formData = new FormData();
 
-        mutation.mutate(payload);
+        // Append basic fields
+        formData.append('offerName', data.offerName);
+        formData.append('description', data.description || '');
+        formData.append('status', data.status);
+        formData.append('totalAmount', data.totalAmount.toFixed(2));
+        formData.append('discountAmount', data.discountAmount.toFixed(2));
+        formData.append('price', data.price.toFixed(2));
+
+        // Append dates if they exist (convert to ISO string)
+        if (data.offerStartDate) {
+            formData.append('offerStartDate', new Date(data.offerStartDate).toISOString());
+        }
+        if (data.offerEndDate) {
+            formData.append('offerEndDate', new Date(data.offerEndDate).toISOString());
+        }
+
+        // Append selected products as JSON string
+        formData.append('items', JSON.stringify(selectedProducts));
+
+        // Handle thumbnail - either file upload or URL
+        if (selectedFile) {
+            // Use uploaded file
+            formData.append('thumbnail', selectedFile);
+        } else if (data.thumbnail && data.thumbnail.trim()) {
+            // Use URL
+            formData.append('thumbnail', data.thumbnail.trim());
+        }
+
+        mutation.mutate(formData);
     };
 
     const handleOnSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,6 +227,82 @@ const ProductComboOffer = () => {
                     {errors.offerName && <p className="text-red-500 text-sm">{errors.offerName.message}</p>}
                 </div>
 
+                {/* Thumbnail Section */}
+                <div className="space-y-4">
+                    <div>
+                        <Label htmlFor="thumbnailUrl">Thumbnail URL</Label>
+                        <Input
+                            {...register('thumbnail')}
+                            placeholder="Enter Thumbnail URL"
+                            onChange={(e) => {
+                                // Clear file selection when URL is entered
+                                if (e.target.value.trim()) {
+                                    setSelectedFile(null);
+                                    setImagePreview('');
+                                }
+                            }}
+                        />
+                        {errors.thumbnail && <p className="text-red-500 text-sm">{errors.thumbnail.message}</p>}
+
+                        {/* URL Preview */}
+                        {watch('thumbnail') && !selectedFile && (
+                            <div className="mt-3">
+                                {/* <Label className="text-sm text-gray-600">URL Preview:</Label> */}
+                                <div className="mt-2 border rounded p-2 inline-block">
+                                    <img
+                                        src={watch('thumbnail')}
+                                        alt="Thumbnail URL preview"
+                                        className="w-32 h-32 object-cover rounded"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).style.display = 'none';
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-white px-2 text-muted-foreground">OR</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <Label htmlFor="thumbnailFile">Upload Thumbnail Image</Label>
+                        <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                                handleFileChange(e);
+                                // Clear URL when file is selected
+                                if (e.target.files?.[0]) {
+                                    setValue('thumbnail', '');
+                                }
+                            }}
+                            className="mb-2"
+                        />
+
+                        {/* File Preview */}
+                        {imagePreview && selectedFile && (
+                            <div className="mt-3">
+                                <Label className="text-sm text-gray-600">File Preview:</Label>
+                                <div className="mt-2 border rounded p-2 inline-block">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Thumbnail file preview"
+                                        className="w-32 h-32 object-cover rounded"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">{selectedFile.name}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
                 {/* Add Products */}
                 <div className="border rounded p-4 bg-gray-100">
                     <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -199,7 +326,7 @@ const ProductComboOffer = () => {
                                 value={productInput.productId}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select Product" />
+                                    <SelectValue placeholder="Select a Product" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {tempProduct.map(prod => (
@@ -226,7 +353,7 @@ const ProductComboOffer = () => {
                         </div>
                     </div>
 
-                    <Button type="button" onClick={handleAddProduct} className="mt-4 w-full">
+                    <Button type="button" onClick={handleAddProduct} disabled={!productInput.productId} className="mt-4 w-full">
                         Add Product
                     </Button>
 
@@ -252,13 +379,6 @@ const ProductComboOffer = () => {
                         </ul>
                     )}
                     {errors.items && <p className="text-red-500 text-sm mt-2">{errors.items.message}</p>}
-                </div>
-
-                {/* Thumbnail */}
-                <div>
-                    <Label htmlFor="thumbnail">Thumbnail URL</Label>
-                    <Input {...register('thumbnail')} placeholder="Enter Thumbnail URL" />
-                    {errors.thumbnail && <p className="text-red-500 text-sm">{errors.thumbnail.message}</p>}
                 </div>
 
                 {/* Amounts */}

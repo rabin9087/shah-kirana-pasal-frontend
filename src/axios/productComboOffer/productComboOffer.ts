@@ -1,8 +1,7 @@
 import { axiosProcessor, rootApi } from "..";
-import { IProductComboOffer } from "./types";
 const productComboOfferApi = rootApi + "/api/v1/productComboOffer";
 
-export const createProductComboOffer = async(data: IProductComboOffer) => {
+export const createProductComboOffer = async(data: FormData) => {
   try {
     const response = await axiosProcessor({
     method: "post",
