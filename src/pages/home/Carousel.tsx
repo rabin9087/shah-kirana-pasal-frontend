@@ -29,7 +29,7 @@ export default function WoolworthsStyleCarousel() {
     }, [emblaApi]);
 
     return (
-        <div className="relative w-full max-w-6xl mx-auto bg-white shadow rounded-lg overflow-hidden">
+        <div className="relative w-full max-w-[1440px] mx-auto bg-white shadow rounded-lg overflow-hidden">
             <div ref={emblaRef} className="overflow-hidden">
                 <div className="flex ">
                     {images.map((img, index) => (
