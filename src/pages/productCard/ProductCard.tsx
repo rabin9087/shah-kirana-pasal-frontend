@@ -22,9 +22,10 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
       <Card className={`group relative w-full h-full sm:w-[190px] md:w-[250px] bg-white shadow-lg hover:shadow-2xl rounded-xl overflow-hidden border border-gray-100 hover:border-primary/20 transition-all duration-500 hover:transform hover:scale-[1.02] ${addClass}`}>
 
         {/* Wishlist Button */}
-        <button className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:bg-white hover:shadow-lg transition-all duration-300 group-hover:scale-110">
+        <button className={`absolute top-3 right-3 z-10 p-2 rounded-full  bg-white/80 backdrop-blur-sm shadow-md hover:bg-white hover:shadow-lg transition-all duration-300 group-hover:scale-110`}>
           <Heart className="w-4 h-4 text-gray-600 hover:text-red-500 transition-colors" />
         </button>
+        
 
         {/* Sale Price Badge */}
         {item.salesPrice && (

@@ -99,9 +99,10 @@ const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placehol
         placeholder={placeholder ? placeholder : "Search ..."}
         onChange={handelOnChange}
       />
-      {debouncedValue && <div className="text-center absolute right-4 md:right-4 size-6 cursor-pointer hover:bg-gray-300" onClick={handleClearInput} >
-        <span >X</span>
-      </div>}
+      {debouncedValue &&
+        <div className="text-center absolute right-4 md:right-4 size-6 cursor-pointer hover:bg-gray-300" onClick={handleClearInput} >
+          <span >X</span>
+        </div>}
     </div>
   )
 }
@@ -145,18 +146,19 @@ export const ResultsComponent = ({ results, setResults }: { results: IResults[] 
     <div ref={resultsRef} className=" relative w-full md:w-[750px] lg:w-[750px] mx-auto overflow-y-auto max-h-64 md:max-h-96">
       {results?.length > 0 &&
         results?.map((item) => (
-          <div
-            key={item?._id}
-            className="bg-white p-2 ps-4 last:border-none  shadow-sm flex justify-between hover:shadow-md hover:bg-gray-100"
+          <Link
+            onClick={() => setResults([])}
+            to={`/product/${item.qrCodeNumber}`}
           >
-            <Link
-              onClick={() => setResults([])}
-              to={`/product/${item.qrCodeNumber}`}
+            <div
+              key={item?._id}
+              className="bg-white p-2 ps-4 last:border-none  shadow-sm flex justify-between hover:shadow-md hover:bg-gray-100"
             >
               <p className="text-black text-sm"> {language === "en" ? item.name : item.alternateName !== "" ? item.alternateName : item.name}
               </p>
-            </Link>
-          </div>
+
+            </div>
+          </Link>
         ))
       }
     </div>

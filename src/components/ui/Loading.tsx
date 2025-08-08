@@ -52,7 +52,7 @@ export const LoadingDataWithText = ({ text }: { text: string }) => {
 
 export const SkeletonCard = () => {
     return (
-        <div className="flex flex-wrap gap-4 animate-pulse">
+        <div className="flex flex-wrap gap-4 animate-pulse ms-8">
             {[...Array(2)].map((_, index) => (
                 <div key={index} className="flex flex-col space-y-3">
                     <Skeleton className="h-[125px] w-[250px] rounded-xl bg-gray-200" />
