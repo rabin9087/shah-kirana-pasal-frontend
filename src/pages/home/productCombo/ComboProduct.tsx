@@ -3,9 +3,11 @@ import { IProductComboOffer } from "@/axios/productComboOffer/types";
 import ProductComboOfferCard from "@/pages/productCard/ProductOfferCard";
 import { useQuery } from "@tanstack/react-query";
 import { Package, AlertCircle, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ComboProductItem from "./ComboProductItem";
 import { SkeletonCard } from "@/components/ui/Loading";
+import { setComboProduct } from "@/redux/product.slice";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 
 // Modal Component
 const ComboModal: React.FC<{
@@ -67,9 +69,12 @@ const ClickableProductComboOfferCard: React.FC<{
 };
 
 const ComboProduct = () => {
+    const dispatch = useAppDispatch();
+    const { comboProducts } = useAppSelector((state) => state.productInfo);
     const { data = [], error, isLoading } = useQuery<IProductComboOffer[]>({
         queryKey: ['combo-products'],
         queryFn: () => getAllProductComboOffer(),
+        enabled: comboProducts.length < 1, // Only fetch if no combo products are cached
     });
 
     // Modal state
@@ -88,12 +93,18 @@ const ComboProduct = () => {
         setTimeout(() => setSelectedCombo(null), 300); // Delay to allow animation
     };
 
+    useEffect(() => {
+        if (data?.length) {
+            dispatch(setComboProduct(data))
+        }
+    }, [data.length, dispatch, comboProducts.length]);
+
     // Loading state
     if (isLoading) {
         return (
             <div className="w-full py-12">
                 <div className="flex flex-col items-center justify-center space-y-4">
-                    <SkeletonCard/>
+                    <SkeletonCard />
                 </div>
             </div>
         );

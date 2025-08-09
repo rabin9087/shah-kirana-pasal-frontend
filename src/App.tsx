@@ -47,6 +47,7 @@ import JobCategory from "./pages/jobCategory/JobCategory";
 import GenerateBarcodeQRCode from "./utils/GenerateBarcodeQRCode";
 import OutOfStockOrders from "./pages/orders/outOfStock/OutOfStockOrders";
 import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
+import VerifyEmail from "./pages/users/verifyEmail";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -216,6 +217,13 @@ function App() {
             </AdminPrivateRouter>
           }
         />
+
+        <Route
+          path="/verify-email"
+          element={<VerifyEmail />}
+          errorElement={<ErrorPage />}
+        />
+
 
         <Route
           path="/search/product/fullDetails/:_id"

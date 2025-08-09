@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppSelector } from "@/hooks";
 import { IOrder } from "@/axios/order/types";
 import { QRCodeGenerator } from "@/components/QRCodeGenerator";
+import { SkeletonProfile } from "@/components/ui/Loading";
 
 interface IOrderNumber {
     setOrderNumber: (orderNumber: string) => void;
@@ -16,6 +17,10 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
     const toggleOrderDetails = (index: number) => {
         setExpandedOrder((prev) => (prev === index ? null : index));
     };
+
+    if (!data) {
+        return <SkeletonProfile />
+    }
 
     return (
         <div className="w-full mx-auto p-6">
@@ -56,6 +61,21 @@ const OrderHistory = ({ setOrderNumber, data }: IOrderNumber) => {
                                                         (data.deliveryStatus === "Picking" && "अर्डर प्याक हुडाइछ") ||
                                                         (data.deliveryStatus === "Cancelled" && "रद्द गरियो")}</p>                                                <p className="text-gray-700"><strong>{language === "en" ? "Payment status" : "भुक्तानी स्थिति"}:</strong>
                                                     {language === "en" ? data.paymentStatus : data.paymentStatus === "Paid" ? " भुक्तानी गरिएको छ" : " भुक्तानी गरिएको छैन"}</p>
+                                                <p className="text-gray-700">
+                                                    <strong>{language === "en" ? "Order Type" : "अर्डर प्रकार"}:</strong>{" "}
+                                                    {language === "en"
+                                                        ? data?.orderType === "pickup" ? "Pick up" : "Delivery"
+                                                        : data?.orderType === "pickup"
+                                                            ? "पिकअप"
+                                                            : "डेलिभरी"}
+                                                </p>
+
+                                                {data?.orderType === "pickup" ?
+                                                    <p className="text-gray-700">
+                                                        <strong>{language === "en" ? "Pickup Time" : "अर्डर प्रकार"}:</strong>{" "}
+                                                        {data?.deliveryDate?.time}
+                                                    </p> : <></>
+                                                }
                                             </div>
                                         </div>
                                         {order?.orderNumber && <div className="flex flex-col justify-center items-center mt-4 md:mt-0">

@@ -30,7 +30,7 @@ const DeliveryDateSelector: React.FC<DeliveryDateSelectorProps> = ({
             <div  >
                 <h3 className='p-2 font-bold text-xl'>{language === "en" ? `Select a ${orderType === "delivery" ? "Delivery" : "Pickup"} Date` :
                     ` ${orderType === "delivery" ? "डिलीवरी" : "पसलबाट उठाउनुहोस्"} मिति चयन गर्नुहोस्`}
-                    </h3>
+                </h3>
             </div>
             <div className="flex gap-2 overflow-x-auto whitespace-nowrap">
                 {dates.map((date) => (
@@ -62,3 +62,63 @@ const DeliveryDateSelector: React.FC<DeliveryDateSelectorProps> = ({
 };
 
 export default DeliveryDateSelector;
+
+
+interface PickupTimeSelectorProps {
+    pickupTime: string;
+    setPickupTime: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const generateTimeSlots = (startHour = 10, endHour = 20, intervalHours = 2) => {
+    const slots = [];
+    for (let hour = startHour; hour < endHour; hour += intervalHours) {
+        const start = new Date();
+        start.setHours(hour, 0, 0, 0);
+        const end = new Date();
+        end.setHours(hour + intervalHours, 0, 0, 0);
+
+        const formatTime = (date: Date) => {
+            let h = date.getHours();
+            const m = date.getMinutes();
+            const ampm = h >= 12 ? "PM" : "AM";
+            h = h % 12 || 12;
+            return `${h}:${m.toString().padStart(2, "0")} ${ampm}`;
+        };
+
+        slots.push({
+            label: `${formatTime(start)} to ${formatTime(end)}`,
+            value: `${formatTime(start)} - ${formatTime(end)}`,
+        });
+    }
+    return slots;
+};
+
+export const PickupTimeSelector: React.FC<PickupTimeSelectorProps> = ({
+    pickupTime,
+    setPickupTime,
+}) => {
+    const timeSlots = generateTimeSlots();
+
+    return (
+        <div className="my-4 p-4 bg-slate-100 rounded-md shadow-md">
+            <label htmlFor="pickupTime" className="block mb-2 font-bold text-lg">
+                Select Pickup Time
+            </label>
+            <select
+                id="pickupTime"
+                className="w-full p-2 border rounded"
+                value={pickupTime}
+                onChange={(e) => setPickupTime(e.target.value)}
+            >
+                <option value="" disabled>
+                    -- Select a time slot --
+                </option>
+                {timeSlots.map((slot) => (
+                    <option key={slot.value} value={slot.value}>
+                        {slot.label}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
+};

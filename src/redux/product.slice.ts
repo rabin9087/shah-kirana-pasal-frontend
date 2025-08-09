@@ -1,5 +1,6 @@
 
 import { IStoredAt } from "@/axios/product/types";
+import { IProductComboOffer } from "@/axios/productComboOffer/types";
 import { IProductTypes, Status } from "@/types/index";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
@@ -39,6 +40,7 @@ interface InititalState {
   selectedProducts: IProductTypes[];
   product: IProductTypes,
   productFoundStatus: IProductStatus,
+  comboProducts: IProductComboOffer[]
 };
 
 const initialState: InititalState = {
@@ -46,6 +48,7 @@ const initialState: InititalState = {
   selectedProducts: [],
   product: productInitialState,
   productFoundStatus: productStatus,
+  comboProducts: [],
 };
 
 const userSlice = createSlice({
@@ -71,10 +74,13 @@ const userSlice = createSlice({
   setSelectedProducts: (state, { payload }: PayloadAction<IProductTypes[]>) => {
       state.selectedProducts = payload;
     },
+    setComboProduct: (state, { payload }: PayloadAction<IProductComboOffer[]>) => { 
+      state.comboProducts = payload;
+    }
   },
 });
 
 const { reducer, actions } = userSlice;
-export const { setProducts, setAProduct, setAProductFoundStatus, setSelectedProducts, addProducts } = actions;
+export const { setProducts, setAProduct, setAProductFoundStatus, setSelectedProducts, addProducts, setComboProduct } = actions;
 export default reducer;
 // export the action creator for other components to use it in dispatch() function of redux store

@@ -150,3 +150,13 @@ export const updateAUser = (phone: string, data: object) => {
     obj: data,
   });
 };
+
+export const verifyEmail = async (token: string, email: string) => {
+  const response = await axiosProcessor({
+    method: "patch",
+    url: `${userApi}/verify-email`, // ✅ fixed endpoint
+    isPrivate: false, // set to true if requires auth, but usually email verify is public
+    obj: { token, email },
+  });
+  return response; // Return status or any other relevant data
+};

@@ -6,7 +6,7 @@ import {
     PaymentElement,
 } from '@stripe/react-stripe-js';
 import { FormEvent, useEffect, useState } from 'react';
-import DeliveryDateSelector from './DeliveryDate';
+import DeliveryDateSelector, { PickupTimeSelector } from './DeliveryDate';
 import { resetCart } from '@/redux/addToCart.slice';
 import { updateCartHistoryInUserAxios, updateCartInUserAxios } from '@/action/user.action';
 import { useNavigate } from 'react-router';
@@ -31,6 +31,8 @@ const CheckoutForm = () => {
     const [paymentType, setPaymentType] = useState<"cash" | "card">("card");
     const [changeDetails, setChangeDetails] = useState(false);
     const [paymentError, setPaymentError] = useState<string | undefined>(undefined);
+    const [pickupTime, setPickupTime] = useState("");
+
 
     const [userDetails, setUserDetails] = useState(
         {
@@ -59,7 +61,6 @@ const CheckoutForm = () => {
     const [placeOrderStatus, setPlaceOrderStatus] = useState<string>("Place order");
 
     const { cart } = useAppSelector(state => state.addToCartInfo);
-    console.log(cart)
 
     const orderItems = cart.flatMap(item => {
         if (!item.offerName) {
@@ -73,7 +74,7 @@ const CheckoutForm = () => {
 
         // If it's a combo offer
         return (item.items || []).map(product => ({
-            productId: typeof product.productId === "string" 
+            productId: typeof product.productId === "string"
                 ? product.productId
                 : product?.productId?._id,
             quantity: item.orderQuantity as number,
@@ -83,7 +84,7 @@ const CheckoutForm = () => {
             comboId: item._id
         }));
     });
-    
+
     const cartAmount = cart.reduce((acc, { orderQuantity, price }) => {
         return acc + (orderQuantity as number) * (price as number)
     }, 0)
@@ -249,8 +250,8 @@ const CheckoutForm = () => {
                         items: orderItems as any,
                         deliveryStatus: "Order placed",
                         deliveryDate: {
-                            date: "NY", // This might need to be dynamic based on requestDeliveryDate
-                            time: "NY" // This might need to be dynamic based on requestDeliveryDate
+                            date: requestDeliveryDate ?? "NA", // This might need to be dynamic based on requestDeliveryDate
+                            time: pickupTime ?? "NA" // This might need to be dynamic based on requestDeliveryDate
                         },
                         requestDeliveryDate: requestDeliveryDate,
                         paymentType: result.paymentIntent.payment_method_types[0],
@@ -284,8 +285,8 @@ const CheckoutForm = () => {
                     items: orderItems as any,
                     deliveryStatus: "Order placed",
                     deliveryDate: {
-                        date: "NY", // This might need to be dynamic based on requestDeliveryDate
-                        time: "NY" // This might need to be dynamic based on requestDeliveryDate
+                        date: requestDeliveryDate ?? "NA", // This might need to be dynamic based on requestDeliveryDate
+                        time: pickupTime ?? "NA" // This might need to be dynamic based on requestDeliveryDate
                     },
                     requestDeliveryDate: requestDeliveryDate,
                     paymentType: paymentType,
@@ -375,8 +376,10 @@ const CheckoutForm = () => {
                             </Button>
                             <Button
                                 type="button"
-                                className="px-4 py-2 rounded-lg bg-gray-300 text-gray-500 cursor-not-allowed"
-                                disabled
+                                className={`px-4 py-2 rounded-lg transition-colors ${orderType === "delivery"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-200 text-gray-700"
+                                    }`} onClick={() => setOrderType("delivery")}
                             >
                                 {language === "en" ? "Delivery" : "डिलीवरी"}
                             </Button>
@@ -442,12 +445,25 @@ const CheckoutForm = () => {
                                             className="p-2"
                                             options={{
                                                 mode: "shipping",
-                                                allowedCountries: [], // Set to specific countries if needed, e.g., ['US', 'AU']
+                                                allowedCountries: ["AU"], // Country code must be uppercase 'AU'
                                                 blockPoBox: false,
                                                 fields: { phone: "always" },
                                                 autocomplete: { mode: "automatic" },
                                             }}
-                                            onChange={handelOnAddressChange}
+                                            onChange={(event) => {
+                                                const address = event.value?.address;
+
+                                                // Allowed suburbs list
+                                                const allowedSuburbs = ["Sydney", "Parramatta", "Chatswood", "Blacktown"];
+
+                                                if (address?.city && !allowedSuburbs.includes(address.city)) {
+                                                    console.warn("Suburb not allowed:", address.city);
+                                                    // You can show an error message here instead of silently rejecting
+                                                    return;
+                                                }
+
+                                                handelOnAddressChange(event);
+                                            }}
                                         />
                                     </div>
                                 )}
@@ -456,6 +472,11 @@ const CheckoutForm = () => {
                                     requestDeliveryDate={requestDeliveryDate}
                                     setRequestDeliveryDate={setRequestDeliveryDate}
                                 />
+                                {orderType === "pickup" && requestDeliveryDate && <div>
+                                    <PickupTimeSelector pickupTime={pickupTime} setPickupTime={setPickupTime} />
+                                    <p>Selected pickup time: {pickupTime}</p>
+                                </div>}
+
                             </section>
 
                             <div className="flex justify-center">

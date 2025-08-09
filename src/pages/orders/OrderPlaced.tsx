@@ -9,14 +9,22 @@ import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 
 export const OrderPlaced: React.FC = () => {
     const { user } = useAppSelector((s) => s.userInfo);
+    const { comboProducts } = useAppSelector((s) => s.productInfo);
     const { language } = useAppSelector((s) => s.settings);
     const { cartHistory } = user
 
     const [orderNumber, setOrderNumber] = useState<number | string | null>(null);
 
+    // if (!cartHistory) {
+    //     const { data } = useQuery({
+    //         queryKey: ["cartHistory", user._id],
+    //         queryFn: () => getAOrder(user._id),
+    //         enabled: !!user._id, // This prevents the API call when user._id is null
+    //     })
+    // }
+
     // Get the most recent order (cartHistory[0])
     const latestOrder = cartHistory?.[0];
-
 
     useEffect(() => {
         if (cartHistory?.length && latestOrder?.orderNumber) {
@@ -29,7 +37,8 @@ export const OrderPlaced: React.FC = () => {
         queryFn: () => getAOrder(orderNumber as string),
         enabled: !!orderNumber, // This prevents the API call when orderNumber is null
     });
-    console.log(data)
+
+    console.log(comboProducts)
     return (
         <Layout title={cartHistory.length > 0 ? "" : "Order Placed"}>
             {cartHistory.length < 0 ?
@@ -78,6 +87,20 @@ export const OrderPlaced: React.FC = () => {
                                             (data.deliveryStatus === "Cancelled" && "रद्द गरियो")}</p>
                                     <p className="text-gray-700"><strong>{language === "en" ? "Payment status" : "भुक्तानी स्थिति"}:
                                     </strong> {language === "en" ? latestOrder.paymentStatus : latestOrder.paymentStatus === "Paid" ? "भुक्तानी गरिएको छ" : "भुक्तान गरिएको छैन"}</p>
+                                    <p className="text-gray-700">
+                                        <strong>{language === "en" ? "Order Type" : "अर्डर प्रकार"}:</strong>{" "}
+                                        {language === "en"
+                                            ? data?.orderType === "pickup" ? "Pick up" : "Delivery"
+                                            : data?.orderType === "pickup"
+                                                ? "पिकअप"
+                                                : "डेलिभरी"}
+                                    </p>
+                                    {data?.orderType === "pickup" ?
+                                        <p className="text-gray-700">
+                                            <strong>{language === "en" ? "Pickup Time" : "अर्डर प्रकार"}:</strong>{" "}
+                                            {data?.deliveryDate?.time}
+                                        </p> : <></>
+                                    }
                                 </div>
                                 <div className="flex flex-col justify-center items-center mt-4 md:mt-0">
                                     <QRCodeGenerator value={(latestOrder?.orderNumber).toString()} />

@@ -76,7 +76,8 @@ export interface ICartHistory {
   amount: number;// Store previous cart data
   deliveryStatus: string;
   paymentStatus: string;
-  orderNumber: number
+  orderNumber: number,
+  orderType: string;
   purchasedAt: Date; // Store timestamp of purchase
 }
 
@@ -203,6 +204,7 @@ export type IProductUpdateTypes = {
   salesEndDate?: Date,
   productReviews?: Array<IReviews>,
   productLocation?: string;
+ 
 }
 
 export type TAxiosProcessor = Promise<serverReturnDataType>;
