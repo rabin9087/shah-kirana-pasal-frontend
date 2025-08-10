@@ -136,12 +136,12 @@ const ProductsDashboard = () => {
 
     if (error) return <Error />
     if (isLoading) return (
-        <div className="flex justify-center items-center h-screen">
-        < SkeletonCard />
-        < SkeletonCard />
-        < SkeletonCard />
-        < SkeletonCard />
-        < SkeletonCard />
+        <div className="flex justify-center mt-4 h-screen">
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
         </div>)
 
     return (

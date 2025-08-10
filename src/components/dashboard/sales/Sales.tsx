@@ -6,6 +6,7 @@ import { CartesianGrid, XAxis, YAxis, BarChart, Bar, Tooltip,
 import { getProductSalesData, mapProductNames } from "./MostSoldProduct";
 import { useAppSelector } from "@/hooks";
 import ProfitChart, { CalculateDailyAndMonthlyProfit, CurrentMonthDailyProfit } from "./Profit";
+import { SkeletonCard } from "@/components/ui/Loading";
 
 export type ISalesProps = {
     _id: string;
@@ -32,17 +33,26 @@ const Sales = () => {
     const { user } = useAppSelector((state) => state.userInfo);
 
     const { products } = useAppSelector(s => s.productInfo)
-    const { data = [] } = useQuery({
+    const { data = [], isLoading } = useQuery({
         queryKey: ['amounts'],
         queryFn: () =>
             getTotalSales()
     });
 
-    const { data: sales = [] } = useQuery({
+    const { data: sales = [], isLoading: isLoadingSales } = useQuery({
         queryKey: ['sales', 'online'],
         queryFn: () =>
             getAllSales()
     });
+
+    if (isLoading || isLoadingSales) return (
+        <div className="flex justify-center mt-4 h-screen">
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
+        </div>)
 
     const { allProducts } = getProductSalesData(sales);
     const nameOfProduct = mapProductNames(allProducts, products);

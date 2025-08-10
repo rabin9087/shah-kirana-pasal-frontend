@@ -102,7 +102,7 @@ const ComboProduct = () => {
     // Loading state
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center h-screen">
+            <div className="flex justify-center mt-4 h-screen mx-4">
                 < SkeletonCard />
                 < SkeletonCard />
                 < SkeletonCard />

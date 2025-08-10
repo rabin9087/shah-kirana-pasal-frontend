@@ -11,6 +11,7 @@ import { DailyMonthlyAndItemProfit } from "./StoreProfit";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { addDays, subDays } from "date-fns";
+import { SkeletonCard } from "@/components/ui/Loading";
 
 
 const StoreSalesDashboard = () => {
@@ -38,7 +39,14 @@ const StoreSalesDashboard = () => {
         setDate(newDate);
     };
 
-    if (isLoading) return <div>Loading...</div>
+    if (isLoading) return (
+        <div className="flex justify-center mt-4 h-screen">
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
+            < SkeletonCard />
+        </div>)
     return (
         <div>
             <h3 className="flex justify-center uppercase font-bold underline mb-4">Store-sales Dashboard</h3>
