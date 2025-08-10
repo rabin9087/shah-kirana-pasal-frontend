@@ -38,6 +38,7 @@ const Payment = () => {
         queryKey: ["payment", total, storedPaymentIntentId],
         queryFn: () => createPaymentIntent(paymentData),
         enabled: total > 0,
+        
         staleTime: Infinity,
     });
 

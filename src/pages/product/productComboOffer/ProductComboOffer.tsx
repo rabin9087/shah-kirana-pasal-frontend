@@ -23,8 +23,7 @@ const ProductComboOffer = () => {
         price: '',
         qty: '1',
     });
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string>('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     const dispatch = useAppDispatch();
     const { products } = useAppSelector((s) => s.productInfo);
@@ -48,7 +47,6 @@ const ProductComboOffer = () => {
         formState: { errors },
         reset,
         setValue,
-        watch,
     } = useForm<IProductComboOffer>({
         resolver: zodResolver(comboOfferSchema),
         defaultValues: {
@@ -63,17 +61,16 @@ const ProductComboOffer = () => {
         },
     });
 
-
     // Updated mutation to handle FormData
     const mutation = useMutation({
-        mutationFn: (formData: FormData) => createProductComboOffer(formData),
+        mutationFn: (formData: IProductComboOffer) => createProductComboOffer(formData),
         onSuccess: () => {
             toast.success('Combo Offer Created Successfully');
             reset();
             setSelectedProducts([]);
             setProductInput({ productId: '', price: '', qty: '1' });
-            setSelectedFile(null);
-            setImagePreview('');
+            setSearchTerm('');
+            setTempProduct(products);
             // Clear file input
             const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
             if (fileInput) fileInput.value = '';
@@ -110,26 +107,9 @@ const ProductComboOffer = () => {
         }
 
         setSelectedProducts([...selectedProducts, { ...productInput }]);
-        setProductInput({ productId: '', price: '', qty: '0' });
+        setProductInput({ productId: '', price: '', qty: '1' });
+        setSearchTerm('');
         setTempProduct(products);
-    };
-
-    // Handle file selection and preview
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setSelectedFile(file);
-
-            // Create preview URL
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            setSelectedFile(null);
-            setImagePreview('');
-        }
     };
 
     const onSubmit = (data: IProductComboOffer) => {
@@ -146,46 +126,48 @@ const ProductComboOffer = () => {
             return;
         }
 
-        // Create FormData object
-        const formData = new FormData();
+        const payload: any = {
+            offerName: data.offerName,
+            description: data.description || '',
+            status: data.status,
+            totalAmount: data.totalAmount.toFixed(2),
+            discountAmount: data.discountAmount.toFixed(2),
+            price: data.price.toFixed(2),
+            items: selectedProducts,
+        };
 
-        // Append basic fields
-        formData.append('offerName', data.offerName);
-        formData.append('description', data.description || '');
-        formData.append('status', data.status);
-        formData.append('totalAmount', data.totalAmount.toFixed(2));
-        formData.append('discountAmount', data.discountAmount.toFixed(2));
-        formData.append('price', data.price.toFixed(2));
-
-        // Append dates if they exist (convert to ISO string)
         if (data.offerStartDate) {
-            formData.append('offerStartDate', new Date(data.offerStartDate).toISOString());
+            payload.offerStartDate = new Date(data.offerStartDate).toISOString();
         }
         if (data.offerEndDate) {
-            formData.append('offerEndDate', new Date(data.offerEndDate).toISOString());
+            payload.offerEndDate = new Date(data.offerEndDate).toISOString();
         }
 
-        // Append selected products as JSON string
-        formData.append('items', JSON.stringify(selectedProducts));
-
-        // Handle thumbnail - either file upload or URL
-        if (selectedFile) {
-            // Use uploaded file
-            formData.append('thumbnail', selectedFile);
-        } else if (data.thumbnail && data.thumbnail.trim()) {
-            // Use URL
-            formData.append('thumbnail', data.thumbnail.trim());
+        // Handle thumbnail
+        if (data.thumbnail) {
+            payload.thumbnail = data.thumbnail.trim();
         }
-
-        mutation.mutate(formData);
+        mutation.mutate(payload);
     };
 
     const handleOnSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const searchTerm = e.target.value.toLowerCase();
-        setTempProduct(products.filter(product =>
-            product.name.toLowerCase().includes(searchTerm) ||
-            (product.alternateName?.toLowerCase().includes(searchTerm))
-        ));
+        const value = e.target.value;
+        setSearchTerm(value);
+
+        if (value.trim() === '') {
+            setTempProduct(products);
+        } else {
+            const filtered = products.filter(product =>
+                product.name.toLowerCase().includes(value.toLowerCase()) ||
+                (product.alternateName?.toLowerCase().includes(value.toLowerCase()))
+            );
+            setTempProduct(filtered);
+        }
+    };
+
+    const clearSearch = () => {
+        setSearchTerm('');
+        setTempProduct(products);
     };
 
     const handleRemoveProduct = (index: number) => {
@@ -200,120 +182,102 @@ const ProductComboOffer = () => {
 
     return (
         <div className='mt-2'>
-            <form className="max-w-3xl mx-auto border rounded p-6 space-y-6 shadow" onSubmit={handleSubmit(onSubmit)}>
-                <h3 className='text-bold text-center underline'>Create Combo Offer</h3>
-
-                {/* Status */}
-                <div className="flex flex-col space-y-4">
-                    <Label>Status</Label>
-                    <Select
-                        onValueChange={(val) => setValue('status', val as 'ACTIVE' | 'INACTIVE')}
-                        defaultValue="ACTIVE"
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="ACTIVE">ACTIVE</SelectItem>
-                            <SelectItem value="INACTIVE">INACTIVE</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    {errors.status && <p className="text-red-500 text-sm">{errors.status.message}</p>}
+            <form className="max-w-4xl mx-auto border rounded-lg p-8 space-y-8 shadow-lg bg-white" onSubmit={handleSubmit(onSubmit)}>
+                <div className="text-center border-b pb-4">
+                    <h3 className='text-2xl font-bold text-gray-800'>Create Combo Offer</h3>
+                    <p className="text-gray-600 mt-2">Bundle products together for special pricing</p>
                 </div>
 
-                {/* Offer Name */}
-                <div>
-                    <Label htmlFor="offerName">Offer Name</Label>
-                    <Input {...register('offerName')} placeholder="Enter Offer Name" />
-                    {errors.offerName && <p className="text-red-500 text-sm">{errors.offerName.message}</p>}
+                {/* Status & Offer Name Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Status</Label>
+                        <Select
+                            onValueChange={(val) => setValue('status', val as 'ACTIVE' | 'INACTIVE')}
+                            defaultValue="ACTIVE"
+                        >
+                            <SelectTrigger className="border-gray-300 focus:border-blue-500">
+                                <SelectValue placeholder="Select Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ACTIVE">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        ACTIVE
+                                    </div>
+                                </SelectItem>
+                                <SelectItem value="INACTIVE">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                                        INACTIVE
+                                    </div>
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {errors.status && <p className="text-red-500 text-sm">{errors.status.message}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="offerName" className="text-sm font-semibold text-gray-700">Offer Name</Label>
+                        <Input
+                            {...register('offerName')}
+                            placeholder="Enter Offer Name"
+                            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        />
+                        {errors.offerName && <p className="text-red-500 text-sm">{errors.offerName.message}</p>}
+                    </div>
                 </div>
 
                 {/* Thumbnail Section */}
-                <div className="space-y-4">
-                    <div>
-                        <Label htmlFor="thumbnailUrl">Thumbnail URL</Label>
-                        <Input
-                            {...register('thumbnail')}
-                            placeholder="Enter Thumbnail URL"
-                            onChange={(e) => {
-                                // Clear file selection when URL is entered
-                                if (e.target.value.trim()) {
-                                    setSelectedFile(null);
-                                    setImagePreview('');
-                                }
-                            }}
-                        />
-                        {errors.thumbnail && <p className="text-red-500 text-sm">{errors.thumbnail.message}</p>}
-
-                        {/* URL Preview */}
-                        {watch('thumbnail') && !selectedFile && (
-                            <div className="mt-3">
-                                {/* <Label className="text-sm text-gray-600">URL Preview:</Label> */}
-                                <div className="mt-2 border rounded p-2 inline-block">
-                                    <img
-                                        src={watch('thumbnail')}
-                                        alt="Thumbnail URL preview"
-                                        className="w-32 h-32 object-cover rounded"
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).style.display = 'none';
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-white px-2 text-muted-foreground">OR</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <Label htmlFor="thumbnailFile">Upload Thumbnail Image</Label>
-                        <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                                handleFileChange(e);
-                                // Clear URL when file is selected
-                                if (e.target.files?.[0]) {
-                                    setValue('thumbnail', '');
-                                }
-                            }}
-                            className="mb-2"
-                        />
-
-                        {/* File Preview */}
-                        {imagePreview && selectedFile && (
-                            <div className="mt-3">
-                                <Label className="text-sm text-gray-600">File Preview:</Label>
-                                <div className="mt-2 border rounded p-2 inline-block">
-                                    <img
-                                        src={imagePreview}
-                                        alt="Thumbnail file preview"
-                                        className="w-32 h-32 object-cover rounded"
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">{selectedFile.name}</p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                <div className="space-y-2">
+                    <Label htmlFor="thumbnailUrl" className="text-sm font-semibold text-gray-700">Thumbnail URL</Label>
+                    <Input
+                        {...register('thumbnail')}
+                        placeholder="Enter Thumbnail URL"
+                        className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    {errors.thumbnail && <p className="text-red-500 text-sm">{errors.thumbnail.message}</p>}
                 </div>
 
-                {/* Add Products */}
-                <div className="border rounded p-4 bg-gray-100">
-                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <AiFillPlusCircle /> Add Products
+                {/* Add Products Section */}
+                <div className="border rounded-lg p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2 text-gray-800">
+                        <AiFillPlusCircle className="text-blue-600" size={24} /> Add Products to Bundle
                     </h3>
-                    <Input type="text" placeholder="Search products..." onChange={handleOnSearch} className="mb-3" />
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <Label>Product</Label>
+                    {/* Enhanced Search */}
+                    <div className="relative mb-6">
+                        <div className="relative">
+                            <Input
+                                type="text"
+                                placeholder="🔍 Search products by name..."
+                                value={searchTerm}
+                                onChange={handleOnSearch}
+                                className="pr-10 pl-4 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
+                            />
+                            {searchTerm && (
+                                <button
+                                    type="button"
+                                    onClick={clearSearch}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-1 transition-colors duration-200"
+                                    title="Clear search"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            )}
+                        </div>
+                        {searchTerm && (
+                            <p className="text-sm text-gray-600 mt-2">
+                                Found {tempProduct.length} product{tempProduct.length !== 1 ? 's' : ''}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="lg:col-span-1 space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700">Select Product</Label>
                             <Select
                                 onValueChange={(val) => {
                                     const selected = getProductById(val);
@@ -327,24 +291,38 @@ const ProductComboOffer = () => {
                                 }}
                                 value={productInput.productId}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="border-gray-300 focus:border-blue-500">
                                     <SelectValue placeholder="Select a Product" />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    {tempProduct.map(prod => (
-                                        <SelectItem key={prod._id} value={prod._id}>
-                                            <div className="flex items-center gap-2">
-                                                <img src={prod.thumbnail} alt={prod.name} className="w-6 h-6 rounded" />
-                                                {prod.name} (${prod.price})
-                                            </div>
+                                <SelectContent className="max-h-60">
+                                    {tempProduct.length > 0 ? (
+                                        tempProduct.map(prod => (
+                                            <SelectItem key={prod._id} value={prod._id}>
+                                                <div className="flex items-center gap-3">
+                                                    <img
+                                                        src={prod.thumbnail}
+                                                        alt={prod.name}
+                                                        className="w-8 h-8 rounded-md object-cover border"
+                                                    />
+                                                    <div className="flex flex-col">
+                                                        <span className="font-medium">{prod.name}</span>
+                                                        <span className="text-sm text-green-600 font-semibold">${prod.price}</span>
+                                                    </div>
+                                                </div>
+                                            </SelectItem>
+                                        ))
+                                    ) : (
+                                        <SelectItem value="no-results" disabled>
+                                            <span className="text-gray-500">No products found</span>
                                         </SelectItem>
-                                    ))}
+                                    )}
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <Label>Price</Label>
+
+                        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-gray-700">Price ($)</Label>
                                 <Input
                                     type="number"
                                     min="0"
@@ -352,94 +330,175 @@ const ProductComboOffer = () => {
                                     placeholder="Enter price"
                                     value={productInput.price}
                                     onChange={(e) => setProductInput({ ...productInput, price: e.target.value })}
+                                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
-                            <div>
-                                <Label>Quantity</Label>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold text-gray-700">Quantity</Label>
                                 <Input
                                     type="number"
-                                    min="0"
+                                    min="1"
                                     step="1"
-                                    placeholder="Enter Qtantity"
+                                    placeholder="Enter quantity"
                                     value={productInput.qty}
                                     onChange={(e) => setProductInput({ ...productInput, qty: e.target.value })}
+                                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <Button type="button" onClick={handleAddProduct} disabled={!productInput.productId} className="mt-4 w-full">
-                        Add Product
+                    <Button
+                        type="button"
+                        onClick={handleAddProduct}
+                        disabled={!productInput.productId}
+                        className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 disabled:bg-gray-400"
+                    >
+                        <AiFillPlusCircle className="mr-2" size={18} />
+                        Add Product to Bundle
                     </Button>
 
+                    {/* Selected Products */}
                     {selectedProducts.length > 0 && (
-                        <ul className="mt-4 space-y-2">
-                            {selectedProducts.map((p, idx) => {
-                                const prod = getProductById(p.productId as string);
-                                return (
-                                    <li key={idx} className="flex justify-between gap-4 items-center bg-white p-2 rounded shadow">
-
-                                        <div className="flex items-center gap-2">
-                                            <span className='font-thin'>{idx + 1}.</span>
-                                            {prod && (
-                                                <img src={prod.thumbnail} alt={prod.name} className="w-6 h-6 object-cover rounded" />
-                                            )}
-
-                                            {prod?.name || p.productId as string} - ${p.price} x {p.qty}
-                                        </div> 
-                                        <div className=''>
-                                            <button type="button" onClick={() => handleRemoveProduct(idx)} className="text-red-600 hover:text-red-800">
-                                                ✕
+                        <div className="mt-6">
+                            <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
+                                    {selectedProducts.length}
+                                </span>
+                                Selected Products
+                            </h4>
+                            <div className="space-y-3 max-h-60 overflow-y-auto">
+                                {selectedProducts.map((p, idx) => {
+                                    const prod = getProductById(p.productId as string);
+                                    return (
+                                        <div key={idx} className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                                            <div className="flex items-center gap-3">
+                                                <span className='bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium text-gray-600'>
+                                                    {idx + 1}
+                                                </span>
+                                                {prod && (
+                                                    <img
+                                                        src={prod.thumbnail}
+                                                        alt={prod.name}
+                                                        className="w-10 h-10 object-cover rounded-md border"
+                                                    />
+                                                )}
+                                                <div className="flex flex-col">
+                                                    <span className="font-medium text-gray-800">
+                                                        {prod?.name || p.productId as string}
+                                                    </span>
+                                                    <span className="text-sm text-gray-600">
+                                                        ${p.price} × {p.qty} = ${(parseFloat(p.price) * parseInt(p.qty)).toFixed(2)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveProduct(idx)}
+                                                className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-2 transition-colors duration-200"
+                                                title="Remove product"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
                                             </button>
                                         </div>
-
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     )}
                     {errors.items && <p className="text-red-500 text-sm mt-2">{errors.items.message}</p>}
                 </div>
 
-                {/* Amounts */}
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <Label>Total Amount</Label>
-                        <Input type="number" readOnly {...register('totalAmount', { valueAsNumber: true })} className="bg-gray-50" />
+                {/* Pricing Section */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                    <h4 className="font-semibold text-gray-800 mb-4">Pricing Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700">Total Amount</Label>
+                            <Input
+                                type="number"
+                                readOnly
+                                {...register('totalAmount', { valueAsNumber: true })}
+                                className="bg-gray-100 border-gray-300 font-semibold text-gray-800"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700">Discount Amount</Label>
+                            <Input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                {...register('discountAmount', { valueAsNumber: true })}
+                                className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700">Final Price</Label>
+                            <Input
+                                type="number"
+                                step="0.01"
+                                {...register('price', { valueAsNumber: true })}
+                                className="bg-green-50 border-green-300 font-bold text-green-700"
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <Label>Discount Amount</Label>
-                        <Input type="number" step="0.01" min="0" {...register('discountAmount', { valueAsNumber: true })} />
-                    </div>
-                </div>
-
-                <div>
-                    <Label>Offer Price</Label>
-                    <Input type="number" step="0.01" {...register('price', { valueAsNumber: true })} className="bg-gray-50" />
                 </div>
 
                 {/* Dates */}
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <Label>Offer Start Date</Label>
-                        <Input type="date" {...register('offerStartDate')} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Offer Start Date</Label>
+                        <Input
+                            type="date"
+                            {...register('offerStartDate')}
+                            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        />
                     </div>
-                    <div>
-                        <Label>Offer End Date</Label>
-                        <Input type="date" {...register('offerEndDate')} />
+                    <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Offer End Date</Label>
+                        <Input
+                            type="date"
+                            {...register('offerEndDate')}
+                            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        />
                     </div>
                 </div>
 
                 {/* Description */}
-                <div>
-                    <Label>Description</Label>
-                    <textarea {...register('description')} className="w-full border rounded p-2" rows={3} placeholder="Enter offer description..." />
+                <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-gray-700">Description</Label>
+                    <textarea
+                        {...register('description')}
+                        className="w-full border border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:ring-blue-500 resize-none"
+                        rows={4}
+                        placeholder="Enter offer description..."
+                    />
                     {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
                 </div>
 
-                <Button type="submit" disabled={mutation.isPending || selectedProducts.length < 2} className="w-full">
-                    {mutation.isPending ? 'Creating Offer...' : 'Create Offer'}
-                </Button>
+                <div className="border-t pt-6">
+                    <Button
+                        type="submit"
+                        disabled={mutation.isPending || selectedProducts.length < 2}
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 rounded-lg transition-all duration-200 disabled:from-gray-400 disabled:to-gray-400"
+                    >
+                        {mutation.isPending ? (
+                            <div className="flex items-center justify-center gap-2">
+                                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                                Creating Offer...
+                            </div>
+                        ) : (
+                            'Create Combo Offer'
+                        )}
+                    </Button>
+                    {selectedProducts.length < 2 && (
+                        <p className="text-sm text-gray-500 text-center mt-2">
+                            Add at least 2 products to create a combo offer
+                        </p>
+                    )}
+                </div>
             </form>
         </div>
     );

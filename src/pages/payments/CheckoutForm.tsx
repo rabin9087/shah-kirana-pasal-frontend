@@ -281,7 +281,7 @@ const CheckoutForm = () => {
                     name: userDetails.fName + " " + userDetails.lName,
                     phone: userDetails.phone,
                     address: userDetails.address,
-                    email: userDetails.email,
+                email: userDetails.email,
                     items: orderItems as any,
                     deliveryStatus: "Order placed",
                     deliveryDate: {

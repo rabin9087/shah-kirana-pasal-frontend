@@ -131,7 +131,7 @@ const ComboProduct = () => {
     }
 
     // Empty state
-    if (!data.length) {
+    if (!comboProducts.length) {
         return (
             <div className="w-full py-12">
                 <div className="flex flex-col items-center justify-center space-y-4">
@@ -178,7 +178,7 @@ const ComboProduct = () => {
                     <div className="block">
                         <div className="flex space-x-6 overflow-x-auto scrollbar-hide pb-4">
                             <div className="flex space-x-6 min-w-max">
-                                {data.map((item, index) => (
+                                {comboProducts.map((item, index) => (
                                     <div
                                         key={item._id}
                                         className="flex-shrink-0"
@@ -205,24 +205,11 @@ const ComboProduct = () => {
                             </div>
                         </div>
 
-                        {/* Scroll indicator */}
-                        {/* {data.length > 3 && (
-                            <div className="flex justify-center mt-4">
-                                <div className="flex items-center space-x-2 text-sm text-gray-500">
-                                    <span>Scroll to see more</span>
-                                    <div className="flex space-x-1">
-                                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                        <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                                        <div className="w-2 h-2 bg-primary/30 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                                    </div>
-                                </div>
-                            </div>
-                        )} */}
                     </div>
                 </div>
 
                 {/* Bottom CTA */}
-                {data.length > 0 && (
+                {comboProducts.length > 0 && (
                     <div className="mt-8 text-center">
                         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-primary/10 to-primary/5 rounded-full border border-primary/20">
                             <span className="text-sm font-medium text-primary">
