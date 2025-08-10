@@ -3,7 +3,6 @@ import { FaShoppingCart } from "react-icons/fa";
 import {
   Drawer,
   DrawerContent,
-  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
