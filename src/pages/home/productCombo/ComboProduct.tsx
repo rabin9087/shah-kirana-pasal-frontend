@@ -102,10 +102,12 @@ const ComboProduct = () => {
     // Loading state
     if (isLoading) {
         return (
-            <div className="w-full py-12">
-                <div className="flex flex-col items-center justify-center space-y-4">
-                    <SkeletonCard />
-                </div>
+            <div className="flex justify-center items-center h-screen">
+                < SkeletonCard />
+                < SkeletonCard />
+                < SkeletonCard />
+                < SkeletonCard />
+                < SkeletonCard />
             </div>
         );
     }
@@ -204,7 +206,7 @@ const ComboProduct = () => {
                         </div>
 
                         {/* Scroll indicator */}
-                        {data.length > 3 && (
+                        {/* {data.length > 3 && (
                             <div className="flex justify-center mt-4">
                                 <div className="flex items-center space-x-2 text-sm text-gray-500">
                                     <span>Scroll to see more</span>
@@ -215,7 +217,7 @@ const ComboProduct = () => {
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        )} */}
                     </div>
                 </div>
 

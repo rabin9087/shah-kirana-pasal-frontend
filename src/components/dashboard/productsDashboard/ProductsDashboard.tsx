@@ -23,6 +23,7 @@ import { toast } from "@/components/ui/use-toast";
 import SearchInput from "@/components/search/SearchInput";
 import { formatLocation } from "@/pages/orders/startPicking/StartPickingOrder";
 import { SkeletonCard } from "@/components/ui/Loading";
+import ComboProductDashboard from "./ComboProduct";
 
 export const sortOptions = [
     { label: "Select A Label", value: "select" },
@@ -72,7 +73,7 @@ const ProductsDashboard = () => {
     const [searchData, setSearchData] = useState(products)
     const [sortBy, setSortBy] = useState<SortField>("select");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-    const [comboProduct, setComboProducts] = useState<boolean>(false);
+    const [comboProducts, setComboProducts] = useState<boolean>(false);
 
     const { data = [], error, isLoading } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
@@ -122,7 +123,6 @@ const ProductsDashboard = () => {
     }
 
     useEffect(() => {
-
         const sorted = sortProducts(products, sortBy, sortOrder);
         setSearchData(sorted);
     }, [products, sortBy, sortOrder]);
@@ -135,22 +135,30 @@ const ProductsDashboard = () => {
     // if (isLoading || isFetching) return <Loading />;
 
     if (error) return <Error />
-    if (isLoading) return <SkeletonCard />;
+    if (isLoading) return (
+        <div className="flex justify-center items-center h-screen">
+        < SkeletonCard />
+        < SkeletonCard />
+        < SkeletonCard />
+        < SkeletonCard />
+        < SkeletonCard />
+        </div>)
+
     return (
         <div>
             <div className="flex flex-col items-center justify-center w-full py-2 bg-muted/40 rounded-xl shadow-md ">
                 <div className="flex flex-wrap justify-center gap-4 border p-2 rounded-md">
                     <Button
-                        variant={comboProduct ? 'secondary' : 'default'}
-                        className={comboProduct ? 'bg-muted text-foreground' : 'bg-primary text-white'}
+                        variant={comboProducts ? 'secondary' : 'default'}
+                        className={comboProducts ? 'bg-muted text-foreground' : 'bg-primary text-white'}
                         onClick={() => setComboProducts(false)}
                     >
                         Create Product
                     </Button>
 
                     <Button
-                        variant={comboProduct ? 'default' : 'secondary'}
-                        className={comboProduct ? 'bg-primary text-white' : 'bg-muted text-foreground'}
+                        variant={comboProducts ? 'default' : 'secondary'}
+                        className={comboProducts ? 'bg-primary text-white' : 'bg-muted text-foreground'}
                         onClick={() => setComboProducts(true)}
                     >
                         Create Combo Product
@@ -158,7 +166,7 @@ const ProductsDashboard = () => {
                 </div>
             </div>
 
-            <div>
+            {comboProducts ? <ComboProductDashboard /> : <div>
                 <h3 className="flex justify-center uppercase font-bold underline mt-2">Products Management</h3>
                 <p>Total Products: {products?.length}</p>
 
@@ -333,11 +341,8 @@ const ProductsDashboard = () => {
                             </TableBody>
                         </Table>
                     }
-
                 </div>
-            </div>
-
-
+            </div>}
         </div>
     )
 }

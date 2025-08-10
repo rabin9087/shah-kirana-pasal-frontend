@@ -345,8 +345,8 @@ const CheckoutForm = () => {
     }, [user]);
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-            <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-4 md:p-8 overflow-y-auto max-h-[95vh]">
+        <div className="min-h-screen bg-gray-100 py-8 px-4">
+            <div className="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-4 md:p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {isAddressComplete && (
                         <Button
