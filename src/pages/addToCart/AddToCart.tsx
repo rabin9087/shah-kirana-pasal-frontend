@@ -6,9 +6,23 @@ import { Link } from "react-router-dom"
 import { IAddToCartTypes } from "@/pages/addToCart"
 import { IProductComboOffer } from "@/axios/productComboOffer/types"
 
-const AddToCart = () => {
+interface AddToCartProps {
+    onCloseDrawer?: () => void;
+}
+
+const AddToCart: React.FC<AddToCartProps> = ({ onCloseDrawer }) => {
     const { cart } = useAppSelector((state) => state.addToCartInfo)
     const { language } = useAppSelector((state) => state.settings)
+
+
+    const handleCheckout = () => {
+        // Handle checkout logic
+
+        // Close drawer after checkout
+        if (onCloseDrawer) {
+            onCloseDrawer();
+        }
+    };
 
     // Type guards to normalize mixed cart types
     const getPrice = (item: IAddToCartTypes | IProductComboOffer) => {
@@ -43,7 +57,7 @@ const AddToCart = () => {
                 <div className="w-full md:w-[400px] flex flex-col justify-center items-center mx-auto">
                     <hr className="w-full" />
                     {cart.map((product) => (
-                        <CartCard key={product._id} item={product} />
+                        <CartCard key={product._id} item={product} onCloseDrawer={onCloseDrawer} />
                     ))}
                 </div>
             ) : (
@@ -73,7 +87,9 @@ const AddToCart = () => {
                         )}
                     </div>
 
-                    <div className="w-full py-2 flex justify-center">
+                    <div className="w-full py-2 flex justify-center"
+                        onClick={handleCheckout}
+                    >
                         <Link to={"/payment"}>
                             <Button className="w-[250px]">{language === "en" ? "Checkout" : "अहिले तिर्नुहोस्"}</Button>
                         </Link>

@@ -16,9 +16,10 @@ import { IProductComboOffer } from "@/axios/productComboOffer/types";
 
 type Props = {
     item: IAddToCartTypes | IProductComboOffer;
+    onCloseDrawer?: () => void;
 };
 
-const CartCard: React.FC<Props> = ({ item }) => {
+const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
     const dispatch = useAppDispatch();
     const { cart } = useAppSelector((state) => state.addToCartInfo);
     const { language } = useAppSelector((state) => state.settings);
@@ -47,7 +48,7 @@ const CartCard: React.FC<Props> = ({ item }) => {
         dispatch(setAddToCart({ ...item, note }));
         setOpenNote(false);
     };
-
+    console.log(item)
     const handleOnResetCart = () => {
         dispatch(setAddToCart({ ...item, orderQuantity: 0 }));
     };
@@ -55,8 +56,14 @@ const CartCard: React.FC<Props> = ({ item }) => {
     const handleOnChangeNote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setNote(e.target.value);
     };
+    let productUrl
+    if (item?.items) {
+        productUrl = ""
+    } else {
+        productUrl = (item as IAddToCartTypes).qrCodeNumber
+    }
 
-    const productUrl = (item as IAddToCartTypes).qrCodeNumber
+    productUrl !== "" ? `/product/${productUrl}` : "/"
 
     return (
         <Card className="w-full md:w-[400px] rounded-none mb-1">
@@ -72,8 +79,10 @@ const CartCard: React.FC<Props> = ({ item }) => {
             </div>
 
             {/* Product Info */}
-            <div className="flex items-center gap-2 px-2 py-2">
-                <Link to={`/product/${productUrl}`}>
+            <div className="flex items-center gap-2 px-2 py-2"
+                onClick={onCloseDrawer}
+            >
+                <Link to={`${productUrl}`}>
                     <img
                         src={item.thumbnail}
                         alt={productName}
@@ -82,9 +91,11 @@ const CartCard: React.FC<Props> = ({ item }) => {
                     />
                 </Link>
 
-                <CardTitle className="w-full text-sm">
+                <CardTitle className="w-full text-sm"
+                >
                     <Link to={`/product/${productUrl}`}>
-                        <p className="hover:underline line-clamp-2">
+                        <p className="hover:underline line-clamp-2"
+                            onClick={onCloseDrawer}>
                             {language === "en"
                                 ? productName || productAltName
                                 : productAltName || productName}
