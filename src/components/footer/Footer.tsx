@@ -37,7 +37,7 @@ const Footer = () => {
             <a href="https://www.facebook.com/profile.php?id=100075818236496" target="_blank" rel="noopener noreferrer">
               <img src="https://img.icons8.com/?size=100&id=uLWV5A9vXIPu&format=png&color=000000" alt="Facebook" className="w-8 h-8 hover:opacity-80" />
             </a>
-            <a href="https://www.tiktok.com/@rabinshah1998" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.tiktok.com/@shah.kirana.pasal" target="_blank" rel="noopener noreferrer">
               <img src="https://www.svgrepo.com/show/303260/tiktok-logo-logo.svg" alt="TikTok" className="w-8 h-8 hover:opacity-80" />
             </a>
             <a href="https://www.instagram.com/rabinshah9087" target="_blank" rel="noopener noreferrer">
@@ -45,6 +45,10 @@ const Footer = () => {
             </a>
             <a href="https://wa.me/+61481452920" target="_blank" rel="noopener noreferrer">
               <img src="https://www.svgrepo.com/show/382712/whatsapp-whats-app.svg" alt="WhatsApp" className="w-8 h-8 hover:opacity-80" />
+            </a>
+
+            <a href="https://www.linkedin.com/in/rabin-shah/" target="_blank" rel="noopener noreferrer">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/2048px-LinkedIn_icon.svg.png" alt="linkedIn" className="w-8 h-8 hover:opacity-80" />
             </a>
             {/* <a href="https://www.google.com/search?q=Shah+Kirana+Pasal" target="_blank" rel="noopener noreferrer">
               <img src="/icons/google.svg" alt="Google" className="w-8 h-8 hover:opacity-80" />

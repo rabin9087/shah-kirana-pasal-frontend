@@ -56,14 +56,17 @@ const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
     const handleOnChangeNote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setNote(e.target.value);
     };
-    let productUrl
-    if (item?.items) {
-        productUrl = ""
-    } else {
-        productUrl = (item as IAddToCartTypes).qrCodeNumber
-    }
 
-    productUrl !== "" ? `/product/${productUrl}` : "/"
+    let productUrl = "/";
+
+    if (!item?.items) {
+        const qrCodeNumber = (item as IAddToCartTypes).qrCodeNumber;
+        if (qrCodeNumber) {
+            productUrl = `/product/${qrCodeNumber}`;
+        }
+    } else {
+        productUrl = `/product/comboProduct/${item._id}`;
+    }
 
     return (
         <Card className="w-full md:w-[400px] rounded-none mb-1">
@@ -93,7 +96,7 @@ const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
 
                 <CardTitle className="w-full text-sm"
                 >
-                    <Link to={`/product/${productUrl}`}>
+                    <Link to={`${productUrl}`}>
                         <p className="hover:underline line-clamp-2"
                             onClick={onCloseDrawer}>
                             {language === "en"

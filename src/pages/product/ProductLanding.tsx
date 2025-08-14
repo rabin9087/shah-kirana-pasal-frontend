@@ -23,7 +23,6 @@ const ProductLanding = () => {
     const { language } = useAppSelector((state) => state.settings)
     const orderQty = getOrderNumberQuantity(product._id, cart);
     const index = cart.find((item) => item._id === product._id);
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [isWishlisted, setIsWishlisted] = useState(false);
 
     const { data = {} as IProductTypes, error } = useQuery<IProductTypes>({
@@ -31,19 +30,46 @@ const ProductLanding = () => {
         queryFn: async () => getAProduct({ qrCodeNumber: params }),
     });
 
+    const [selectedImage, setSelectedImage] = useState<string | null>(data.thumbnail as string || null);
+
     const fetchedImages: (string | { url: string })[] | undefined = product?.images;
-    const images: { url: string; alt: string }[] = fetchedImages
+
+    const currentFetchedImages: { url: string; alt: string }[] = fetchedImages
         ? fetchedImages.map((image) => ({
             url: typeof image === 'string' ? image : image.url,
             alt: `${product.name}`,
         }))
         : [];
+    const images = [{ url: product.thumbnail || "", alt: `${product.name} thumbnail` }, ...currentFetchedImages];
 
+    const handleShare = () => {
+        const shareData = {
+            title: document.title,
+            text: "Check out this product!",
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            // Use native share on mobile
+            navigator
+                .share(shareData)
+                .then(() => console.log("Shared successfully"))
+                .catch((err) => console.error("Error sharing:", err));
+        } else {
+            // Fallback for desktop: open a new window to share on Twitter/Facebook/etc
+            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+            window.open(shareUrl, "_blank", "width=600,height=400");
+        }
+    };
     useEffect(() => {
         if (data._id !== "") {
             dispatch(setAProduct(data));
         }
     }, [dispatch, data._id]);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, [location.pathname]);
 
     if (error) return <Error />;
 
@@ -90,8 +116,8 @@ const ProductLanding = () => {
                                             <div
                                                 key={index}
                                                 className={`relative group border-2 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 ${selectedImage === item.url
-                                                        ? "border-primary shadow-lg ring-2 ring-primary/20"
-                                                        : "border-gray-200 hover:border-primary/50"
+                                                    ? "border-primary shadow-lg ring-2 ring-primary/20"
+                                                    : "border-gray-200 hover:border-primary/50"
                                                     }`}
                                                 onClick={() => handleImageClick(item.url)}
                                             >
@@ -100,7 +126,6 @@ const ProductLanding = () => {
                                                     alt={item.alt}
                                                     className="w-20 h-20 object-cover transition-transform duration-300 group-hover:scale-110"
                                                 />
-                                                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                             </div>
                                         ))}
                                     </div>
@@ -137,13 +162,15 @@ const ProductLanding = () => {
                                     <button
                                         onClick={handleWishlistToggle}
                                         className={`p-2 rounded-full border transition-all duration-300 ${isWishlisted
-                                                ? "bg-red-50 border-red-200 text-red-600"
-                                                : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                                            ? "bg-red-50 border-red-200 text-red-600"
+                                            : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
                                             }`}
                                     >
                                         <Heart className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`} />
                                     </button>
-                                    <button className="p-2 rounded-full bg-gray-50 border border-gray-200 text-gray-600 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all duration-300">
+                                    <button
+                                        onClick={() => handleShare()}
+                                        className="p-2 rounded-full bg-gray-50 border border-gray-200 text-gray-600 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all duration-300">
                                         <Share2 className="w-5 h-5" />
                                     </button>
                                 </div>
@@ -161,8 +188,8 @@ const ProductLanding = () => {
                                                 <Star
                                                     key={i}
                                                     className={`w-5 h-5 ${i < (product.aggrateRating ?? 0)
-                                                            ? "text-yellow-400 fill-current"
-                                                            : "text-gray-300"
+                                                        ? "text-yellow-400 fill-current"
+                                                        : "text-gray-300"
                                                         }`}
                                                 />
                                             ))}

@@ -19,7 +19,7 @@ const ContactUs = () => {
         <div className="flex items-center space-x-3">
           <MapPin className="text-blue-600" />
           <span className="text-gray-700">
-            Schoolchaun, Gauradaha-5, Jhapa, Nepal
+            Kogarah, NSW 2217, Australia
           </span>
         </div>
 

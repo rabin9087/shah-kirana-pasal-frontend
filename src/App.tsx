@@ -48,6 +48,7 @@ import GenerateBarcodeQRCode from "./utils/GenerateBarcodeQRCode";
 import OutOfStockOrders from "./pages/orders/outOfStock/OutOfStockOrders";
 import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
 import VerifyEmail from "./pages/users/verifyEmail";
+import ComboProductLandingPage from "./pages/home/productCombo/ComboProductLandingPage";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -248,6 +249,12 @@ function App() {
         <Route
           path="/product/:_id"
           element={<ProductLanding />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/product/comboProduct/:_id"
+          element={<ComboProductLandingPage />}
           errorElement={<ErrorPage />}
         />
 

@@ -20,6 +20,14 @@ import { base64ToFile } from '@/utils/convertToBase64';
 import { toast } from 'react-toastify';
 import { IStoredAt } from '@/axios/product/types';
 import ProductComboOffer from './productComboOffer/ProductComboOffer';
+import imageCompression from 'browser-image-compression';
+
+const compressionOptions = {
+  maxSizeMB: 1, // Target size (MB)
+  maxWidthOrHeight: 1080, // Resize large images
+  useWebWorker: true
+};
+
 
 const CreateProduct = () => {
   const [sku, setSku] = useState<string>('');
@@ -56,7 +64,7 @@ const CreateProduct = () => {
     }
   })
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<ProductSchema>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: '',
@@ -80,9 +88,6 @@ const CreateProduct = () => {
   });
 
   // Watch form values for debugging
-  const watchedValues = watch();
-  console.log('Form values:', watchedValues);
-
   const handleOnGenerateSKU = () => {
     const code = generateRandomCode();
     setSku(code);
@@ -175,23 +180,19 @@ const CreateProduct = () => {
     });
 
     // Convert images from base64 to File and append to FormData
-    if (images && images.length > 0) {
-      images.forEach((image, index) => {
-        const file = base64ToFile(image.url, `image${index}.jpg`);
-        formData.append('images', file);
-      });
+    if (images.length > 0 ) {
+      for (let index = 0; index < images.length; index++) {
+        const file = base64ToFile(images[index].url, `image${index}.jpg`);
+        const compressedFile = await imageCompression(file, compressionOptions);
+        formData.append('images', compressedFile);
+      }
     }
 
     // Convert thumbnail from base64 to File and append to FormData
     if (thumbnail && thumbnail.length > 0) {
       const file = base64ToFile(thumbnail[0].url, 'thumbnail.jpg');
-      formData.append('thumbnail', file);
-    }
-
-    // Debug FormData contents
-    console.log('FormData contents:');
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
+      const compressedFile = await imageCompression(file, compressionOptions);
+      formData.append('thumbnail', compressedFile);
     }
 
     try {

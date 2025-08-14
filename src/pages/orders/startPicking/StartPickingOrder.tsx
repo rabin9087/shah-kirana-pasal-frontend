@@ -51,7 +51,6 @@ const StartPickingOrder = () => {
     const [barcode, setBarcode] = useState("");
     const [buff, setBuff] = useState("");
     const [modalImage, setModalImage] = useState<string | null>(null);
-
     const sortedItems = sortItems(order?.items || []);
     const currentItem = sortedItems[currentIndex];
     const lastItem = sortedItems[currentIndex - 1];
@@ -118,6 +117,8 @@ const StartPickingOrder = () => {
         setModalImage(null);
     };
 
+
+
     const updateDeliveryStatus = async (status: string) => {
         setPacking(true)
         if (order?._id) {
@@ -142,7 +143,7 @@ const StartPickingOrder = () => {
         setPacking(false)
         return;
     }
-
+``
     const updateSuppliedQuintity = () => {
         const supplied = currentItem?.supplied + 1
         if (supplied > currentItem?.quantity) {
@@ -229,7 +230,6 @@ const StartPickingOrder = () => {
 
         setTimeout(() => setBarcode(""), 500); // Optional reset
     }, [barcode]);
-
 
     return (
         <>

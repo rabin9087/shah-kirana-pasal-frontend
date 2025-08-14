@@ -11,7 +11,7 @@ import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } fro
 import { useAppSelector } from "@/hooks"
 import { IProductComboOffer } from "@/axios/productComboOffer/types"
 
-const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: string, onClick: () => void }> = ({ item, addClass, onClick }) => {
+const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: string, onClick?: () => void }> = ({ item, addClass, onClick }) => {
 
     const { cart } = useAppSelector((state) => state.addToCartInfo)
     const { language } = useAppSelector((state) => state.settings)
