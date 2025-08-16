@@ -52,19 +52,29 @@ export const LoadingDataWithText = ({ text }: { text: string }) => {
 
 export const SkeletonCard = () => {
     return (
-        <div className="flex flex-wrap gap-4 animate-pulse ms-8">
-            {[...Array(2)].map((_, index) => (
-                <div key={index} className="flex flex-col space-y-3">
-                    <Skeleton className="h-[125px] w-[250px] rounded-xl bg-gray-200" />
+        <div className="flex flex-wrap justify-center gap-6 animate-pulse">
+            {[...Array(5)].map((_, index) => (
+                <div
+                    key={index}
+                    className="flex flex-col space-y-4 p-4 rounded-2xl shadow-md border border-gray-200 w-[260px] bg-white"
+                >
+                    {/* Image placeholder */}
+                    <Skeleton className="h-[160px] w-full rounded-xl bg-gray-200" />
+
+                    {/* Title + subtitle */}
                     <div className="space-y-2">
-                        <Skeleton className="h-4 w-[250px] bg-gray-200" />
-                        <Skeleton className="h-4 w-[200px] bg-gray-200" />
+                        <Skeleton className="h-5 w-3/4 mx-auto rounded-md bg-gray-200" />
+                        <Skeleton className="h-4 w-1/2 mx-auto rounded-md bg-gray-200" />
                     </div>
+
+                    {/* Button placeholder */}
+                    <Skeleton className="h-10 w-2/3 mx-auto rounded-full bg-gray-200" />
                 </div>
             ))}
         </div>
     );
 };
+
 
 
 export function SkeletonProfile() {

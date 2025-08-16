@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Button } from "../ui/button";
-import SearchBar, { ResultsComponent } from "./Search";
+import SearchBar, { IResults, ResultsComponent } from "./Search";
 import Cart from "./Cart";
 import { Profile } from "../Profile";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -26,12 +26,6 @@ interface IHeaderProps {
   setData?: (data: IProductTypes[]) => void;
   data?: IProductTypes[];
 }
-
-type IResults = {
-  _id: string;
-  name: string;
-  parentCategoryID: string;
-};
 
 const Header: React.FC<IHeaderProps> = ({ data, types, setData }) => {
   const { pathname } = useLocation();

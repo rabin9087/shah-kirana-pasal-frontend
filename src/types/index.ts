@@ -120,6 +120,7 @@ export type serverReturnDataType = {
   jobCategories: IJobCategory[];
   checkoutUrl: string;
   productComboOffers: IProductComboOffer[];
+  productComboOffer: IProductComboOffer;
 };
 
 export type LocationState = {

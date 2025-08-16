@@ -13,12 +13,15 @@ interface ISearchProps {
   setResults: (results: IResults[] | []) => void
 }
 
-type IResults = {
+export type IResults = {
   _id: string,
   name: string,
   alternateName?: string,
   parentCategoryID: string,
-  qrCodeNumber?: string
+  qrCodeNumber?: string,
+  price: number,
+  salesPrice?: number,
+  thumbnail?: string,
 }
 
 const SearchBar: React.FC<ISearchProps> = ({ data = [], setData, types, placeholder, setResults }) => {
@@ -151,12 +154,33 @@ export const ResultsComponent = ({ results, setResults }: { results: IResults[] 
             to={`/product/${item.qrCodeNumber}`}
           >
             <div
-              key={item?._id}
-              className="bg-white p-2 ps-4 last:border-none  shadow-sm flex justify-between hover:shadow-md hover:bg-gray-100"
+              className="flex items-center justify-between p-3 border-b-gray-500 bg-white  last:border-none 
+                     hover:bg-gray-100 hover:shadow-md transition-all duration-200 cursor-pointer"
             >
-              <p className="text-black text-sm"> {language === "en" ? item.name : item.alternateName !== "" ? item.alternateName : item.name}
-              </p>
+              {/* Thumbnail if exists */}
+              {item?.thumbnail && (
+                <img
+                  src={item?.thumbnail}
+                  alt={item.name}
+                  className="w-8 h-8 object-cover rounded-md mr-3"
+                />
+              )}
 
+              {/* Product info */}
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {language === "en"
+                    ? item.name
+                    : item.alternateName !== ""
+                      ? item.alternateName
+                      : item.name}
+                </p>
+              </div>
+
+              {/* Price */}
+              <p className="text-sm me-2 font-semibold text-green-600 whitespace-nowrap">
+                ${item.salesPrice ? item.salesPrice : item.price}
+              </p>
             </div>
           </Link>
         ))

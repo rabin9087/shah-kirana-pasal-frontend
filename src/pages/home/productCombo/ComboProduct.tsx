@@ -8,6 +8,7 @@ import ComboProductItem from "./ComboProductItem";
 import { SkeletonCard } from "@/components/ui/Loading";
 import { setComboProduct } from "@/redux/product.slice";
 import { useAppDispatch, useAppSelector } from "@/hooks";
+import Layout from "@/components/layout/Layout";
 
 // Modal Component
 const ComboModal: React.FC<{
@@ -100,15 +101,13 @@ const ComboProduct = () => {
     }, [data.length, dispatch, comboProducts.length]);
 
     // Loading state
-    if (isLoading) {
-        return (
+    if (isLoading ) {
+        return (<Layout title="">
             <div className="flex justify-center mt-4 h-screen mx-4">
                 < SkeletonCard />
-                < SkeletonCard />
-                < SkeletonCard />
-                < SkeletonCard />
-                < SkeletonCard />
             </div>
+        </Layout>
+
         );
     }
 

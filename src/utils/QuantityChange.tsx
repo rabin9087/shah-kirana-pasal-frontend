@@ -19,11 +19,14 @@ export const AddToCartButton = ({ item }: { item: CartItem }) => {
         <Button
             variant="default"
             onClick={handleOnAddToCart}
-            className="w-full"
-            // disabled ={item?.quantity === 0}
+            className="flex items-center justify-center w-full"
+        // disabled={item?.quantity === 0}
         >
-            {language === "en" ? "Add To Cart" : "कार्टमा थप्नुहोस्"}
+            <span className="text-center">
+                {language === "en" ? "Add To Cart" : "कार्टमा थप्नुहोस्"}
+            </span>
         </Button>
+
     );
 };
 
@@ -74,7 +77,7 @@ export const ChangeItemQty = ({ item }: { item: CartItem }) => {
 
 // Helpers
 export const itemExist = (productId: string, cartArray: CartItem[]) => {
-    return cartArray.some(item => item._id === productId  && (item.orderQuantity ?? 0) > 0);
+    return cartArray.some(item => item._id === productId && (item.orderQuantity ?? 0) > 0);
 };
 
 export const getOrderNumberQuantity = (productId: string, cartArray: CartItem[]) => {

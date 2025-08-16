@@ -40,7 +40,8 @@ interface InititalState {
   selectedProducts: IProductTypes[];
   product: IProductTypes,
   productFoundStatus: IProductStatus,
-  comboProducts: IProductComboOffer[]
+  comboProducts: IProductComboOffer[],
+  selectedCombo: IProductComboOffer | null
 };
 
 const initialState: InititalState = {
@@ -49,6 +50,7 @@ const initialState: InititalState = {
   product: productInitialState,
   productFoundStatus: productStatus,
   comboProducts: [],
+  selectedCombo: null
 };
 
 const userSlice = createSlice({
@@ -64,23 +66,26 @@ const userSlice = createSlice({
       (product: IProductTypes) => !existingIds.has(product._id)
     );
     state.products = [...state.products, ...newProducts];
-  },
-  setAProduct: (state, { payload }: PayloadAction<IProductTypes>) => {
+    },
+    setAProduct: (state, { payload }: PayloadAction<IProductTypes>) => {
       state.product = payload;
     },
-  setAProductFoundStatus: (state, { payload }: PayloadAction<IProductStatus>) => {
-      state.productFoundStatus = payload
-    },
-  setSelectedProducts: (state, { payload }: PayloadAction<IProductTypes[]>) => {
+    setAProductFoundStatus: (state, { payload }: PayloadAction<IProductStatus>) => {
+        state.productFoundStatus = payload
+      },
+    setSelectedProducts: (state, { payload }: PayloadAction<IProductTypes[]>) => {
       state.selectedProducts = payload;
     },
     setComboProduct: (state, { payload }: PayloadAction<IProductComboOffer[]>) => { 
       state.comboProducts = payload;
+    },
+    setSelectedCombo: (state, { payload }: PayloadAction<IProductComboOffer | null>) => { 
+      state.selectedCombo = payload;
     }
   },
 });
 
 const { reducer, actions } = userSlice;
-export const { setProducts, setAProduct, setAProductFoundStatus, setSelectedProducts, addProducts, setComboProduct } = actions;
+export const { setProducts, setAProduct, setAProductFoundStatus, setSelectedProducts, addProducts, setComboProduct, setSelectedCombo } = actions;
 export default reducer;
 // export the action creator for other components to use it in dispatch() function of redux store

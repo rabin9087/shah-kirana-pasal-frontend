@@ -30,3 +30,17 @@ export const getAllProductComboOffer = async() => {
     throw new Error("Failed to update product");
   }
 };
+
+export const getAProductComboOffer = async(_id: string) => {
+  try {
+    const response = await axiosProcessor({
+    method: "get",
+    url: `${productComboOfferApi}/${_id}`,
+    isPrivate: true,
+    });
+    
+    return response.productComboOffer
+  } catch (error) {
+    throw new Error("Failed to update product");
+  }
+};
