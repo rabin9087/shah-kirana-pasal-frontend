@@ -130,7 +130,7 @@ function Home(): JSX.Element {
       )} */}
     
       {page === 1 && (
-        <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
+        <div className="my-6 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">
           <CarouselWithAutoplay />
         </div>
       )}

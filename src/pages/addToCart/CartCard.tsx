@@ -48,7 +48,7 @@ const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
         dispatch(setAddToCart({ ...item, note }));
         setOpenNote(false);
     };
-    console.log(item)
+
     const handleOnResetCart = () => {
         dispatch(setAddToCart({ ...item, orderQuantity: 0 }));
     };
@@ -121,9 +121,9 @@ const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
                     )}
                     <div className="w-[120px] mb-2">
                         {!itemExist(item._id as string, cart) ? (
-                            <AddToCartButton item={{ ...item, orderQuantity: orderQty }} />
+                            <AddToCartButton item={{ ...item, orderQuantity: orderQty }} soh={(item as IAddToCartTypes).quantity } />
                         ) : (
-                            <ChangeItemQty item={{ ...item, orderQuantity: orderQty }} />
+                                <ChangeItemQty item={{ ...item, orderQuantity: orderQty }} soh={(item as IAddToCartTypes).quantity} />
                         )}
                     </div>
                 </div>

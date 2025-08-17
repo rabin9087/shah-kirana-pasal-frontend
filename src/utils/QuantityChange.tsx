@@ -8,7 +8,7 @@ import { setAddToCart } from "@/redux/addToCart.slice";
 
 export type CartItem = IAddToCartTypes | IProductComboOffer;
 
-export const AddToCartButton = ({ item }: { item: CartItem }) => {
+export const AddToCartButton = ({ item, soh }: { item: CartItem, soh?: number }) => {
     const { language } = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
     const handleOnAddToCart = () => {
@@ -20,7 +20,7 @@ export const AddToCartButton = ({ item }: { item: CartItem }) => {
             variant="default"
             onClick={handleOnAddToCart}
             className="flex items-center justify-center w-full"
-        // disabled={item?.quantity === 0}
+            disabled={soh as number < 1}
         >
             <span className="text-center">
                 {language === "en" ? "Add To Cart" : "कार्टमा थप्नुहोस्"}
@@ -30,7 +30,7 @@ export const AddToCartButton = ({ item }: { item: CartItem }) => {
     );
 };
 
-export const ChangeItemQty = ({ item }: { item: CartItem }) => {
+export const ChangeItemQty = ({ item, soh }: { item: CartItem, soh?: number }) => {
     const dispatch = useAppDispatch();
 
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +59,7 @@ export const ChangeItemQty = ({ item }: { item: CartItem }) => {
 
     return (
         <div className="flex w-full items-center">
-            <Button variant="default" className="rounded-none rounded-l-md w-1/4" onClick={handleDecrease}>
+            <Button variant="default" className="rounded-none rounded-l-md w-1/4" onClick={handleDecrease} >
                 -
             </Button>
             <input
@@ -68,7 +68,7 @@ export const ChangeItemQty = ({ item }: { item: CartItem }) => {
                 onChange={handleOnChange}
                 value={item.orderQuantity === 0 ? "" : item.orderQuantity ?? ""}
             />
-            <Button variant="default" className="rounded-none rounded-r-md w-1/4" onClick={handleIncrease}>
+            <Button variant="default" className="rounded-none rounded-r-md w-1/4" onClick={handleIncrease} disabled={ soh as number <= (item.orderQuantity as number) } >
                 +
             </Button>
         </div>

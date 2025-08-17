@@ -271,9 +271,9 @@ const ProductLanding = () => {
                             <div className="space-y-4">
                                 <div className="transform hover:scale-105 transition-transform duration-300">
                                     {!itemExist(product._id, cart) ? (
-                                        <AddToCartButton item={{ ...product, orderQuantity: orderQty || 0 }} />
+                                        <AddToCartButton item={{ ...product, orderQuantity: orderQty || 0 }} soh={product.quantity} />
                                     ) : (
-                                        <ChangeItemQty item={{ ...product, orderQuantity: orderQty || 0 }} />
+                                            <ChangeItemQty item={{ ...product, orderQuantity: orderQty || 0 }} soh={product.quantity} />
                                     )}
                                 </div>
                             </div>

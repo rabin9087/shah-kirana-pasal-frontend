@@ -134,8 +134,8 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
                 </div>
               ) : item.quantity === 0 ? (
                 <div className="flex items-center space-x-2 bg-gray-100 border border-gray-300 rounded-lg p-2">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                  <p className="text-sm text-gray-600 font-medium">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <p className="text-sm text-red-600 font-medium">
                     {language === "en" ? "Out of stock!" : "स्टक सकिएको छ!"}
                   </p>
                 </div>
@@ -155,11 +155,11 @@ const ProductCard: React.FC<{ item: IProductTypes | IAddToCartTypes, addClass?: 
             <div className="w-full">
               {itemExist(item._id, cart) ? (
                 <div className="transform group-hover:scale-105 transition-transform duration-300">
-                  <ChangeItemQty item={{ ...item, orderQuantity: orderQty || 0 }} />
+                  <ChangeItemQty item={{ ...item, orderQuantity: orderQty || 0 }} soh={item.quantity} />
                 </div>
               ) : (
                 <div className="transform group-hover:scale-105 transition-transform duration-300">
-                  <AddToCartButton item={{ ...item, orderQuantity: orderQty || 0 }} />
+                    <AddToCartButton item={{ ...item, orderQuantity: orderQty || 0 }} soh={item.quantity} />
                 </div>
               )}
             </div>
