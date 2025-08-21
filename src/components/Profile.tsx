@@ -89,14 +89,14 @@ export function Profile() {
                     {_id ? (
                         <Button
                             onClick={handleOnSignout}
-                            className="w-full bg-red-500 text-white hover:bg-red-600 transition-colors"
+                            className="w-full bg-primary text-white hover:bg-primary transition-colors"
                         >
                             {language === "en" ? "Log Out" : "लग आउट"}
                         </Button>
                     ) : (
                         <Button
                             onClick={handleOnLogin}
-                            className="w-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                            className="w-full bg-primary text-white hover:bg-primary transition-colors"
                         >
                             {language === "en" ? "Log In" : "लग इन"}
                         </Button>

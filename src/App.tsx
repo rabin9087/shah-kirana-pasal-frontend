@@ -52,6 +52,7 @@ import ComboProductLandingPage from "./pages/home/productCombo/ComboProductLandi
 import ShippingInformation from "./components/footer/ShippingInformation";
 import TermsAndConditions from "./components/footer/TermAndCondition";
 import PrivacyPolicy from "./components/footer/Privacy";
+import { themeColors } from "./theme";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -65,6 +66,8 @@ function App() {
   const fromLocation = location?.state?.from?.pathname || location.pathname || "/";
   // const { pathname } = useLocation();
   const { user } = useAppSelector(state => state.userInfo);
+  const { darkMode, theme } = useAppSelector((state) => state.settings);
+
 
   // Auto-login logic
 
@@ -98,6 +101,20 @@ function App() {
       navigate(fromLocation, { replace: true });
     }
   }, [user?._id, fromLocation, navigate]);
+
+  useEffect(() => {
+    const selectedTheme = themeColors.find((t) => t.value === theme);
+    if (selectedTheme) {
+      // Set primary color for light mode
+      document.documentElement.style.setProperty("--primary", selectedTheme.value);
+
+      // Optional: dark mode adjustment if needed
+      if (darkMode) {
+        // Example: slightly adjust lightness for dark mode
+        document.documentElement.style.setProperty("--primary", selectedTheme.value);
+      }
+    }
+  }, [darkMode, theme]);
 
   return (
     <>
@@ -290,7 +307,7 @@ function App() {
           element={<PrivacyPolicy />}
           errorElement={<ErrorPage />}
         />
-        
+
         <Route
           path="/setting"
           element={<Settings />}
