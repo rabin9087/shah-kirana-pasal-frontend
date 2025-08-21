@@ -153,7 +153,7 @@ const ProductsDashboard = () => {
                         className={comboProducts ? 'bg-muted text-foreground' : 'bg-primary text-white'}
                         onClick={() => setComboProducts(false)}
                     >
-                        Create Product
+                        Products
                     </Button>
 
                     <Button
@@ -161,7 +161,7 @@ const ProductsDashboard = () => {
                         className={comboProducts ? 'bg-primary text-white' : 'bg-muted text-foreground'}
                         onClick={() => setComboProducts(true)}
                     >
-                        Create Combo Product
+                        Combo Products
                     </Button>
                 </div>
             </div>

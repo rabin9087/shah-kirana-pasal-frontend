@@ -367,7 +367,7 @@ const CheckoutForm = () => {
                             <Button
                                 type="button"
                                 className={`px-4 py-2 rounded-lg transition-colors ${orderType === "pickup"
-                                    ? "bg-blue-500 text-white"
+                                    ? "bg-primary text-white"
                                     : "bg-gray-200 text-gray-700"
                                     }`}
                                 onClick={() => setOrderType("pickup")}
@@ -377,7 +377,7 @@ const CheckoutForm = () => {
                             <Button
                                 type="button"
                                 className={`px-4 py-2 rounded-lg transition-colors ${orderType === "delivery"
-                                    ? "bg-blue-500 text-white"
+                                    ? "bg-primary text-white"
                                     : "bg-gray-200 text-gray-700"
                                     }`} onClick={() => setOrderType("delivery")}
                             >
@@ -496,7 +496,7 @@ const CheckoutForm = () => {
                                     <Button
                                         type="button"
                                         className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "card"
-                                            ? "bg-blue-500 text-white"
+                                            ? "bg-primary text-white"
                                             : "bg-gray-200 text-gray-700"
                                             }`}
                                         onClick={() => setPaymentType("card")}
@@ -506,7 +506,7 @@ const CheckoutForm = () => {
                                     <Button
                                         type="button"
                                         className={`px-4 py-2 rounded-lg transition-colors ${paymentType === "cash"
-                                            ? "bg-blue-500 text-white"
+                                            ? "bg-primary text-white"
                                             : "bg-gray-200 text-gray-700"
                                             }`}
                                         onClick={() => setPaymentType("cash")}

@@ -26,7 +26,7 @@ const SuccessfullPayment: React.FC = () => {
                 {language === "en" ? "Thank you for ordering with us." : "हामीसँग अर्डर गर्नुभएकोमा धन्यवाद।"}
             </p>
             <button
-                className="mt-6 px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className="mt-6 px-6 py-3 bg-primary text-white rounded hover:bg-blue-600"
                 onClick={handleViewOrder}
             >
                 {language === "en" ? "View Order Details" : "अर्डर विवरणहरू हेर्नुहोस्"}

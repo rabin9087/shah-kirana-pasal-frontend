@@ -49,6 +49,9 @@ import OutOfStockOrders from "./pages/orders/outOfStock/OutOfStockOrders";
 import StartPickingMultipleOrders from "./pages/orders/StartPickingMultipleOrders";
 import VerifyEmail from "./pages/users/verifyEmail";
 import ComboProductLandingPage from "./pages/home/productCombo/ComboProductLandingPage";
+import ShippingInformation from "./components/footer/ShippingInformation";
+import TermsAndConditions from "./components/footer/TermAndCondition";
+import PrivacyPolicy from "./components/footer/Privacy";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -270,6 +273,24 @@ function App() {
           errorElement={<ErrorPage />}
         />
 
+        <Route
+          path="/shipping"
+          element={<ShippingInformation />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/terms"
+          element={<TermsAndConditions />}
+          errorElement={<ErrorPage />}
+        />
+
+        <Route
+          path="/privacy"
+          element={<PrivacyPolicy />}
+          errorElement={<ErrorPage />}
+        />
+        
         <Route
           path="/setting"
           element={<Settings />}

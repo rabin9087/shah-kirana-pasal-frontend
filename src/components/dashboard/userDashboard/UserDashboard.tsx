@@ -127,7 +127,7 @@ const UsersDashboard = () => {
                                             <TableCell>
                                                 <div className="flex gap-2">
                                                     <Link to={`/dashboard/user/${user.phone}`} className="p-2 px-4 bg-gray-200 rounded-md text-sm">View</Link>
-                                                    <Link to={`/edit/userProfile/${user.phone}`} className="p-2 px-4 bg-blue-500 text-white rounded-md text-sm">Edit</Link>
+                                                    <Link to={`/edit/userProfile/${user.phone}`} className="p-2 px-4 bg-primary text-white rounded-md text-sm">Edit</Link>
                                                 </div>
                                             </TableCell>
                                         </TableRow>

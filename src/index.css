@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  /* Default Light Mode Variables */
   :root {
-    --background: 0 0% 108%;
+    --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -22,7 +23,6 @@
     --primary: 215 90% 47%;
     --primary-foreground: 210 40% 98%;
 
-    --pink: 100 80% 50%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
@@ -33,10 +33,10 @@
     --destructive-foreground: 210 40% 98%;
 
     --ring: 215 20.2% 65.1%;
-
     --radius: 0.5rem;
   }
 
+  /* Dark Mode Variables */
   .dark {
     --background: 224 50% 10%;
     --foreground: 213 31% 91%;
@@ -46,7 +46,6 @@
 
     --accent: 216 34% 17%;
     --accent-foreground: 210 40% 98%;
-    --pink: 10 10% 90%;
 
     --popover: 224 71% 4%;
     --popover-foreground: 215 20.2% 65.1%;
@@ -57,8 +56,8 @@
     --card: 224 71% 4%;
     --card-foreground: 213 31% 91%;
 
-    --primary: 20 40% 98%;
-    --primary-foreground: 222.2 47.4% 1.2%;
+    --primary: 215 90% 47%; /* Default dark theme matches light initially */
+    --primary-foreground: 210 40% 98%;
 
     --secondary: 222.2 47.4% 11.2%;
     --secondary-foreground: 210 40% 98%;
@@ -67,7 +66,6 @@
     --destructive-foreground: 210 40% 98%;
 
     --ring: 216 34% 17%;
-
     --radius: 0.5rem;
   }
 }
@@ -76,23 +74,47 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
   h1,
   h2 {
     @apply text-[32px];
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
   }
 }
 
 @layer utilities {
   .sign-input {
-    @apply rounded-full bg-white text-[16px] text-black h-10 border-0;
+    @apply rounded-full bg-[hsl(var(--card))] text-[hsl(var(--foreground))] h-10 border-0;
+  }
+
+  /* Example utility classes for dynamic theme usage */
+  .bg-primary {
+    background-color: hsl(var(--primary));
+  }
+
+  .text-primary {
+    color: hsl(var(--primary));
+  }
+
+  .border-primary {
+    border-color: hsl(var(--primary));
+  }
+
+  .bg-accent {
+    background-color: hsl(var(--accent));
+  }
+
+  .text-accent {
+    color: hsl(var(--accent));
   }
 }
-
-input, textarea, select {
-  font-size: 16px;
-}
-

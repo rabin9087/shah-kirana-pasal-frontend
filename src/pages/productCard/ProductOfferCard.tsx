@@ -30,8 +30,8 @@ const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: str
             <Card className={`w-full h-full sm:w-[190px] md:w-[250px] bg-white shadow-lg rounded-lg overflow-hidden ${addClass}`}>
                 {/* Combo Offer Badge */}
                 <div className="border-2 h-24 rounded-md bg-gradient-to-r from-red-400 to-orange-400 flex items-center">
-                    <div className="ml-4 w-16 h-16 flex items-center justify-center rounded-full border-8 border-primary bg-white">
-                        <p className="font-bold text-xs">COMBO</p>
+                    <div className="ml-4 w-20 h-20 flex items-center justify-center rounded-full border-8 border-primary bg-white">
+                        <p className="font-bold text-base p-2">COMBO</p>
                     </div>
                     <div className="ml-2 text-white">
                         <p className="text-xs font-semibold">Save {savingsPercentage}%</p>
@@ -69,7 +69,7 @@ const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: str
                 {/* Pricing Information */}
                 <div className="">
                     <CardContent
-                        onClick= {onClick}
+                        onClick={onClick}
                         className="px-4 pb-4">
                         <div className="flex justify-between items-start font-bold">
                             <div className="flex justify-start items-start">
@@ -120,7 +120,7 @@ const ProductComboOfferCard: React.FC<{ item: IProductComboOffer, addClass?: str
                                 <AddToCartButton item={{
                                     ...item,
                                     orderQuantity: orderQty
-                                        // offerName: item.offerName,
+                                    // offerName: item.offerName,
                                     // price: item.price,
                                 }} />
                             )

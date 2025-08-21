@@ -44,7 +44,7 @@ const DeliveryDateSelector: React.FC<DeliveryDateSelectorProps> = ({
                         />
                         <div
                             className={`p-4 border rounded ${requestDeliveryDate === date.value
-                                ? "bg-blue-500 text-white"
+                                ? "bg-primary text-white"
                                 : "bg-gray-100"
                                 }`}
                         >

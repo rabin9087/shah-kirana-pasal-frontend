@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 import { IAddToCartTypes } from "@/pages/addToCart"
 import { IProductComboOffer } from "@/axios/productComboOffer/types"
 
-interface AddToCartProps {
+export interface AddToCartProps {
     onCloseDrawer?: () => void;
 }
 
@@ -61,7 +61,7 @@ const AddToCart: React.FC<AddToCartProps> = ({ onCloseDrawer }) => {
                     ))}
                 </div>
             ) : (
-                <EmptyCart />
+                <EmptyCart onCloseDrawer={onCloseDrawer} />
             )}
 
             {cart.length > 0 && (

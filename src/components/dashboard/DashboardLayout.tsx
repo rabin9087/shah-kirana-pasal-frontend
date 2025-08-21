@@ -89,7 +89,7 @@ const DashboardLayout = () => {
                         key={item}
                         onClick={() => handleMenuClick(item)}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border ${activeMenu === item
-                                ? "bg-blue-600 text-white border-blue-600"
+                                ? "bg-primary text-white border-primary"
                                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                             }`}
                     >
