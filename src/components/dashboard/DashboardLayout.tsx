@@ -5,18 +5,19 @@ import CategoriesDashboard from "./categoryDashboard/CategoriesDashboard";
 import OrdersDashboard from "./ordersDashboard/OrdersDashboard";
 import Sales from "./sales/Sales";
 import StoreSalesDashboard from "./storeSales/StoreSalesDashboard";
-import { StroreRouter } from "@/pages/users/PrivateRouter";
+import { StoreRouter } from "@/pages/users/PrivateRouter";
 import { useAppSelector } from "@/hooks";
 import { useNavigate, useParams } from "react-router";
+import StockDashboard from "./stocksDashboard/StockDashboard";
 
 const DashboardLayout = () => {
     const { user } = useAppSelector((state) => state.userInfo);
     const { menu } = useParams();
     const navigate = useNavigate();
 
-    const menuItems = ["users", "products", "categories", "orders", "online_sales", "store_sales"];
+    const menuItems = ["users", "products", "categories", "orders", "online_sales", "store_sales", "Stock"];
     const pickerMenu = ["orders"];
-    const primaryMenus = ["users", "products", "categories", "orders", "online_sales", "store_sales"];
+    const primaryMenus = ["users", "products", "categories", "orders", "online_sales", "store_sales", "Stock"];
 
     const getMenuItems = () => {
         if (user.role === "ADMIN" || user?.role === "SUPERADMIN") return [...menuItems];
@@ -54,11 +55,13 @@ const DashboardLayout = () => {
                 return <OrdersDashboard />;
             case "online_sales":
                 return <Sales />;
+            case "Stock":
+                return <StockDashboard />;
             case "store_sales":
                 return (
-                    <StroreRouter>
+                    <StoreRouter>
                         <StoreSalesDashboard />
-                    </StroreRouter>
+                    </StoreRouter>
                 );
             default:
                 return <div>Select a menu item to view details</div>;
@@ -89,8 +92,8 @@ const DashboardLayout = () => {
                         key={item}
                         onClick={() => handleMenuClick(item)}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border ${activeMenu === item
-                                ? "bg-primary text-white border-primary"
-                                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                            ? "bg-primary text-white border-primary"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                             }`}
                     >
                         {item.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}

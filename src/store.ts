@@ -10,6 +10,7 @@ import ordersSlice from "./redux/allOrders.slice";
 import settingsReducer from "./redux/setting.slice";
 import storeCartReducer from "./redux/storeCart.slice";
 import shopsReducer from "./redux/shop.slice";
+import stockReducer from "./redux/stock.slice";
 
 import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
@@ -54,6 +55,7 @@ const rootReducer = combineReducers({
   storeCart: persistedStoreCartReducer, // persisted storeCart
   settings: persistedSettingsReducer,
   shopsInfo: persistedShopsReducer,
+  stockInfo: stockReducer,
 });
 
 // Create the store

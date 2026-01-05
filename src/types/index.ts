@@ -1,3 +1,4 @@
+import { ProductTypeStock } from "@/axios/cfStock/types";
 import { IDue } from "@/axios/due/types";
 import { IJobCategory } from "@/axios/jobCategory/jobCategory";
 import { IJobs } from "@/axios/jobs/jobs";
@@ -85,6 +86,7 @@ export interface ICartHistory {
 export type serverReturnDataType = {
   status: "success" | "error";
   message?: string;
+  inserted?: number;
   result?: [];
   user?: IUser;
   data?: IUser;
@@ -121,6 +123,8 @@ export type serverReturnDataType = {
   checkoutUrl: string;
   productComboOffers: IProductComboOffer[];
   productComboOffer: IProductComboOffer;
+  stock: ProductTypeStock;
+  stocks: ProductTypeStock[];
 };
 
 export type LocationState = {

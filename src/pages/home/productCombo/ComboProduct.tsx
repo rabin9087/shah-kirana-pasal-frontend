@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Package, AlertCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import ComboProductItem from "./ComboProductItem";
-import { SkeletonCard } from "@/components/ui/Loading";
+import { LoadingData, LoadingDataWithText, SkeletonCard } from "@/components/ui/Loading";
 import { setComboProduct } from "@/redux/product.slice";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import Layout from "@/components/layout/Layout";
@@ -99,15 +99,24 @@ const ComboProduct = () => {
             dispatch(setComboProduct(data))
         }
     }, [data.length, dispatch, comboProducts.length]);
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = "hidden";  // 🔒 Disable background scroll
+        } else {
+            document.body.style.overflow = "auto";    // 🔓 Re-enable scroll
+        }
+
+        return () => {
+            document.body.style.overflow = "auto";    // cleanup
+        };
+    }, [isModalOpen]);
 
     // Loading state
-    if (isLoading ) {
-        return (<Layout title="">
+    if (isLoading) {
+        return (
             <div className="flex justify-center mt-4 h-screen mx-4">
-                < SkeletonCard />
+                < LoadingDataWithText text="" />
             </div>
-        </Layout>
-
         );
     }
 
@@ -132,21 +141,22 @@ const ComboProduct = () => {
     // Empty state
     if (!comboProducts.length) {
         return (
-            <div className="w-full py-12">
-                <div className="flex flex-col items-center justify-center space-y-4">
-                    <Package className="h-12 w-12 text-gray-400" />
-                    <h3 className="text-xl font-semibold text-gray-700">No Combo Offers Available</h3>
-                    <p className="text-gray-500 text-center max-w-md">
-                        We're working on bringing you amazing combo deals. Check back soon!
-                    </p>
+
+                <div className="w-full py-12">
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                        <Package className="h-12 w-12 text-gray-400" />
+                        <h3 className="text-xl font-semibold text-gray-700">No Combo Offers Available</h3>
+                        <p className="text-gray-500 text-center max-w-md">
+                            We're working on bringing you amazing combo deals. Check back soon!
+                        </p>
+                    </div>
                 </div>
-            </div>
         );
     }
 
     return (
         <>
-            <div className="w-full py-6">
+            <div className="w-full py-6 mx-4 ">
                 {/* Section Header */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between">
@@ -185,7 +195,7 @@ const ComboProduct = () => {
                                             animationDelay: `${index * 0.1}s`
                                         }}
                                     >
-                                        
+
                                         <ClickableProductComboOfferCard
                                             item={item}
                                             onClick={() => handleComboClick(item)}

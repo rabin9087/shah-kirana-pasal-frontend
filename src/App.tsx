@@ -25,7 +25,7 @@ import Payment from "./pages/payments/Payment";
 import SuccessfullPayment from "./pages/payments/SuccessfullPayment";
 import MyProfile from "./pages/my-profile/MyProfile";
 import Dashboard from "./components/dashboard/Dashboard";
-import PrivateRouter, { AdminPrivateRouter, CustomizeRouter, PickerPrivateRouter, RoleRouter, StroreRouter } from "./pages/users/PrivateRouter";
+import PrivateRouter, { AdminPrivateRouter, CustomizeRouter, PickerPrivateRouter, RoleRouter, StoreRouter } from "./pages/users/PrivateRouter";
 import { OrderPlaced } from "./pages/orders/OrderPlaced";
 import ContactUs from "./pages/contact/Contact";
 import StartPickingOrder from "./pages/orders/startPicking/StartPickingOrder";
@@ -53,6 +53,8 @@ import ShippingInformation from "./components/footer/ShippingInformation";
 import TermsAndConditions from "./components/footer/TermAndCondition";
 import PrivacyPolicy from "./components/footer/Privacy";
 import { themeColors } from "./theme";
+import ComboProduct from "./pages/home/productCombo/ComboProduct";
+import ExcelUpload from "./utils/excel Upload/ExcelUpload";
 
 // Set the app elementchec
 Modal.setAppElement('#root');
@@ -126,6 +128,16 @@ function App() {
         />
 
         <Route
+          path="/offers"
+          element={<Layout title="COMBO OFFERS">
+            <ComboProduct />
+          </Layout> }
+          errorElement={<ErrorPage />}
+        />
+
+        ComboProduct
+
+        <Route
           path="/sign-in"
           element={<ReturenHomePage> <SignIn /></ReturenHomePage>}
           errorElement={<ErrorPage />}
@@ -178,9 +190,9 @@ function App() {
         <Route
           path="/store"
           element={
-            <StroreRouter>
+            <StoreRouter>
               <Store />
-            </StroreRouter>
+            </StoreRouter>
           }
           errorElement={<ErrorPage />}
         />
@@ -218,6 +230,14 @@ function App() {
           element={<AdminPrivateRouter><ScanProduct /></AdminPrivateRouter>}
           errorElement={<ErrorPage />}
         />
+
+        <Route
+          path="/excelUpload"
+          element={<AdminPrivateRouter><ExcelUpload /></AdminPrivateRouter>}
+          errorElement={<ErrorPage />}
+        />
+
+        
 
         <Route
           path="/product/update/:qrCodeNumber"

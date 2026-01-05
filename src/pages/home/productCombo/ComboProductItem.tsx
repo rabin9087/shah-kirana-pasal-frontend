@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "@/hooks";
 import { ArrowLeft, Package, Star, Calendar, ShoppingCart } from "lucide-react";
 import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } from "@/utils/QuantityChange";
 import { IProductComboOffer, IProductOfferTypes } from "@/axios/productComboOffer/types";
-import { IProductTypes } from "@/types/index";
+import { ICategoryTypes, IProductTypes } from "@/types/index";
+import { getAllProductsByCategory } from "@/axios/product/product";
 
 interface ComboProductItemProps {
     comboOffer: IProductComboOffer;
@@ -13,8 +14,11 @@ interface ComboProductItemProps {
 }
 
 const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack }) => {
+
     const { cart } = useAppSelector((state) => state.addToCartInfo);
+    const { categories } = useAppSelector((state) => state.categoryInfo);
     const { language } = useAppSelector((state) => state.settings);
+    const [changedProduct, setChangedProduct] = useState<IProductTypes[]>([])
 
     const savingsPercentage = ((comboOffer.discountAmount / comboOffer.totalAmount) * 100).toFixed(0);
 
@@ -22,6 +26,14 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
         new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
     const comboOrderQty = getOrderNumberQuantity(comboOffer?._id as string, cart);
+
+    const handelOnChnage = async(cat: string) => {
+        const newCat = categories.find((item) => (item._id) === cat)?.slug
+
+        const newProducts = await getAllProductsByCategory(newCat as string)
+        setChangedProduct(newProducts)
+        console.log(changedProduct)
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6">
@@ -123,15 +135,15 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
                                 </div>
                             ) : (
                                 <div className="flex justify-center sm:justify-end">
-                                        <div className="w-full  sm:min-w-[256px]">
-                                            <AddToCartButton
-                                                item={{
-                                                    ...comboOffer,
-                                                    orderQuantity: comboOrderQty || 0,
-                                                    offerName: comboOffer.offerName,
-                                                }}
-                                            />
-                                        </div>
+                                    <div className="w-full  sm:min-w-[256px]">
+                                        <AddToCartButton
+                                            item={{
+                                                ...comboOffer,
+                                                orderQuantity: comboOrderQty || 0,
+                                                offerName: comboOffer.offerName,
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -162,7 +174,7 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
                                     <div className="flex items-center gap-3">
                                         <span className="text-sm font-semibold text-gray-500">{index + 1}.</span>
                                         <Link
-                                            to={`/product/${product.qrCodeNumber}`}
+                                            to={`/product/${product?.qrCodeNumber}`}
                                             className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0"
                                         >
                                             <img
@@ -187,19 +199,20 @@ const ComboProductItem: React.FC<ComboProductItemProps> = ({ comboOffer, onBack 
                                             <span className="text-gray-500 text-xs">Qty: {item?.qty || 1}</span>
                                             {/* Mobile Price */}
                                             <span className="inline-block sm:hidden text-gray-900 text-xs">
-                                                {language === "en" ? "$" : "रु."}{product?.price?.toFixed(2)}
+                                                {language === "en" ? "$" : "रु."}{product?.price}
                                             </span>
                                         </div>
 
                                         {/* Price (hidden on mobile) */}
                                         <div className="sm:inline-block hidden text-sm sm:text-base font-bold text-gray-900 text-right whitespace-nowrap">
-                                            {language === "en" ? "$" : "रु."}{product?.price?.toFixed(2)}
+                                            {language === "en" ? "$" : "रु."}{product?.price}
                                         </div>
                                     </div>
 
                                     {/* Change Button */}
                                     <button
-                                        className="ml-4 px-3 py-1 text-xs sm:text-sm rounded-lg border border-gray-300 bg-gray-50 hover:bg-gray-100 text-gray-700 transition mr-2"
+                                        className="ml-4 px-3 py-1 text-xs sm:text-sm rounded-lg border border-gray-300 bg-gray-50 hover:bg-gray-200 text-gray-700 transition mr-2"
+                                        onClick={() => handelOnChnage(product.parentCategoryID)}
                                     >
                                         Change
                                     </button>

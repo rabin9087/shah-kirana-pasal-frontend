@@ -6,12 +6,14 @@ import { Switch } from "@/components/ui/switch";
 import Layout from "../layout/Layout";
 import { useEffect } from "react";
 import { themeColors } from "@/theme";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router";
 
 const Settings = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const { language, darkMode, notifications, theme } = useAppSelector((state) => state.settings);
 
-    
     useEffect(() => {
         const selectedTheme = themeColors.find((t) => t.value === theme);
         if (selectedTheme) {
@@ -28,7 +30,9 @@ const Settings = () => {
 
     return (
         <Layout title="Settings">
+            <Button className="ms-4" onClick={() => navigate(-1)}>{"< BACK"} </Button>
             <div className="max-w-md mx-auto mt-8 my-4">
+                
                 <Card>
                     <CardHeader className="my-2">
                         <CardTitle>Settings</CardTitle>

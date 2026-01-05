@@ -200,7 +200,6 @@ const CheckoutForm = () => {
                     },
                     redirect: "if_required", // This handles redirects for Afterpay, Zip, etc.
                 });
-                console.log(result)
                 console.log("confirm payment done")
                 if (result.error) {
                     let message = "An unexpected error occurred.";

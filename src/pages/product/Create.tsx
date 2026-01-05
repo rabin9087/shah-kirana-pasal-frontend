@@ -21,6 +21,7 @@ import { toast } from 'react-toastify';
 import { IStoredAt } from '@/axios/product/types';
 import ProductComboOffer from './productComboOffer/ProductComboOffer';
 import imageCompression from 'browser-image-compression';
+import { useNavigate } from 'react-router';
 
 const compressionOptions = {
   maxSizeMB: 1, // Target size (MB)
@@ -37,7 +38,7 @@ const CreateProduct = () => {
   const [images, setImages] = useState<ImageType[]>([]);
   const [thumbnail, setThumbnail] = useState<ImageType[]>([]);
   const dispatch = useAppDispatch()
-
+  const navigate = useNavigate()
   const { categories } = useAppSelector(state => state.categoryInfo)
   const [createComboProduct, setCreateComboProduct] = useState<boolean>(false);
 
@@ -359,8 +360,17 @@ const CreateProduct = () => {
 
   return (
     <Layout title='Enter Product Details'>
+      <div className='flex justify-start ms-4'>
+        <Button
+          onClick={() => navigate(-1)}
+        >
+          {"< BACK"}
+        </Button>
+      </div>
       <div className="flex flex-col items-center justify-center w-full py-6 bg-muted/40 rounded-xl shadow-md">
+       
         <div className="flex flex-wrap justify-center gap-4">
+        
           <Button
             variant={createComboProduct ? 'secondary' : 'default'}
             className={createComboProduct ? 'bg-muted text-foreground' : 'bg-primary text-white'}

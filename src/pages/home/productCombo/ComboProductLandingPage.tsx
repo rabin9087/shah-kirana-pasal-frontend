@@ -21,7 +21,7 @@ const ComboProductLandingPage = () => {
         isLoading,
         isError,
     } = useQuery<IProductComboOffer>({
-        queryKey: ["comboProduct", _id],
+        queryKey: ["comboProductId", _id],
         queryFn: async () => getAProductComboOffer(_id as string),
         enabled: !!_id, // ✅ only run if id exists
     });

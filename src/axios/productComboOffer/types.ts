@@ -10,7 +10,7 @@ export interface IProductOfferTypes {
 }
 
 export interface IProductComboOffer  {
-    _id?: string,
+    _id?: string ,
     offerName: string,
     status: "ACTIVE" | "INACTIVE",
     items: IProductOfferTypes[],

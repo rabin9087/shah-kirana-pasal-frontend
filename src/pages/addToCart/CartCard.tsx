@@ -65,7 +65,7 @@ const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
             productUrl = `/product/${qrCodeNumber}`;
         }
     } else {
-        productUrl = `/product/comboProduct/${item._id}`;
+        productUrl = `/product/comboProduct/${item.offerName}`;
     }
 
     return (
@@ -134,6 +134,12 @@ const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
                         {(displayPrice * orderQty).toFixed(2)}
                     </p>
                     {!isCombo && item.salesPrice > 0 && (
+                        <p className="text-sm text-gray-500 line-through">
+                            {language === "en" ? "was $" : "पहिले रु."}
+                            {(basePrice * orderQty).toFixed(2)}
+                        </p>
+                    )}
+                    {isCombo && (
                         <p className="text-sm text-gray-500 line-through">
                             {language === "en" ? "was $" : "पहिले रु."}
                             {(basePrice * orderQty).toFixed(2)}

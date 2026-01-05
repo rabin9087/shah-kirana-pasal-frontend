@@ -48,7 +48,7 @@ const ProductCardByCategory: React.FC = () => {
     //     <LoadingDataWithText text="Loading..." />
     // </Layout>)
 
-    return (<Layout title={`${(slug || searchTerm).toUpperCase()} PRODUCTS`} types="category">
+    return (<Layout title={`${(slug || searchTerm).toUpperCase()} PRODUCTS`} types="category" >
         {isLoading &&  <SkeletonCard />}
         {data.length < 1 ? <ProductNotFound open={false} onClose={() => { }} /> :
             <div className="my-12 px-2 md:px-8 max-w-[1440px] md:mx-auto shadow-md rounded-md pb-4 border-t">

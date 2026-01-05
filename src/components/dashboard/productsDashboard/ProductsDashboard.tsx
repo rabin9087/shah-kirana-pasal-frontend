@@ -24,6 +24,7 @@ import SearchInput from "@/components/search/SearchInput";
 import { formatLocation } from "@/pages/orders/startPicking/StartPickingOrder";
 import { SkeletonCard } from "@/components/ui/Loading";
 import ComboProductDashboard from "./ComboProduct";
+import { exportToExcel } from "@/utils/exportToExcel/exportTOExcel";
 
 export const sortOptions = [
     { label: "Select A Label", value: "select" },
@@ -66,14 +67,14 @@ type SortField = typeof sortOptions[number]["value"];
 
 
 const ProductsDashboard = () => {
-    const { products } = useAppSelector(state => state.productInfo)
+    const { products, comboProducts } = useAppSelector(state => state.productInfo)
     const { categories } = useAppSelector(state => state.categoryInfo)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [searchData, setSearchData] = useState(products)
     const [sortBy, setSortBy] = useState<SortField>("select");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-    const [comboProducts, setComboProducts] = useState<boolean>(false);
+    const [comboProduct, setComboProduct] = useState<boolean>(false);
 
     const { data = [], error, isLoading } = useQuery<IProductTypes[]>({
         queryKey: ['products'],
@@ -146,27 +147,51 @@ const ProductsDashboard = () => {
 
     return (
         <div>
+            <div className="flex justify-end me-4">
+                <div className="relative group">
+                    <p
+                        className="p-2 bg-gray-400 hover:bg-gray-500 cursor-pointer rounded"
+
+                    >
+                        Download
+                    </p>
+
+                    {/* Tooltip */}
+                    <span
+                        className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
+                 bg-gray-100 hover:bg-gray-200 text-black text-xs px-2 py-1 rounded 
+                 opacity-0 group-hover:opacity-100 
+                 transition-opacity duration-200 whitespace-nowrap"
+                        onClick={() => exportToExcel( products, "products")}
+                    >
+                        Export to Excel
+                    </span>
+                </div>
+            </div>
             <div className="flex flex-col items-center justify-center w-full py-2 bg-muted/40 rounded-xl shadow-md ">
+                
                 <div className="flex flex-wrap justify-center gap-4 border p-2 rounded-md">
                     <Button
-                        variant={comboProducts ? 'secondary' : 'default'}
-                        className={comboProducts ? 'bg-muted text-foreground' : 'bg-primary text-white'}
-                        onClick={() => setComboProducts(false)}
+                        variant={comboProduct ? 'secondary' : 'default'}
+                        className={comboProduct ? 'bg-muted text-foreground' : 'bg-primary text-white'}
+                        onClick={() => setComboProduct(false)}
                     >
                         Products
                     </Button>
 
                     <Button
-                        variant={comboProducts ? 'default' : 'secondary'}
-                        className={comboProducts ? 'bg-primary text-white' : 'bg-muted text-foreground'}
-                        onClick={() => setComboProducts(true)}
+                        variant={comboProduct ? 'default' : 'secondary'}
+                        className={comboProduct ? 'bg-primary text-white' : 'bg-muted text-foreground'}
+                        onClick={() => setComboProduct(true)}
                     >
                         Combo Products
                     </Button>
                 </div>
             </div>
 
-            {comboProducts ? <ComboProductDashboard /> : <div>
+            {comboProduct ?
+                <ComboProductDashboard /> :
+                <div>
                 <h3 className="flex justify-center uppercase font-bold underline mt-2">Products Management</h3>
                 <p>Total Products: {products?.length}</p>
 
@@ -241,8 +266,8 @@ const ProductsDashboard = () => {
                                 <SelectValue placeholder="Order" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="asc">Ascending</SelectItem>
-                                <SelectItem value="desc">Descending</SelectItem>
+                                <SelectItem value="asc">Ascending A - Z </SelectItem>
+                                <SelectItem value="desc">Descending Z - A</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

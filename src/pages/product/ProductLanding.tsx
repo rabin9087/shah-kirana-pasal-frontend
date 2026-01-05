@@ -115,9 +115,10 @@ const ProductLanding = () => {
                                         {images.map((item, index) => (
                                             <div
                                                 key={index}
-                                                className={`relative group border-2 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 ${selectedImage === item.url
-                                                    ? "border-primary shadow-lg ring-2 ring-primary/20"
-                                                    : "border-gray-200 hover:border-primary/50"
+                                                className={`relative group border-2 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105
+                                                     ${((selectedImage) === item.url)
+                                                        ? " border-primary shadow-lg ring-2 ring-primary/20"
+                                                        : "border-gray-200 hover:border-primary/50"
                                                     }`}
                                                 onClick={() => handleImageClick(item.url)}
                                             >
@@ -135,6 +136,7 @@ const ProductLanding = () => {
                                         <ImageCarousel
                                             thumbnail={selectedImage || product.thumbnail}
                                             selectedImage={selectedImage}
+                                            images={images}
                                         />
 
                                         {/* Image overlay badges */}
@@ -273,7 +275,7 @@ const ProductLanding = () => {
                                     {!itemExist(product._id, cart) ? (
                                         <AddToCartButton item={{ ...product, orderQuantity: orderQty || 0 }} soh={product.quantity} />
                                     ) : (
-                                            <ChangeItemQty item={{ ...product, orderQuantity: orderQty || 0 }} soh={product.quantity} />
+                                        <ChangeItemQty item={{ ...product, orderQuantity: orderQty || 0 }} soh={product.quantity} />
                                     )}
                                 </div>
                             </div>

@@ -34,7 +34,8 @@ export type IProductStatus = {
   openNotFoundModal: boolean
 }
 
-const productStatus = <IProductStatus>{status: false, openNotFoundModal: false}
+const productStatus = <IProductStatus>{ status: false, openNotFoundModal: false }
+
 interface InititalState {
   products: IProductTypes[];
   selectedProducts: IProductTypes[];
@@ -53,7 +54,7 @@ const initialState: InititalState = {
   selectedCombo: null
 };
 
-const userSlice = createSlice({
+const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: { 
@@ -85,7 +86,7 @@ const userSlice = createSlice({
   },
 });
 
-const { reducer, actions } = userSlice;
+const { reducer, actions } = productSlice;
 export const { setProducts, setAProduct, setAProductFoundStatus, setSelectedProducts, addProducts, setComboProduct, setSelectedCombo } = actions;
 export default reducer;
 // export the action creator for other components to use it in dispatch() function of redux store

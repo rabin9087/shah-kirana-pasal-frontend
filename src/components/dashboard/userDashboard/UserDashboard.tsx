@@ -13,6 +13,7 @@ import Modal from 'react-modal';
 import AddUser from "./AddUser";
 import { SortKey, sortUsers } from "../utils/SortData";
 import { SkeletonProfile } from "@/components/ui/Loading";
+import { exportToExcel } from "@/utils/exportToExcel/exportTOExcel";
 
 const UsersDashboard = () => {
     const dispatch = useAppDispatch();
@@ -24,6 +25,9 @@ const UsersDashboard = () => {
     });
     const [usersData, setUsersData] = useState<IUser[]>(users);
     const [sortBy, setSortBy] = useState<SortKey>("name"); // ⬅️ track selected sort key
+
+    // const [selectedUserData, setSelectedUserData] = useState([])
+
 
     useEffect(() => {
         if (data.length) {
@@ -40,7 +44,6 @@ const UsersDashboard = () => {
         setUsersData(sorted);
     };
 
-
     if (isLoading) (<SkeletonProfile />)
 
     return (
@@ -50,6 +53,28 @@ const UsersDashboard = () => {
                     <CardTitle className="flex justify-center text-lg md:text-2xl font-bold uppercase underline">Users Management</CardTitle>
                 </CardHeader>
                 <CardContent>
+                    <div className="flex justify-end">
+                        <div className="relative group">
+                            <p
+                                className="p-2 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded"
+                                
+                            >
+                                Download
+                            </p>
+
+                            {/* Tooltip */}
+                            <span
+                                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
+                 bg-gray-100 hover:bg-gray-200 text-black text-xs px-2 py-1 rounded 
+                 opacity-0 group-hover:opacity-100 
+                 transition-opacity duration-200 whitespace-nowrap"
+                                onClick={() => exportToExcel(users, "users")}
+                            >
+                                Export to Excel
+                            </span>
+                        </div>
+                    </div>
+
                     {isLoading && (
                         <div className="flex justify-center items-center my-20">
                             <SkeletonProfile />

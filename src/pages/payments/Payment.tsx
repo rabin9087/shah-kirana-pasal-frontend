@@ -38,7 +38,7 @@ const Payment = () => {
         queryKey: ["payment", total, storedPaymentIntentId],
         queryFn: () => createPaymentIntent(paymentData),
         enabled: total > 0,
-        
+
         staleTime: Infinity,
     });
 
@@ -61,17 +61,9 @@ const Payment = () => {
         </Layout>);
     }
 
-    if (!clientSecret) {
-        return (
-            <Layout title={language === "en" ? "Payment Details" : "भुक्तानी विवरणहरू"}>
-                <div className="text-red-600 text-center">Error: Could not load payment intent.</div>
-            </Layout>
-        );
-    }
-
     return (
         <Layout title={language === "en" ? "Payment Details" : "भुक्तानी विवरणहरू"}>
-            <Elements
+            {clientSecret && <Elements
                 stripe={stripePromise}
                 options={{
                     clientSecret,
@@ -79,7 +71,7 @@ const Payment = () => {
                 }}
             >
                 <CheckoutForm />
-            </Elements>
+            </Elements>}
         </Layout>
     );
 };

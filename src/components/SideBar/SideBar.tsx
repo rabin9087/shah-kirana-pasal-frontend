@@ -2,8 +2,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { RxCross1 } from "react-icons/rx";
 import { IoIosArrowForward } from "react-icons/io";
 import { toggleSideBar } from "@/redux/sidebar.slice";
-import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Button } from "../ui/button";
 import LockBodyScroll from "@/utils/LockBodyScroll";
 
@@ -13,6 +13,7 @@ const SideBar = () => {
   const { language } = useAppSelector((store) => store.settings);
   const { categories } = useAppSelector((state) => state.categoryInfo);
   const dispatch = useAppDispatch();
+
   LockBodyScroll(open)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -25,6 +26,7 @@ const SideBar = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+   
   }, [drawerRef, dispatch]);
 
   return (
@@ -52,6 +54,18 @@ const SideBar = () => {
             </Button>
           </div>
 
+          <Link to={"/offers"}
+            onClick={() => {
+              dispatch(toggleSideBar());
+            }}>
+            <li className="flex mx-4 mt-4 bg-yellow-400 items-center justify-between px-4 py-2  hover:bg-yellow-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-all duration-150">
+              <span className="text-gray-700 dark:text-gray-200 font-medium">
+                OFFERS
+              </span>
+              <IoIosArrowForward className="text-gray-500 dark:text-gray-400" />
+            </li>
+          </Link>
+
           {/* Category List */}
           <ul className="mt-4 px-4 space-y-2 overflow-y-auto max-h-[600px] sm:max-h-[500px] pb-12 mb-8">
             {categories.filter(({status}) => status === "ACTIVE" ).map(({ _id, name, alternativeName, slug }) => (
@@ -62,7 +76,7 @@ const SideBar = () => {
                   dispatch(toggleSideBar());
                 }}
               >
-                <li className="flex mt-0.5 items-center justify-between px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-all duration-150">
+                <li className={`flex mt-0.5 items-center justify-between px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-all duration-150`}>
                   <span className="text-gray-700 dark:text-gray-200 font-medium">
                     {language === "en" ? name.toLocaleUpperCase() :
                       alternativeName ? alternativeName?.toLocaleUpperCase() : name.toLocaleUpperCase()}

@@ -157,6 +157,17 @@ const ScanProduct = () => {
                     </div>
                 </div>
 
+                <div className="flex justify-center">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            className="w-full sm:w-auto hover:bg-gray-200"
+                            onClick={() => navigate("/excelUpload")}
+                        >
+                            Excel Upload 
+                        </Button>
+                    </div>
+
                 <UpdateProductLocation
                     setProductLocation={setProductLocation}
                     isOpen={isOpen}
@@ -164,7 +175,7 @@ const ScanProduct = () => {
                     productLocation={productLocation}
                 />
             </div>
-{/* 
+            {/* excelUpload
             <Modal
                 isOpen={isOpen}
                 onRequestClose={handleOnClose}
