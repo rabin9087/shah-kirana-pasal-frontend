@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { evaluate } from "mathjs";
@@ -7,7 +7,8 @@ const Calculator: React.FC = () => {
     const [expression, setExpression] = useState<string>("");
     const [result, setResult] = useState<string>("");
 
-    const handleButtonClick = (value: string) => {
+    // Memoize the handler so it can be used in useEffect and Button clicks
+    const handleButtonClick = useCallback((value: string) => {
         if (value === "C") {
             setExpression("");
             setResult("");
@@ -21,6 +22,7 @@ const Calculator: React.FC = () => {
 
         if (value === "=") {
             try {
+                // Use the latest expression to evaluate
                 const evalResult = evaluate(expression);
                 setResult(evalResult.toString());
             } catch {
@@ -30,26 +32,51 @@ const Calculator: React.FC = () => {
         }
 
         setExpression((prev) => prev + value);
-    };
+    }, [expression]); // Dependency on expression for evaluation
+
+    // Keyboard Listener Logic
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const { key } = event;
+
+            // Map keyboard keys to calculator functions
+            if (/[0-9+\-*/.()%]/.test(key)) {
+                event.preventDefault();
+                handleButtonClick(key);
+            } else if (key === "Enter") {
+                event.preventDefault();
+                handleButtonClick("=");
+            } else if (key === "Backspace") {
+                event.preventDefault();
+                handleButtonClick("DEL");
+            } else if (key === "Escape") {
+                event.preventDefault();
+                handleButtonClick("C");
+            } else if (key === "*") {
+                event.preventDefault();
+                handleButtonClick("*");
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [handleButtonClick]);
 
     return (
         <div className="max-w-xs mx-auto p-4 bg-gray-200 rounded-lg shadow-lg">
             <Input value={expression} readOnly className="mb-2 text-right text-lg" />
             <Input value={result} readOnly className="mb-4 text-right text-xl font-bold" />
             <div className="grid grid-cols-4 gap-2">
-                <Button onClick={() => handleButtonClick("C")} className="p-4 text-lg font-bold">C</Button>
+                <Button onClick={() => handleButtonClick("C")} className="p-4 text-lg font-bold bg-red-600 hover:bg-red-400">C</Button>
                 <Button onClick={() => handleButtonClick("DEL")} className="p-4 text-lg font-bold">DEL</Button>
-                <Button onClick={() => handleButtonClick("% ")} className="p-4 text-lg font-bold">%</Button>
+                <Button onClick={() => handleButtonClick("%")} className="p-4 text-lg font-bold">%</Button>
                 <Button onClick={() => handleButtonClick("/")} className="p-4 text-lg font-bold">/</Button>
                 {["7", "8", "9", "*", "4", "5", "6", "-", "1", "2", "3", "+", "0", ".", "(", ")"].map((char) => (
                     <Button key={char} onClick={() => handleButtonClick(char)} className="p-4 text-lg font-bold">
                         {char}
                     </Button>
-                    
                 ))}
-                <Button className="text-end col-span-2 p-4 text-lg font-bold"></Button>
-
-                <Button onClick={() => handleButtonClick("=")} className="text-end col-span-2 p-4 text-lg font-bold">=</Button>
+                <Button onClick={() => handleButtonClick("=")} className="col-span-4 p-4 text-lg font-bold bg-blue-500 text-white hover:bg-blue-600">=</Button>
             </div>
         </div>
     );
