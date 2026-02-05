@@ -175,6 +175,7 @@ export type IProductTypes = {
   aggrateRating?: number,
   thumbnail?: string,
   qrCodeNumber?: string,
+  qrCode?: string,
   salesPrice: number,
   expireDate?: string,
   salesStartDate?: Date,

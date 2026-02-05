@@ -60,7 +60,8 @@ const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
     let productUrl = "/";
 
     if (!item?.items) {
-        const qrCodeNumber = (item as IAddToCartTypes).qrCodeNumber;
+        const qrCodeNumber = ((item as IAddToCartTypes)?.qrCode) || ((item as IAddToCartTypes)?.qrCodeNumber);
+        console.log(qrCodeNumber)
         if (qrCodeNumber) {
             productUrl = `/product/${qrCodeNumber}`;
         }
@@ -121,9 +122,9 @@ const CartCard: React.FC<Props> = ({ item, onCloseDrawer }) => {
                     )}
                     <div className="w-[120px] mb-2">
                         {!itemExist(item._id as string, cart) ? (
-                            <AddToCartButton item={{ ...item, orderQuantity: orderQty }} soh={(item as IAddToCartTypes).quantity } />
+                            <AddToCartButton item={{ ...item, orderQuantity: orderQty }} soh={(item as IAddToCartTypes).quantity} />
                         ) : (
-                                <ChangeItemQty item={{ ...item, orderQuantity: orderQty }} soh={(item as IAddToCartTypes).quantity} />
+                            <ChangeItemQty item={{ ...item, orderQuantity: orderQty }} soh={(item as IAddToCartTypes).quantity} />
                         )}
                     </div>
                 </div>
