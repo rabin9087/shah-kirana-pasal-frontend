@@ -5,7 +5,7 @@ import { useAppSelector } from "@/hooks";
 import { ArrowLeft, Package, Star, Calendar, ShoppingCart } from "lucide-react";
 import { AddToCartButton, ChangeItemQty, getOrderNumberQuantity, itemExist } from "@/utils/QuantityChange";
 import { IProductComboOffer, IProductOfferTypes } from "@/axios/productComboOffer/types";
-import { ICategoryTypes, IProductTypes } from "@/types/index";
+import { IProductTypes } from "@/types/index";
 import { getAllProductsByCategory } from "@/axios/product/product";
 
 interface ComboProductItemProps {

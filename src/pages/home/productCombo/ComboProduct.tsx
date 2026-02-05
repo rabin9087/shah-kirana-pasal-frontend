@@ -5,10 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Package, AlertCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import ComboProductItem from "./ComboProductItem";
-import { LoadingData, LoadingDataWithText, SkeletonCard } from "@/components/ui/Loading";
+import { LoadingDataWithText } from "@/components/ui/Loading";
 import { setComboProduct } from "@/redux/product.slice";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import Layout from "@/components/layout/Layout";
 
 // Modal Component
 const ComboModal: React.FC<{

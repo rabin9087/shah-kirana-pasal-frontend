@@ -1,6 +1,6 @@
 import { UpdateStocksByIdentifier, getStocksByIdentifier } from "@/axios/cfStock/cfStock";
 import { ProductTypeStock } from "@/axios/cfStock/types";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
 import { productStockInitialState, setAStock } from "@/redux/stock.slice";
 import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
@@ -18,11 +18,10 @@ const TransferStock = () => {
     const [locationCode, setLocationCode] = useState("");
     const [destinationLocation, setDestinationLocation] = useState("");
     const [product, setProduct] = useState<ProductTypeStock>(productStockInitialState);
-    const [selectedProduct, setSelectedProduct] = useState<ProductTypeStock | null>(null);
+    const [selectedProduct] = useState<ProductTypeStock | null>(null);
     const [transferQty, setTransferQty] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const dispatch = useAppDispatch();
-    const { stock } = useAppSelector(s => s.stockInfo);
     // ⬇ Fetch items for scanned location
     const fetchLocationItems = async (code: string) => {
         try {
@@ -51,11 +50,11 @@ const TransferStock = () => {
     };
 
     // ⬇ Open modal when product clicked
-    const openTransferModal = (product: ProductTypeStock) => {
-        setSelectedProduct(product);
-        setTransferQty(0);
-        setModalOpen(true);
-    };
+    // const openTransferModal = (product: ProductTypeStock) => {
+    //     setSelectedProduct(product);
+    //     setTransferQty(0);
+    //     setModalOpen(true);
+    // };
 
     // ⬇ Save transfer
     const handleTransfer = async () => {

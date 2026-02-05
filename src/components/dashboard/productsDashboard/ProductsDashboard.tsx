@@ -67,7 +67,7 @@ type SortField = typeof sortOptions[number]["value"];
 
 
 const ProductsDashboard = () => {
-    const { products, comboProducts } = useAppSelector(state => state.productInfo)
+    const { products } = useAppSelector(state => state.productInfo)
     const { categories } = useAppSelector(state => state.categoryInfo)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()

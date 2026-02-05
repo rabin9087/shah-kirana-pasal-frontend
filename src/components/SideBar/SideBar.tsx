@@ -2,8 +2,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { RxCross1 } from "react-icons/rx";
 import { IoIosArrowForward } from "react-icons/io";
 import { toggleSideBar } from "@/redux/sidebar.slice";
-import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import LockBodyScroll from "@/utils/LockBodyScroll";
 
